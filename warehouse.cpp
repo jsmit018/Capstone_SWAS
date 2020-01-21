@@ -1,17 +1,26 @@
 #include "warehouse.h"
 
-void warehouse::GetLength()
-{
+Warehouse::Warehouse(int length, width){
+  _warehouseLength = length;
+  _warehouseWidth = width;
 }
 
-void warehouse::SetLength()
+int Warehouse::GetLength()
 {
+    return _warehouseLength;
 }
 
-void warehouse::SetWidth()
+void Warehouse::SetLength(int warehouseLength)
 {
+   _warehouseLength = warehouseLength;
 }
 
-void warehouse::GetWidth()
+void Warehouse::SetWidth(int warehouseWidth)
 {
+  _warehouseWidth = warehouseWidth;
+}
+
+int Warehouse::GetWidth()
+{
+  _return _warehouseWidth;
 }
