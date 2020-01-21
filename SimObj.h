@@ -12,8 +12,8 @@ public:
 
 protected:
 	SimObj();
-	void ScheduleEventIn(Time time, EventAction* ea);
-	void ScheduleEventAt(Time time, EventAction* ea);
+	virtual void ScheduleEventIn(Time time, EventAction* ea) = 0;
+	virtual void ScheduleEventAt(Time time, EventAction* ea) = 0;
 	Time GetSimulationTime();
 
 private:
