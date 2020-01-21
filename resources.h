@@ -6,14 +6,16 @@
 class Resource
 {
 public:
-	void virtualAcquire();
-	void virtualRelease();
+	void Acquire();
+	//virtual void Acquire() = 0;
+	void Release();
+	//virtual void Release = 0;
 	bool isAvailable();
 	void failResource();
 	void restoreResource();
 private:
-	int resourceCount;
-	string resourceName;
-	string failureName;
-	double failureDist;
+	int _resourceCount;
+	string _resourceName;
+	string _failureName;
+	Distribution* _failureDist;
 };
