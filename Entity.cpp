@@ -2,9 +2,12 @@
 
 int Airplane::_nextID = 0;
 
-Airplane::Airplane(string aircraftType, int priority) {
+Airplane::Airplane(string aircraftType, int priority, Footprint dimensions) {
     _aircraftType = aircraftType;
     _priority = priority;
+    _id = _nextID++;
+    _dimensions.x = dimensions.x;
+    _dimensions.y = dimensions.y;
 }
 
 int Airplane::GetEntityID() {
@@ -53,3 +56,7 @@ int Airplane::GetPriority() {
 int Airplane::GetNextID() {
     return _nextID;
 }
+
+//Going to leave this as a commented function for now.
+//@TODO make a function that creates a new aircraft of whatever type.
+//@TODO make a decision on whether or not we are instantiating different specefic aircraft inherting.
