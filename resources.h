@@ -17,5 +17,6 @@ private:
 	int _resourceCount;
 	string _resourceName;
 	string _failureName;
+	int _resourceThreshold;
 	Distribution* _failureDist;
 };
