@@ -1,5 +1,6 @@
 # Will Serve as a general overview of the repository and its contents
-# Only person to commit to master will be the Implementation Lead
+# Only person to merge the files to master will be the Implementation Lead
+When commiting only commit to your branch and when you are finished create a pull request; which will allow the implementation lead to merge the brances.
 # Active branches: 
 Master, JSmith_Branch
 # To create a new Branch
