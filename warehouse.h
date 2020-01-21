@@ -1,7 +1,7 @@
 #pragma once
 #include "SimObj.h"
 
-class warehouse
+class Warehouse
 {
 public:
 	Warehouse();
