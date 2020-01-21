@@ -1,15 +1,18 @@
 #include "task.h"
 
-void Task::SetNextTask(Task * nextTask)
+void Task::SetNextTask(Task* nextTask)
 {
+	_nextTask = nextTask;
 }
 
-void Task::Arrive(Entity * entity)
+void Task::Arrive(Airplane* airplane)
 {
+	Execute(airplane);
 }
 
 void Task::SetName(string name)
 {
+	_name = name;
 }
 
 string Task::GetName()
@@ -24,12 +27,10 @@ int Task::GetID()
 
 Task::Task(string name)
 {
+	_name = name;
 }
 
-void Task::Depart(Entity * entity)
+void Task::Depart(Airplane* airplane)
 {
-}
-
-void Task::TaskProcess(Entity * entity)
-{
+	_nextTask->Arrive(airplane);
 }
