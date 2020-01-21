@@ -1,8 +1,8 @@
 #include "Entity.h"
 
-int Airplane::_nextID = 0;
+int Aircraft::_nextID = 0;
 
-Airplane::Airplane(string aircraftType, int priority, Footprint dimensions) {
+Aircraft::Aircraft(string aircraftType, int priority, Footprint dimensions) {
     _aircraftType = aircraftType;
     _priority = priority;
     _id = _nextID++;
@@ -10,31 +10,31 @@ Airplane::Airplane(string aircraftType, int priority, Footprint dimensions) {
     _dimensions.y = dimensions.y;
 }
 
-int Airplane::GetEntityID() {
+int Aircraft::GetEntityID() {
     return _entityID;
 }
 
-void Airplane::SetEntityID(int  entityID) {
+void Aircraft::SetEntityID(int  entityID) {
     _entityID = entityID;
 }
 
-int Airplane::GetSource() {
+int Aircraft::GetSource() {
      return _source;
 }
 
-void Airplane::SetSource(int source) {
+void Aircraft::SetSource(int source) {
     _source = source;
 }
 
-Footprint Airplane::GetFootprint() {
+Footprint Aircraft::GetFootprint() {
      return _dimensions;
 }
 
-void Airplane::SetFootprint(Footprint dimensions) {
+void Aircraft::SetFootprint(Footprint dimensions) {
     _dimensions = dimensions;
 }
 
-string Airplane::GetAircraftType() {
+string Aircraft::GetAircraftType() {
     return _aircraftType;
 }
 
@@ -43,7 +43,7 @@ string Airplane::GetAircraftType() {
 
 }*/
 
-int Airplane::GetPriority() {
+int Aircraft::GetPriority() {
   return _priority;
 }
 
@@ -53,7 +53,7 @@ int Airplane::GetPriority() {
 }*/
 
 //Going to leave this for now but essentially this will update very time a new airplane is made
-int Airplane::GetNextID() {
+int Aircraft::GetNextID() {
     return _nextID;
 }
 
