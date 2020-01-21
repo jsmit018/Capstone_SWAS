@@ -5,7 +5,7 @@
 class Step : public Task
 {
 public:
-	Step(Distribution serviceTime, string name);
+	Step(Distribution* serviceTime, string name);
 	void Execute(Airplane* airplane);
 	//Time GetServiceTime();
 	//void SetServiceTime(Time serviceTime);
