@@ -16,10 +16,10 @@ protected:
 	string _taskType;
 	Task(string name);
 	void Depart(Entity *entity);
-	void TaskProcess(Entity *entity); 	
+	virtual void Execute(Entity *entity) = 0; 	
 private:
 	string _name;
 	int _id;
 	static int _nextID;
-	Task* NextTasks;
+	Task* _nextTask;
 };
