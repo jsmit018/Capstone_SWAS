@@ -21,6 +21,7 @@ public:
 	void SetPriority(int priority);
 	int GetNextID();
 	//void SetNextID(int id);
+	virtual Airplane* New() = 0;
 private:
 	int _entityID;
 	int _source;
