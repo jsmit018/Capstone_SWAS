@@ -6,9 +6,9 @@ struct Footprint {
 	int y;
 };
 
-class Airplane {
+class Aircraft {
 public:
-	Airplane();
+	Aircraft();
 	int GetEntityID();
 	void SetEntityID(int entityID);
 	int GetSource();
@@ -21,7 +21,7 @@ public:
 	void SetPriority(int priority);
 	int GetNextID();
 	//void SetNextID(int id);
-	virtual Airplane* New() = 0;
+	virtual Aircraft* New() = 0;
 private:
 	int _entityID;
 	int _source;
