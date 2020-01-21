@@ -54,15 +54,18 @@ int Step::GetNumberInQueue()
 {
 }*/
 
-void Step::AcquireServerEM(Airplane* airplane)
+//Aircraft ID & Priority number
+//PIFO (Priority In First Out)
+
+void Step::AcquireServerEM(Aircraft* aircraft)
 {
 }
 
-void Step::AddQueueEM(Airplane* airplane)
+void Step::AddQueueEM(Aircraft* aircraft)
 {
 }
 
-void Step::ScheduleDoneServiceEM(Airplane* airplane)
+void Step::ScheduleDoneServiceEM(Aircraft* aircraft)
 {
 }
 
@@ -75,6 +78,6 @@ void Step::DoneService()
 {
 }
 
-void Step::Execute(Airplane* airplane){
+void Step::Execute(Aircraft* aircraft){
 	
 }
