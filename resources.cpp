@@ -3,11 +3,15 @@
 //@TODO will need to figure out logic for what happens if amount needed is greater
 void Resource::Acquire(int amountNeeded)
 {
-	if (amountNeeded > _resourceCount)
+	/*if (amountNeeded > _resourceCount)
 		//do some stuff
+		//subtract number necessary then check threshold
+		//wait 
 	else{
 		_resourceCount -= amountNeeded;
-	}
+	}*/
+	
+	_resourceCount -= amountNeeded;
 	
 	if (_resourceCount < _resourceThreshold){
 		//Schedule an ordering event... may need to have an EA/EM with this class for that
