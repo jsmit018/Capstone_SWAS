@@ -5,7 +5,7 @@
 class SinkBlock : public Task {
 public:
 	SinkBlock();
-	void Execute();
+	void Execute(Aircraft* aircraft);
 	string GetName();
 	void SetName(string name);
 	int GetTerminatedAircraft();
