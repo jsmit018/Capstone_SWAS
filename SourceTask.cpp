@@ -1,61 +1,89 @@
 #include "SourceTask.h"
 
-SourceBlock::SourceBlock() : Task() {
-
+SourceBlock::SourceBlock(Distribution* interarrivalTime, string aircraftType, int numberOfAircraftToGenerate
+Time timeForFirstAircraft, Aircraft* aircraft) : Task(name) {
+    _name = name;
+    _interarrivalTime = interarrivalTime;
+    _aircraftType = aircraftType;
+    _aircraft = aircraft;
+    _numberOfAircraftToGenerate = numberOfAircraftToGenerate;
+   // _timeForFirstAircraft = timeForFirstAircraft;
+    _numberGenerated = 0;
+    //I believe we should change the name of this variable
+    SimulationExecutive::ScheduleEventAt(timeForFirstAircraft, new ScheduleNextEntityEA(this));
 }
 
 class SourceBlock::ScheduleNextEntityEA : public EventAction {
-
+public:
+    ScheduleNextEntityEA(SourceBlock* source){
+        _source = source;
+    }
+    void Execute(){
+        _source->ScehduleNextEntityEM();
+    }
+private:
+    SourceBlock* _source;
 };
 
-Time SourceBlock::GetInterarrivalTime() {
+//Changed to a distribution we no longer need
+/*Time SourceBlock::GetInterarrivalTime() {
 
-}
+}*/
 
-void SourceBlock::SetInterarrivalTime(Time interarrivalTime) {
+//This is handled in the constructor
+/*void SourceBlock::SetInterarrivalTime(Time interarrivalTime) {
 
-}
+}*/
 
 string SourceBlock::GetAircraftType() {
-
+    return _aircraftType;
 }
 
 void  SourceBlock::SetAircraftType(string aircraftType) {
-
+    _aircraftType = aircraftType;
 }
 
 int SourceBlock::GetNumberOfAircraftToGenerate() {
-
+    _return _numberOfAircraftToGenerate();
 }
 
-void SourceBlock::SetNumberOfAircraftToGenerate(int numberOfAircraftToGenerate) {
+//Handled in the Constructor
+/*void SourceBlock::SetNumberOfAircraftToGenerate(int numberOfAircraftToGenerate) {
 
-}
+}*/
 
 string SourceBlock::GetName() {
-
+    return _name;
 }
 
 void SourceBlock::SetName(string name) {
-
+    _name = name;
 }
 
 Time SourceBlock::GetTimeForFirstAircraft() {
-
+    return _timeForFirstAircraft;
 }
 
 void SourceBlock::SetTimeforFirstAircraft(Time setTime) {
-
+    _timeForFirstAircraft = setTime;
 }
 
 int SourceBlock::GetNumberGenerated() {
-
+    return _numberGenerated;
 }
 
-void SourceBlock::SetNumberGenerated(int numberToGenerate) {
+//Don't need this the simulation will handle
+/*void SourceBlock::SetNumberGenerated(int numberToGenerate) {
 
+}*/
+
+void SourceBlock::ScheduleNextEntityEM() {
+    while(_numberOFAircraftToGenerate != _numberGenerated){
+        SimulationExeuctive::ScheduleEventIn(_interarrivalTime->GetRV(), new ScheduleNextEntityEA(this));
+        Depart(_aircraft->New());
+        _numberGenerated++;
+    }
 }
 
-void SourceBlock::ScheduleNextEntityEM(Airplane* airplane) {
-
+void SourceBlock::Execute(Aircraft* aircraft){
 }
