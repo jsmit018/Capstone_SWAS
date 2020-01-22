@@ -57,6 +57,10 @@ int Aircraft::GetNextID() {
     return _nextID;
 }
 
+Aircraft* Aircraft::New(string aircraftType, int priority, Footprint dimensions){
+    return new Aircraft(aircraftType, priority, dimensions);
+}
+
 //Going to leave this as a commented function for now.
 //@TODO make a function that creates a new aircraft of whatever type.
 //@TODO make a decision on whether or not we are instantiating different specefic aircraft inherting.
