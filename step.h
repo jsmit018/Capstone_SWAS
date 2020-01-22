@@ -19,7 +19,9 @@ public:
 	void ReleaseServer();
 	void DoneService();
 private:
-	//Time _serviceTime;
+	Distribution* _serviceTime;
+	map<int, Aircraft*, greater<int>> _PIFOQueue;
+	//map<int, Aircraft*, greater<int>>::iterator _iterator;
 	Distribution* _serviceTime;
 	string _name;
 	int _numberInQueue;
