@@ -1,4 +1,6 @@
 #include "step.h"
+#include <iterator>
+#include <map>
 
 Step::Step(Distribution* serviceTime, string name)
 {
@@ -8,8 +10,17 @@ Step::Step(Distribution* serviceTime, string name)
 
 class Step::AcquireServerEA : public EventAction {
 public:
-
+	AcquireServerEA(Step* step, Aircraft* aircraft){
+		_step = step;
+		_aircraft = aircraft;
+	}
+	
+	void Execute(){
+		_step->AcquireServerEM(_aircraft);
+	}
 private:
+	Step* _step;
+	Aircraft* _aircraft;
 };
 
 class Step::ScheduleDoneServiceEA : public EventAction{
@@ -20,8 +31,18 @@ private:
 
 class Step::AddQueueEA : public EventAction{
 public:
+	AddQueueEA(Step* step, Aircraft* aircraft) {
+		_step = step;
+		_aircraft = aircraft;
+	}
+	
+	void Execute(){
+		_step->AddQueueEM(_aircraft);
+	}
 	
 private:
+	Step* _step;
+	Aircraft* aircraft;
 };
 
 //Since Service Time is now a distribution no need to get and retrieve.
@@ -57,12 +78,25 @@ int Step::GetNumberInQueue()
 //Aircraft ID & Priority number
 //PIFO (Priority In First Out)
 
+//Acquiring a bay
 void Step::AcquireServerEM(Aircraft* aircraft)
 {
+	iterator = _PIFOQueue.begin();
+	_PIFOQueue.erase(iterator);
+	_numberInQueue--;
+	_bays--;
+	//Will need an EA & Method that starts the maintenance
+	SimulationExecutive::ScheduleEventIn(0.0, new WhateverEAIsCalled(this, aircraft));
+	
 }
 
 void Step::AddQueueEM(Aircraft* aircraft)
 {
+	_PIFOQueue.insert(pair<int, Aircraft*>(aircraft->_priority, aircraft);
+	_numberInQueue++;
+	if (_bays > 0){
+		SimulationExecutive::ScheduleEventIn(0.0, new AcquireServerEA(this, aircraft));
+	}
 }
 
 void Step::ScheduleDoneServiceEM(Aircraft* aircraft)
@@ -79,5 +113,5 @@ void Step::DoneService()
 }
 
 void Step::Execute(Aircraft* aircraft){
-	
+	SimulationExecutive::ScheduleEventIn(0.0, new AddQueueEA(this, aircraft));
 }
