@@ -4,19 +4,19 @@
 
 class DelayBlock : public Task {
 public:
-	DelayBlock();
-	Time GetDelayTime();
-	void SetDelayTime(Time delayTime);
+	DelayBlock(Distribution* delayTime, string name);
+	//Time GetDelayTime();
+	//void SetDelayTime(Time delayTime);
 	string GetName();
 	void SetName(string name);
-	void Execute(Airplane* airplane);
+	void Execute(Aircraft* aircraft);
 	
 
 private:
-	Time delayTime;
+	Distribution* _delayTime;
 	string _name;
 	class StartDelayEA;
 	class EndDelayEA;
-	void StartDelayEM(Airplane* airplane);
-	void EndDelayEM(Airplane* airplane);
+	void StartDelayEM(Aircraft* aircraft);
+	void EndDelayEM(Aircraft* aircraft);
 };
