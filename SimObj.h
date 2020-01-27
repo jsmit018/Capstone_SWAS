@@ -3,6 +3,8 @@
 typedef double Time;
 
 class EventAction {
+public:
+	virtual void Execute() = 0;
 };
 
 class SimObj {
