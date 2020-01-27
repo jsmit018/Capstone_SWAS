@@ -9,3 +9,7 @@ Simulation Executive, Simulation Object, Delay Task, Source Task, Sink Task, Rep
 Task, Warehouse, Mission, Resources, Step
 # Files ready for testing:
 Sink Task, Delay Task //Note, use an old Simulation Executive for the purposes of testing until the new and appropriate Simulation Executive is ready.
+# Files that have design questions:
+Aircraft, Source Task
+# Files that need to be created:
+Time Converter
