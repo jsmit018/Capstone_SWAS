@@ -6,9 +6,9 @@ class SimExec : public SimObj {
 public:
 	SimExec();
 	Time GetSimulationTime();
-	void SetSimulationTime();
+	//void SetSimulationTime();
 	EventAction* GetEventAction();
-	void SetEventAction(EventAction* ea);
+	//void SetEventAction(EventAction* ea);
 	EventSet* GetEventSet();
 	//void SetEventSet(EventSet* es);
 	void ScheduleEventIn(Time time, EventAction* ea);
