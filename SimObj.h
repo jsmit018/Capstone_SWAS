@@ -4,6 +4,7 @@ typedef double Time;
 
 class EventAction {
 public:
+	EventAction() {};
 	virtual void Execute() = 0;
 };
 
