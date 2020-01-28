@@ -5,27 +5,30 @@ SimExec::SimExec() : SimObj(){
 }
 
 void SimExec::InitializeSimulation() {
-
+   _simulationTime = 0;
+   //_eventSet = 0;
 }
 
 Time SimExec::GetSimulationTime() {
-
+    return _simulationTime;
 }
 
-void SimExec::SetSimulationTime() {
+//This is handled by the advancing of the Simulation.. not needed.
+/*void SimExec::SetSimulationTime() {
 
-}
+}*/
 
 EventAction* SimExec::GetEventAction() {
 
 }
 
-void SetEventAction(EventAction* ea) {
+//We will never set an event action this is done through scheduling.
+/*void SetEventAction(EventAction* ea) {
 
-}
+}*/
 
 EventSet* SimExec::GetEventSet() {
-
+    return _eventSet;
 }
 
 void SimExec::ScheduleEventAt(Time time, EventAction* ea) {
