@@ -21,17 +21,26 @@ public:
 
 	}
 
-	void InitEventSet(int numBins, Time timeRange) {
+	void InitEventSet(int numBins, Time timeRange, int* days) {
 		_numEvents = 0;
 		_numBins = numBins;
 		_base = 0;
+		_year = 2020;
 		_overflow = numBins;
 		_timeRange = timeRange;
 		_binSize = timeRange / numBins;
 		_baseT = 0.0;
 		_eventSet = new Event * [numBins + 1];
+		for (int i = 0; i < numBins; ++i){
+			if (year % 4 == 0 && days[i] == February)
+				_eventSet[i] = new Event* [days[i] + 1];
+			else
+				_eventSet[i] = new Event*[days[i]];
+		}
 		for (int i = 0; i < numBins + 1; ++i) {
-			_eventSet[i] = 0;
+			for (int j = 0; j < i - 1; ++j){
+				_eventSet[i][j] = 0;
+			}
 		}
 	}
 
@@ -115,6 +124,7 @@ public:
 private:
 	int _numBins, _base, _overflow;
 	Time _timeRange;
+	Time _year;
 	Time _binSize;
 	Time _baseT;
 	int _numEvents;
