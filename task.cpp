@@ -30,7 +30,7 @@ Task::Task(string name)
 	_name = name;
 }
 
-void Task::Depart(Airplane* airplane)
+void Task::Depart(Aircraft* aircraft)
 {
-	_nextTask->Arrive(airplane);
+	_nextTask->Arrive(aircraft);
 }
