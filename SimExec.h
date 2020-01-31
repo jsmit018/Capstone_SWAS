@@ -22,5 +22,7 @@ private:
 	Time _simulationTime;
 	class EventSet;
 	static EventSet _eventSet;
+	enum {January, February, March, April, May, June, July,
+		  August, September, October, Novemember, December};
 	
 };
