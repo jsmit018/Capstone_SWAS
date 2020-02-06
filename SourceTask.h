@@ -4,8 +4,9 @@
 
 class SourceBlock : public Task {
 public:
-	Source((Distribution* interarrivalTime, string aircraftType, int numberOfAircraftToGenerate
-	Time timeForFirstAircraft, Aircraft* aircraft);
+	Source(Distribution* _interarrivalTimeRecurring, Distribution* _interarrivalTimeCalendar,
+		Distribution* _interarrivalTimeRND, string aircraftType, int numberOfAircraftToGenerate,
+		Time timeForFirstAircraft, Aircraft* aircraft);
 	//Time GetInterarrivalTime();
 	//void SetInterarrivalTime(Time interarrivalTime);
 	string GetAircraftType();
@@ -20,16 +21,20 @@ public:
 	//void SetNumberGenerated(int numberGenerated);
 	void Exeucte(Aircraft* aircraft);
 private:
-	Distribution* _interarrivalTime;
+	Distribution* _interarrivalTimeRecurring;
+	Distribution* _interarrivalTimeCalendar;
+	Distribution* _interarrivalTimeRND;
 	Aircraft* _aircraft;
 	string _aircraftType;
 	int _numberOfAircraftToGenerate;
 	string _name;
 	//Time _timeForFirstAircraft;
 	int _numberGenerated;
-	class ScheduleNextEntityEA;
-	class ScheduleNextRandomEntityEa;
+	class ScheduleNextEntityCalendarEA;
+	class ScheduleNextRandomEntityEA;
+	class ScheduleNextRecurringEA;
 	void ScheduleNextRandomEntityEM();
-	void ScheduleNextEntityEM();
+	void ScheduleNextEntityCalendarEM();
+	void ScheduleNextRecurringEM();
 
 };
