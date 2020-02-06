@@ -1,5 +1,6 @@
 #pragma once
 #include "SimObj.h"
+#include "Entity.h"
 
 using namespace std;
 
@@ -7,7 +8,7 @@ class Task
 {
 public:
 	void SetNextTask(Task *nextTask);
-	void Arrive(Entity *entity);
+	void Arrive(Aircraft *aircraft);
 	void SetName(string name);
 	string GetName();
 	int GetID();
@@ -15,8 +16,8 @@ protected:
 	Task * _nextTask;
 	string _taskType;
 	Task(string name);
-	void Depart(Entity *entity);
-	virtual void Execute(Entity *entity) = 0; 	
+	void Depart(Aircraft *aircraft);
+	virtual void Execute(Aircraft *aircraft) = 0; 	
 private:
 	string _name;
 	int _id;

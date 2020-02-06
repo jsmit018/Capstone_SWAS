@@ -25,6 +25,7 @@ private:
 	Distribution* _serviceTime;
 	string _name;
 	int _numberInQueue;
+	Step* _nextStep;
 	
 	class AcquireServerEA;
 	class AddQueueEA;

@@ -1,11 +1,13 @@
 #pragma once
 
+#include <iostream>
+
 typedef double Time;
 
 class EventAction {
 public:
 	EventAction() {};
-	virtual void Execute() = 0;
+	virtual void ExecuteEA() = 0;
 };
 
 class SimObj {

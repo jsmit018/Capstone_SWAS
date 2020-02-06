@@ -1,6 +1,7 @@
 #pragma once
 #include "SimObj.h"
 #include "Task.h"
+#include "step.h"
 
 class RepairJob {
 public:
@@ -14,6 +15,10 @@ private:
 	string _name;
 	int _activeStep;
 	//Task** _stepList;
-	RepairJob** _stepList;
+	Step** _stepList;
+	RepairJob* _nextJob;
+	int _priority;
+	char _indoorRequirement;
+	Distribution* _unplannedRepairProb;
 	int _size;
 };

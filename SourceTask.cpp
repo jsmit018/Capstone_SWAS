@@ -1,4 +1,5 @@
 #include "SourceTask.h"
+#include "SimExec.h"
 
 SourceBlock::SourceBlock(Distribution* interarrivalTime, string aircraftType, int numberOfAircraftToGenerate
 Time timeForFirstAircraft, Aircraft* aircraft) : Task(name) {
@@ -23,6 +24,20 @@ public:
     }
 private:
     SourceBlock* _source;
+};
+
+class SourceBlock::ScheduleNextRandomEntityEa : public EventAction {
+public:
+	ScheduleNextRandomEntityEa(SourceBlock* source) {
+		_source = source;
+	}
+
+	void Execute() {
+		_source->ScheduleNextRandomEntityEM();
+	}
+
+private:
+	SourceBlock* _source;
 };
 
 //Changed to a distribution we no longer need
@@ -78,12 +93,20 @@ int SourceBlock::GetNumberGenerated() {
 }*/
 
 void SourceBlock::ScheduleNextEntityEM() {
-    while(_numberOFAircraftToGenerate != _numberGenerated){
-        SimulationExeuctive::ScheduleEventIn(_interarrivalTime->GetRV(), new ScheduleNextEntityEA(this));
+   // while(_numberOFAircraftToGenerate != _numberGenerated){
+        SimExec::ScheduleEventIn(_interarrivalTime->GetRV(), new ScheduleNextEntityEA(this));
+		if (rand() >= .51) {
+			SimExec::ScheduleEventIn(_interarrivalTimeRND->GetRV(), new ScheduleNextRandomEntityEa(this));
+		}
         Depart(_aircraft->New());
         _numberGenerated++;
-    }
+    //}
 }
+
+void SourceBlock::ScheduleNextRandomEntityEM() {
+	Depart(_aircraft->New());
+}
+
 
 void SourceBlock::Execute(Aircraft* aircraft){
 }

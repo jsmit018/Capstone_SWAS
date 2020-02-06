@@ -1,5 +1,6 @@
 #pragma once
 #include "SimObj.h"
+#include "Distribution.h"
 
 
 class SimExec : public SimObj {

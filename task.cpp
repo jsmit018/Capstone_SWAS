@@ -5,9 +5,9 @@ void Task::SetNextTask(Task* nextTask)
 	_nextTask = nextTask;
 }
 
-void Task::Arrive(Airplane* airplane)
+void Task::Arrive(Aircraft* aircraft)
 {
-	Execute(airplane);
+	Execute(aircraft);
 }
 
 void Task::SetName(string name)
@@ -30,7 +30,7 @@ Task::Task(string name)
 	_name = name;
 }
 
-void Task::Depart(Airplane* airplane)
+void Task::Depart(Aircraft* aircraft)
 {
-	_nextTask->Arrive(airplane);
+	_nextTask->Arrive(aircraft);
 }

@@ -18,7 +18,7 @@ public:
 	void SetTimeforFirstAircraft(Time setTime);
 	int GetNumberGenerated();
 	//void SetNumberGenerated(int numberGenerated);
-	void Exeucte(Airplane* airplane);
+	void Exeucte(Aircraft* aircraft);
 private:
 	Distribution* _interarrivalTime;
 	Aircraft* _aircraft;
@@ -28,6 +28,8 @@ private:
 	//Time _timeForFirstAircraft;
 	int _numberGenerated;
 	class ScheduleNextEntityEA;
-	void ScheduleNextEntityEM(Airplane* airplane);
+	class ScheduleNextRandomEntityEa;
+	void ScheduleNextRandomEntityEM();
+	void ScheduleNextEntityEM();
 
 };
