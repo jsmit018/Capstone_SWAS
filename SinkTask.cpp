@@ -1,6 +1,7 @@
+#include <iostream>
 #include "SinkTask.h"
 
-SinkBlock::SinkBlock() : Task(name) {
+SinkBlock::SinkBlock(string name) : Task(name) {
     _name = name;
 }
 
@@ -13,9 +14,11 @@ void SinkBlock::SetName(string name) {
 }
 
 int SinkBlock::GetTerminatedAircraft() {
-    _return _terminatedAircraft;
+    return _terminatedAircraft;
 }
 
-void SinkBlock::Execute(Aircraft* aircraft){
-   _terminatedAircraft++; 
+void SinkBlock::Execute(Aircraft* aircraft) {
+	terminatedAircraft++; 
+   delete aircraft;
 }
+

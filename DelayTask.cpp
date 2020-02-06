@@ -1,6 +1,6 @@
 #include "DelayTask.h"
 
-DelayBlock::DelayBlock(Distribution* delayTime, string name) : Task(name) {
+DelayBlock::DelayBlock(string name, Distribution* delayTime) : Task(name) {
       _delayTime = delayTime;
       _name = name;
 }
