@@ -1,10 +1,11 @@
 #pragma once
 #include "SimObj.h"
 #include "Task.h"
+#include <iostream>
 
 class DelayBlock : public Task {
 public:
-	DelayBlock(Distribution* delayTime, string name);
+	DelayBlock(string name, Distribution* delayTime);
 	//Time GetDelayTime();
 	//void SetDelayTime(Time delayTime);
 	string GetName();

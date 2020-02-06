@@ -22,5 +22,4 @@ private:
 	string _name;
 	int _id;
 	static int _nextID;
-	Task* _nextTask;
 };

@@ -4,7 +4,7 @@
 
 class SinkBlock : public Task {
 public:
-	SinkBlock();
+	SinkBlock(string name);
 	void Execute(Aircraft* aircraft);
 	string GetName();
 	void SetName(string name);

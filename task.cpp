@@ -7,6 +7,7 @@ void Task::SetNextTask(Task* nextTask)
 
 void Task::Arrive(Aircraft* aircraft)
 {
+	cout << "time = " << GetSimulationTime() << ", " << _name << ", " << "arrive, Entity: " << entity->GetID()/*entityID here*/ << endl;
 	Execute(aircraft);
 }
 
@@ -32,5 +33,6 @@ Task::Task(string name)
 
 void Task::Depart(Aircraft* aircraft)
 {
+	cout << "time = " << GetSimulationTime() << ", " << _name << ", " << "depart, Entity: " << entity->GetID()/*Entity ID Here*/ << endl;
 	_nextTask->Arrive(aircraft);
 }
