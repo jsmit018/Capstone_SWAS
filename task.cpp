@@ -1,15 +1,19 @@
 #include "task.h"
 
-void Task::SetNextTask(Task * nextTask)
+void Task::SetNextTask(Task* nextTask)
 {
+	_nextTask = nextTask;
 }
 
-void Task::Arrive(Entity * entity)
+void Task::Arrive(Aircraft* aircraft)
 {
+	cout << "time = " << GetSimulationTime() << ", " << _name << ", " << "arrive, Entity: " << entity->GetID()/*entityID here*/ << endl;
+	Execute(aircraft);
 }
 
 void Task::SetName(string name)
 {
+	_name = name;
 }
 
 string Task::GetName()
@@ -24,12 +28,11 @@ int Task::GetID()
 
 Task::Task(string name)
 {
+	_name = name;
 }
 
-void Task::Depart(Entity * entity)
+void Task::Depart(Aircraft* aircraft)
 {
-}
-
-void Task::TaskProcess(Entity * entity)
-{
+	cout << "time = " << GetSimulationTime() << ", " << _name << ", " << "depart, Entity: " << entity->GetID()/*Entity ID Here*/ << endl;
+	_nextTask->Arrive(aircraft);
 }

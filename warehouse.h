@@ -1,9 +1,10 @@
 #pragma once
 #include "SimObj.h"
 
-class warehouse
+class Warehouse
 {
 public:
+	Warehouse();
 	void GetLength();
 	void SetLength();
 	void SetWidth();
@@ -11,5 +12,5 @@ public:
 private:
 	double hangarLength;
 	double hangarWidth;
-	string listOfObjects;
+	string listOfObjects[];
 };

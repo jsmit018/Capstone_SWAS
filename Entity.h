@@ -1,14 +1,15 @@
 #pragma once
 #include "SimObj.h"
+#include "RepairJob.h"
 
 struct Footprint {
 	int x;
 	int y;
 };
 
-class Airplane {
+class Aircraft {
 public:
-	Airplane();
+	Aircraft();
 	int GetEntityID();
 	void SetEntityID(int entityID);
 	int GetSource();
@@ -21,11 +22,14 @@ public:
 	void SetPriority(int priority);
 	int GetNextID();
 	//void SetNextID(int id);
+	Aircraft* New();
 private:
 	int _entityID;
 	int _source;
+	RepairJob** _repairList;
 	Footprint _dimensions;
 	string _aircraftType;
 	int _priority;
 	static int _nextID;
+	
 };
