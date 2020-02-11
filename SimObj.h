@@ -1,8 +1,13 @@
 #pragma once
 
+#include <iostream>
+
 typedef double Time;
 
 class EventAction {
+public:
+	EventAction() {};
+	virtual void ExecuteEA() = 0;
 };
 
 class SimObj {
@@ -12,9 +17,9 @@ public:
 
 protected:
 	SimObj();
-	void ScheduleEventIn(Time time, EventAction* ea);
-	void ScheduleEventAt(Time time, EventAction* ea);
-	Time GetSimulationTime();
+	virtual void ScheduleEventIn(Time time, EventAction* ea) = 0;
+	virtual void ScheduleEventAt(Time time, EventAction* ea) = 0;
+	virtual Time GetSimulationTime() = 0;
 
 private:
 
