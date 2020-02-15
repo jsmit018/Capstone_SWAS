@@ -1,5 +1,5 @@
 # Will Serve as a general overview of the repository and its contents
-# Only person to commit to master will be head of Implementation and head of Design to ensure two-factor approval for merges and limit mistakes.
+# Only persons to commit to master will be head of Implementation and head of Design to ensure two-factor approval for merges and limit mistakes.
 # Active branches: 
 Master, JSmith_Branch, NewUnityProject, ARobey_Branch, MPatton_Branch, SLN_Testing
 # To create a new Branch
