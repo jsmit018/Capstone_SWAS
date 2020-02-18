@@ -1,57 +1,57 @@
-//#include "SimExec.h"
+#include "SimExec.h"
+
+/*SimExec::SimExec() : SimObj(){
+	
+}*/
+
+struct SimExec::Event {
+	//Event();
+	Event(EventAction* ea, Time timeMonth, Time timeDay) {
+		//_time = time;
+		_ea = ea;
+		_nextEvent = 0;
+		_timeMonth = timeMonth;
+		_timeDay = timeDay;
+	}
+	//Time _time;
+	Time _timeMonth;
+	Time _timeDay;
+	EventAction* _ea;
+	Event* _nextEvent;
+};
+
+class SimExec::EventSet {
+public:
+	EventSet() {
 //
-//SimExec::SimExec() : SimObj(){
-//	
-//}
+	}
 //
-//struct SimExec::Event {
-//	Event();
-//	Event(EventAction* ea, Time timeMonth, Time timeDay) {
-//		//_time = time;
-//		_ea = ea;
-//		_nextEvent = 0;
-//		_timeMonth = timeMonth;
-//		_timeDay = timeDay;
-//	}
-//	//Time _time;
-//	Time _timeMonth;
-//	Time _timeDay;
-//	EventAction* _ea;
-//	Event* _nextEvent;
-//};
-//
-//class SimExec::EventSet {
-//public:
-//	EventSet() {
-//
-//	}
-//
-//	void InitEventSet(int numBins, Time timeRange, int* days) {
-//		_numEvents = 0;
-//		_numBins = numBins;
-//		_base = 0;
-//		_baseY = 0;
-//		_year = 2020;
-//		_overflow = 13;
-//		_timeRange = timeRange;
-//		_binSize = timeRange / numBins;
-//		_baseT = 0.0;
-//		_eventSet = new Event * [numBins + 1];
-//		for (int i = 0; i < numBins; ++i){
-//			if (_year % 4 == 0 && days[i] == February)
-//				_eventSet[i] = new Event [days[i] + 1];
-//			else
-//				_eventSet[i] = new Event[days[i]];
-//		}
-//		for (int i = 0; i < numBins + 1; ++i) {
-//			for (int j = 0; j < days[i]; ++j){
-//				//_eventSet[i][j] = 0;
-//			}
-//		}
-//	}
-//
-//	void AddEvent(Time timeMonth, Time timeDay, EventAction* ea) {
-//		_numEvents++;
+	void InitEventSet(int numBins, Time timeRange, int* days) {
+		_numEvents = 0;
+		_numBins = numBins;
+		_base = 0;
+		_baseY = 0;
+		_year = 2020;
+		_overflow = 13;
+		_timeRange = timeRange;
+		_binSize = timeRange / numBins;
+		_baseT = 0.0;
+		_eventSet = new Event ** [numBins + 1];
+		for (int i = 0; i < numBins; ++i){
+			if (_year % 4 == 0 && days[i] == February)
+				_eventSet[i] = new Event*[days[i] + 1];
+			else
+				_eventSet[i] = new Event*[days[i]];
+		}
+		for (int i = 0; i < numBins + 1; ++i) {
+			for (int j = 0; j < days[i]; ++j){
+				_eventSet[i][j] = 0;
+			}
+		}
+	}
+
+	void AddEvent(Time timeMonth, Time timeDay, EventAction* ea) {
+		_numEvents++;
 //		Event* e = new Event(ea, timeMonth, timeDay);
 //		int binX;
 //		int binY; 
@@ -85,9 +85,9 @@
 //				curr->_nextEvent = e;
 //			}
 //		}
-//	}
+	}
 //
-//	Time GetTime() {
+	Time GetTime() {
 //		int binX = _base;
 //		int binY = 0;
 //		int checkX = binX;
@@ -101,9 +101,10 @@
 //				binY = 0;
 //		}
 //		return _eventSet[bin][binY]->_time;
-//	}
+		return 0;
+	}
 //
-//	EventAction* GetEventAction() {
+	EventAction* GetEventAction() {
 //		if (_numEvents > 0) {
 //			//will need to populate a baseY for days
 //			while (_eventSet[_base][_baseY] == 0) {
@@ -123,22 +124,22 @@
 //			return ea;
 //		}
 //		else {
-//			return 0;
+			return 0;
 //		}
-//	}
+	}
 //
-//	bool HasEvent() {
-//		return _numEvents > 0;
-//	}
+	bool HasEvent() {
+		return _numEvents > 0;
+	}
 //
-//private:
-//	int _numBins, _base, _overflow, _baseY, _endOfMonth;
-//	Time _timeRange;
-//	int _year;
-//	Time _binSize;
-//	Time _baseT;
-//	int _numEvents;
-//	Event** _eventSet;
+private:
+	int _numBins, _base, _overflow, _baseY, _endOfMonth;
+	Time _timeRange;
+	int _year;
+	Time _binSize;
+	Time _baseT;
+	int _numEvents;
+	Event*** _eventSet;
 //
 //	//Will add an if statement on December 31 to increment the year by 1.
 //	void AdvanceMonth() {
@@ -195,38 +196,20 @@
 //	void AdvanceDay() {
 //		_baseY++;
 //	}
-//};
-//
-//SimExec::EventSet SimExec::_eventSet;
-//Time SimulationExecutive::_simTime = 0.0;
-//
-//void SimExec::InitializeSimulation(int numBins, Time timeRange) {
-//   _simulationTime = 0.0;
-//   _eventSet.InitEventSet(numBins, timeRange);
-//}
-//
-//Time SimExec::GetSimulationTime() {
-//    return _simulationTime;
-//}
-//
-////This is handled by the advancing of the Simulation.. not needed.
-///*void SimExec::SetSimulationTime() {
-//
-//}*/
-//
-///*EventAction* SimExec::GetEventAction() {
-//
-//}*/
-//
-////We will never set an event action this is done through scheduling.
-///*void SetEventAction(EventAction* ea) {
-//
-//}*/
-//
-///*EventSet* SimExec::GetEventSet() {
-//    return _eventSet;
-//}*/
-//
+};
+
+SimExec::EventSet SimExec::_eventSet;
+Time SimExec::_simulationTime = 0.0;
+
+void SimExec::InitializeSimulation(int numBins, Time timeRange, int* days) {
+   _simulationTime = 0.0;
+   _eventSet.InitEventSet(numBins, timeRange, days);
+}
+
+Time SimExec::GetSimulationTime() {
+    return _simulationTime;
+}
+
 //void SimExec::ScheduleEventAt(Time time, EventAction* ea) {
 //	_eventSet.AddEvent(_simTime + time, ea);
 //}
@@ -235,21 +218,20 @@
 //	_eventSet.AddEvent(_simTime + time, ea);
 //}
 //
-//void SimExec::RunSimulation() {
-//	while (_eventSet.HasEvent()) {
-//		_simulationTime = _eventSet.GetTime();
-//		EventAction* ea = _eventSet.GetEventAction();
-//		ea->Execute();
-//		delete ea;
-//	}
-//}
-//
-//void SimExec::RunSimulation(Time time) {
-//	while (_eventSet.HasEvent() && _simTime <= time) {
-//		_simulationTime = _eventSet.GetTime();
-//		EventAction* ea = _eventSet.GetEventAction();
-//		ea->Execute();
-//		delete ea;
-//	}
-//}
-//
+void SimExec::RunSimulation() {
+	while (_eventSet.HasEvent()) {
+		_simulationTime = _eventSet.GetTime();
+		EventAction* ea = _eventSet.GetEventAction();
+		ea->Execute();
+		delete ea;
+	}
+}
+
+void SimExec::RunSimulation(Time time) {
+	while (_eventSet.HasEvent() && _simulationTime <= time) {
+		_simulationTime = _eventSet.GetTime();
+		EventAction* ea = _eventSet.GetEventAction();
+		ea->Execute();
+		delete ea;
+	}
+}
