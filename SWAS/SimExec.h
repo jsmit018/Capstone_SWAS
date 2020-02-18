@@ -14,7 +14,7 @@ public:
 	//void SetEventSet(EventSet* es);
 	static void ScheduleEventIn(Time time, EventAction* ea);
 	static void ScheduleEventAt(Time time, EventAction* ea);
-	static void InitializeSimulation(int numBins, Time timeRange);
+	static void InitializeSimulation(int numBins, Time timeRange, int* days);
 	static void RunSimulation();
 	static void RunSimulation(Time time);
 
