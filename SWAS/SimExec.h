@@ -1,6 +1,9 @@
 #pragma once
 #include "SimObj.h"
 #include "Distribution.h"
+#include <iostream>
+
+using namespace std;
 
 
 class SimExec : public SimObj {
@@ -23,7 +26,9 @@ private:
 	static Time _simulationTime;
 	class EventSet;
 	static EventSet _eventSet;
+	//static int* _endOfMonth;
 	enum {January, February, March, April, May, June, July,
 		  August, September, October, Novemember, December};
+	
 	
 };
