@@ -139,8 +139,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Aircraft.cpp" />
+    <ClCompile Include="CalendarConverter.cpp" />
     <ClCompile Include="DelayTask.cpp" />
     <ClCompile Include="Distribution.cpp" />
+    <ClCompile Include="InputInterface.cpp" />
     <ClCompile Include="RepairJob.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="SimExec.cpp" />
@@ -154,8 +156,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aircraft.h" />
+    <ClInclude Include="CalendarConverter.h" />
     <ClInclude Include="DelayTask.h" />
     <ClInclude Include="Distribution.h" />
+    <ClInclude Include="InputInterface.h" />
     <ClInclude Include="RepairJob.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SimExec.h" />
