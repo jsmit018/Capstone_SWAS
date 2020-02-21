@@ -4,6 +4,10 @@ Distribution::Distribution() {}
 
 std::default_random_engine Distribution::generator;
 
+/*void Distribution::SetSystemSeed(int seed) {
+	generator.seed(seed);
+}*/
+
 Exponential::Exponential(double mean) : Distribution()
 {
 	_distr = new std::exponential_distribution<double>(1.0 / mean);

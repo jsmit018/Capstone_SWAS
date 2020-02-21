@@ -1,19 +1,18 @@
 #include "SimExec.h"
 
+
 /*SimExec::SimExec() : SimObj(){
 	
 }*/
 
 struct SimExec::Event {
-	//Event();
 	Event(EventAction* ea, Time timeMonth, Time timeDay) {
-		//_time = time;
 		_ea = ea;
 		_nextEvent = 0;
 		_timeMonth = timeMonth;
 		_timeDay = timeDay;
 	}
-	//Time _time;
+	Time _time;
 	Time _timeMonth;
 	Time _timeDay;
 	EventAction* _ea;
@@ -23,13 +22,13 @@ struct SimExec::Event {
 class SimExec::EventSet {
 public:
 	EventSet() {
-//
+
 	}
-//
+
 	void InitEventSet(int numBins, Time timeRange, int* days) {
 		_numEvents = 0;
 		_numBins = numBins;
-		_base = 0;
+		_baseX = 0;
 		_baseY = 0;
 		_year = 2020;
 		_overflow = 13;
@@ -37,8 +36,9 @@ public:
 		_binSize = timeRange / numBins;
 		_baseT = 0.0;
 		_eventSet = new Event ** [numBins + 1];
+		_endOfMonth = new int[numBins];
 		for (int i = 0; i < numBins; ++i){
-			if (_year % 4 == 0 && days[i] == February)
+			if (_year % 4 == 0 && i == February)
 				_eventSet[i] = new Event*[days[i] + 1];
 			else
 				_eventSet[i] = new Event*[days[i]];
@@ -47,6 +47,9 @@ public:
 			for (int j = 0; j < days[i]; ++j){
 				_eventSet[i][j] = 0;
 			}
+		}
+		for (int i = 0; i < numBins; ++i) {
+			_endOfMonth[i] = days[i];
 		}
 	}
 
@@ -88,80 +91,79 @@ public:
 	}
 //
 	Time GetTime() {
-//		int binX = _base;
-//		int binY = 0;
-//		int checkX = binX;
-//		while (_eventSet[binX][binY] == 0) {
-//			if (checkX == binX) {
-//				binY++;
-//			}
-//			else
-//				binX = (bin + 1) % (_numBins + 1);
-//			if (binX != checkX)
-//				binY = 0;
-//		}
-//		return _eventSet[bin][binY]->_time;
-		return 0;
+		int binX = _baseX;
+		int binY = 0;
+		int checkX = binX;
+		while (_eventSet[binX][binY] == 0) {
+			if (checkX == binX) {
+				binY++;
+			}
+			else
+				binX = (binX + 1) % (_numBins + 1);
+			if (binX != checkX)
+				binY = 0;
+		}
+		return _eventSet[binX][binY]->_time;
 	}
-//
+
 	EventAction* GetEventAction() {
-//		if (_numEvents > 0) {
-//			//will need to populate a baseY for days
-//			while (_eventSet[_base][_baseY] == 0) {
-//				//Likely endOfMonth will need to be an array to make sure appropriate days are matched as endOfMonth
-//				if (_baseY == endOfMonth[_baseX]) {
-//					AdvanceMonth();
-//				}
-//				else
-//					AdvanceDay();
-//				//AdvanceBase();
-//			}
-//			Event* next = _eventSet[_base][_baseY];
-//			_eventSet[_base][_baseY] = next->_nextEvent;
-//			EventAction* ea = next->_ea;
-//			delete next;
-//			_numEvents--;
-//			return ea;
-//		}
-//		else {
+		if (_numEvents > 0) {
+			//will need to populate a baseY for days
+			while (_eventSet[_baseX][_baseY] == 0) {
+				//Likely endOfMonth will need to be an array to make sure appropriate days are matched as endOfMonth
+				if (_baseY == _endOfMonth[_baseX]) {
+					AdvanceMonth();
+				}
+				else
+					AdvanceDay();
+			}
+			Event* next = _eventSet[_baseX][_baseY];
+			_eventSet[_baseX][_baseY] = next->_nextEvent;
+			EventAction* ea = next->_ea;
+			delete next;
+			_numEvents--;
+			return ea;
+		}
+		else {
 			return 0;
-//		}
+		}
 	}
-//
+
 	bool HasEvent() {
 		return _numEvents > 0;
 	}
 //
 private:
-	int _numBins, _base, _overflow, _baseY, _endOfMonth;
+	int _numBins, _baseX, _overflow, _baseY;
 	Time _timeRange;
 	int _year;
 	Time _binSize;
 	Time _baseT;
 	int _numEvents;
+	int* _endOfMonth;
 	Event*** _eventSet;
 //
 //	//Will add an if statement on December 31 to increment the year by 1.
-//	void AdvanceMonth() {
-//		if (_base == December && _baseY == 31) {
-//			_year++;
-//			_base = 0;
-//			_baseY = 0;
-//		}
-//		else {
-//			_base++;
-//			_baseY = 0;
-//		}
-//		
-//		int previousBase;
-//		if (_base == 0)
-//			previousBase = December;
-//		else
-//			previousBase = _base - 1;
-//		//if (_numEvents > 0) {
-//			while (_eventSet[_overflow][_baseY] != nullptr) {
-//				if (/*EventMonth*/ == previousBase)
-//					/*Find event day*/
+	void AdvanceMonth() {
+		if (_baseX == December && _baseY == 31) {
+			_year++;
+			_baseX = 0;
+			_baseY = 0;
+		}
+		else {
+			_baseX++;
+			_baseY = 0;
+		}
+		
+		int previousBase;
+		if (_baseX == 0)
+			previousBase = December;
+		else
+			previousBase = _baseX - 1;
+		//if (_numEvents > 0) {
+			while (_eventSet[_overflow][_baseY] != nullptr) {
+				if (_eventSet[_overflow][_baseY]->_timeMonth == previousBase)
+					/*Find event day*/
 //				if (_eventSet[previousBase][/*whateverDay*/] == 0)
 //					_eventSet[previousBase][/*whateverDay*/] = /*thisEvent*/;
 //				else {
@@ -185,17 +187,17 @@ private:
 //							curr->_nextEvent = e;
 //						}
 //					}
-//				}
+	//			}
 //
 //				_eventSet[_overflow][_baseY] = _eventSet[13][0]->_nextEvent;
-//			}
-//		//}
+			}
+		//}
 //		
-//	}
+	}
 //
-//	void AdvanceDay() {
-//		_baseY++;
-//	}
+	void AdvanceDay() {
+		_baseY++;
+	}
 };
 
 SimExec::EventSet SimExec::_eventSet;
@@ -203,6 +205,10 @@ Time SimExec::_simulationTime = 0.0;
 
 void SimExec::InitializeSimulation(int numBins, Time timeRange, int* days) {
    _simulationTime = 0.0;
+   //_endOfMonth = new int[numBins];
+   /*for (int i = 0; i < 12; ++i) {
+	   _endOfMonth[i] = days[i];
+   }*/
    _eventSet.InitEventSet(numBins, timeRange, days);
 }
 
@@ -211,7 +217,7 @@ Time SimExec::GetSimulationTime() {
 }
 
 //void SimExec::ScheduleEventAt(Time time, EventAction* ea) {
-//	_eventSet.AddEvent(_simTime + time, ea);
+//	_eventSet.AddEvent(_simTime, ea);
 //}
 //
 //void SimExec::ScheduleEventIn(Time time, EventAction* ea) {

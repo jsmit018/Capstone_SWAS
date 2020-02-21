@@ -2,14 +2,20 @@
 #define DISTRIBUTION_H
 
 #include <random>
+#include <iostream>
+
+using namespace std;
 
 class Distribution
 {
 public:
 	Distribution();
 	virtual double GetRV() = 0;
+	static void SetSystemSeedType(string seedType);
 protected:
 	static std::default_random_engine generator;
+private:
+	static string _seedType;
 };
 
 class Exponential : public Distribution
