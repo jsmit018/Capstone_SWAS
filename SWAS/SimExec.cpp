@@ -162,7 +162,7 @@ private:
 			previousBase = _baseX - 1;
 		//if (_numEvents > 0) {
 			while (_eventSet[_overflow][_baseY] != nullptr) {
-				if (_eventSet[_overflow][_baseY]->_timeMonth == previousBase)
+				/*if (_eventSet[_overflow][_baseY]->_timeMonth == previousBase)*/
 					/*Find event day*/
 //				if (_eventSet[previousBase][/*whateverDay*/] == 0)
 //					_eventSet[previousBase][/*whateverDay*/] = /*thisEvent*/;
