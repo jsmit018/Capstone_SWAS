@@ -4,8 +4,15 @@ Distribution::Distribution() {}
 
 std::default_random_engine Distribution::generator;
 
-/*void Distribution::SetSystemSeed(int seed) {
-	generator.seed(seed);
+//void Distribution::SetSystemSeed(int seed) {
+//	generator.seed(seed);
+
+//TO DO: If statement for seed based on type
+
+//}
+
+/*Void Distribution::SetSystemSeedType(string seedType) {
+	_seedType = seedType;
 }*/
 
 Exponential::Exponential(double mean) : Distribution()

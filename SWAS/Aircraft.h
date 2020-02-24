@@ -20,36 +20,38 @@ using namespace std;
 class Aircraft {
 public:
 	Aircraft();
-	Aircraft(string aircraftName, string aircraftID, int aircraftPriority, double aircraftFootPrintX,
-		double aircraftFootPrintY, string repairJobName, double iat_unplanned);
-
+//	Aircraft(string aircraftName, string aircraftID, int aircraftPriority, double aircraftFootPrintX,
+//	double aircraftFootPrintY, string repairJobName, double iat_unplanned);
+	void PrintProperties(/*string aircraftType, int priority, double length, double wingspan*/);
 	//int GetAircraftID();
 	void SetAircraftID(int aircraftID);
+	void SetAircraftFootprint(double length, double wingspan);
+	void SetAircraftIAT(string iatUnplanned);
 	//int GetSource();
 	//void SetSource(int source);
 	//Footprint GetAircraftFootprint();
-	//void SetAircraftFootprint(Footprint dimensions);
+//	void SetAircraftFootprint(Footprint dimensions);
 	//string GetAircraftType();
-	//void SetAircraftType(string aircraftType);
+	void SetAircraftType(string aircraftType);
 	//int GetAircraftPriority();
-	//void SetAircraftPriority(int priority);
+	void SetAircraftPriority(int priority);
 	//int GetNextAircraftID(); 
 	//void SetNextID(int id);
 
 private:
-	string	_aircraftName;							//	Aircraft name: i.e. F35
-	string	_aircraftID;							//	Aircraft id: unique to individual aircraft
-	int		_aircraftPriority;						//	Aircraft priority: helps determine first to be served in queues
-	double	_aircraftFootPrintX;					//	Aircraft size x dimension  ***make a tuple or struct later
-	double	_aircraftFootPrintY;					//	Aircraft size y dimension
-	string	_repairJobName;							//	Repair job name
-	double	_iat_unplanned;							//	Distribution for random aircraft interarrival times (iat) 
-///include schedule date
-///include recurring amount
-	vector<string> myRepairJobs;					//	Vector of repair job names unique to each new aircraft to be compared to master list
-
-	//if object encapsulation method is chosen:
-//	unordered_map<string, RepairJob> _repairJobMap;	//	Map of "my" repair jobs (***make Repair job a pointer later to save memory)
+	string	_aircraftType;								//	Aircraft name: i.e. F35
+	string	_aircraftID;								//	Aircraft id: unique to individual aircraft
+	int		_priority;									//	Aircraft priority: helps determine first to be served in queues
+	double	_length;						//	Aircraft size x dimension  ***make a tuple or struct later
+	double	_wingspan;						//	Aircraft size y dimension
+	string	_repairJobName;								//	Repair job name
+	string	_iatUnplanned;							//	Distribution for random aircraft interarrival times (iat) 
+	//string	_schedType;								//	Schedule used for if statement: calendar or recurring
+	//string	_schedDate;								//	Calendar date of maintenance event to be scheduled
+	//int		_schedRecurAmt;							//	Value indicating number of months between recurring maintenance
+	vector<string> mySchedRepairJobs;					//	Vector of sched repair job names unique to each new aircraft to be compared to master list
+	vector<string> myRandRepairJobs;					//	Vector of rand repair job names unique to each new aircraft to be compared to master list
+	unordered_map<string, RepairJob> _allRepairJobsMap;	//	Map of all possible repair jobs (***make Repair job a pointer later to save memory)
 
 
 	//int _aircraftID;

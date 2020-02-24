@@ -19,7 +19,8 @@ public:
 	void ReadInputData();
 
 private:
-	map<Aircraft *, unordered_map<string, RepairJob>> masterRepairJobMap;		//Master list of all repair job options for each unique aircraft type
+	map<string, Aircraft*> masterMap;
+	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere
 
 };

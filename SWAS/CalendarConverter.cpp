@@ -15,7 +15,7 @@ void CalConverter::InsertDays(int month, int numDays)
 	//print map
 	for (map<int, int>::const_iterator it = _monthMap.begin(); it != _monthMap.end(); ++it)
 	{
-		cout << it->first << " " << it->second << "\n";
+//		cout << it->first << " " << it->second << "\n";
 	}
 }
 
