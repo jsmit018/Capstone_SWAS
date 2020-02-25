@@ -156,25 +156,24 @@ private:
 		}
 		
 		int previousBase;
-		int eventDay;
 		if (_baseX == 0)
 			previousBase = December;
 		else
 			previousBase = _baseX - 1;
 		//if (_numEvents > 0) {
 			while (_eventSet[_overflow][_baseY] != nullptr) {
-				if (_eventSet[_overflow][_baseY]->_timeMonth == previousBase)
-					eventDay = _eventSet[_overflow][_baseY]->_timeDay;
-				if (_eventSet[previousBase][eventDay] == 0)
-					_eventSet[previousBase][eventDay] = _eventSet[_overflow][_baseY];
-				else {
-					/*Sort it into the list of events*/
-					if (_eventSet[_overflow][_baseY]->_time < _eventSet[previousBase][eventDay]->_time) {
+				/*if (_eventSet[_overflow][_baseY]->_timeMonth == previousBase)*/
+					/*Find event day*/
+//				if (_eventSet[previousBase][/*whateverDay*/] == 0)
+//					_eventSet[previousBase][/*whateverDay*/] = /*thisEvent*/;
+//				else {
+//					/*Sort it into the list of events*/
+//					if (_eventSet[_overflow][_baseY]->_time < _eventSet[previousBase][/*whateverDay*/]->_time) {
 //						e->_nextEvent = _eventSet[binX][binY];
 //						_eventSet[_overflow][_baseY]->_nextEvent = _eventSet[previousBase][/*whateverDay*/];
 //						_eventSet[binX][binY] = e;
 //						_eventSet[previousBase][/*whateverDay*/] = _eventSet[_overflow][_baseY];
-					}
+//					}
 //					else {
 //						Event* curr = _eventSet[binX][binY];
 //						while ((curr->_nextEvent != 0) ? (e->_time >= curr->_nextEvent->_time) : false) {
@@ -188,7 +187,7 @@ private:
 //							curr->_nextEvent = e;
 //						}
 //					}
-				}
+	//			}
 //
 //				_eventSet[_overflow][_baseY] = _eventSet[13][0]->_nextEvent;
 			}

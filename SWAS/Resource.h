@@ -4,6 +4,7 @@
 #include "Distribution.h"
 #include <string>
 
+//Make separate class for Parts...they have nothing in common
 
 class Resource
 {
@@ -20,5 +21,6 @@ private:
 	string _resourceName;
 	string _failureName;
 	int _resourceThreshold;
+	Distribution* _partsLeadTime;
 	Distribution* _failureDist;
 };

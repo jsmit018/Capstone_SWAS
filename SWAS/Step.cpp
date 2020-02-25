@@ -14,12 +14,12 @@ Step::Step(Distribution* serviceTime, string name, Resource* bays) : Task(name)
 
 class Step::AcquireServerEA : public EventAction {
 public:
-	AcquireServerEA(Step* step, Aircraft* aircraft){
+	AcquireServerEA(Step* step, Aircraft* aircraft) {
 		_step = step;
 		_aircraft = aircraft;
 	}
-	
-	void Execute(){
+
+	void Execute() {
 		_step->AcquireServerEM(_aircraft);
 	}
 private:
@@ -27,23 +27,23 @@ private:
 	Aircraft* _aircraft;
 };
 
-class Step::ScheduleDoneServiceEA : public EventAction{
+class Step::ScheduleDoneServiceEA : public EventAction {
 public:
 
 private:
 };
 
-class Step::AddQueueEA : public EventAction{
+class Step::AddQueueEA : public EventAction {
 public:
 	AddQueueEA(Step* step, Aircraft* aircraft) {
 		_step = step;
 		_aircraft = aircraft;
 	}
-	
-	void Execute(){
+
+	void Execute() {
 		_step->AddQueueEM(_aircraft);
 	}
-	
+
 private:
 	Step* _step;
 	Aircraft* _aircraft;
@@ -80,7 +80,7 @@ int Step::GetNumberInQueue()
 }*/
 
 //Aircraft ID & Priority number
-//PIFO (Priority In First Out)
+
 
 //Acquiring a bay
 void Step::AcquireServerEM(Aircraft* aircraft)
@@ -88,18 +88,18 @@ void Step::AcquireServerEM(Aircraft* aircraft)
 	_iterator = _PriorityQueue.begin();
 	_PriorityQueue.erase(_iterator);
 	_numberInQueue--;
-	_bays->Acquire(1);
-	//Will need an EA & Method that starts the maintenance
-	//SimExec::ScheduleEventIn(0.0, new WhateverEAIsCalled(this, aircraft));
-	
+	//	_bays->Acquire(1);
+		//Will need an EA & Method that starts the maintenance
+		//SimExec::ScheduleEventIn(0.0, new WhateverEAIsCalled(this, aircraft));
+
 }
 
 void Step::AddQueueEM(Aircraft* aircraft)
 {
-	_PriorityQueue.insert(pair<int, Aircraft*>(aircraft->GetAircraftPriority(), aircraft));
-	
+	//	_PriorityQueue.insert(pair<int, Aircraft*>(aircraft->GetAircraftPriority(), aircraft));
+
 	_numberInQueue++;
-	if (_bays > 0){
+	if (_bays > 0) {
 		//SimExec::ScheduleEventIn(0.0, new AcquireServerEA(this, aircraft));
 	}
 }
@@ -117,6 +117,6 @@ void Step::DoneService()
 {
 }
 
-void Step::Execute(Aircraft* aircraft){
+void Step::Execute(Aircraft* aircraft) {
 	//SimExec::ScheduleEventIn(0.0, new AddQueueEA(this, aircraft));
 }

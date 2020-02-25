@@ -1,70 +1,135 @@
-#include "Aircraft.h"
+//Aircraft.cpp: Andrea Robey
 
+#include "Aircraft.h"
 int Aircraft::_nextID = 0;
 
-Aircraft::Aircraft(string aircraftType, int aircraftID, int nextID, int aircraftPriority, 
-    string repairJobName, double iat_unplanned, Footprint dimensions)
+Aircraft::Aircraft()
 {
-    _aircraftType = aircraftType;
-    _aircraftID = _nextID++;
-    _aircraftPriority = aircraftPriority;
-    _repairJobName = repairJobName;
-    _iat_unplanned = iat_unplanned;
-    _dimensions.x = dimensions.x;
-    _dimensions.y = dimensions.y;
+	_aircraftID = ++_nextID;
 }
 
-int Aircraft::GetAircraftID() {
-    return _aircraftID;
-}
-
-void Aircraft::SetAircraftID(int aircraftID) {
-    _aircraftID = aircraftID;
-}
-
-int Aircraft::GetSource() {
-    return _source;
-}
-
-void Aircraft::SetSource(int source) {
-    _source = source;
-}
-
-Footprint Aircraft::GetAircraftFootprint() {
-    return _dimensions;
-}
-
-void Aircraft::SetAircraftFootprint(Footprint dimensions) {
-    _dimensions = dimensions;
-}
-
-string Aircraft::GetAircraftType() {
-    return _aircraftType;
-}
-
-//Going to leave this commented for now as this should be taken care of in the constructor
-/*void Airplane::SetAircraftType(string aircraftType) {
-
-}*/
-
-int Aircraft::GetAircraftPriority() {
-    return _aircraftPriority;
-}
-
-//Going to leave this commented for now as this should be taken care of in the constructor
-/*void Airplane::SetPriority(int priority) {
-
-}*/
-
-//Going to leave this for now but essentially this will update very time a new airplane is made
-int Aircraft::GetNextAircraftID() {
-    return _nextID;
-}
-
-//Aircraft* Aircraft::New(string aircraftType, int aircraftPriority, Footprint dimensions) {
-////    return new Aircraft(aircraftType, aircraftPriority, dimensions);
+//void Aircraft::SetSource(int source) {
+//
 //}
 
-//Going to leave this as a commented function for now.
-//@TODO make a function that creates a new aircraft of whatever type.
-//@TODO make a decision on whether or not we are instantiating different specefic aircraft inherting.
+//int Aircraft::GetSource() {
+//
+//}
+
+//int Aircraft::GetAircraftID() {
+//
+//}
+
+//int Aircraft::GetNextAircraftID() {
+//
+//}
+
+void Aircraft::SetAircraftFootprint(double length, double wingspan)
+{
+	_length = length;
+	_wingspan = wingspan;
+}
+
+//void GetAircraftFootprint()
+//{
+//
+//}
+
+void Aircraft::SetAircraftType(string aircraftType)
+{
+	_aircraftType = aircraftType;
+	//	cout << "Aircraft Type: " << aircraftType << endl;
+}
+
+//string Aircraft::GetAircraftType() {
+//
+//}
+
+void Aircraft::SetAircraftPriority(int priority) 
+{
+	_priority = priority;
+//	cout << "priority: " << priority << endl;
+}
+
+//int Aircraft::GetAircraftPriority() {
+//
+//}
+
+void Aircraft::SetAircraftIAT(string iatUnplanned)
+{
+	istringstream iatUn(iatUnplanned);
+	string firstHalf;
+	string secHalf;
+	
+	getline(iatUn, firstHalf, '(');
+	getline(iatUn, secHalf, ')');
+
+	istringstream nums(secHalf);
+	if( firstHalf ==  "Triangular")
+	{
+		double min, expected, max;
+		nums >> min;
+		nums >> expected;
+		nums >> max; 
+		_iatUnplanned = new Triangular(min, expected, max);
+	}
+
+	else if (firstHalf == "Exponential")
+	{
+		double mean;
+		nums >> mean;
+
+		_iatUnplanned = new Exponential(mean);
+	}
+
+	else if (firstHalf == "Uniform")
+	{
+		double min, max;
+		nums >> min >> max;
+
+		_iatUnplanned = new Uniform(min, max);
+	}
+
+	else if (firstHalf == "Normal")
+	{
+		double mean, stdev;
+		nums >> mean >> stdev;
+
+		_iatUnplanned = new Normal(mean, stdev);
+	}
+
+	else if (firstHalf == "Poisson")
+	{
+		double mean;
+		nums >> mean;
+
+		_iatUnplanned = new Poisson(mean);
+	}
+
+	else if (firstHalf == "Constant")
+	{
+		double mean;
+		nums >> mean;
+
+		_iatUnplanned = new Constant(mean);
+	}
+
+	else if (firstHalf == "Weibull")
+	{
+		double scale, shape;
+		nums >> scale >> shape;
+
+		_iatUnplanned = new Weibull(scale, shape);
+	}
+
+	//Determines correct distribution and prints
+//	_iatUnplanned->PrintDistribution();
+}
+
+void Aircraft::PrintProperties()
+{
+	cout << "type: " << _aircraftType << endl;
+	cout << "priority: " << _priority << endl;
+	cout << "length: " << _length << endl;
+	cout << "wingspan: " << _wingspan << endl;
+}
