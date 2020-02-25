@@ -1,13 +1,2 @@
-﻿  Aircraft.cpp
-  InputInterface.cpp
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(172,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(243,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(404,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(364,12): warning C4101: 'resourceFootprintX': unreferenced local variable
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(363,9): warning C4101: 'resQuantity': unreferenced local variable
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(365,12): warning C4101: 'resourceFootprintY': unreferenced local variable
-  SWAS.cpp
-  Step.cpp
-  Task.cpp
-  Generating Code...
+﻿  SWAS.cpp
   SWAS.vcxproj -> C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\Debug\SWAS.exe

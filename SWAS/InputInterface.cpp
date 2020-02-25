@@ -41,7 +41,6 @@ void InputReader::ReadInputData() //initialization for getting data
 			char c;
 			string commas;
 
-			//cout << line << endl;
 
 			//////////////////////////////////////////
 			//////////////   RUN INFO    /////////////
@@ -78,7 +77,6 @@ void InputReader::ReadInputData() //initialization for getting data
 			//cout << line << endl;
 
 
-
 			//////////////////////////////////////////
 			//////////////   CALENDAR    /////////////
 			//////////////////////////////////////////
@@ -108,7 +106,6 @@ void InputReader::ReadInputData() //initialization for getting data
 			}
 
 
-
 			//////////////////////////////////////////
 			//////////////   AIRCRAFT    /////////////
 			//////////////////////////////////////////
@@ -122,8 +119,6 @@ void InputReader::ReadInputData() //initialization for getting data
 				// Compare type strings to find:
 					//Unplanned iat [done]
 			//Store new aircraft object into map with type string as key [done]
-
-			//Aircraft* newAir = new Aircraft();
 
 			if (line.find("Aircraft Info Table") != string::npos) {
 				printf("got Aircraft Info table \n");
@@ -200,7 +195,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 //					cout << "after aircraft for loop \n";	
 				}
-
 			}
 
 
@@ -253,62 +247,186 @@ void InputReader::ReadInputData() //initialization for getting data
 						}
 
 						iter->second->SetAircraftIAT(unplannedIAT);
-						iter->second->PrintProperties();
-						cout << endl;
+//						iter->second->PrintProperties();
+//						cout << endl;
 				}
 			}
 
-
-
-			// For example down here if I wanted to find and modify the f-18
-//map<string,Aircraft*>::const_iterator it = masterMap.find("F-18");
-			// I am not sure if you need the iterator or can just make it equal to an airacraft pointer like
-//			Aircraft * currAir = it->second; // this however is, so you can modify that aircraft now
-
 			//////////////////////////////////////////
-			/////////   REPAIR JOB & STEPS   /////////
+			///////////   REPAIR JOBS   //////////////
 			//////////////////////////////////////////
 
 			////////Planned/////////
-			
-			// Read in from tables:
-			// Planned Maintenance Table -
+
+			//Planned Maintenance Table - 
 				// For loop: Compare aircraft type string with string in table to find:
-					//Repair Job Name
-					//Schedule Type
-					//Calendar Schedule Date
-					//Recurring Sched Amount
-					//Indoor Requirement
+					//Repair Job Name [done]
+					//Schedule Type [done]
+					//Calendar Schedule Date [done]
+					//Recurring Sched Amount [done]
+					//Indoor Requirement [done]
 				//Create object of repair job
-				//Store object in allrepairjobmap with appropriate aircraft type			
-				// Steps Table -
-				// Compare repair job name strings to find:
-					//Priority, store as key in allrepairjobsmap
-					//For loop: for each step
-						//Create Step object
-						//Find:
-							//Step ID
-							//Step Name
-							//Step Duration
-							//Inspection Failure Distribution
-							//Return Step
-							//Vector of Required Resources
-							//Required Part
-							//Amount of Parts Used
-						//Store Step Object in Repair Job's map
+				//Store object in allrepairjobmap with appropriate aircraft type	
 			
+			if (line.find("Planned Maintenance Table") != string::npos) {
+				printf("got Planned Maintenance Table \n");
 
-			///////Unplanned////////
+				string unAirType;
+				string repairName;
+				string schedType;
+				string schedCal;
+				double schedRecur;
+				char indoorReq;
 
-			// Unplanned Maintenance Table -
-				// For loop: Compare aircraft name string with string in table to find:
-					//Repair Job Type
-						//once found, get:
-							//Repair Job Name
-							//Unplanned Probability
-							//Indoor Requirement
-			//Create object of repair job
-				//Store object in allrepairjobmap with appropriate aircraft type
+				getline(dataFile, line);
+				vector <string> row;
+
+				while (line != ",,,,,,,,,,,")
+				{
+					row.clear();
+
+					getline(dataFile, line);
+					if (line == ",,,,,,,,,,,")
+						break;
+					istringstream ss(line);
+
+					////parsing the whole file and storing individual strings
+					while (ss)
+					{
+						//csv empty cell has 11 commas
+						if (line != ",,,,,,,,,,,") {
+							////breaking up strings by comma
+							if (!getline(ss, line, ','))
+								break;
+
+							if (line.empty())
+								break;
+
+							row.push_back(line);
+						}
+						else
+							getline(ss, line);
+					}
+
+					RepairJob* newJob = new RepairJob();
+
+					for (int i = 0; i < row.size(); ++i) {
+						unAirType = row[0];
+//						cout << "craft type: " << unAirType << endl;
+
+						repairName = row[1];
+//						cout << "rj type: " << repairName << endl;
+						newJob->SetName(repairName);
+
+						schedType = row[2];
+//						cout << "sched type: " << schedType << endl;
+						newJob->SetSchedType(schedType);
+
+						if (schedType == "Calendar") {
+							schedCal = row[3];
+//							cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
+							newJob->SetCalendarDate(schedCal);
+						}
+
+						else if (schedType == "Recurring") {
+							istringstream unss3(row[3]);
+							unss3 >> schedRecur;
+//							cout << "recur: " << schedRecur << endl;
+							newJob->SetRecurring(schedRecur);
+						}
+
+						istringstream unss4(row[4]);
+						unss4 >> indoorReq;
+//						cout << "indoor req: " << indoorReq << endl << endl;
+						newJob->SetIndoorReq(indoorReq);
+
+//						cout << "PLANNED: " << endl;
+//						newJob->PrintJobProperties();
+//						cout << endl;
+					}
+				}
+			}
+				///////Unplanned////////
+
+				// Unplanned Maintenance Table -
+					// For loop: Compare aircraft name string with string in table to find:
+						//Repair Job Type
+							//once found, get:
+								//Repair Job Name [done]
+								//Unplanned Probability [done]
+								//Indoor Requirement [done]
+				//Create object of repair job
+					//Store object in allrepairjobmap with appropriate aircraft type
+
+			if (line.find("Unplanned Maintenance Table") != string::npos) {
+				printf("got Unplanned Maintenance Table \n");
+
+				string unplanType;
+				string unRepairName;
+				string repJobProb;
+				char unIndoorReq;
+
+				getline(dataFile, line);
+				vector <string> row;
+
+				while (line != ",,,,,,,,,,,")
+				{
+					row.clear();
+
+					getline(dataFile, line);
+					if (line == ",,,,,,,,,,,")
+						break;
+					istringstream ss(line);
+
+					////parsing the whole file and storing individual strings
+					while (ss)
+					{
+						//csv empty cell has 11 commas
+						if (line != ",,,,,,,,,,,") {
+							////breaking up strings by comma
+							if (!getline(ss, line, ','))
+								break;
+
+							if (line.empty())
+								break;
+
+							row.push_back(line);
+						}
+						else
+							getline(ss, line);
+					}
+
+					RepairJob* newJob = new RepairJob();
+
+					for (int i = 0; i < row.size(); ++i) {
+						unplanType = row[0];
+//						cout << "craft type: " << unplanType << endl;
+//TO DO:				if "all", set up logic
+
+						unRepairName = row[1];
+					//	cout << "unplanned rj name: " << unRepairName << endl;
+						newJob->SetName(unRepairName);
+
+						repJobProb = row[2];
+					//	cout << "probability: " << repJobProb << endl;
+						newJob->SetUnplannedProb(repJobProb);
+
+						istringstream ss(row[3]);
+						ss >> unIndoorReq;
+					//	cout << "indoor req: " << unIndoorReq << endl << endl;
+						newJob->SetIndoorReq(unIndoorReq);
+
+//						cout << "UNPLANNED: " << endl;
+//						newJob->PrintJobProperties();
+//						cout << endl;
+					}
+				}
+			}
+
+			//////////////////////////////////////////
+			//////////////   STEPS   /////////////////
+			//////////////////////////////////////////
+
 			// Steps Table -
 				// Compare repair job name strings to find:
 					//Priority, store as key in allrepairjobsmap

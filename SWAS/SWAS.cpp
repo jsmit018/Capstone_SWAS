@@ -8,7 +8,7 @@ int main() {
 
 	InputReader inputReader;
 	inputReader.ReadInputData();
-	cout << "file finished" << endl;
+	cout << "read finished" << endl;
 
 	return 0;
 }

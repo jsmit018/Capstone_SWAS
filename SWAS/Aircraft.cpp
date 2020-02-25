@@ -126,7 +126,7 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 //	_iatUnplanned->PrintDistribution();
 }
 
-void Aircraft::PrintProperties(/*string aircraftType, int priority, double length, double wingspan*/)
+void Aircraft::PrintProperties()
 {
 	cout << "type: " << _aircraftType << endl;
 	cout << "priority: " << _priority << endl;
