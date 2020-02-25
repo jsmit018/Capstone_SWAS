@@ -29,7 +29,6 @@ void InputReader::ReadInputData() //initialization for getting data
 	CalConverter calConvert;
 	//Step step;
 	Resource resource;
-	Aircraft aircraft;
 	string line;
 
 
@@ -41,7 +40,6 @@ void InputReader::ReadInputData() //initialization for getting data
 		//	cout << line << endl; 
 			char c;
 			string commas;
-
 
 			//cout << line << endl;
 
@@ -56,7 +54,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				//Give to SimExec []
 
 			if (line.find("Run Info Table") != string::npos) {
-//				printf("got Run Info table \n");
+				printf("got Run Info table \n");
 
 				int numRuns;
 				string seedType;
@@ -86,7 +84,7 @@ void InputReader::ReadInputData() //initialization for getting data
 			//////////////////////////////////////////
 
 			if (line.find("Calendar Table") != string::npos) {
-//				printf("got Calendar table \n");
+				printf("got Calendar table \n");
 
 				int month = INT_MAX;
 				int numDays = INT_MAX;
@@ -122,13 +120,13 @@ void InputReader::ReadInputData() //initialization for getting data
 				//Footprint [done]
 			// Unplanned Arrivals -
 				// Compare type strings to find:
-					//Unplanned iat []
-			//Store new aircraft object into map with type string as key []
+					//Unplanned iat [done]
+			//Store new aircraft object into map with type string as key [done]
 
 			//Aircraft* newAir = new Aircraft();
 
 			if (line.find("Aircraft Info Table") != string::npos) {
-//				printf("got Aircraft Info table \n");
+				printf("got Aircraft Info table \n");
 
 				getline(dataFile, line);
 				vector <string> row;
@@ -174,8 +172,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					for (int i = 0; i < row.size(); ++i) {
 //						cout << "index [" << i << "]: " << row[i] << endl;
 
-						istringstream iss0(row[0]);
-						iss0 >> airType;
+					//	istringstream iss0(row[0]);
+						airType = row[0];
 						newAir->SetAircraftType(airType);
 
 						istringstream iss1(row[1]);
@@ -189,19 +187,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						iss3 >> airWingspan;
 
 						newAir->SetAircraftFootprint(airLength, airWingspan);
-
-						//masterMap.insert(pair<string, Aircraft*>(airType, newAir));
-						//for (map<string, Aircraft*>::const_iterator it = masterMap.begin(); it != masterMap.end(); ++it)
-						//{
-						//	cout << "MAP: " << it->first << endl;
-						//	cout << "OBJ: "; 
-						//	it->second->PrintProperties();
-						//}
 					}
-					//cout << "type: " << airType << endl;
-					//cout << "properties: ";
-					//newAir->PrintProperties();
-					//cout << endl;
 
 					masterMap.insert(pair<string, Aircraft*>(airType, newAir));
 					for (map<string, Aircraft*>::const_iterator it = masterMap.begin(); it != masterMap.end(); ++it)
@@ -249,33 +235,26 @@ void InputReader::ReadInputData() //initialization for getting data
 								break;
 
 							row.push_back(line);
-//							cout << "LINE: "<< line << endl;
 						}
 						else
 							getline(ss, line);
 					}
 
 					for (int i = 0; i < row.size(); ++i) {
-
-						istringstream iss0(row[0]);
-						iss0 >> unplannedType;
-
-						istringstream iss1(row[1]);
-						iss1 >> unplannedIAT;	
+						unplannedType = row[0];
+						unplannedIAT = row[1];
 					}
-//					cout << "THE TYPE: " << unplannedType << "	THE IAT: " << unplannedIAT << endl;
-					///****IAT IS CUT SHORT, FIGURE OUT WHY
 
-					for (map<string, Aircraft*>::const_iterator it = masterMap.begin(); it != masterMap.end(); ++it)
-					{
 						//compare to string
 						map<string, Aircraft*>::const_iterator iter = masterMap.find(unplannedType);
-						Aircraft* currAir = it->second;
-						currAir->SetAircraftIAT(unplannedIAT);
-						///*********IAT DOESNT MATCH CORRECTLY
-						currAir->PrintProperties();
+						if (iter == masterMap.end()) {
+							printf("end of map \n");
+							cout << "unplanned type: " << unplannedType << endl;
+						}
+
+						iter->second->SetAircraftIAT(unplannedIAT);
+						iter->second->PrintProperties();
 						cout << endl;
-					}
 				}
 			}
 
@@ -301,7 +280,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					//Recurring Sched Amount
 					//Indoor Requirement
 				//Create object of repair job
-				//Store object in allrepairjobmap with appropriate aircraft type			// Steps Table -
+				//Store object in allrepairjobmap with appropriate aircraft type			
+				// Steps Table -
 				// Compare repair job name strings to find:
 					//Priority, store as key in allrepairjobsmap
 					//For loop: for each step
