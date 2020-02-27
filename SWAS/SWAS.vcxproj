@@ -153,6 +153,8 @@
     <ClCompile Include="SWAS.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="Warehouse.cpp" />
+    <ClCompile Include="Parts.cpp" />
+    <ClCompile Include="TimeConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aircraft.h" />
@@ -169,6 +171,8 @@
     <ClInclude Include="Step.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="Warehouse.h" />
+    <ClInclude Include="Parts.h" />
+    <ClInclude Include="TimeConverter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
