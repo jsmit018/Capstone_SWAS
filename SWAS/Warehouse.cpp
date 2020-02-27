@@ -1,26 +1,26 @@
 #include "Warehouse.h"
 
-Warehouse::Warehouse(int length, int width) {
+Warehouse::Warehouse(double length, double width) {
     _hangarLength = length;
     _hangarWidth = width;
 }
 
-int Warehouse::GetLength()
+double Warehouse::GetLength()
 {
     return _hangarLength;
 }
 
-void Warehouse::SetLength(int hangarLength)
+void Warehouse::SetLength(double hangarLength)
 {
     _hangarLength = hangarLength;
 }
 
-void Warehouse::SetWidth(int warehouseWidth)
+void Warehouse::SetWidth(double warehouseWidth)
 {
     _hangarWidth = warehouseWidth;
 }
 
-int Warehouse::GetWidth()
+double Warehouse::GetWidth()
 {
     return _hangarWidth;
 }
