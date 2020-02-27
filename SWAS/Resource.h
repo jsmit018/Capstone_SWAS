@@ -16,11 +16,12 @@ public:
 	bool IsAvailable(int amountNeeded);
 	void FailResource();
 	void RestoreResource();
-	void OrderPartsEA(); //send to Parts class
-	void OrderPartsEM(); //send to Parts class
+	//void OrderPartsEA(); //send to Parts class
+	//void OrderPartsEM(); //send to Parts class make class refer to source for examples
 
 	void SetResourceCount(int resourceCount);
 	void SetResourceName(string resourceName);
+	void SetNumResNeeded(int numResNeeded);
 	void SetFailureName(string failureName);
 	void SetPartsCount(int partsCount);
 	void SetPartsName(string partsName);
@@ -28,6 +29,7 @@ public:
 
 	int GetResourceCount();
 	string GetResourceName();
+	int GetNumResNeeded();
 	string GetFailureName();
 	int GetPartsCount();	//send to Parts class
 	string GetPartsName();	//send to Parts class
@@ -35,6 +37,7 @@ public:
 
 private:
 	int _resourceCount;
+	int _numResNeeded;
 	string _resourceName;
 	string _failureName;
 	Distribution* _failureDist;

@@ -8,14 +8,14 @@ Aircraft::Aircraft()
 	_aircraftID = ++_nextID; // here instead of in setID funciton
 }
 
-void Aircraft::SetSource(int source) 
+void Aircraft::SetSource(int sourceID) 
 {
-
+	_sourceID = sourceID;
 }
 
 int Aircraft::GetSource() 
 {
-	return _source;
+	return _sourceID;
 }
 
 //void Aircraft::SetAircraftID(int aircraftID)
@@ -28,11 +28,14 @@ int Aircraft::GetAircraftID()
 	return _aircraftID;
 }
 
-
-
 int Aircraft::GetNextAircraftID() 
 {
 	return _nextID;
+}
+
+Aircraft* Aircraft::New()
+{
+	return new Aircraft(); // add appropriate parameters
 }
 
 void Aircraft::SetAircraftFootprint(double length, double wingspan)
@@ -44,7 +47,6 @@ void Aircraft::SetAircraftFootprint(double length, double wingspan)
 double Aircraft::GetAircraftFootprint()
 {
 	return _length, _wingspan;
-
 }
 
 void Aircraft::SetAircraftType(string aircraftType)
@@ -57,7 +59,6 @@ string Aircraft::GetAircraftType()
 {
 	return _aircraftType;
 }
-
 
 void Aircraft::AddRepairJobMaster(RepairJob* repairJob, string repairJobName)
 {
@@ -72,7 +73,7 @@ void Aircraft::AddSchedRepairJob()
 {
 }
 
-RepairJob* Aircraft::GetRepairJob(string name)
+RepairJob* Aircraft::GetRepairJobObj(string name)
 {
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.find(name);
 	if(it == _allRepairJobsMap.end())

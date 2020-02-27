@@ -18,31 +18,26 @@ public:
 	void SetReqResource(string reqResource);
 	void SetReqParts(string reqParts);
 	void SetReturnStep(int stepId);
-	//void SetServiceTime(Time serviceTime);
-	//void SetNumberInQueue(int numInQueue);
 
 	string GetName();
 	//Time GetServiceTime();
 	int GetNumberInQueue();
 
-	/*void AcquireServerEM();
-	void AddQueueEM();
-	void ScheduleDoneServiceEM();*/
-	void ReleaseServer();
-	void DoneService();
+	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
+	void AddQueueEM();						// if bay not avial, increment queue
+	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay
 	void Print();
 private:
 	Distribution* _serviceTime;
-	//map<int, Aircraft*, greater<int>> _PriorityQueue;
-	//map<int, Aircraft*, greater<int>>::iterator _iterator;
+	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
 	int _numInQueue;
 	Step* _nextStep;
-	Resource* _bays;	//determined by Warehouse GUI
+	Resource* _bays;		//determined by Warehouse GUI
 	string _type;
 	string _inspecFailProb;
 	string _servTime;
-	string _reqRes;
+	string _reqRes;			//
 	string _reqParts;
 	int _returnStep;		// Maybe this should be a pointer to the step instead of its "id"
 

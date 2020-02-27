@@ -13,8 +13,6 @@
 #include <fstream>
 #include <iostream>
 
-
-
 using namespace std;
 
 class Aircraft {
@@ -22,7 +20,7 @@ public:
 	Aircraft();
 	void PrintProperties(/*string aircraftType, int priority, double length, double wingspan*/);
 	
-	void SetSource(int source);
+	void SetSource(int sourceID);
 	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
 	void SetAircraftFootprint(double length, double wingspan);
 	void SetAircraftIAT(string iatUnplanned);
@@ -33,7 +31,7 @@ public:
 	void AddSchedRepairJob();
 	//void SetNextID(int id);
 
-	RepairJob* GetRepairJob(string name);
+	RepairJob* GetRepairJobObj(string name);
 	int GetSource();
 	int GetAircraftID();
 	double GetAircraftFootprint();
@@ -41,12 +39,14 @@ public:
 	string GetAircraftType();
 	int GetAircraftPriority();
 	int GetNextAircraftID(); 
+	Aircraft* New(); //new aircraft creation
+
 
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
 	static int _nextID;
-	int _source;
+	int _sourceID;
 	int		_priority;									//	Aircraft priority: helps determine first to be served in queues
 	double	_length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	double	_wingspan;									//	Aircraft size y dimension

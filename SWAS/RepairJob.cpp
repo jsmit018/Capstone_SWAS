@@ -109,7 +109,7 @@ void RepairJob::PrintJobProperties()
 
 void RepairJob::AddStep(Step* step)
 {
-//    cout << "adding step \n";
+    cout << "adding step \n";
     vecSteps.push_back(step);
-//    cout << "new size " << vecSteps.size() << endl; 
+    cout << endl << "new size " << vecSteps.size() << endl;
 }

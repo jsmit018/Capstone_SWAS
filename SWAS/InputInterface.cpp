@@ -68,7 +68,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 //						cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
 
-//						Distribution::SetSystemSeedType(seedType);
+						Distribution::SetSystemSeedType(seedType);
 						//in distribution file, there will be an if statement that determines whether 
 						//the operator(generator) function will be called or if the seed version
 				}
@@ -467,9 +467,9 @@ void InputReader::ReadInputData() //initialization for getting data
 						//Store Step Object in Repair Job's map
 
 			if (line.find("Steps Table") != string::npos) {
-				printf("\n got Steps Table \n");
+				printf("got Steps Table \n \n");
 
-				string jobName;
+				string currentJob;
 				int jobPriority;
 
 				int stepID;
@@ -480,10 +480,10 @@ void InputReader::ReadInputData() //initialization for getting data
 				string stepDur;
 				string reqResource;
 				string reqParts;
-			
 				int numParts;
 				int numResources;
 
+				int rowCounter = 0;
 
 				getline(dataFile, line);
 				vector <string> row;
@@ -524,9 +524,17 @@ void InputReader::ReadInputData() //initialization for getting data
 				//	for (int i = 0; i < row.size(); ++i) {
 					//	cout << "line " << i << ": " << row[i] << endl;
 				//	}
-
+					cout << "row : " << row[0] << endl;
 //					cout << "row size " << row.size() << endl; 
-					jobName = row[0];
+					if (rowCounter == 0) {
+						currentJob = row[0];
+						rowCounter++;
+					}
+					if (row[0] != "")
+					{
+						cout << "non blank row " << endl;
+						currentJob = row[0];
+					}
 
 					istringstream ssSteps(row[1]);
 					ssSteps >> jobPriority;
@@ -572,28 +580,32 @@ void InputReader::ReadInputData() //initialization for getting data
 					//for every aircraft object in the master map
 					while (iter != masterMap.end())
 					{
-						//???????????? get the name of the repair job in the aircraft object and check that it exists
-						RepairJob* job = iter->second->GetRepairJob(jobName);
+						// create object of the get the name of the repair job in the aircraft object and check that it exists
+						RepairJob* job = iter->second->GetRepairJobObj(currentJob);
 
 						//if aircraft doesn't have that repair job, just keep going
 						if (job == nullptr)
-						{
+						{	
 							iter++;
 							continue;
 						}
 
-						// if it exists, we add the step
+						// if it exists, we add the steps
 						job->AddStep(newStep);
+						
 						iter++;
 					}
+
 				}
 			}
+
+			
 
 			map<string, Aircraft*>::const_iterator iter = masterMap.begin();
 
 			while (iter != masterMap.end())
 			{
-//				iter->second->PrintProperties();
+				iter->second->PrintProperties();
 				iter++;
 			}
 
