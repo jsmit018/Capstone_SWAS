@@ -6,13 +6,14 @@
 }*/
 
 struct SimExec::Event {
-	Event(EventAction* ea, Time timeMonth, Time timeDay, Time timeOfDay, int year) {
+	Event(EventAction* ea, Time timeMonth, Time timeDay, Time timeOfDay, int priority, int year) {
 		_ea = ea;
 		_nextEvent = 0;
 		_timeMonth = timeMonth;
 		_timeDay = timeDay;
 		_year = year;
 		_timeOfDay = timeOfDay;
+		_priority = priority;
 	}
 	Time _timeOfDay;
 	Time _timeMonth;
@@ -20,6 +21,7 @@ struct SimExec::Event {
 	EventAction* _ea;
 	Event* _nextEvent;
 	int _year;
+	int _priority;
 };
 
 class SimExec::EventSet {
@@ -29,19 +31,20 @@ public:
 	}
 
 	void InitEventSet(int numBins, Time timeRange, int* days) {
+		cout << "Initializing Event Set" << endl;
 		_numEvents = 0;
 		_numBins = numBins;
 		_baseX = 0;
 		_baseY = 0;
 		_year = 2020;
 		_overflow = 13;
-		_timeRange = timeRange;
-		_binSize = timeRange / numBins;
 		_eventSet = new Event ** [numBins + 1];
 		_endOfMonth = new int[numBins];
 		for (int i = 0; i < numBins; ++i){
-			if (_year % 4 == 0 && i == February)
-				_eventSet[i] = new Event*[days[i] + 1];
+			if (_year % 4 == 0 && i == February) {
+				cout << "February is a leap year in " << _year << endl;
+				_eventSet[i] = new Event * [days[i] + 1];
+			}
 			else
 				_eventSet[i] = new Event*[days[i]];
 		}
@@ -55,9 +58,10 @@ public:
 		}
 	}
 
-	void AddEvent(Time Month, Time Day, Time, timeOfDay, int year, EventAction* ea) {
+	void AddEvent(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea) {
+		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
-		Event* e = new Event(ea, Month, Day, timeOfDay, year);
+		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY; 
 		if (e->_year > _year) {
@@ -65,8 +69,8 @@ public:
 			binY = 0;
 		}
 		else {
-			binX = timeMonth;
-			binY = timeDay;
+			binX = Month;
+			binY = Day;
 		}
 		if (_eventSet[binX][binY] == 0) {
 			_eventSet[binX][binY] = e;
@@ -78,7 +82,13 @@ public:
 		else {
 			Event* curr = _eventSet[binX][binY];
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay) : false) {
-				curr = curr->_nextEvent;
+				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+					if (e->_priority > curr->_nextEvent->_priority) {
+						break;
+					}
+				}
+				else
+					curr = curr->_nextEvent;
 			}
 			if (curr->_nextEvent == 0) {
 				curr->_nextEvent = e;
@@ -88,27 +98,23 @@ public:
 				curr->_nextEvent = e;
 			}
 		}
+		cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day << " " << timeOfDay << endl;
 	}
 
-	Time GetTime() {
-/*		int binX = _baseX;
-		int binY = 0;
-		int checkX = binX;
-		while (_eventSet[binX][binY] == 0) {
-			if (checkX == binX) {
-				binY++;
-			}
-			else
-				binX = (binX + 1) % (_numBins + 1);
-			if (binX != checkX)
-				binY = 0;
-		}
-		return _eventSet[binX][binY]->_time;*/
+	Time GetTimeOfDay() {
 		return _eventSet[_baseX][_baseY]->_timeOfDay;
+	}
+
+	Time GetMonth() {
+		return _eventSet[_baseX][_baseY]->_timeMonth;
+	}
+
+	Time GetDay() {
+		return _eventSet[_baseX][_baseY]->_timeDay;
 	}
 	
 	string ConvertMonth(Time month){
-		switch(month){
+		switch((int) month){
 			case 0:
 				return "January";
 				break;
@@ -146,15 +152,13 @@ public:
 				return "December";
 				break;
 			default: cerr << "Invalid Month" << endl;
-				break;
+				return NULL;
 		}
 	}
 
 	EventAction* GetEventAction() {
 		if (_numEvents > 0) {
-			//will need to populate a baseY for days
 			while (_eventSet[_baseX][_baseY] == 0) {
-				//Likely endOfMonth will need to be an array to make sure appropriate days are matched as endOfMonth
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
 				}
@@ -162,6 +166,8 @@ public:
 					AdvanceDay();
 			}
 			Event* next = _eventSet[_baseX][_baseY];
+			cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
+			_simulationTime = GetTimeOfDay();
 			_eventSet[_baseX][_baseY] = next->_nextEvent;
 			EventAction* ea = next->_ea;
 			delete next;
@@ -179,9 +185,7 @@ public:
 //
 private:
 	int _numBins, _baseX, _overflow, _baseY;
-	Time _timeRange;
 	int _year;
-	Time _binSize;
 	int _numEvents;
 	int* _endOfMonth;
 	Event*** _eventSet;
@@ -205,6 +209,7 @@ private:
 			previousBase = _baseX - 1;
 		
 		Event* currEvent = _eventSet[_overflow][_baseY];
+		int eventDay = 0;
 		while (currEvent != 0) {
 			if (currEvent->_timeMonth == previousBase)
 				eventDay = currEvent->_timeDay;
@@ -249,32 +254,33 @@ void SimExec::InitializeSimulation(int numBins, Time timeRange, int* days) {
 }
 
 Time SimExec::GetSimulationTime() {
+	cout << "Returning Simulation Time" << endl;
     return _simulationTime;
 }
 
-//void SimExec::ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, EventAction* ea) {
-//	_eventSet.AddEvent(timeMonth, timeDay, timeOfDay, year, ea);
-//}
-//
-//May Actually not be able to use this function because its all calendar date scheduling
-//void SimExec::ScheduleEventIn(Time timeMonth, Time timeDay, int year, EventAction* ea) {
-//	_eventSet.AddEvent(_simTime + time, ea);
-//}
-//
+void SimExec::ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, int priority, EventAction* ea) {
+	cout << "Scheduling Event" << endl;
+	_eventSet.AddEvent(timeMonth, timeDay, timeOfDay, year, priority, ea);
+}
+
 void SimExec::RunSimulation() {
+	cout << "Running Simulation" << endl;
 	while (_eventSet.HasEvent()) {
-		_simulationTime = _eventSet.GetTime();
+		//_simulationTime = _eventSet.GetTime();
 		EventAction* ea = _eventSet.GetEventAction();
 		ea->Execute();
 		delete ea;
 	}
+	cout << "Simulation Terminating" << endl;
 }
 
 void SimExec::RunSimulation(Time time) {
+	cout << "Running Simulation" << endl;
 	while (_eventSet.HasEvent() && _simulationTime <= time) {
-		_simulationTime = _eventSet.GetTime();
+		//_simulationTime = _eventSet.GetTime();
 		EventAction* ea = _eventSet.GetEventAction();
 		ea->Execute();
 		delete ea;
 	}
+	cout << "Simulation Terminated at time " << time << endl;
 }
