@@ -13,14 +13,34 @@ public:
 	//virtual void Acquire() = 0;
 	void Release(int amountToRelease);
 	//virtual void Release = 0;
-	bool isAvailable(int amountNeeded);
-	void failResource();
-	void restoreResource();
+	bool IsAvailable(int amountNeeded);
+	void FailResource();
+	void RestoreResource();
+	void OrderPartsEA(); //send to Parts class
+	void OrderPartsEM(); //send to Parts class
+
+	void SetResourceCount(int resourceCount);
+	void SetResourceName(string resourceName);
+	void SetFailureName(string failureName);
+	void SetPartsCount(int partsCount);
+	void SetPartsName(string partsName);
+	void SetThreshold(int orderThreshold); 	//send to Parts class
+
+	int GetResourceCount();
+	string GetResourceName();
+	string GetFailureName();
+	int GetPartsCount();	//send to Parts class
+	string GetPartsName();	//send to Parts class
+	int GetThreshold();		//send to Parts class
+
 private:
 	int _resourceCount;
 	string _resourceName;
 	string _failureName;
-	int _resourceThreshold;
-	Distribution* _partsLeadTime;
 	Distribution* _failureDist;
+
+	int _partsCount;
+	string _partsName;
+	int _orderThreshold;//send to Parts class
+	Distribution* _partsLeadTime;//send to Parts class
 };

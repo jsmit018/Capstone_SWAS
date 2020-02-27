@@ -6,7 +6,7 @@
 #pragma once
 #include "SimObj.h"
 #include "RepairJob.h"
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -22,27 +22,31 @@ public:
 	Aircraft();
 	void PrintProperties(/*string aircraftType, int priority, double length, double wingspan*/);
 	
-	//void SetSource(int source);
-	void SetAircraftID(int aircraftID);
+	void SetSource(int source);
+	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
 	void SetAircraftFootprint(double length, double wingspan);
 	void SetAircraftIAT(string iatUnplanned);
 	void SetAircraftType(string aircraftType);
 	void SetAircraftPriority(int priority);
-
-	//int GetSource();
-	//int GetAircraftID();
-	//void GetAircraftFootprint();
-	//string GetAircraftIAT();
-	//string GetAircraftType();
-	//int GetAircraftPriority();
-	//int GetNextAircraftID(); 
+	void AddRepairJobMaster(RepairJob* repairJob, string repairJobName);
+	void AddRandRepairJob();
+	void AddSchedRepairJob();
 	//void SetNextID(int id);
+
+	RepairJob* GetRepairJob(string name);
+	int GetSource();
+	int GetAircraftID();
+	double GetAircraftFootprint();
+	string GetAircraftIAT(); //switch to distribution pointer
+	string GetAircraftType();
+	int GetAircraftPriority();
+	int GetNextAircraftID(); 
 
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
 	static int _nextID;
-//	int _source;
+	int _source;
 	int		_priority;									//	Aircraft priority: helps determine first to be served in queues
 	double	_length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	double	_wingspan;									//	Aircraft size y dimension
@@ -50,5 +54,5 @@ private:
 	Distribution*	_iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
 	vector<string> mySchedRepairJobs;					//	Vector of sched repair job names unique to each new aircraft to be compared to master list
 	vector<string> myRandRepairJobs;					//	Vector of rand repair job names unique to each new aircraft to be compared to master list
-	unordered_map<string, RepairJob> _allRepairJobsMap;	//	Map of all possible repair jobs (***make Repair job a pointer later to save memory)
+	map<string, RepairJob *> _allRepairJobsMap;			//	Map of all possible repair jobs (***make Repair job a pointer later to save memory)
 };

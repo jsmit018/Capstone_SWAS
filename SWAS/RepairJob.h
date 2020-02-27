@@ -6,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 
-//#include "Step.h"
+#include "Step.h"
 
 class Step;
 
@@ -24,14 +24,14 @@ public:
 	void PrintJobProperties();
 
 	string GetName();
-	int SetPriority();
-	string SetSchedType();
-	char SetIndoorReq();
-	string SetCalendarDate();
-	double SetRecurring();
-	double SetUnplannedProb();
+	int GetPriority();
+	string GetSchedType();
+	char GetIndoorReq();
+	string GetCalendarDate();
+	double GetRecurring();
+	double GetUnplannedProb(); //switch to distribution pointer
 	void GetNextStep();
-	void AddStep(Step* step, int listSpot);
+	void AddStep(Step* step);
 
 
 private:
@@ -42,7 +42,8 @@ private:
 	string	_calendarDate;			// Calendar-schedule type repair jobs (date: mmddyyyy)
 	double	_recurringAmt;			// Number of months between Recurring-schedule type repair jobs
 	string	_unplannedProb;			// Distribution for probability of certain repair job after random iat
-	vector<string> vecSteps;		// RepairJob has a vector of step objects
+//	Distribution* _unplannedProb;
+	vector<Step *> vecSteps;		// RepairJob has a vector of step objects
 
 	//int _activeStep;
 	////Task** _stepList;
