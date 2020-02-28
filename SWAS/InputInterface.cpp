@@ -524,7 +524,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//	for (int i = 0; i < row.size(); ++i) {
 						//	cout << "line " << i << ": " << row[i] << endl;
 					//	}
-					cout << "row : " << row[0] << endl;
+//					cout << "row : " << row[0] << endl;
 					//					cout << "row size " << row.size() << endl; 
 					if (rowCounter == 0) {
 						currentJob = row[0];
@@ -532,7 +532,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 					if (row[0] != "")
 					{
-						cout << "non blank row " << endl;
+//						cout << "non blank row " << endl;
 						currentJob = row[0];
 					}
 
@@ -605,7 +605,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 			while (iter != masterMap.end())
 			{
-				iter->second->PrintProperties();
+//				iter->second->PrintProperties();
 				iter++;
 			}
 

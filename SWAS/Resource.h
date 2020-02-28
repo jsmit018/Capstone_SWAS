@@ -23,17 +23,11 @@ public:
 	void SetResourceName(string resourceName);
 	void SetNumResNeeded(int numResNeeded);
 	void SetFailureName(string failureName);
-	void SetPartsCount(int partsCount);
-	void SetPartsName(string partsName);
-	void SetThreshold(int orderThreshold); 	//send to Parts class
 
 	int GetResourceCount();
 	string GetResourceName();
 	int GetNumResNeeded();
 	string GetFailureName();
-	int GetPartsCount();	//send to Parts class
-	string GetPartsName();	//send to Parts class
-	int GetThreshold();		//send to Parts class
 
 private:
 	int _resourceCount;
@@ -44,6 +38,4 @@ private:
 
 	int _partsCount;
 	string _partsName;
-	int _orderThreshold;//send to Parts class
-	Distribution* _partsLeadTime;//send to Parts class
 };

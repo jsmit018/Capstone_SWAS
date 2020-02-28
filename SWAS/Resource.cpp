@@ -13,10 +13,6 @@ void Resource::Acquire(int amountNeeded)
 	}
 
 	_resourceCount -= amountNeeded;
-
-	if (_resourceCount < _orderThreshold) {
-		//Schedule an ordering event... may need to have an EA/EM with this class for that
-	}
 }
 
 void Resource::Release(int amountToRelease)
@@ -61,30 +57,6 @@ void Resource::RestoreResource()
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
 
-//send to Parts class
-void Resource::SetPartsCount(int partsCount)
-{
-	_partsCount = partsCount;
-}
-
-//send to Parts class
-int Resource::GetPartsCount()
-{
-	return _partsCount;
-}
-
-//send to Parts class
-void Resource::SetPartsName(string partsName)
-{
-	_partsName = partsName;
-}
-
-//send to Parts class
-string Resource::GetPartsName()
-{
-	return _partsName;
-}
-
 void Resource::SetResourceCount(int initialCount)
 {
 	_resourceCount = initialCount;
@@ -123,14 +95,4 @@ void Resource::SetFailureName(string failureName)
 string Resource::GetFailureName()
 {
 	return _failureName;
-}
-
-void Resource::SetThreshold(int orderThreshold)
-{
-	_orderThreshold = orderThreshold;
-}
-
-int Resource::GetThreshold()
-{
-	return _orderThreshold;
 }

@@ -143,6 +143,7 @@
     <ClCompile Include="DelayTask.cpp" />
     <ClCompile Include="Distribution.cpp" />
     <ClCompile Include="InputInterface.cpp" />
+    <ClCompile Include="Parts.cpp" />
     <ClCompile Include="RepairJob.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="SimExec.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="DelayTask.h" />
     <ClInclude Include="Distribution.h" />
     <ClInclude Include="InputInterface.h" />
+    <ClInclude Include="Parts.h" />
     <ClInclude Include="RepairJob.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SimExec.h" />
@@ -173,4 +175,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>
