@@ -1,6 +1,0 @@
-﻿  InputInterface.cpp
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(688,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(648,12): warning C4101: 'resourceFootprintX': unreferenced local variable
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(647,9): warning C4101: 'resQuantity': unreferenced local variable
-C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\InputInterface.cpp(649,12): warning C4101: 'resourceFootprintY': unreferenced local variable
-  SWAS.vcxproj -> C:\Users\GOVASIM-2\Desktop\RobeyBranch\SWAS\Debug\SWAS.exe
