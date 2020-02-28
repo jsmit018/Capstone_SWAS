@@ -11,49 +11,48 @@ Step::Step(string serviceTime, string name) : Task(name)
 	_name = name;
 }
 
-class Step::AcquireServerEA : public EventAction {
-public:
-	AcquireServerEA(Step* step, Aircraft* aircraft) {
-		_step = step;
-		_aircraft = aircraft;
-	}
+//class Step::AcquireServerEA : public EventAction {
+//public:
+//	AcquireServerEA(Step* step, Aircraft* aircraft) {
+//		_step = step;
+//		_aircraft = aircraft;
+//	}
+//
+//	void Execute() {
+//		_step->AcquireServerEM(_aircraft);
+//	}
+//private:
+//	Step* _step;
+//	Aircraft* _aircraft;
+//};
+//
+//class Step::ScheduleDoneServiceEA : public EventAction {
+//public:
+//
+//private:
+//};
 
-	void Execute() {
-		_step->AcquireServerEM(_aircraft);
-	}
-private:
-	Step* _step;
-	Aircraft* _aircraft;
-};
-
-class Step::ScheduleDoneServiceEA : public EventAction {
-public:
-
-private:
-};
-
-class Step::AddQueueEA : public EventAction {
-public:
-	AddQueueEA(Step* step, Aircraft* aircraft) {
-		_step = step;
-		_aircraft = aircraft;
-	}
-
-	void Execute() {
-		_step->AddQueueEM(_aircraft);
-	}
-
-private:
-	Step* _step;
-	Aircraft* _aircraft;
-};
+//class Step::AddQueueEA : public EventAction {
+//public:
+//	AddQueueEA(Step* step, Aircraft* aircraft) {
+//		_step = step;
+//		_aircraft = aircraft;
+//	}
+//
+//	void Execute() {
+//		_step->AddQueueEM(_aircraft);
+//	}
+//
+//private:
+//	Step* _step;
+//	Aircraft* _aircraft;
+//};
 
 //Since Service Time is now a distribution no need to get and retrieve.
 /*Time Step::GetServiceTime()
 {
 	return Time();
 }
-
 void Step::SetServiceTime(Time serviceTime)
 {
 }*/
@@ -103,13 +102,13 @@ void Step::ScheduleDoneServiceEM(Aircraft* aircraft)
 }
 
 //@TODO figure out what these are supposed to be... EM?
-void Step::ReleaseServer()
-{
-}
-
-void Step::DoneService()
-{
-}
+//void Step::ReleaseServer()
+//{
+//}
+//
+//void Step::DoneService()
+//{
+//}
 
 void Step::Execute(Aircraft* aircraft) {
 	//SimExec::ScheduleEventIn(0.0, new AddQueueEA(this, aircraft));
@@ -153,10 +152,10 @@ void Step::SetReqParts(string reqParts)
 
 void Step::SetReturnStep(int stepId)
 {
-	_returnStep = stepId; 
+	_returnStep = stepId;
 }
 
 void Step::Print()
 {
-	cout << "Step name: " << _name << endl; 
+	cout << "Step name: " << _name << endl;
 }

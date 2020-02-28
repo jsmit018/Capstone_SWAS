@@ -2,6 +2,8 @@
 
 Distribution::Distribution() {}
 
+string Distribution::_seedType = "null";
+
 void Distribution::PrintDistribution()
 {
 }
@@ -15,9 +17,9 @@ std::default_random_engine Distribution::generator;
 
 //}
 
-//void Distribution::SetSystemSeedType(string seedType) {
-//	_seedType = seedType;
-//}
+void Distribution::SetSystemSeedType(string seedType) {
+	_seedType = seedType;
+}
 
 Exponential::Exponential(double mean) : Distribution()
 {
@@ -148,4 +150,3 @@ void Weibull::PrintDistribution()
 	printf("Weibull - scale, shape: %f %f %f\n", _scale, _shape);
 
 }
-

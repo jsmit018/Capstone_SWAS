@@ -1,32 +1,32 @@
 #include "SourceTask.h"
 #include "SimExec.h"
 
-SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar, 
-	Distribution* interarrivalTimeRND, string aircraftType, int numberOfAircraftToGenerate, 
-	Time timeForFirstAircraft,	Aircraft* aircraft, string name) : Task(name) {
-    _name = name;
-    _interarrivalTimeRecurring = interarrivalTimeRecurring;
+SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar,
+	Distribution* interarrivalTimeRND, string aircraftType, int numberOfAircraftToGenerate,
+	Time timeForFirstAircraft, Aircraft* aircraft, string name) : Task(name) {
+	_name = name;
+	_interarrivalTimeRecurring = interarrivalTimeRecurring;
 	_interarrivalTimeCalendar = interarrivalTimeCalendar;
 	_interarrivalTimeRND = interarrivalTimeRND;
-    _aircraftType = aircraftType;
-    _aircraft = aircraft;
-    _numberOfAircraftToGenerate = numberOfAircraftToGenerate;
-   // _timeForFirstAircraft = timeForFirstAircraft;
-    _numberGenerated = 0;
-    //I believe we should change the name of this variable
-    //SimExec::ScheduleEventAt(timeForFirstAircraft, new ScheduleNextEntityEA(this));
+	_aircraftType = aircraftType;
+	_aircraft = aircraft;
+	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
+	// _timeForFirstAircraft = timeForFirstAircraft;
+	_numberGenerated = 0;
+	//I believe we should change the name of this variable
+	//SimExec::ScheduleEventAt(timeForFirstAircraft, new ScheduleNextEntityEA(this));
 }
 
 class SourceBlock::ScheduleNextEntityCalendarEA : public EventAction {
 public:
-    ScheduleNextEntityCalendarEA(SourceBlock* source){
-        _source = source;
-    }
-    void Execute(){
+	ScheduleNextEntityCalendarEA(SourceBlock* source) {
+		_source = source;
+	}
+	void Execute() {
 		_source->ScheduleNextEntityCalendarEM();
-    }
+	}
 private:
-    SourceBlock* _source;
+	SourceBlock* _source;
 };
 
 class SourceBlock::ScheduleNextRandomEntityEA : public EventAction {
@@ -57,30 +57,30 @@ private:
 };
 
 string SourceBlock::GetAircraftType() {
-    return _aircraftType;
+	return _aircraftType;
 }
 
 void  SourceBlock::SetAircraftType(string aircraftType) {
-    _aircraftType = aircraftType;
+	_aircraftType = aircraftType;
 }
 
 string SourceBlock::GetName() {
-    return _name;
+	return _name;
 }
 
 int SourceBlock::GetNumberGenerated() {
-    return _numberGenerated;
+	return _numberGenerated;
 }
 
 void SourceBlock::ScheduleNextEntityCalendarEM() {
-   // while(_numberOFAircraftToGenerate != _numberGenerated){
-       // SimExec::ScheduleEventIn(_interarrivalTimeCalendar->GetRV(), new ScheduleNextEntityCalendarEA(this));
-		if (rand() >= .51) {
-			//SimExec::ScheduleEventIn(_interarrivalTimeRND->GetRV(), new ScheduleNextRandomEntityEA(this));
-		}
-       // Depart(_aircraft->New());
-        _numberGenerated++;
-    //}
+	// while(_numberOFAircraftToGenerate != _numberGenerated){
+		// SimExec::ScheduleEventIn(_interarrivalTimeCalendar->GetRV(), new ScheduleNextEntityCalendarEA(this));
+	if (rand() >= .51) {
+		//SimExec::ScheduleEventIn(_interarrivalTimeRND->GetRV(), new ScheduleNextRandomEntityEA(this));
+	}
+	// Depart(_aircraft->New());
+	_numberGenerated++;
+	//}
 }
 
 void SourceBlock::ScheduleNextRandomEntityEM() {
@@ -99,6 +99,6 @@ void SourceBlock::ScheduleNextRecurringEM() {
 }
 
 
-void SourceBlock::Execute(Aircraft* aircraft){
+void SourceBlock::Execute(Aircraft* aircraft) {
 	//This is just a declaration of the virtual function doesn't do anything
 }

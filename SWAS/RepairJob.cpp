@@ -16,7 +16,7 @@ RepairJob::RepairJob()
 //
 
 
-void RepairJob::SetName(string name) 
+void RepairJob::SetName(string name)
 {
     _name = name;
 }
@@ -26,7 +26,7 @@ string RepairJob::GetName() {
 }
 
 void RepairJob::SetPriority(int priority)
-{  
+{
     _priority = priority;
 }
 
@@ -92,12 +92,12 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
 void RepairJob::PrintJobProperties()
 {
     cout << "job name: " << _name << endl;
- //   cout << "priority: " << _priority << endl;
- //   cout << "probability: " << _unplannedProb << endl;
- //   cout << "sched type: " << _schedType << endl;
- //   cout << "cal: " << _calendarDate << endl;
- //   cout << "recur: " << _recurringAmt << endl;
- //   cout << "indoor req: " << _indoorReq << endl;
+    //   cout << "priority: " << _priority << endl;
+    //   cout << "probability: " << _unplannedProb << endl;
+    //   cout << "sched type: " << _schedType << endl;
+    //   cout << "cal: " << _calendarDate << endl;
+    //   cout << "recur: " << _recurringAmt << endl;
+    //   cout << "indoor req: " << _indoorReq << endl;
     cout << endl;
 
 
@@ -109,7 +109,7 @@ void RepairJob::PrintJobProperties()
 
 void RepairJob::AddStep(Step* step)
 {
-//    cout << "adding step \n";
+ //   cout << "adding step \n";
     vecSteps.push_back(step);
-//    cout << "new size " << vecSteps.size() << endl; 
+//    cout << endl << "new size " << vecSteps.size() << endl;
 }

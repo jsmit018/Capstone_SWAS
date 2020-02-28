@@ -2,7 +2,7 @@
 
 
 /*SimExec::SimExec() : SimObj(){
-	
+
 }*/
 
 struct SimExec::Event {
@@ -38,18 +38,18 @@ public:
 		_baseY = 0;
 		_year = 2020;
 		_overflow = 13;
-		_eventSet = new Event ** [numBins + 1];
+		_eventSet = new Event * *[numBins + 1];
 		_endOfMonth = new int[numBins];
-		for (int i = 0; i < numBins; ++i){
+		for (int i = 0; i < numBins; ++i) {
 			if (_year % 4 == 0 && i == February) {
 				cout << "February is a leap year in " << _year << endl;
 				_eventSet[i] = new Event * [days[i] + 1];
 			}
 			else
-				_eventSet[i] = new Event*[days[i]];
+				_eventSet[i] = new Event * [days[i]];
 		}
 		for (int i = 0; i < numBins + 1; ++i) {
-			for (int j = 0; j < days[i]; ++j){
+			for (int j = 0; j < days[i]; ++j) {
 				_eventSet[i][j] = 0;
 			}
 		}
@@ -63,7 +63,7 @@ public:
 		_numEvents++;
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
-		int binY; 
+		int binY;
 		if (e->_year > _year) {
 			binX = _overflow;
 			binY = 0;
@@ -112,47 +112,47 @@ public:
 	Time GetDay() {
 		return _eventSet[_baseX][_baseY]->_timeDay;
 	}
-	
-	string ConvertMonth(Time month){
-		switch((int) month){
-			case 0:
-				return "January";
-				break;
-			case 1:
-				return "February";
-				break;
-			case 2:
-				return "March";
-				break;
-			case 3:
-				return "April";
-				break;
-			case 4:
-				return "May";
-				break;
-			case 5:
-				return "June";
-				break;
-			case 6:
-				return "July";
-				break;
-			case 7:
-				return "August";
-				break;
-			case 8:
-				return "September";
-				break;
-			case 9:
-				return "October";
-				break;
-			case 10:
-				return "November";
-				break;
-			case 11:
-				return "December";
-				break;
-			default: cerr << "Invalid Month" << endl;
-				return NULL;
+
+	string ConvertMonth(Time month) {
+		switch ((int)month) {
+		case 0:
+			return "January";
+			break;
+		case 1:
+			return "February";
+			break;
+		case 2:
+			return "March";
+			break;
+		case 3:
+			return "April";
+			break;
+		case 4:
+			return "May";
+			break;
+		case 5:
+			return "June";
+			break;
+		case 6:
+			return "July";
+			break;
+		case 7:
+			return "August";
+			break;
+		case 8:
+			return "September";
+			break;
+		case 9:
+			return "October";
+			break;
+		case 10:
+			return "November";
+			break;
+		case 11:
+			return "December";
+			break;
+		default: cerr << "Invalid Month" << endl;
+			return NULL;
 		}
 	}
 
@@ -182,15 +182,15 @@ public:
 	bool HasEvent() {
 		return _numEvents > 0;
 	}
-//
+	//
 private:
 	int _numBins, _baseX, _overflow, _baseY;
 	int _year;
 	int _numEvents;
 	int* _endOfMonth;
 	Event*** _eventSet;
-//
-//	//Will add an if statement on December 31 to increment the year by 1.
+	//
+	//	//Will add an if statement on December 31 to increment the year by 1.
 	void AdvanceMonth() {
 		if (_baseX == December && _baseY == 31) {
 			_year++;
@@ -201,13 +201,13 @@ private:
 			_baseX++;
 			_baseY = 0;
 		}
-		
+
 		int previousBase;
 		if (_baseX == 0)
 			previousBase = December;
 		else
 			previousBase = _baseX - 1;
-		
+
 		Event* currEvent = _eventSet[_overflow][_baseY];
 		int eventDay = 0;
 		while (currEvent != 0) {
@@ -223,8 +223,8 @@ private:
 				}
 				else {
 					Event* curr = _eventSet[previousBase][eventDay];
-					while ((curr->_nextEvent != 0) ? (curr->_timeOfDay 
-									  >= currEvent->_timeOfDay) : false) {
+					while ((curr->_nextEvent != 0) ? (curr->_timeOfDay
+						>= currEvent->_timeOfDay) : false) {
 						curr = curr->_nextEvent;
 					}
 					if (curr->_nextEvent == 0) {
@@ -237,7 +237,7 @@ private:
 				}
 			}
 			_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
-		}	
+		}
 	}
 
 	void AdvanceDay() {
@@ -249,13 +249,13 @@ SimExec::EventSet SimExec::_eventSet;
 Time SimExec::_simulationTime = 0.0;
 
 void SimExec::InitializeSimulation(int numBins, Time timeRange, int* days) {
-   _simulationTime = 0.0;
-   _eventSet.InitEventSet(numBins, timeRange, days);
+	_simulationTime = 0.0;
+	_eventSet.InitEventSet(numBins, timeRange, days);
 }
 
 Time SimExec::GetSimulationTime() {
 	cout << "Returning Simulation Time" << endl;
-    return _simulationTime;
+	return _simulationTime;
 }
 
 void SimExec::ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, int priority, EventAction* ea) {

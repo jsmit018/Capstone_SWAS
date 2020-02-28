@@ -43,7 +43,7 @@ private:
 	double	_recurringAmt;			// Number of months between Recurring-schedule type repair jobs
 	string	_unplannedProb;			// Distribution for probability of certain repair job after random iat
 //	Distribution* _unplannedProb;
-	vector<Step *> vecSteps;		// RepairJob has a vector of step objects
+	vector<Step*> vecSteps;		// RepairJob has a vector of step objects
 
 	//int _activeStep;
 	////Task** _stepList;

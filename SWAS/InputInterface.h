@@ -23,4 +23,3 @@ private:
 	string _seedType; //seed type read in - if statement elsewhere
 
 };
-
