@@ -37,7 +37,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	{
 
 		while (getline(dataFile, line)) {
-		//	cout << line << endl; 
+			//	cout << line << endl; 
 			char c;
 			string commas;
 
@@ -66,11 +66,11 @@ void InputReader::ReadInputData() //initialization for getting data
 					//removed 10 commas from string
 					seedType = seedType.erase(seedType.length() - 10);
 
-//						cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
+					//						cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
 
-				//		Distribution::SetSystemSeedType(seedType);
-						//in distribution file, there will be an if statement that determines whether 
-						//the operator(generator) function will be called or if the seed version
+					Distribution::SetSystemSeedType(seedType);
+					//in distribution file, there will be an if statement that determines whether 
+					//the operator(generator) function will be called or if the seed version
 				}
 				getline(dataFile, line);
 			}
@@ -97,7 +97,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						str.ignore();
 					str >> numDays;
 
-//					cout << "month " << month << " days, " << numDays << endl; 
+					//					cout << "month " << month << " days, " << numDays << endl; 
 
 					calConvert.InsertDays(month, numDays);
 					getline(dataFile, line);
@@ -147,14 +147,14 @@ void InputReader::ReadInputData() //initialization for getting data
 								break;
 
 							row.push_back(line);
-//							cout << line << endl;
+							//							cout << line << endl;
 						}
 						else
 							getline(ss, line);
 					}
 
-//					cout << "vector size: " << row.size() << endl;
-				
+					//					cout << "vector size: " << row.size() << endl;
+
 					string airType;
 					int airPriority;
 					double airLength;
@@ -162,12 +162,12 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					Aircraft* newAir = new Aircraft();
 
-				//	for (int i = 0; i < row.size(); ++i) {
-					//	cout << "line " << i << ": " << row[i] << endl;
-				//	}
+					//	for (int i = 0; i < row.size(); ++i) {
+						//	cout << "line " << i << ": " << row[i] << endl;
+					//	}
 
-					//for each index, set each variable
-					//	istringstream iss0(row[0]);
+						//for each index, set each variable
+						//	istringstream iss0(row[0]);
 					airType = row[0];
 					newAir->SetAircraftType(airType);
 
@@ -177,7 +177,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					istringstream iss2(row[2]);
 					iss2 >> airLength;
-						
+
 					istringstream iss3(row[3]);
 					iss3 >> airWingspan;
 
@@ -186,13 +186,13 @@ void InputReader::ReadInputData() //initialization for getting data
 					masterMap.insert(pair<string, Aircraft*>(airType, newAir));
 					for (map<string, Aircraft*>::const_iterator it = masterMap.begin(); it != masterMap.end(); ++it)
 					{
-//						cout << "MAP: " << it->first << endl;
-//						cout << "OBJ: ";
-//						it->second->PrintProperties();
-//						cout << endl;
+						//						cout << "MAP: " << it->first << endl;
+						//						cout << "OBJ: ";
+						//						it->second->PrintProperties();
+						//						cout << endl;
 					}
 
-//					cout << "after aircraft for loop \n";	
+					//					cout << "after aircraft for loop \n";	
 				}
 			}
 
@@ -202,7 +202,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				string unplannedType;
 				string unplannedIAT;
-			
+
 				getline(dataFile, line);
 				vector <string> row;
 
@@ -236,20 +236,20 @@ void InputReader::ReadInputData() //initialization for getting data
 						//	cout << "line " << i << ": " << row[i] << endl;
 					//	}
 
-						unplannedType = row[0];
+					unplannedType = row[0];
 
-						unplannedIAT = row[1];
+					unplannedIAT = row[1];
 
-						//compare to string
-						map<string, Aircraft*>::const_iterator iter = masterMap.find(unplannedType);
-						if (iter == masterMap.end()) {
-							printf("end of map \n");
-							cout << "unplanned type: " << unplannedType << endl;
-						}
+					//compare to string
+					map<string, Aircraft*>::const_iterator iter = masterMap.find(unplannedType);
+					if (iter == masterMap.end()) {
+						printf("end of map \n");
+						cout << "unplanned type: " << unplannedType << endl;
+					}
 
-						iter->second->SetAircraftIAT(unplannedIAT);
-//						iter->second->PrintProperties();
-//						cout << endl;
+					iter->second->SetAircraftIAT(unplannedIAT);
+					//						iter->second->PrintProperties();
+					//						cout << endl;
 				}
 			}
 
@@ -268,7 +268,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//Indoor Requirement [done]
 				//Create object of repair job
 				//Store object in allrepairjobmap with appropriate aircraft type	
-			
+
 			if (line.find("Planned Maintenance Table") != string::npos) {
 				printf("got Planned Maintenance Table \n");
 
@@ -316,53 +316,53 @@ void InputReader::ReadInputData() //initialization for getting data
 					//	}
 
 					planType = row[0];
-//					cout << "craft type: " << unAirType << endl;
+					//					cout << "craft type: " << unAirType << endl;
 
 					repairName = row[1];
-//					cout << "rj type: " << repairName << endl;
+					//					cout << "rj type: " << repairName << endl;
 					newJob->SetName(repairName);
 
 					schedType = row[2];
-//					cout << "sched type: " << schedType << endl;
+					//					cout << "sched type: " << schedType << endl;
 					newJob->SetSchedType(schedType);
 
 					if (schedType == "Calendar") {
 						schedCal = row[3];
-//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
+						//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
 						newJob->SetCalendarDate(schedCal);
 					}
 
 					else if (schedType == "Recurring") {
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
-//						cout << "recur: " << schedRecur << endl;
+						//						cout << "recur: " << schedRecur << endl;
 						newJob->SetRecurring(schedRecur);
 					}
 
 					istringstream unss4(row[4]);
 					unss4 >> indoorReq;
-//					cout << "indoor req: " << indoorReq << endl << endl;
+					//					cout << "indoor req: " << indoorReq << endl << endl;
 					newJob->SetIndoorReq(indoorReq);
 
-//					cout << "PLANNED: " << endl;
-//					newJob->PrintJobProperties();
-//					cout << endl;
-				
+					//					cout << "PLANNED: " << endl;
+					//					newJob->PrintJobProperties();
+					//					cout << endl;
+
 
 					masterMap[planType]->AddRepairJobMaster(newJob, repairName);
 				}
 			}
-				///////Unplanned////////
+			///////Unplanned////////
 
-				// Unplanned Maintenance Table -
-					// For loop: Compare aircraft name string with string in table to find:
-						//Repair Job Type
-							//once found, get:
-								//Repair Job Name [done]
-								//Unplanned Probability [done]
-								//Indoor Requirement [done]
-				//Create object of repair job [done]
-					//Store object in allrepairjobmap with appropriate aircraft type [done]
+			// Unplanned Maintenance Table -
+				// For loop: Compare aircraft name string with string in table to find:
+					//Repair Job Type
+						//once found, get:
+							//Repair Job Name [done]
+							//Unplanned Probability [done]
+							//Indoor Requirement [done]
+			//Create object of repair job [done]
+				//Store object in allrepairjobmap with appropriate aircraft type [done]
 
 			if (line.find("Unplanned Maintenance Table") != string::npos) {
 				printf("got Unplanned Maintenance Table \n");
@@ -409,26 +409,26 @@ void InputReader::ReadInputData() //initialization for getting data
 					//	}
 
 					unplanType = row[0];
-//					cout << "craft type: " << unplanType << endl;
-//TO DO:			if "all", set up logic
+					//					cout << "craft type: " << unplanType << endl;
+					//TO DO:			if "all", set up logic
 
 					unRepairName = row[1];
-				//	cout << "unplanned rj name: " << unRepairName << endl;
+					//	cout << "unplanned rj name: " << unRepairName << endl;
 					newJob->SetName(unRepairName);
 
 					repJobProb = row[2];
-				//	cout << "probability: " << repJobProb << endl;
+					//	cout << "probability: " << repJobProb << endl;
 					newJob->SetUnplannedProb(repJobProb);
 
 					istringstream unss(row[3]);
 					unss >> unIndoorReq;
-				//	cout << "indoor req: " << unIndoorReq << endl << endl;
+					//	cout << "indoor req: " << unIndoorReq << endl << endl;
 					newJob->SetIndoorReq(unIndoorReq);
 
-//					cout << "UNPLANNED: " << endl;
-//					newJob->PrintJobProperties();
-//					cout << endl;
-					
+					//					cout << "UNPLANNED: " << endl;
+					//					newJob->PrintJobProperties();
+					//					cout << endl;
+
 					if (unplanType == "All")
 					{
 						map<string, Aircraft*>::iterator it = masterMap.begin();
@@ -466,19 +466,146 @@ void InputReader::ReadInputData() //initialization for getting data
 							//Amount of Parts Used
 						//Store Step Object in Repair Job's map
 
+			if (line.find("Steps Table") != string::npos) {
+				printf("got Steps Table \n \n");
 
-						// if it exists, we add the step
+				string currentJob;
+				int jobPriority;
+
+				int stepID;
+				string stepName;
+				string stepType;
+				string inspecFailProb;
+				int returnStep;
+				string stepDur;
+				string reqResource;
+				string reqParts;
+				int numParts;
+				int numResources;
+
+				int rowCounter = 0;
+
+				getline(dataFile, line);
+				vector <string> row;
+
+				while (line != ",,,,,,,,,,,")
+				{
+					row.clear();
+
+					getline(dataFile, line);
+					if (line == ",,,,,,,,,,,")
+						break;
+					istringstream iss(line);
+
+					////parsing the whole file and storing individual strings
+					while (iss)
+					{
+						//csv empty cell has 11 commas
+						if (line != ",,,,,,,,,,,") {
+
+
+							////breaking up strings by comma
+							if (!getline(iss, line, ','))
+								break;
+
+							if (line.empty()) {
+								//								cout << "Empty cell \n";
+															//	break;
+							}
+
+							row.push_back(line);
+						}
+						else
+							getline(iss, line);
+					}
+
+					Step* newStep = new Step(stepDur, stepName);
+
+					//	for (int i = 0; i < row.size(); ++i) {
+						//	cout << "line " << i << ": " << row[i] << endl;
+					//	}
+					cout << "row : " << row[0] << endl;
+					//					cout << "row size " << row.size() << endl; 
+					if (rowCounter == 0) {
+						currentJob = row[0];
+						rowCounter++;
+					}
+					if (row[0] != "")
+					{
+						cout << "non blank row " << endl;
+						currentJob = row[0];
+					}
+
+					istringstream ssSteps(row[1]);
+					ssSteps >> jobPriority;
+
+					//compare jobname to insert priority to correct map location
+
+					istringstream ssSteps2(row[2]);
+					ssSteps2 >> stepID;
+
+					//	stepName = row[3];
+					newStep->SetName(row[3]);
+
+					//stepType = row[4];
+					newStep->SetType(row[4]);
+
+					//	inspecFailProb = row[5];
+					newStep->SetInspecFailProb(row[5]);
+
+					istringstream ssSteps3(row[6]);
+					ssSteps3 >> returnStep;
+					newStep->SetReturnStep(returnStep);
+
+					//stepDur = row[7];
+					newStep->SetServiceTime(row[7]);
+
+					//reqResource = row[8];
+					newStep->SetReqResource(row[8]);
+
+					istringstream ssSteps4(row[9]);
+					ssSteps4 >> numResources;
+
+					//reqParts = row[10];
+					newStep->SetReqParts(row[10]);
+
+					if (row.size() == 12)
+					{
+						istringstream ssSteps5(row[11]);
+						ssSteps5 >> numParts;
+					}
+
+					map<string, Aircraft*>::const_iterator iter = masterMap.begin();
+
+					//for every aircraft object in the master map
+					while (iter != masterMap.end())
+					{
+						// create object of the get the name of the repair job in the aircraft object and check that it exists
+						RepairJob* job = iter->second->GetRepairJobObj(currentJob);
+
+						//if aircraft doesn't have that repair job, just keep going
+						if (job == nullptr)
+						{
+							iter++;
+							continue;
+						}
+
+						// if it exists, we add the steps
 						job->AddStep(newStep);
+
 						iter++;
 					}
+
 				}
 			}
+
+
 
 			map<string, Aircraft*>::const_iterator iter = masterMap.begin();
 
 			while (iter != masterMap.end())
 			{
-//				iter->second->PrintProperties();
+				iter->second->PrintProperties();
 				iter++;
 			}
 
@@ -487,14 +614,14 @@ void InputReader::ReadInputData() //initialization for getting data
 			//////////////////////////////////////////
 
 			///////Spatial////////
-		
+
 			//Resource Table
 			// For each of the resources in Step object's vector
 				//Match resource name string to string in table
 					//Find:
 					//Resource Name [done]
 					//Initial Count [done]
-					
+
 			//Resource Failure Table
 			// For each of the resources in Step object's vector
 				//Match resource name string to string in table
@@ -518,16 +645,16 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				string resName;
 				int resQuantity;
-				double resourceFootprintX;
-				double resourceFootprintY;
+			//	double resourceFootprintX;
+			//	double resourceFootprintY;
 
 				//reading row as string
 				vector <string> row;
-		 
+
 				while (line != ",,,,,,,,,,,")
 				{
 					row.clear();
-					
+
 					getline(dataFile, line);
 					istringstream ss(line);
 
@@ -544,11 +671,11 @@ void InputReader::ReadInputData() //initialization for getting data
 								break;
 
 							row.push_back(line);
-						//	cout << line << endl;
+							//	cout << line << endl;
 
-							//*****************************************************************
-							//use pointer to get vector values = to resource name and quantity
-							//*****************************************************************
+								//*****************************************************************
+								//use pointer to get vector values = to resource name and quantity
+								//*****************************************************************
 						}
 						else
 							getline(ss, line);
@@ -556,12 +683,12 @@ void InputReader::ReadInputData() //initialization for getting data
 						// call resource function to store resource name & resource quantity
 					}
 
-				//	cout << "vector size: " << row.size() << endl;
+					//	cout << "vector size: " << row.size() << endl;
 
 					for (int i = 0; i < row.size(); ++i) {
-				//		cout << "index [" << i << "]: " << row[i] << endl;
+						//		cout << "index [" << i << "]: " << row[i] << endl;
 					}
-				//	cout << "after for loop \n";
+					//	cout << "after for loop \n";
 				}
 			}
 		}
@@ -576,11 +703,11 @@ void InputReader::ReadInputData() //initialization for getting data
 
 
 	map<string, Aircraft*>::iterator it = masterMap.begin();
-//	cout << "////////////////////////////////////////////////////// \n";
-//	cout << "////////////////////////////////////////////////////// \n";
+	//	cout << "////////////////////////////////////////////////////// \n";
+	//	cout << "////////////////////////////////////////////////////// \n";
 	while (it != masterMap.end())
 	{
-//		it->second->PrintProperties();
+		//		it->second->PrintProperties();
 		it++;
 	}
 

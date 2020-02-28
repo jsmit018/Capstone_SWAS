@@ -19,10 +19,3 @@ void CalConverter::InsertDays(int month, int numDays)
 	}
 }
 
-TimeConverter::TimeConverter() {
-
-}
-
-void TimeConverter::ConvertDistributionToMonthDayHour(double timeToConvert, Time& month, Time& day, Time& timeOfDay)
-{
-}

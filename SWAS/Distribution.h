@@ -11,7 +11,7 @@ class Distribution
 public:
 	Distribution();
 	virtual double GetRV() = 0;
-//	static void SetSystemSeedType(string seedType);
+	static void SetSystemSeedType(string seedType);
 	virtual void PrintDistribution() = 0;
 protected:
 	static std::default_random_engine generator;
@@ -72,7 +72,7 @@ class Poisson : public Distribution
 {
 public:
 	Poisson(double mean);
-	double GetRV();	
+	double GetRV();
 	void PrintDistribution();
 private:
 	std::poisson_distribution<int>* _distr;

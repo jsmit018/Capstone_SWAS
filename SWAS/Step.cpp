@@ -53,7 +53,6 @@ Step::Step(string serviceTime, string name) : Task(name)
 {
 	return Time();
 }
-
 void Step::SetServiceTime(Time serviceTime)
 {
 }*/
@@ -153,9 +152,10 @@ void Step::SetReqParts(string reqParts)
 
 void Step::SetReturnStep(int stepId)
 {
-	_returnStep = stepId; 
+	_returnStep = stepId;
 }
 
-void Step::Execute(Aircraft* aircraft) {
-	//SimExec::ScheduleEventIn(0.0, new AddQueueEA(this, aircraft));
+void Step::Print()
+{
+	cout << "Step name: " << _name << endl;
 }

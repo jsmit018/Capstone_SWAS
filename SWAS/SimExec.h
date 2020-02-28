@@ -27,8 +27,10 @@ private:
 	class EventSet;
 	static EventSet _eventSet;
 	//static int* _endOfMonth;
-	enum {January, February, March, April, May, June, July,
-		  August, September, October, Novemember, December};
-	
-	
+	enum {
+		January, February, March, April, May, June, July,
+		August, September, October, Novemember, December
+	};
+
+
 };
