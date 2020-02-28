@@ -36,5 +36,6 @@ Task::Task(string name)
 void Task::Depart(Aircraft* aircraft)
 {
 	//cout << "time = " << SimExec::GetSimulationTime() << ", " << _name << ", " << "depart, Entity: " << aircraft->GetAircraftID() << endl;
+	aircraft->SetSource(this->GetID());
 	_nextTask->Arrive(aircraft);
 }

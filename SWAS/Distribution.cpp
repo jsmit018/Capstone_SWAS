@@ -17,9 +17,9 @@ std::default_random_engine Distribution::generator;
 
 //}
 
-void Distribution::SetSystemSeedType(string seedType) {
+/*Void Distribution::SetSystemSeedType(string seedType) {
 	_seedType = seedType;
-}
+}*/
 
 Exponential::Exponential(double mean) : Distribution()
 {

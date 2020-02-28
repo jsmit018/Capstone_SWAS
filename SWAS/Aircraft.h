@@ -20,33 +20,27 @@ public:
 	Aircraft();
 	void PrintProperties(/*string aircraftType, int priority, double length, double wingspan*/);
 	
-	void SetSource(int sourceID);
-	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
+	//void SetSource(int source);
+	void SetAircraftID(int aircraftID);
 	void SetAircraftFootprint(double length, double wingspan);
 	void SetAircraftIAT(string iatUnplanned);
 	void SetAircraftType(string aircraftType);
 	void SetAircraftPriority(int priority);
-	void AddRepairJobMaster(RepairJob* repairJob, string repairJobName);
-	void AddRandRepairJob();
-	void AddSchedRepairJob();
+
+	//int GetSource();
+	//int GetAircraftID();
+	//void GetAircraftFootprint();
+	//string GetAircraftIAT();
+	//string GetAircraftType();
+	//int GetAircraftPriority();
+	//int GetNextAircraftID(); 
 	//void SetNextID(int id);
-
-	RepairJob* GetRepairJobObj(string name);
-	int GetSource();
-	int GetAircraftID();
-	double GetAircraftFootprint();
-	string GetAircraftIAT(); //switch to distribution pointer
-	string GetAircraftType();
-	int GetAircraftPriority();
-	int GetNextAircraftID(); 
-	Aircraft* New(); //new aircraft creation
-
 
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
 	static int _nextID;
-	int _sourceID;
+//	int _source;
 	int		_priority;									//	Aircraft priority: helps determine first to be served in queues
 	double	_length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	double	_wingspan;									//	Aircraft size y dimension

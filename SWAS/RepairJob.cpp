@@ -99,17 +99,4 @@ void RepairJob::PrintJobProperties()
  //   cout << "recur: " << _recurringAmt << endl;
  //   cout << "indoor req: " << _indoorReq << endl;
     cout << endl;
-
-
-    for (int i = 0; i < vecSteps.size(); i++)
-    {
-        vecSteps[i]->Print();
-    }
-}
-
-void RepairJob::AddStep(Step* step)
-{
-    cout << "adding step \n";
-    vecSteps.push_back(step);
-    cout << endl << "new size " << vecSteps.size() << endl;
 }

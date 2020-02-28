@@ -156,7 +156,6 @@ void Step::SetReturnStep(int stepId)
 	_returnStep = stepId; 
 }
 
-void Step::Print()
-{
-	cout << "Step name: " << _name << endl; 
+void Step::Execute(Aircraft* aircraft) {
+	//SimExec::ScheduleEventIn(0.0, new AddQueueEA(this, aircraft));
 }

@@ -8,35 +8,21 @@ Aircraft::Aircraft()
 	_aircraftID = ++_nextID; // here instead of in setID funciton
 }
 
-void Aircraft::SetSource(int sourceID) 
-{
-	_sourceID = sourceID;
-}
-
-int Aircraft::GetSource() 
-{
-	return _sourceID;
-}
-
-//void Aircraft::SetAircraftID(int aircraftID)
-//{
+//void Aircraft::SetSource(int source) {
 //
 //}
 
-int Aircraft::GetAircraftID() 
-{
-	return _aircraftID;
-}
+//int Aircraft::GetSource() {
+//
+//}
 
-int Aircraft::GetNextAircraftID() 
-{
-	return _nextID;
-}
+//int Aircraft::GetAircraftID() {
+//
+//}
 
-Aircraft* Aircraft::New()
-{
-	return new Aircraft(); // add appropriate parameters
-}
+//int Aircraft::GetNextAircraftID() {
+//
+//}
 
 void Aircraft::SetAircraftFootprint(double length, double wingspan)
 {
@@ -44,10 +30,10 @@ void Aircraft::SetAircraftFootprint(double length, double wingspan)
 	_wingspan = wingspan;
 }
 
-double Aircraft::GetAircraftFootprint()
-{
-	return _length, _wingspan;
-}
+//void GetAircraftFootprint()
+//{
+//
+//}
 
 void Aircraft::SetAircraftType(string aircraftType)
 {
@@ -55,33 +41,11 @@ void Aircraft::SetAircraftType(string aircraftType)
 	//	cout << "Aircraft Type: " << aircraftType << endl;
 }
 
-string Aircraft::GetAircraftType() 
-{
-	return _aircraftType;
-}
+//string Aircraft::GetAircraftType() {
+//
+//}
 
-void Aircraft::AddRepairJobMaster(RepairJob* repairJob, string repairJobName)
-{
-	_allRepairJobsMap[repairJobName] = repairJob;
-}
-
-void Aircraft::AddRandRepairJob()
-{
-}
-
-void Aircraft::AddSchedRepairJob()
-{
-}
-
-RepairJob* Aircraft::GetRepairJobObj(string name)
-{
-	map<string, RepairJob*>::iterator it = _allRepairJobsMap.find(name);
-	if(it == _allRepairJobsMap.end())
-		return nullptr;
-	return it->second;
-}
-
-void Aircraft::SetAircraftPriority(int priority)
+void Aircraft::SetAircraftPriority(int priority) 
 {
 	_priority = priority;
 	//	cout << "priority: " << priority << endl;

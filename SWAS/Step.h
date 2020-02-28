@@ -10,37 +10,25 @@ class Step : public Task
 public:
 	Step(string serviceTime, string name);
 	void Execute(Aircraft* aircraft);
-
-	void SetName(string name);
-	void SetType(string type);
-	void SetInspecFailProb(string failureProb);
-	void SetServiceTime(string serviceTime);
-	void SetReqResource(string reqResource);
-	void SetReqParts(string reqParts);
-	void SetReturnStep(int stepId);
-
-	string GetName();
 	//Time GetServiceTime();
+	//void SetServiceTime(Time serviceTime);
+	string GetName();
+	void SetName(string name);
 	int GetNumberInQueue();
-
-	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
-	void AddQueueEM();						// if bay not avial, increment queue
-	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay
-	void Print();
+	//void SetNumberInQueue(int NumberInQueue);
+	/*void AcquireServerEM();
+	void AddQueueEM();
+	void ScheduleDoneServiceEM();*/
+	void ReleaseServer();
+	void DoneService();
 private:
 	Distribution* _serviceTime;
-	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
+	map<int, Aircraft*, greater<int>> _PriorityQueue;
+	map<int, Aircraft*, greater<int>>::iterator _iterator;
 	string _name;
 	int _numInQueue;
 	Step* _nextStep;
-	Resource* _bays;		//determined by Warehouse GUI
-	string _type;
-	string _inspecFailProb;
-	string _servTime;
-	string _reqRes;			//
-	string _reqParts;
-	int _returnStep;		// Maybe this should be a pointer to the step instead of its "id"
-
+	Resource* _bays;
 
 	class AcquireServerEA;
 	class AddQueueEA;
