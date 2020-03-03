@@ -30,3 +30,20 @@ or
 (1234, 0.5678) /
  x, y = math.modf();
 */
+
+TimeConverter::TimeConverter()
+{
+}
+
+void TimeConverter::ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int year, double distributionValue,
+	int baseX, int baseY, int* endOfMonth) {
+	double decimal = 0;
+	int dayInteger = 0;
+	//decimal, dayInteger = modf(distributionValue);
+	dayInteger *= 24; // 24 hours in a day, to determine how many days in advance to schedule
+	decimal = ceil(decimal * 24); // Converting the decimal portion to a specefic time of day
+	if (baseY + dayInteger > endOfMonth[baseX]) {
+		int remainder = 0;
+		remainder = (baseY + dayInteger) % endOfMonth[baseX];
+	}
+}
