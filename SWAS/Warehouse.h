@@ -14,5 +14,5 @@ private:
 	double _hangarLength;
 	double _hangarWidth;
 	int _index;
-	string listOfObjects[];
+	string _listOfObjects[];
 };
