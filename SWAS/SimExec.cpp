@@ -70,10 +70,69 @@ public:
 		}
 	}
 
-	void AddEvent(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, double distributionValue) {
+	/* void AddEvent(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, double distributionValue) {
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
+		cout << "Converting Distribution to Appropriate Time" << endl;
+		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
+		int binX;
+		int binY;
+		cout << "Hashing year to see the appopriate place to add the event" << endl;
+		if (e->_year > _year) {
+			cout << "Event isn't in this calendar year, adding it to the overflow bin" << endl;
+			binX = _overflow;
+			binY = 0;
+		}
+		else {
+			cout << "Setting the bins to the appopriate month & day" << endl;
+			binX = Month;
+			binY = Day;
+		}
+		cout << "Checking to see if Month and Day tuple is 0" << endl;
+		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority\n or an earlier time
+			than the head" << endl;
+		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate\n
+			place to put the new event << endl;
+		if (_eventSet[binX][binY] == 0) {
+			cout << "Tuple is 0, adding the event to the head of the list" << endl;
+			_eventSet[binX][binY] = e;
+		}
+		else if (timeOfDay < _eventSet[binX][binY]->_timeOfDay) {
+			cout << "New event has an earlier time than the head updating the list" << endl;
+			e->_nextEvent = _eventSet[binX][binY];
+			_eventSet[binX][binY] = e;
+		}
+		else {
+			Event* curr = _eventSet[binX][binY];
+			cout << "Searching the list on where to place the event based on time and priority" << endl;
+			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay) : false) {
+				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+					if (e->_priority > curr->_nextEvent->_priority) {
+						break;
+					}
+				}
+				else
+					curr = curr->_nextEvent;
+			}
+			if (curr->_nextEvent == 0) {
+				curr->_nextEvent = e;
+			}
+			else {
+				e->_nextEvent = curr->_nextEvent;
+				curr->_nextEvent = e;
+			}
+		}
+		cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day << " " << timeOfDay << endl;
+	} */
+	
+	void AddEvent(int priority, EventAction* ea, double distributionValue) {
+		Time Month, Day, timeOfDay;
+		cout << "Adding Event to the Event List" << endl;
+		_numEvents++;
+		cout << "Number of Events increased to " << _numEvents << endl;
+		cout << "Converting Distribution to Appropriate Time" << endl;
+		TimeConverter::funcName(Month, Day, timeOfDay, _simulationTime, _year, distributionValue);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY;
