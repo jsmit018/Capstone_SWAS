@@ -282,7 +282,7 @@ private:
 	//	//Will add an if statement on December 31 to increment the year by 1.
 	void AdvanceMonth() {
 		cout << "Advancing Month, and updating overflow bin" << endl;
-		if (_baseX == December && _baseY == 30) {
+		if (_baseX == December - 1 && _baseY == 30) {
 			_year++;
 			_baseX = 0;
 			_baseY = 0;
