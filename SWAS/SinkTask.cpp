@@ -14,11 +14,13 @@ void SinkBlock::SetName(string name) {
 }
 
 int SinkBlock::GetTerminatedAircraft() {
+    cout << "Returning terminated aircraft" << endl;
     return _terminatedAircraft;
 }
 
 void SinkBlock::Execute(Aircraft* aircraft) {
-	_terminatedAircraft++; 
+   cout << "Aircraft has finished tour of maintenance, departing" << endl;
+   _terminatedAircraft++; 
    delete aircraft;
 }
 
