@@ -70,7 +70,7 @@ public:
 		}
 	}
 
-	void AddEvent(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea) {
+	void AddEvent(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, double distributionValue) {
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
@@ -291,9 +291,10 @@ Time SimExec::GetSimulationTime() {
 	return _simulationTime;
 }
 
-void SimExec::ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, int priority, EventAction* ea) {
+void SimExec::ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, int priority, EventAction* ea, 
+			      double distributionValue) {
 	cout << "Scheduling Event" << endl;
-	_eventSet.AddEvent(timeMonth, timeDay, timeOfDay, year, priority, ea);
+	_eventSet.AddEvent(timeMonth, timeDay, timeOfDay, year, priority, ea, distributionValue);
 }
 
 void SimExec::RunSimulation() {
