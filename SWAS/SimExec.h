@@ -16,7 +16,8 @@ public:
 	//EventSet* GetEventSet();
 	//void SetEventSet(EventSet* es);
 	//static void ScheduleEventIn(Time time, EventAction* ea);
-	static void ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, int priority, EventAction* ea);
+	static void ScheduleEventAt(Time timeMonth, Time timeDay, Time timeOfDay, int year, int priority, EventAction* ea,
+				   double distributionValue);
 	static void InitializeSimulation(int numBins, Time timeRange, int* days);
 	static void RunSimulation();
 	static void RunSimulation(Time time);
@@ -27,10 +28,8 @@ private:
 	class EventSet;
 	static EventSet _eventSet;
 	//static int* _endOfMonth;
-	enum {
-		January, February, March, April, May, June, July,
-		August, September, October, Novemember, December
-	};
+	enum {January, February, March, April, May, June, July,
+	      August, September, October, Novemember, December};
 
 
 };
