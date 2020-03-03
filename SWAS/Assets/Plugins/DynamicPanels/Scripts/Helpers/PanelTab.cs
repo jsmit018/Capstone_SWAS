@@ -38,7 +38,6 @@ namespace DynamicPanels
 			public void SetActive( bool activeState ) { tab.SetActive( activeState ); }
 		}
 
-#pragma warning disable 0649
 		[SerializeField]
 		private Image background;
 
@@ -47,7 +46,6 @@ namespace DynamicPanels
 
 		[SerializeField]
 		private Text nameHolder;
-#pragma warning restore 0649
 
 		public InternalSettings Internal { get; private set; }
 
@@ -151,7 +149,7 @@ namespace DynamicPanels
 
 		private void SetActive( bool activeState )
 		{
-			if( !Content )
+			if( Content == null || Content.Equals( null ) )
 				m_panel.Internal.RemoveTab( m_panel.GetTabIndex( this ), true );
 			else
 			{
@@ -166,7 +164,7 @@ namespace DynamicPanels
 
 		void IPointerClickHandler.OnPointerClick( PointerEventData eventData )
 		{
-			if( !Content )
+			if( Content == null || Content.Equals( null ) )
 				m_panel.Internal.RemoveTab( m_panel.GetTabIndex( this ), true );
 			else
 				m_panel.ActiveTab = m_panel.GetTabIndex( this );

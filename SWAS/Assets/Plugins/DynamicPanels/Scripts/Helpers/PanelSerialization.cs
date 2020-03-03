@@ -9,7 +9,6 @@ namespace DynamicPanels
 	public static class PanelSerialization
 	{
 		#region Helper Classes
-#pragma warning disable 0649
 		[Serializable]
 		private class SerializedCanvas
 		{
@@ -88,7 +87,6 @@ namespace DynamicPanels
 				this.size = size;
 			}
 		}
-#pragma warning restore 0649
 		#endregion
 
 		private static readonly List<SerializedPanelTab> tabsTemp = new List<SerializedPanelTab>( 4 );

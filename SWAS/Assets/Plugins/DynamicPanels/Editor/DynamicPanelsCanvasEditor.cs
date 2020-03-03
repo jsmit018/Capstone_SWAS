@@ -91,7 +91,7 @@ namespace DynamicPanels
 			reorderableListIndex = 0;
 
 			bool multiObjectEditing = targets.Length > 1;
-			bool guiEnabled = !EditorApplication.isPlaying || AssetDatabase.Contains( ( (DynamicPanelsCanvas) serializedObject.targetObject ).gameObject );
+			bool guiEnabled = !EditorApplication.isPlaying || PrefabUtility.GetPrefabType( ( (DynamicPanelsCanvas) serializedObject.targetObject ).gameObject ) == PrefabType.Prefab;
 
 			GUI.enabled = guiEnabled;
 			GUILayout.BeginVertical();

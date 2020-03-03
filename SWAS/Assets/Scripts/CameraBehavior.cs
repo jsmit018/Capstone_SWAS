@@ -5,30 +5,15 @@ using UnityEngine;
 public class CameraBehavior : MonoBehaviour
 {
     public GameObject cameraTarget;
-    private float targetX;
     private float targetY;
 
-    // Initialize Camera Size Based on Warehouse Dimensions
+    // Start is called before the first frame update
     void Start()
     {
-        targetX = cameraTarget.transform.localScale.x;
-        targetY = cameraTarget.transform.localScale.y;
+        targetY = cameraTarget.transform.localScale.z;
 
         Camera camera = GetComponent<Camera>();
 
-        if (targetX > targetY)
-        {
-            camera.orthographicSize = targetX * 2.7f;
-        }
-        else
-        {
-            camera.orthographicSize = targetY * 2.7f;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        camera.orthographicSize = targetY * 5.6f;
     }
 }

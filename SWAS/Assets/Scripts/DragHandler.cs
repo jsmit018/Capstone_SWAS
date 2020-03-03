@@ -1,17 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-
-public class DragHandler : MonoBehaviour, IDragHandler, IEndDragHandler
+public class DragHandler : MonoBehaviour
 {
-    public void OnDrag(PointerEventData eventData)
+    private Vector3 mOffset;
+    private float mZCoord;
+
+    [SerializeField]
+    private RectTransform sceneView;
+
+    public void OnMouseDown()
     {
-        transform.position = Input.mousePosition;
+        mZCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
+
+        mOffset = gameObject.transform.position = GetMouseAsWorldPoint();
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    private Vector3 GetMouseAsWorldPoint()
     {
-        transform.localPosition = Vector3.zero;
+        Vector3 mousePoint = Input.mousePosition;
+        mousePoint.z = mZCoord;
+
+        return Camera.main.ScreenToWorldPoint(mousePoint);
+    }
+
+    private void OnMouseDrag()
+    {
+        transform.position = GetMouseAsWorldPoint() + mOffset;
     }
 }
