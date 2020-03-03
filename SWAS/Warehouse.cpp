@@ -3,6 +3,7 @@
 Warehouse::Warehouse(double length, double width) {
     _hangarLength = length;
     _hangarWidth = width;
+    _index = 0;
 }
 
 double Warehouse::GetLength()
@@ -27,4 +28,9 @@ double Warehouse::GetWidth()
 {
     cout << "Returning Hangar Width" << endl;
     return _hangarWidth;
+}
+
+void Warehouse::UpdateListOfObjects(string objectName){
+    _listOfObjects[_index] = objectName;
+    _index++;
 }
