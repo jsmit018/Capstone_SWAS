@@ -70,7 +70,7 @@ public:
 		}
 	}
 
-	/* void AddEventCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
+	void AddEventCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
@@ -130,12 +130,13 @@ public:
 		Time Month = 0.0;
 		Time Day = 0.0;
 		Time timeOfDay = 0.0;
+		int year = _year;
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-//		TimeConverter::funcName(Month, Day, timeOfDay, _simulationTime, _year, distributionValue);
-		Event* e = new Event(ea, Month, Day, timeOfDay, priority, _year);
+		TimeConverter::funcName(Month, Day, timeOfDay, _simulationTime, _year, distributionValue);
+		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY;
 		cout << "Hashing year to see the appopriate place to add the event" << endl;
