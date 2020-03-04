@@ -42,7 +42,6 @@ public:
 		cout << "Initializing the year to the current year" << endl;
 		_year = 2020;
 		cout << "Initializing the extra bin for the Calendar Queue" << endl;
-		//_overflow = 13; // Depending on whether or not we are using the 0th index
 		_overflow = 12;
 		cout << "Creating the Event List" << endl;
 		_eventSet = new Event **[numBins + 1];
@@ -135,7 +134,7 @@ public:
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributiontoMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, 
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, 
 							     _baseY, _endOfMonth);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
