@@ -3,7 +3,7 @@
 
 SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar,
 	Distribution* interarrivalTimeRND, Distribution* randomAircraftGeneration, string aircraftType, int numberOfAircraftToGenerate,
-	Time timeForFirstAircraft, Aircraft* aircraft, string name) : Task(name) {
+	Time timeForFirstAircraft, Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule) : Task(name) {
 	_name = name;
 	_interarrivalTimeRecurring = interarrivalTimeRecurring;
 	_interarrivalTimeCalendar = interarrivalTimeCalendar;
@@ -16,6 +16,9 @@ SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* 
 	_numberGenerated = 0;
 	//I believe we should change the name of this variable
 	//SimExec::ScheduleEventAt(timeForFirstAircraft, new ScheduleNextEntityEA(this));
+	for (int i = 0; i < numOfCalendarEventstoSchedule; ++i){
+		//SimExec::
+	}
 }
 
 class SourceBlock::ScheduleNextEntityCalendarEA : public EventAction {
