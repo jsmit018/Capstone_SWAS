@@ -357,7 +357,8 @@ void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distribution
 }
 
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
-//	_eventSet.AddEvent(Month, Day, year, priority, ea);
+	cout << "Scheduling Event" << endl;
+	_eventSet.AddEventCalendar(Month, Day, year, priority, ea);
 }
 
 void SimExec::RunSimulation() {
