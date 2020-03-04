@@ -1,5 +1,6 @@
 #include "CalendarConverter.h"
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -35,15 +36,35 @@ TimeConverter::TimeConverter()
 {
 }
 
-void TimeConverter::ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int year, double distributionValue,
+void TimeConverter::ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int &year, double distributionValue,
 	int baseX, int baseY, int* endOfMonth) {
-	double decimal = 0;
-	int dayInteger = 0;
+	//double decimal = 0;
+	//int dayInteger = 0;
 	//decimal, dayInteger = modf(distributionValue);
-	dayInteger *= 24; // 24 hours in a day, to determine how many days in advance to schedule
-	decimal = ceil(decimal * 24); // Converting the decimal portion to a specefic time of day
-	if (baseY + dayInteger > endOfMonth[baseX]) {
+	div_t divresult; // Declaring div_t object to obtain quotient and remainder
+	divresult = div(ceil(distributionValue), 24); // Divide the distribution by 24 gives an amount of days + a time)
+	//dayInteger *= 24; // 24 hours in a day, to determine how many days in advance to schedule
+	//decimal = ceil(decimal * 24); // Converting the decimal portion to a specefic time of day
+	if (baseY + (int)divresult.quot > endOfMonth[baseX]) { // Checking to see if the added time will make it advance past a month
 		int remainder = 0;
-		remainder = (baseY + dayInteger) % endOfMonth[baseX];
+		remainder = (baseY + divresult.quot) % endOfMonth[baseX]; // Check to see how far into the next month to schedule
+		if (baseX == 11){ //If we are in december we need to go into January and update the year
+			baseX = 0;
+			year++;
+			Month = baseX;
+			Day = remainder;
+			timeOfDay = divresult.rem;
+		}
+		else{ // Otherwise we just advance the month
+			baseX++;
+			Month = baseX;
+			Day = remainder;
+			timeOfDay = divresult.rem;
+		}
+	}
+	else{ // If the scheduling time doesn't advance us into the next month
+		Month = baseX;
+		Day = (baseY + divresult.quot);
+		timeOfDay = divresult.rem;
 	}
 }
