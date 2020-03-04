@@ -135,7 +135,8 @@ public:
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::funcName(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth);
+		TimeConverter::ConvertDistributiontoMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, 
+							     _baseY, _endOfMonth);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY;
