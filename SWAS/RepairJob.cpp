@@ -1,8 +1,10 @@
 #include "RepairJob.h"
 
+map<string, RepairJob*> RepairJob::_resourceRepairMap;
+
 RepairJob::RepairJob()
 {
-    _schedType = "n/a";
+    _schedType = "Unplanned";
     _calendarDate = "n/a";
     _recurringAmt = 0.0;
     _unplannedProb = "1";
@@ -89,27 +91,42 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
 //}
 //
 
+void RepairJob::AddStep(Step* step)
+{
+    //   cout << "adding step \n";
+    vecSteps.push_back(step);
+    //    cout << endl << "new size " << vecSteps.size() << endl;
+};
+
+void RepairJob::AddResourceRepair(RepairJob* repairJob, string resourceName)
+{
+    _resourceRepairMap[resourceName] = repairJob;
+}
+
+RepairJob* RepairJob::GetResourceRepair(string resourceName)
+{
+    map<string, RepairJob*>::iterator it = _resourceRepairMap.find(resourceName);
+    if (it == _resourceRepairMap.end())
+        return nullptr;
+    return it->second;
+}
+
 void RepairJob::PrintJobProperties()
 {
-    cout << "job name: " << _name << endl;
-    //   cout << "priority: " << _priority << endl;
-    //   cout << "probability: " << _unplannedProb << endl;
-    //   cout << "sched type: " << _schedType << endl;
-    //   cout << "cal: " << _calendarDate << endl;
-    //   cout << "recur: " << _recurringAmt << endl;
-    //   cout << "indoor req: " << _indoorReq << endl;
+    cout << "   Repair Job Name: " << _name << endl;
+    cout << "   Schedule Type: " << _schedType << endl;
+    cout << "   Repair Job Priority: " << _priority << endl;
+    cout << "   Unplanned Probability: " << _unplannedProb << endl;
+    cout << "   Calendar Occurrence: " << _calendarDate << endl;
+    cout << "   Reccuring Amount: " << _recurringAmt << endl;
+    cout << "   Indoor Requirement? " << _indoorReq << endl;
     cout << endl;
-
 
     for (int i = 0; i < vecSteps.size(); i++)
     {
         vecSteps[i]->Print();
+        cout << endl;
     }
+    cout << endl;
 }
 
-void RepairJob::AddStep(Step* step)
-{
- //   cout << "adding step \n";
-    vecSteps.push_back(step);
-//    cout << endl << "new size " << vecSteps.size() << endl;
-}

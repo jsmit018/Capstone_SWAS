@@ -3,15 +3,20 @@
 #include "Task.h"
 #include "Distribution.h"
 #include <string>
+#include <sstream>
 
 class Parts
 {
 public:
+	Parts();
 	void AcquireParts(int numNeeded);
+	bool AreEnoughParts(int numNeeded);
+	void PrintPartsProperties();
+
 	void SetPartsCount(int partsCount);
 	void SetPartsName(string partsName);
 	void SetThreshold(int orderThreshold);
-	bool AreEnoughParts(int numNeeded);
+	void SetLeadTime(string leadTime);
 
 	int GetPartsCount();
 	string GetPartsName();
@@ -22,5 +27,6 @@ private:
 	int _numNeeded;
 	string _partsName;
 	int _orderThreshold;
-	Distribution* _partsLeadTime;
+//	string _leadTimeTemp;
+	Distribution* _leadTime;
 };

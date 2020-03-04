@@ -8,6 +8,7 @@ int main() {
 
 	InputReader inputReader;
 	inputReader.ReadInputData();
+//	inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	return 0;
