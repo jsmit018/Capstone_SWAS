@@ -1,6 +1,9 @@
 #include "Parts.h"
 
-//send to Parts class
+Parts::Parts()
+{
+}
+
 void Parts::SetPartsCount(int partsCount)
 {
 	_partsCount = partsCount;
@@ -59,4 +62,86 @@ void Parts::SetThreshold(int orderThreshold)
 int Parts::GetThreshold()
 {
 	return _orderThreshold;
+}
+
+void Parts::SetLeadTime(string leadTime)
+{
+	istringstream leadDist(leadTime);
+	string firstHalf;
+	string secHalf;
+
+	getline(leadDist, firstHalf, '(');
+	getline(leadDist, secHalf, ')');
+//	cout << "first: " << firstHalf << endl;
+//	cout << "sec: " << secHalf << endl;
+
+	istringstream nums(secHalf);
+	if (firstHalf == "Triangular")
+	{
+		double min, expected, max;
+		nums >> min;
+		nums >> expected;
+		nums >> max;
+		_leadTime = new Triangular(min, expected, max);
+	}
+
+	else if (firstHalf == "Exponential")
+	{
+		double mean;
+		nums >> mean;
+
+		_leadTime = new Exponential(mean);
+	}
+
+	else if (firstHalf == "Uniform")
+	{
+		double min, max;
+		nums >> min >> max;
+
+		_leadTime = new Uniform(min, max);
+	}
+
+	else if (firstHalf == "Normal")
+	{
+		double mean, stdev;
+		nums >> mean >> stdev;
+
+		_leadTime = new Normal(mean, stdev);
+	}
+
+	else if (firstHalf == "Poisson")
+	{
+		double mean;
+		nums >> mean;
+
+		_leadTime = new Poisson(mean);
+	}
+
+	else if (firstHalf == "Constant" || firstHalf == "Fixed")
+	{
+		double mean;
+		nums >> mean;
+
+		_leadTime = new Constant(mean);
+	}
+
+	else if (firstHalf == "Weibull")
+	{
+		double scale, shape;
+		nums >> scale >> shape;
+
+		_leadTime = new Weibull(scale, shape);
+	}
+
+	//Determines correct distribution and prints
+//	_leadTime->PrintDistribution();
+}
+
+void Parts::PrintPartsProperties()
+{
+	cout << "name: " << _partsName << endl;
+	cout << "count: " << _partsCount << endl;
+	cout << "threshold: " << _orderThreshold << endl;
+	//cout << "lead time: " << _leadTimeTemp << endl;
+	cout << endl;
 }

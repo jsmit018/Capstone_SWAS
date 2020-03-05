@@ -42,7 +42,6 @@ public:
 		cout << "Initializing the year to the current year" << endl;
 		_year = 2020;
 		cout << "Initializing the extra bin for the Calendar Queue" << endl;
-		//_overflow = 13; // Depending on whether or not we are using the 0th index
 		_overflow = 12;
 		cout << "Creating the Event List" << endl;
 		_eventSet = new Event **[numBins + 1];
@@ -70,7 +69,7 @@ public:
 		}
 	}
 
-	/* void AddEventCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
+	void AddEventCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
@@ -124,18 +123,20 @@ public:
 			}
 		}
 		cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day << " " << timeOfDay << endl;
-	} */
+	} 
 	
 	void AddEvent(int priority, EventAction* ea, double distributionValue) {
 		Time Month = 0.0;
 		Time Day = 0.0;
 		Time timeOfDay = 0.0;
+		int year = _year;
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-//		TimeConverter::funcName(Month, Day, timeOfDay, _simulationTime, _year, distributionValue);
-		Event* e = new Event(ea, Month, Day, timeOfDay, priority, _year);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, 
+							     _baseY, _endOfMonth);
+		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY;
 		cout << "Hashing year to see the appopriate place to add the event" << endl;
@@ -356,7 +357,8 @@ void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distribution
 }
 
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
-//	_eventSet.AddEvent(Month, Day, year, priority, ea);
+	cout << "Scheduling Event" << endl;
+	_eventSet.AddEventCalendar(Month, Day, year, priority, ea);
 }
 
 void SimExec::RunSimulation() {

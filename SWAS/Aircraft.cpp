@@ -1,6 +1,7 @@
 //Aircraft.cpp: Andrea Robey
 
 #include "Aircraft.h"
+
 int Aircraft::_nextID = 0;
 
 Aircraft::Aircraft()
@@ -60,7 +61,7 @@ string Aircraft::GetAircraftType()
 	return _aircraftType;
 }
 
-void Aircraft::AddRepairJobMaster(RepairJob* repairJob, string repairJobName)
+void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 {
 	_allRepairJobsMap[repairJobName] = repairJob;
 }
@@ -160,26 +161,31 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 	}
 
 	//Determines correct distribution and prints
-//	_iatUnplanned->PrintDistribution();
+	_iatUnplanned->PrintDistribution();
 }
 
-//string Aircraft::GetAircraftIAT()
-//{
-//	//change to distribution
-//}
+Distribution* Aircraft::GetAircraftIAT()
+{
+	return _iatUnplanned; //check if this works
+}
 
 void Aircraft::PrintProperties()
-{
-	cout << "type: " << _aircraftType << endl;
-	//cout << "priority: " << _priority << endl;
-	//cout << "length: " << _length << endl;
-//	cout << "wingspan: " << _wingspan << endl;
+{	
+	cout << "AIRCRAFT:" << endl;
+	cout << "Aircraft Type: " << _aircraftType << endl;
+	cout << "Aircraft Priority: " << _priority << endl;
+	cout << "Aircraft Length: " << _length << endl;
+	cout << "Aircraft Wingspan: " << _wingspan << endl;
+	cout << endl;
+	cout << "Repair Jobs:" << endl;
+	cout << endl;
 
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.begin();
 	//cout << "After creating the iterator to the map " << std::endl; 
 	while (it != _allRepairJobsMap.end())
 	{
 		//cout << "in the loop \n";
+
 		it->second->PrintJobProperties();
 		it++;
 	}

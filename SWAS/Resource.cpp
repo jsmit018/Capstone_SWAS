@@ -1,5 +1,10 @@
 #include "Resource.h"
 
+Resource::Resource()
+{
+
+}
+
 //@TODO will need to figure out logic for what happens if amount needed is greater
 void Resource::Acquire(int amountNeeded)
 {
@@ -29,18 +34,6 @@ bool Resource::IsAvailable(int amountNeeded)
 	}
 }
 
-////send to Parts class
-//void Resource::OrderPartsEA()
-//{
-//
-//}
-//
-////send to Parts class
-//void Resource::OrderPartsEM()
-//{
-//
-//}
-
 void Resource::FailResource()
 {
 	//@TODO write the algorithm for a resource failure essentially is just scheduling an event
@@ -57,9 +50,9 @@ void Resource::RestoreResource()
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
 
-void Resource::SetResourceCount(int initialCount)
+void Resource::SetResourceCount(int resourceCount)
 {
-	_resourceCount = initialCount;
+	_resourceCount = resourceCount;
 }
 
 int Resource::GetResourceCount()
@@ -87,6 +80,17 @@ int Resource::GetNumResNeeded()
 	return _numResNeeded;
 }
 
+void Resource::SetResourceFootprint(double length, double width)
+{
+	_length = length;
+	_width = width;
+}
+
+double Resource::GetResourceFootprint()
+{
+	return _length, _width;
+}
+
 void Resource::SetFailureName(string failureName)
 {
 	_failureName = failureName;
@@ -95,4 +99,49 @@ void Resource::SetFailureName(string failureName)
 string Resource::GetFailureName()
 {
 	return _failureName;
+}
+
+void Resource::SetFailureType(string failureType)
+{
+	_failureType = failureType;
+}
+
+string Resource::GetFailureType()
+{
+	return _failureType;
+}
+
+void Resource::SetFailureDistr(string failureDistr)
+{
+	_failureDistTemp = failureDistr;
+
+	//turn failure distr from string into distributions
+}
+
+string Resource::GetFailureDistr()
+{
+	return _failureDistTemp;
+}
+
+void Resource::SetRepairProcess(string repairProc)
+{
+	_repairProc = repairProc;
+}
+
+string Resource::GetRepairProcess()
+{
+	return _repairProc;
+}
+
+void Resource::PrintResProperties()
+{
+	cout << "res name: " << _resourceName << endl;
+	cout << "count: " << _resourceCount << endl;
+	cout << "length: " << _length << endl;
+	cout << "width: " << _width << endl;
+	cout << "failure name: " << _failureName << endl;
+	cout << "failure type: " << _failureType << endl;
+	cout << "failure dist: " << _failureDistTemp << endl;
+	cout << "repair proc: " << _repairProc << endl;
+	cout << endl;
 }
