@@ -69,7 +69,7 @@ public:
 		}
 	}
 
-	void AddEventCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
+	void AddEventCalendar(Time Month, Time Day,Time timeOfDay, int year, int priority, EventAction* ea) {
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
@@ -89,10 +89,8 @@ public:
 			binY = Day;
 		}
 		cout << "Checking to see if Month and Day tuple is 0" << endl;
-		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority\n or an earlier time
-			than the head" << endl;
-		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate\n
-			place to put the new event << endl;
+		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
+		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;
 		if (_eventSet[binX][binY] == 0) {
 			cout << "Tuple is 0, adding the event to the head of the list" << endl;
 			_eventSet[binX][binY] = e;
@@ -134,8 +132,7 @@ public:
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, 
-							     _baseY, _endOfMonth);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY;
@@ -356,9 +353,9 @@ void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distribution
 	_eventSet.AddEvent(priority, ea, distributionValue);
 }
 
-void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
+void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea) {
 	cout << "Scheduling Event" << endl;
-	_eventSet.AddEventCalendar(Month, Day, year, priority, ea);
+	_eventSet.AddEventCalendar(Month, Day, timeOfDay, year, priority, ea);
 }
 
 void SimExec::RunSimulation() {
