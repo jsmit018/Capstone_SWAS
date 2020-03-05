@@ -1,23 +1,6 @@
 #include "SourceTask.h"
 #include "SimExec.h"
 
-SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar,
-	Distribution* interarrivalTimeRND, Distribution* randomAircraftGeneration, string aircraftType, int numberOfAircraftToGenerate,
-	Time timeForFirstAircraft, Aircraft* aircraft, string name) : Task(name) {
-	_name = name;
-	_interarrivalTimeRecurring = interarrivalTimeRecurring;
-	_interarrivalTimeCalendar = interarrivalTimeCalendar;
-	_interarrivalTimeRND = interarrivalTimeRND;
-	_aircraftType = aircraftType;
-	_aircraft = aircraft;
-	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
-	_randomAircraftGeneration = randomAircraftGeneration;
-	// _timeForFirstAircraft = timeForFirstAircraft;
-	_numberGenerated = 0;
-	//I believe we should change the name of this variable
-	//SimExec::ScheduleEventAt(timeForFirstAircraft, new ScheduleNextEntityEA(this));
-}
-
 class SourceBlock::ScheduleNextEntityCalendarEA : public EventAction {
 public:
 	ScheduleNextEntityCalendarEA(SourceBlock* source) {
@@ -29,6 +12,22 @@ public:
 private:
 	SourceBlock* _source;
 };
+
+SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar,
+	Distribution* interarrivalTimeRND, string aircraftType, int numberOfAircraftToGenerate,
+	Time timeForFirstAircraft, Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule) : Task(name) {
+	_name = name;
+	_interarrivalTimeRecurring = interarrivalTimeRecurring;
+	_interarrivalTimeCalendar = interarrivalTimeCalendar;
+	_interarrivalTimeRND = interarrivalTimeRND;
+	_aircraftType = aircraftType;
+	_aircraft = aircraft;
+	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
+	_numberGenerated = 0;
+	for (int i = 0; i < numOfCalendarEventsToSchedule; ++i){
+		SimExec::ScheduleEventAtCalendar(0, 0, 0.0, 2020, _aircraft->GetAircraftPriority(), new ScheduleNextEntityCalendarEA(this));
+	}
+}
 
 class SourceBlock::ScheduleNextRandomEntityEA : public EventAction {
 public:
@@ -74,14 +73,9 @@ int SourceBlock::GetNumberGenerated() {
 }
 
 void SourceBlock::ScheduleNextEntityCalendarEM() {
-	// while(_numberOFAircraftToGenerate != _numberGenerated){
-	// SimExec::ScheduleEventIn(_interarrivalTimeCalendar->GetRV(), new ScheduleNextEntityCalendarEA(this));
-	if (_randomAircraftGeneration->GetRV() >= .51) {
-		//SimExec::ScheduleEventIn(_interarrivalTimeRND->GetRV(), new ScheduleNextRandomEntityEA(this));
-	}
-	// Depart(_aircraft->New());
+	SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomEntityEA(this), _interarrivalTimeRND->GetRV());
+	Depart(_aircraft->New());
 	_numberGenerated++;
-	//}
 }
 
 void SourceBlock::ScheduleNextRandomEntityEM() {
@@ -90,12 +84,9 @@ void SourceBlock::ScheduleNextRandomEntityEM() {
 }
 
 void SourceBlock::ScheduleNextRecurringEM() {
+	SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringEA(this), _interarrivalTimeRecurring->GetRV());
+	SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomEntityEA(this), _interarrivalTimeRND->GetRV());
 	Depart(_aircraft->New());
-	/*SimExec::ScheduleEventIn(_interarrivalTimeCalendar->GetRV(), new
-		ScheduleNextEntityCalendarEA(this));*/
-	if (_randomAircraftGeneration->GetRV() >= .51) {
-		//SimExec::ScheduleEventIn(_interarrivalTimeRND->GetRV(), new ScheduleNextRandomEntityEA(this));
-	}
 	_numberGenerated++;
 }
 

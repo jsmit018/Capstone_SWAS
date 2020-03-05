@@ -12,7 +12,7 @@ public:
 	//SimExec();
 	static Time GetSimulationTime();
 	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue);
-	static void ScheduleEventAtCalendar(Time Month, Time Day, int year, int priority, EventAction* ea);
+	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea);
 	static void InitializeSimulation(int numBins, Time timeRange, int* days);
 	static void RunSimulation();
 	static void RunSimulation(Time time);

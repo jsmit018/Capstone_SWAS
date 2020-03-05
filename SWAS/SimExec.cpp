@@ -42,7 +42,6 @@ public:
 		cout << "Initializing the year to the current year" << endl;
 		_year = 2020;
 		cout << "Initializing the extra bin for the Calendar Queue" << endl;
-		//_overflow = 13; // Depending on whether or not we are using the 0th index
 		_overflow = 12;
 		cout << "Creating the Event List" << endl;
 		_eventSet = new Event **[numBins + 1];
@@ -70,7 +69,7 @@ public:
 		}
 	}
 
-	/* void AddEventCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
+	void AddEventCalendar(Time Month, Time Day,Time timeOfDay, int year, int priority, EventAction* ea) {
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
@@ -90,10 +89,8 @@ public:
 			binY = Day;
 		}
 		cout << "Checking to see if Month and Day tuple is 0" << endl;
-		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority\n or an earlier time
-			than the head" << endl;
-		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate\n
-			place to put the new event << endl;
+		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
+		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;
 		if (_eventSet[binX][binY] == 0) {
 			cout << "Tuple is 0, adding the event to the head of the list" << endl;
 			_eventSet[binX][binY] = e;
@@ -124,18 +121,19 @@ public:
 			}
 		}
 		cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day << " " << timeOfDay << endl;
-	} */
+	} 
 	
 	void AddEvent(int priority, EventAction* ea, double distributionValue) {
 		Time Month = 0.0;
 		Time Day = 0.0;
 		Time timeOfDay = 0.0;
+		int year = _year;
 		cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-//		TimeConverter::funcName(Month, Day, timeOfDay, _simulationTime, _year, distributionValue);
-		Event* e = new Event(ea, Month, Day, timeOfDay, priority, _year);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth);
+		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year);
 		int binX;
 		int binY;
 		cout << "Hashing year to see the appopriate place to add the event" << endl;
@@ -355,8 +353,9 @@ void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distribution
 	_eventSet.AddEvent(priority, ea, distributionValue);
 }
 
-void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, int year, int priority, EventAction* ea) {
-//	_eventSet.AddEvent(Month, Day, year, priority, ea);
+void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea) {
+	cout << "Scheduling Event" << endl;
+	_eventSet.AddEventCalendar(Month, Day, timeOfDay, year, priority, ea);
 }
 
 void SimExec::RunSimulation() {

@@ -17,6 +17,6 @@ private:
 class TimeConverter {
 public:
 	TimeConverter();
-	void ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int year, double distributionValue, int baseX,
+	static void ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int &year, double distributionValue, int baseX,
 										int baseY, int* endOfMonth);
 };
