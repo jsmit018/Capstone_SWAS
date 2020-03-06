@@ -15,7 +15,7 @@ private:
 
 SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar,
 	Distribution* interarrivalTimeRND, string aircraftType, int numberOfAircraftToGenerate,
-	Time timeForFirstAircraft, Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule) : Task(name) {
+	Time timeForFirstAircraft, Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule, CalendarObj* calobj) : Task(name) {
 	_name = name;
 	_interarrivalTimeRecurring = interarrivalTimeRecurring;
 	_interarrivalTimeCalendar = interarrivalTimeCalendar;
@@ -25,7 +25,8 @@ SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* 
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
 	_numberGenerated = 0;
 	for (int i = 0; i < numOfCalendarEventsToSchedule; ++i){
-		SimExec::ScheduleEventAtCalendar(0, 0, 0.0, 2020, _aircraft->GetAircraftPriority(), new ScheduleNextEntityCalendarEA(this));
+		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_years[i], 
+				_aircraft->GetAircraftPriority(), new ScheduleNextEntityCalendarEA(this));
 	}
 }
 

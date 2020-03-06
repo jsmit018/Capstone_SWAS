@@ -9,7 +9,6 @@ public:
 	string GetName();
 	void SetName(string name);
 	int GetTerminatedAircraft();
-	//void SetTerminatedAircraft(int terminatedAircraft);
 private:
 	string _name;
 	int _terminatedAircraft;

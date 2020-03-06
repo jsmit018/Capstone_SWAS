@@ -30,7 +30,7 @@ public:
 
 	}
 
-	void InitEventSet(int numBins, Time timeRange, int* days) {
+	void InitEventSet(int numBins, int* days) {
 		cout << "Initializing Event Set" << endl;
 		cout << "Setting the initial number of events to 0" << endl;
 		_numEvents = 0;
@@ -337,10 +337,10 @@ private:
 SimExec::EventSet SimExec::_eventSet;
 Time SimExec::_simulationTime = 0.0;
 
-void SimExec::InitializeSimulation(int numBins, Time timeRange, int* days) {
+void SimExec::InitializeSimulation(int numBins, int* days) {
 	cout << "Setting Simulation time to 0" << endl;
 	_simulationTime = 0.0;
-	_eventSet.InitEventSet(numBins, timeRange, days);
+	_eventSet.InitEventSet(numBins, days);
 }
 
 Time SimExec::GetSimulationTime() {

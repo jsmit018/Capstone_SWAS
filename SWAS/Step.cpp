@@ -11,6 +11,11 @@ Step::Step(string serviceTime, string name) : Task(name)
 	_name = name;
 }
 
+/* For @ARobey 
+	Waiting logic for an aircraft that doesn't have the right resources -> We won't want to just yank it out of the event list but we also can't leave
+	it alone. I suggest we just move the event make it have the highest priority first thing the next day to check if it is available. 
+*/
+
 class Step::StartServiceEA : public EventAction {
 public:
 	StartServiceEA(Step* step, Aircraft* aircraft, RepairJob* repairJob) {
