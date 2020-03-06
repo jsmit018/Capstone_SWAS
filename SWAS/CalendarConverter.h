@@ -20,3 +20,12 @@ public:
 	static void ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int &year, double distributionValue, int baseX,
 										int baseY, int* endOfMonth);
 };
+
+class CalendarObj {
+public: 
+	CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years);
+	std::vector<Time> _months;
+	std::vector<Time> _days;
+	std::vector<Time> _timeOfDays;
+	std::vector<int> _years;
+};

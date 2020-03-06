@@ -9,11 +9,10 @@ using namespace std;
 
 class SimExec : public SimObj {
 public:
-	//SimExec();
 	static Time GetSimulationTime();
 	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue);
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea);
-	static void InitializeSimulation(int numBins, Time timeRange, int* days);
+	static void InitializeSimulation(int numBins, int* days);
 	static void RunSimulation();
 	static void RunSimulation(Time time);
 
