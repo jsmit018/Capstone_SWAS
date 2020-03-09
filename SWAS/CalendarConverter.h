@@ -17,12 +17,12 @@ private:
 class TimeConverter {
 public:
 	TimeConverter();
-	static void ConvertDistributionToMonthDay(Time &Month, Time &Day, Time &timeOfDay, int &year, double distributionValue, int baseX,
-										int baseY, int* endOfMonth);
+	static void ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue, int baseX,
+		int baseY, int* endOfMonth, int recurring = 0, Time simTime = 0);
 };
 
 class CalendarObj {
-public: 
+public:
 	CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years);
 	std::vector<Time> _months;
 	std::vector<Time> _days;

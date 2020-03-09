@@ -47,11 +47,11 @@ void DelayBlock::SetName(string name) {
 }
 
 void DelayBlock::Execute(Aircraft* aircraft) {
-	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new StartDelayEA(this, aircraft), 0.0);
+	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new StartDelayEA(this, aircraft), 0.0, "StartDelayEA");
 }
 
 void DelayBlock::StartDelayEM(Aircraft* aircraft){
-	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new EndDelayEA(this, aircraft), _delayTime->GetRV());
+	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new EndDelayEA(this, aircraft), _delayTime->GetRV(), "EndDelayEA");
 }
 
 void DelayBlock::EndDelayEM(Aircraft* aircraft){

@@ -82,6 +82,10 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 					//acquire the object (num of available resources decrements)
 				//else
 					//wait til available (logic)
+					//@ARobey from what we agreed on the last time we spoke is that we'd reschedule 12 hours later to check.
+					//You'll just need to plug in the priority value and the repair job.
+					//Wherever you need the wait logic please just copy the below schedule statement.
+					//SimExec::ScheduleEventAt(/ priority / +65, new StartServiceEA(this, aircraft, / repairjob / ), new Constant(12), "StartServiceEA");
 
 			iter++;
 		}

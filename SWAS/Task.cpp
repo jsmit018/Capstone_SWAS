@@ -9,6 +9,7 @@ void Task::SetNextTask(Task* nextTask)
 
 void Task::Arrive(Aircraft* aircraft)
 {
+	//cout << "time = " << SimObj::GetSimulationTime() << ", " << _name << ", " << "arrive, Entity: " << entity->GetEntityID() << endl;
 	Execute(aircraft);
 }
 
@@ -34,6 +35,8 @@ Task::Task(string name)
 
 void Task::Depart(Aircraft* aircraft)
 {
+	//cout << "time = " << SimObj::GetSimulationTime() << ", " << _name << ", " << "depart, Entity: " << entity->GetEntityID() << endl;
+	//cout << 
 	aircraft->SetSource(this->GetID());
 	_nextTask->Arrive(aircraft);
 }
