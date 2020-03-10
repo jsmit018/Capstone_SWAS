@@ -1,5 +1,12 @@
 #include "SimExec.h"
 #include "InputInterface.h"
+#include "SourceTask.h"
+#include "RepairJob.h"
+#include "Resource.h"
+#include "Step.h"
+#include "Aircraft.h"
+#include "Distribution.h"
+#include "SinkTask.h"
 
 
 int main() {
@@ -17,9 +24,7 @@ int main() {
 	*/
 
 	/*
-		SimExec::WaitForTrigger(/From Warehouse/)
 		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
-		Warehouse::Trigger();
 		//Print Values here
 	*/
 

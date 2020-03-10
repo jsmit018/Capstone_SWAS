@@ -1,5 +1,5 @@
 #include "task.h"
-//#include "SimExec.h"
+#include "SimExec.h"
 #include "Aircraft.h"
 
 void Task::SetNextTask(Task* nextTask)
@@ -9,7 +9,16 @@ void Task::SetNextTask(Task* nextTask)
 
 void Task::Arrive(Aircraft* aircraft)
 {
-	//cout << "time = " << SimObj::GetSimulationTime() << ", " << _name << ", " << "arrive, Entity: " << entity->GetEntityID() << endl;
+	if (SimExec::GetSimulationTime()._timeOfDay >= 10.00) {
+		cout << "Arrival at " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month) << " " << SimExec::GetSimulationTime()._day
+			<< " at " << SimExec::GetSimulationTime()._timeOfDay << "00 in " << SimExec::GetSimulationTime()._year << " at " << _name <<
+			" ID: " << aircraft->GetAircraftID() << endl;
+	}
+	else {
+		cout << "Arrival at " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month) << " " << SimExec::GetSimulationTime()._day
+			<< " at 0" << SimExec::GetSimulationTime()._timeOfDay << "00 in " << SimExec::GetSimulationTime()._year << " at " << _name <<
+			" ID: " << aircraft->GetAircraftID() << endl;
+	}
 	Execute(aircraft);
 }
 
@@ -35,8 +44,16 @@ Task::Task(string name)
 
 void Task::Depart(Aircraft* aircraft)
 {
-	//cout << "time = " << SimObj::GetSimulationTime() << ", " << _name << ", " << "depart, Entity: " << entity->GetEntityID() << endl;
-	//cout << 
+	if (SimExec::GetSimulationTime()._timeOfDay >= 10.00) {
+		cout << "Aircraft Departing at " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month) << " " << SimExec::GetSimulationTime()._day
+			<< " at " << SimExec::GetSimulationTime()._timeOfDay << "00 in " << SimExec::GetSimulationTime()._year << " from " << _name <<
+			" ID: " << aircraft->GetAircraftID() << endl;
+	}
+	else {
+		cout << "Aircraft Departing at " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month) << " " << SimExec::GetSimulationTime()._day
+			<< " at 0" << SimExec::GetSimulationTime()._timeOfDay << "00 in " << SimExec::GetSimulationTime()._year << " from " << _name <<
+			" ID: " << aircraft->GetAircraftID() << endl;
+	}
 	aircraft->SetSource(this->GetID());
 	_nextTask->Arrive(aircraft);
 }

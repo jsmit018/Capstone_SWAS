@@ -26,15 +26,16 @@ private:
 	SourceBlock* _source;
 };
 
-SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, Distribution* interarrivalTimeCalendar,
-	string aircraftType, int numberOfAircraftToGenerate, Time timeForFirstAircraft, Aircraft* aircraft, string name, 
-	int numOfCalendarEventsToSchedule, CalendarObj* calobj) : Task(name) {
+SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, string aircraftType, int numberOfAircraftToGenerate, 
+	Time timeForFirstAircraft, Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule, CalendarObj* calobj) : Task(name) {
 	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;
 	_name = name;
 	cout << "Initializing Aircraft Distributions" << endl;
 	_interarrivalTimeRecurring = interarrivalTimeRecurring;
-	_interarrivalTimeCalendar = interarrivalTimeCalendar;
 	_interarrivalTimeRND = aircraft->GetAircraftIAT();
+	cout << "Printing Aircraft Distributions" << endl;
+	_interarrivalTimeRecurring->PrintDistribution();
+	_interarrivalTimeRND->PrintDistribution();
 	_aircraftType = aircraftType;
 	_aircraft = aircraft;
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;

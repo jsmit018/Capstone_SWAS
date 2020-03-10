@@ -565,6 +565,11 @@ void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea)
 	_conditionalSet.AddConditionalEvent(priority, cea);
 }
 
+string SimExec::ConvertDate(Time month)
+{
+	return _eventSet.ConvertMonth(month);
+}
+
 void SimExec::CheckConditionalEvents(Resource* resource)
 {
 	while(_conditionalSet.CheckConditionalEvents(resource));
@@ -623,7 +628,7 @@ void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
 			<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
 	}
-	else if (_simulationTime._timeOfDay){
+	else{
 		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
 			<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
 	}

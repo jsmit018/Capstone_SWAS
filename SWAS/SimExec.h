@@ -20,6 +20,7 @@ public:
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName);
 	static void ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring = 1);
 	static void ScheduleConditionalEvent(int priority, CondEventAction* cea);
+	static string ConvertDate(Time month);
 	static void CheckConditionalEvents(Resource* resource);
 	static void PrintEventSet();
 	static void InitializeSimulation(int numBins, int* days);
