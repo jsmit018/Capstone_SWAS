@@ -257,7 +257,7 @@ public:
 		else {
 			Event* curr = _eventSet[binX][binY];
 			cout << "Searching the list on where to place the event based on time and priority" << endl;
-			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay) : false) {
+			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority > curr->_nextEvent->_priority) {
 						break;
@@ -266,7 +266,7 @@ public:
 				else
 					curr = curr->_nextEvent;
 			}
-			if (curr->_nextEvent == 0) {
+			if (curr->_nextEvent == 0 && e->_timeOfDay >= curr->_timeOfDay) {
 				curr->_nextEvent = e;
 			}
 			else {
@@ -322,7 +322,7 @@ public:
 		else {
 			Event* curr = _eventSet[binX][binY];
 			cout << "Searching the list on where to place the event based on time and priority" << endl;
-			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay) : false) {
+			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority > curr->_nextEvent->_priority) {
 						break;
@@ -331,7 +331,7 @@ public:
 				else
 					curr = curr->_nextEvent;
 			}
-			if (curr->_nextEvent == 0) {
+			if (curr->_nextEvent == 0 && e->_timeOfDay >= curr->_timeOfDay) {
 				curr->_nextEvent = e;
 			}
 			else {
@@ -502,11 +502,16 @@ private:
 				}
 				else {
 					Event* curr = _eventSet[previousBase][eventDay];
-					while ((curr->_nextEvent != 0) ? (curr->_timeOfDay
-						>= currEvent->_timeOfDay) : false) {
-						curr = curr->_nextEvent;
+					while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
+						if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+							if (currEvent->_priority > curr->_nextEvent->_priority) {
+								break;
+							}
+						}
+						else
+							curr = curr->_nextEvent;
 					}
-					if (curr->_nextEvent == 0) {
+					if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
 						curr->_nextEvent = currEvent;
 					}
 					else {
