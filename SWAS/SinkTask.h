@@ -1,6 +1,7 @@
 #pragma once
 #include "Task.h"
-#include "SimObj.h"
+//#include "SimObj.h"
+#include "SimExec.h"
 
 class SinkBlock : public Task {
 public:

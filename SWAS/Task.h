@@ -1,5 +1,6 @@
 #pragma once
-#include "SimObj.h"
+//#include "SimObj.h"
+#include "SimExec.h"
 
 class Aircraft;
 

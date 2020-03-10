@@ -1,4 +1,5 @@
 #include "SimExec.h"
+#include "Resource.h"
 
 
 /*SimExec::SimExec() : SimObj(){
@@ -35,6 +36,64 @@ struct SimExec::Event {
 	string _eventActionName;
 	int _year;
 	int _priority;
+};
+
+struct SimExec::CondEvent {
+	CondEvent(int priority, CondEventAction* cea) {
+		_priority = priority;
+		_cea = cea;
+		_nextCondEvent = 0;
+	}
+
+	int _priority;
+	CondEventAction* _cea;
+	CondEvent* _nextCondEvent;
+};
+
+class SimExec::CondEventSet {
+public: 
+	CondEventSet() {
+		_condSet = 0;
+	}
+
+	void AddConditionalEvent(int priority, CondEventAction* cea) {
+		CondEvent* c = new CondEvent(priority, cea);
+		if (_condSet == 0) {
+			_condSet = c;
+		}
+		else if (_condSet->_priority < c->_priority) {
+			c->_nextCondEvent = _condSet;
+			_condSet = c;
+		}
+		else {
+			CondEvent* curr = _condSet;
+			while ((curr != 0) ? (c->_priority >= curr->_priority) : false) {
+				curr = curr->_nextCondEvent;
+			}
+			if (curr->_nextCondEvent == 0) {
+				curr->_nextCondEvent = c;
+			}
+			else {
+				c->_nextCondEvent = curr->_nextCondEvent;
+				curr->_nextCondEvent = c;
+			}
+		}
+	}
+
+	bool CheckConditionalEvents(Resource* resource) {
+		CondEvent* curr = _condSet;
+		while (curr != 0) {
+			if (curr->_cea->Condition(resource)) {
+				curr->_cea->Execute();
+				return true;
+			}
+			curr = curr->_nextCondEvent;
+		}
+		return false;
+	}
+
+private:
+	CondEvent* _condSet;
 };
 
 class SimExec::EventSet {
@@ -167,7 +226,7 @@ public:
 		_numEvents++;
 		cout << "Number of Events increased to " << _numEvents << endl;
 		cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, recurring, _simulationTime);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, recurring, _simulationTime._timeOfDay);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
@@ -298,8 +357,13 @@ public:
 	}
 
 	Time GetDay() {
-		cout << "returning Day of the Month" << endl;
+		cout << "Returning Day of the Month" << endl;
 		return _eventSet[_baseX][_baseY]->_timeDay;
+	}
+
+	int GetYear() {
+		cout << "Returning Year" << endl;
+		return _eventSet[_baseX][_baseY]->_year;
 	}
 
 	string ConvertMonth(Time month) {
@@ -358,7 +422,6 @@ public:
 			}
 			Event* next = _eventSet[_baseX][_baseY];
 			cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
-			_simulationTime = GetTimeOfDay();
 			_eventSet[_baseX][_baseY] = next->_nextEvent;
 			EventAction* ea = next->_ea;
 			delete next;
@@ -463,15 +526,19 @@ private:
 };
 
 SimExec::EventSet SimExec::_eventSet;
-Time SimExec::_simulationTime = 0.0;
+SimExec::CondEventSet SimExec::_conditionalSet;
+SimulationTime SimExec::_simulationTime;
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
 	cout << "Setting Simulation time to 0" << endl;
-	_simulationTime = 0.0;
+	_simulationTime._timeOfDay = 0;
+	_simulationTime._month = 0;
+	_simulationTime._day = 0;
+	_simulationTime._year = 2020;
 	_eventSet.InitEventSet(numBins, days);
 }
 
-Time SimExec::GetSimulationTime() {
+SimulationTime SimExec::GetSimulationTime() {
 	cout << "Returning Simulation Time" << endl;
 	return _simulationTime;
 }
@@ -492,6 +559,17 @@ void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double dis
 	_eventSet.AddEventRecurring(priority, ea, distributionValue, recurring, eaName);
 }
 
+void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea)
+{
+	cout << "Scheduling Conditional Event";
+	_conditionalSet.AddConditionalEvent(priority, cea);
+}
+
+void SimExec::CheckConditionalEvents(Resource* resource)
+{
+	while(_conditionalSet.CheckConditionalEvents(resource));
+}
+
 void SimExec::PrintEventSet()
 {
 	_eventSet.PrintCalendar();
@@ -500,21 +578,53 @@ void SimExec::PrintEventSet()
 void SimExec::RunSimulation() {
 	cout << "Running Simulation" << endl;
 	while (_eventSet.HasEvent()) {
-		//_simulationTime = _eventSet.GetTime();
+		_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
+		_simulationTime._month = _eventSet.GetMonth();
+		_simulationTime._day = _eventSet.GetDay();
+		_simulationTime._year = _eventSet.GetYear();
 		EventAction* ea = _eventSet.GetEventAction();
 		ea->Execute();
 		delete ea;
+		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
+			|| _eventSet.GetYear() != _simulationTime._year || _eventSet.GetMonth() != _simulationTime._month) : true)
+			while (_conditionalSet.CheckConditionalEvents());*/
 	}
 	cout << "Simulation Terminating" << endl;
+	if (_simulationTime._timeOfDay >= 10) {
+		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+			<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+	}
+	else if (_simulationTime._timeOfDay) {
+		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+			<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+	}
 }
 
-void SimExec::RunSimulation(Time time) {
+void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 	cout << "Running Simulation" << endl;
-	while (_eventSet.HasEvent() && _simulationTime <= time) {
-		//_simulationTime = _eventSet.GetTime();
-		EventAction* ea = _eventSet.GetEventAction();
-		ea->Execute();
-		delete ea;
+	while (_eventSet.HasEvent()) {
+		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= (int)timeOfDay 
+			&& _simulationTime._year >= year)
+			break;
+		else {
+			_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
+			_simulationTime._month = _eventSet.GetMonth();
+			_simulationTime._day = _eventSet.GetDay();
+			_simulationTime._year = _eventSet.GetYear();
+			EventAction* ea = _eventSet.GetEventAction();
+			ea->Execute();
+			delete ea;
+			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
+				|| _eventSet.GetYear() != _simulationTime._year || _eventSet.GetMonth() != _simulationTime._month) : true)
+				while (_conditioinalSet.CheckConditionalEvents());*/
+		}
 	}
-	cout << "Simulation Terminated at time " << time << endl;
+	if (_simulationTime._timeOfDay >= 10) {
+		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+			<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+	}
+	else if (_simulationTime._timeOfDay){
+		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+			<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+	}
 }

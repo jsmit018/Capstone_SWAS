@@ -6,10 +6,18 @@ using namespace std;
 
 typedef double Time;
 
+class Resource;
+
 class EventAction {
 public:
 	EventAction() {};
 	virtual void Execute() = 0;
+};
+
+class CondEventAction : public EventAction {
+public:
+	CondEventAction() {};
+	virtual bool Condition(Resource* resource) = 0;
 };
 
 class SimObj {

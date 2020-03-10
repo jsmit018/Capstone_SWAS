@@ -1,5 +1,5 @@
 #include "task.h"
-#include "SimExec.h"
+//#include "SimExec.h"
 #include "Aircraft.h"
 
 void Task::SetNextTask(Task* nextTask)
