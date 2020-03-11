@@ -16,7 +16,16 @@ RepairJob::RepairJob()
 //    _stepList = new Step*[listSize];
 //}
 //
+Step* RepairJob::GetStep(int stepID)
+{
+    //setting stepID 
+    return _vecSteps[stepID];
+}
 
+int RepairJob::GetStepVecSize()
+{
+    return _vecSteps.size();
+}
 
 void RepairJob::SetName(string name)
 {
@@ -93,14 +102,33 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
 
 void RepairJob::AddStep(Step* step)
 {
-    //   cout << "adding step \n";
-    vecSteps.push_back(step);
+   //    cout << "adding step \n";
+    _vecSteps.push_back(step);
     //    cout << endl << "new size " << vecSteps.size() << endl;
 };
+
+//Step* RepairJob::GetSteps()
+//{
+//    for (int i = 0; i < _vecSteps.size; i++)
+//    {
+//        return _vecSteps[i];
+//    }
+//}
 
 void RepairJob::AddResourceRepair(RepairJob* repairJob, string resourceName)
 {
     _resourceRepairMap[resourceName] = repairJob;
+}
+
+void RepairJob::PrintResourceRepairs()
+{
+    map<string, RepairJob*>::iterator iter = _resourceRepairMap.begin();
+
+    while (iter != _resourceRepairMap.end())
+    {
+        cout << iter->second->GetName() << endl;
+        iter++;
+    }
 }
 
 RepairJob* RepairJob::GetResourceRepair(string resourceName)
@@ -114,17 +142,17 @@ RepairJob* RepairJob::GetResourceRepair(string resourceName)
 void RepairJob::PrintJobProperties()
 {
     cout << "   Repair Job Name: " << _name << endl;
-    cout << "   Schedule Type: " << _schedType << endl;
-    cout << "   Repair Job Priority: " << _priority << endl;
-    cout << "   Unplanned Probability: " << _unplannedProb << endl;
-    cout << "   Calendar Occurrence: " << _calendarDate << endl;
-    cout << "   Reccuring Amount: " << _recurringAmt << endl;
-    cout << "   Indoor Requirement? " << _indoorReq << endl;
+    //cout << "   Schedule Type: " << _schedType << endl;
+    //cout << "   Repair Job Priority: " << _priority << endl;
+    //cout << "   Unplanned Probability: " << _unplannedProb << endl;
+    //cout << "   Calendar Occurrence: " << _calendarDate << endl;
+    //cout << "   Reccuring Amount: " << _recurringAmt << endl;
+    //cout << "   Indoor Requirement? " << _indoorReq << endl;
     cout << endl;
 
-    for (int i = 0; i < vecSteps.size(); i++)
+    for (int i = 0; i < _vecSteps.size(); i++)
     {
-        vecSteps[i]->Print();
+        _vecSteps[i]->Print();
         cout << endl;
     }
     cout << endl;

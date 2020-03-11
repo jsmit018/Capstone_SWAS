@@ -19,10 +19,15 @@ public:
 	void SetReqResource(string reqResource);
 	void SetReqParts(string reqParts);
 	void SetReturnStep(/*int stepId*/ int returnStep);
+	
 	void AddResource(Resource* resource, string resourceName);
 	void AddParts(Parts* parts, string partsName);
-
-
+	void PrintParts();
+	void PrintResources();
+	map<string, Resource*>::iterator FindResource(string resource);
+	map<string, Parts*>::iterator FindParts(string parts);
+	bool IsResourceMapEnd(map<string, Resource*>::iterator it);
+	bool IsPartsMapEnd(map<string, Parts*>::iterator it);
 	string GetName();
 	//Time GetServiceTime();
 	int GetNumberInQueue();
@@ -36,11 +41,13 @@ private:
 	Distribution* _serviceTime;
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
+	char _indoorReq; /// this is not populated right now
+//	int _stepID;
 	int _numInQueue;
 	Step* _nextStep;
 //	Resource* _bays;		//determined by Warehouse GUI
 	string _type;
-	string _inspecFailProb;
+	Distribution* _inspecFailProb;
 	string _servTime;
 	string _reqRes;			//break up into two parts, store into map
 	string _reqParts;		//break up into two parts, store into map
@@ -54,15 +61,25 @@ private:
 	bool haveAllResources();	//check for whether acquired resources can be released
 	
 
+	/// to do //
+	static map<string, Resource*> _resourcePool; 
+	static map<string, Parts*> _partsPool; 
+
 	class StartServiceEA;
 	class AddQueueEA;
 	class ScheduleDoneServiceEA;
+	class PlaceOrderEA;
+	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
 
+	void PlaceOrderEM(Parts* parts);
+	void OrderArrivalEM(Parts* parts);
 	void StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	void ScheduleDoneServiceEM(Aircraft* aircraft);
 	void AcquireResourceEM(Resource* resource);
 	void ReleaseResourceEM(Resource* resource);
+	
+	void AcquireParts(Parts* parts);
 };

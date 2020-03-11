@@ -39,8 +39,12 @@ public:
 	string GetAircraftType();
 	int GetAircraftPriority();
 	int GetNextAircraftID();
+	
+	map<string, RepairJob*>::iterator  GetRJMapBegin();
+	map<string, RepairJob*>::iterator  GetRJMapEnd();
 	Aircraft* New(); //new aircraft creation, need to add appropriate parameters
 	
+
 
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35

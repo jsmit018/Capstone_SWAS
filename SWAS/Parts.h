@@ -10,15 +10,18 @@ class Parts
 public:
 	Parts();
 	void AcquireParts(int numNeeded);
-	bool AreEnoughParts(int numNeeded);
+	bool AreEnoughParts();
 	void PrintPartsProperties();
 
 	void SetPartsCount(int partsCount);
+	void SetNumPartsNeeded(int numNeeded);
 	void SetPartsName(string partsName);
 	void SetThreshold(int orderThreshold);
 	void SetLeadTime(string leadTime);
 
 	int GetPartsCount();
+	int GetNumPartsNeeded();
+	Distribution* GetLeadTime();
 	string GetPartsName();
 	int GetThreshold();
 
@@ -27,6 +30,7 @@ private:
 	int _numNeeded;
 	string _partsName;
 	int _orderThreshold;
-//	string _leadTimeTemp;
+
 	Distribution* _leadTime;
+
 };

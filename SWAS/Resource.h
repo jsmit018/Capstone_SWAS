@@ -3,6 +3,7 @@
 #include "Task.h"
 #include "Distribution.h"
 #include <string>
+#include <sstream>
 
 //Make separate class for Parts...they have nothing in common
 
@@ -34,7 +35,7 @@ public:
 	int GetNumResNeeded();
 	string GetFailureName();
 	string GetFailureType();
-	string GetFailureDistr();	//change to distribution
+	Distribution* GetFailureDistr();	//change to distribution
 	string GetRepairProcess();
 
 private:
@@ -47,5 +48,5 @@ private:
 	string _failureType;
 	Distribution* _failureDist;
 	string _repairProc;
-	string _failureDistTemp; // remove and replace with distrib
+//	string _failureDistTemp; // remove and replace with distrib
 };

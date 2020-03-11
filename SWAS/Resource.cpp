@@ -2,7 +2,9 @@
 
 Resource::Resource()
 {
-
+	_failureName = "none specified yet";
+	_failureType = "none specified yet";
+	_repairProc = "none specified yet";
 }
 
 //@TODO will need to figure out logic for what happens if amount needed is greater
@@ -73,6 +75,7 @@ string Resource::GetResourceName()
 void Resource::SetNumResNeeded(int numResNeeded)
 {
 	//get from step table values 
+
 }
 
 int Resource::GetNumResNeeded()
@@ -113,14 +116,82 @@ string Resource::GetFailureType()
 
 void Resource::SetFailureDistr(string failureDistr)
 {
-	_failureDistTemp = failureDistr;
-
 	//turn failure distr from string into distributions
+	istringstream failDist(failureDistr);
+	string firstHalf;
+	string secHalf;
+
+	getline(failDist, firstHalf, '(');
+	getline(failDist, secHalf, ')');
+	//	cout << "first: " << firstHalf << endl;
+	//	cout << "sec: " << secHalf << endl;
+
+	istringstream nums(secHalf);
+	if (firstHalf == "Triangular" || firstHalf == "Tri")
+	{
+		double min, expected, max;
+		nums >> min;
+		nums >> expected;
+		nums >> max;
+		_failureDist = new Triangular(min, expected, max);
+	}
+
+	else if (firstHalf == "Exponential")
+	{
+		double mean;
+		nums >> mean;
+
+		_failureDist = new Exponential(mean);
+	}
+
+	else if (firstHalf == "Uniform")
+	{
+		double min, max;
+		nums >> min >> max;
+
+		_failureDist = new Uniform(min, max);
+	}
+
+	else if (firstHalf == "Normal")
+	{
+		double mean, stdev;
+		nums >> mean >> stdev;
+
+		_failureDist = new Normal(mean, stdev);
+	}
+
+	else if (firstHalf == "Poisson")
+	{
+		double mean;
+		nums >> mean;
+
+		_failureDist = new Poisson(mean);
+	}
+
+	else if (firstHalf == "Constant" || firstHalf == "Fixed")
+	{
+		double mean;
+		nums >> mean;
+
+		_failureDist = new Constant(mean);
+	}
+
+	else if (firstHalf == "Weibull")
+	{
+		double scale, shape;
+		nums >> scale >> shape;
+
+		_failureDist = new Weibull(scale, shape);
+	}
+
+	//Determines correct distribution and prints
+	_failureDist->PrintDistribution();
+
 }
 
-string Resource::GetFailureDistr()
+Distribution* Resource::GetFailureDistr()
 {
-	return _failureDistTemp;
+	return _failureDist; //check if this works
 }
 
 void Resource::SetRepairProcess(string repairProc)
@@ -135,13 +206,14 @@ string Resource::GetRepairProcess()
 
 void Resource::PrintResProperties()
 {
-	cout << "res name: " << _resourceName << endl;
-	cout << "count: " << _resourceCount << endl;
-	cout << "length: " << _length << endl;
-	cout << "width: " << _width << endl;
-	cout << "failure name: " << _failureName << endl;
-	cout << "failure type: " << _failureType << endl;
-	cout << "failure dist: " << _failureDistTemp << endl;
-	cout << "repair proc: " << _repairProc << endl;
+//	cout << "IN PRINT RESOURCE PROPERTIES \n";
+	cout << "			Resource name: " << _resourceName << endl;
+	cout << "			Initial count: " << _resourceCount << endl;
+	cout << "			Resource footprint X: " << _length << endl;
+	cout << "			Resource footprint Y: " << _width << endl;
+	cout << "			Failure name: " << _failureName << endl;
+	cout << "			Failure type: " << _failureType << endl;
+//	cout << "			Failure dist: " << _failureDist << endl;
+	cout << "			Repair process: " << _repairProc << endl;
 	cout << endl;
 }
