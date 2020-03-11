@@ -2,11 +2,24 @@
 
 Parts::Parts()
 {
+	_partsName = "none needed";
+	_partsCount = 0;
+	_orderThreshold = 0;
 }
 
 void Parts::SetPartsCount(int partsCount)
 {
 	_partsCount = partsCount;
+}
+
+void Parts::SetNumPartsNeeded(int numNeeded)
+{
+	_numNeeded = numNeeded;
+}
+
+int Parts::GetNumPartsNeeded()
+{
+	return _numNeeded;
 }
 
 void Parts::AcquireParts(int numNeeded)
@@ -27,7 +40,7 @@ void Parts::AcquireParts(int numNeeded)
 	}
 }
 
-bool Parts::AreEnoughParts(int numNeeded)
+bool Parts::AreEnoughParts()
 {
 	if (_numNeeded > _partsCount)
 		return false;
@@ -35,6 +48,8 @@ bool Parts::AreEnoughParts(int numNeeded)
 		return true;
 	}
 }
+
+
 
 //send to Parts class
 int Parts::GetPartsCount()
@@ -134,14 +149,18 @@ void Parts::SetLeadTime(string leadTime)
 	}
 
 	//Determines correct distribution and prints
-//	_leadTime->PrintDistribution();
+	_leadTime->PrintDistribution();
+}
+
+Distribution* Parts::GetLeadTime()
+{
+	return _leadTime;
 }
 
 void Parts::PrintPartsProperties()
 {
-	cout << "name: " << _partsName << endl;
-	cout << "count: " << _partsCount << endl;
-	cout << "threshold: " << _orderThreshold << endl;
-	//cout << "lead time: " << _leadTimeTemp << endl;
+	cout << "			Parts name: " << _partsName << endl;
+	cout << "			Initial count: " << _partsCount << endl;
+	cout << "			Order threshold: " << _orderThreshold << endl;
 	cout << endl;
 }

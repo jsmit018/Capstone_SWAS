@@ -93,6 +93,16 @@ int Aircraft::GetAircraftPriority()
 	return _priority;
 }
 
+map<string,RepairJob*>::iterator Aircraft::GetRJMapBegin()
+{
+	return _allRepairJobsMap.begin();
+}
+
+map<string, RepairJob*>::iterator  Aircraft::GetRJMapEnd()
+{
+	return _allRepairJobsMap.end();
+}
+
 void Aircraft::SetAircraftIAT(string iatUnplanned)
 {
 	istringstream iatUn(iatUnplanned);
@@ -161,7 +171,7 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 	}
 
 	//Determines correct distribution and prints
-	_iatUnplanned->PrintDistribution();
+//	_iatUnplanned->PrintDistribution();
 }
 
 Distribution* Aircraft::GetAircraftIAT()
@@ -173,11 +183,11 @@ void Aircraft::PrintProperties()
 {	
 	cout << "AIRCRAFT:" << endl;
 	cout << "Aircraft Type: " << _aircraftType << endl;
-	cout << "Aircraft Priority: " << _priority << endl;
-	cout << "Aircraft Length: " << _length << endl;
-	cout << "Aircraft Wingspan: " << _wingspan << endl;
-	cout << endl;
-	cout << "Repair Jobs:" << endl;
+	//cout << "Aircraft Priority: " << _priority << endl;
+	//cout << "Aircraft Length: " << _length << endl;
+	//cout << "Aircraft Wingspan: " << _wingspan << endl;
+	//cout << endl;
+	//cout << "Repair Jobs:" << endl;
 	cout << endl;
 
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.begin();
