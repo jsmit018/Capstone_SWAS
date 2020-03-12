@@ -13,11 +13,80 @@ Step::Step(string serviceTime, string name) : Task(name)
 {
 	_servTime = serviceTime;
 	_name = name;
+	_priorityQueue = new PriorityQueue<Aircraft>("Priority Queue");
 }
 
 ////////////////////////////////////////////
 /////////EVENT ACTIONS AND METHODS//////////
 ////////////////////////////////////////////
+
+class Step::NeedResourcesEA : public CondEventAction {
+public:
+	NeedResourcesEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+		_step = step;
+		_resource = resource;
+		_aircraft = aircraft;
+		_amountNeeded = amountNeeded;
+		_acqResources = acqResources;
+	}
+
+	bool Condition(Resource* resource, Parts* parts) {
+		if (resource == _resource) {
+			if (_resource->GetResourceCount() > _amountNeeded)
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
+	void Execute() {
+		_step->StartServiceEM(_aircraft, _acqResources);
+	}
+
+private:
+	Resource* _resource;
+	Step* _step;
+	Aircraft* _aircraft;
+	int _amountNeeded;
+	string _funcName;
+	vector<string> _acqResources;
+
+};
+
+class Step::NeedPartsEA : public CondEventAction {
+public:
+	NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+		_step = step;
+		_parts = parts;
+		_aircraft = aircraft;
+		_amountNeeded = amountNeeded;
+		_acqResources = acqResources;
+	}
+
+	bool Condition(Resource* resource, Parts* parts) {
+		if (parts == _parts) {
+			if (_parts->GetPartsCount() > _amountNeeded)
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
+	void Execute() {
+		_step->StartServiceEM(_aircraft, _acqResources);
+	}
+
+private:
+	Parts* _parts;
+	Step* _step;
+	Aircraft* _aircraft;
+	int _amountNeeded;
+	vector<string> _acqResources;
+};
 
 // PLACE ORDER/ REPLENISH order process
 	// schedule an event that will act as "place order"   -> placeorderEA does placeOrderEM
@@ -40,17 +109,6 @@ private:
 	Parts* _parts;
 };
 
-void Step::PlaceOrderEM(Parts* parts)
-{
-	//is creating an instance of the event action how i pass the 
-	//event action in the schedule at function?
-//	PlaceOrderEA* ea;
-
-// 	SimExec::ScheduleEventAt(1, /* parts arrival ea*/, parts->GetLeadTime());
-
-}
-
-
 class Step::OrderArrivalEA : public EventAction
 {
 public:
@@ -68,6 +126,14 @@ private:
 	Parts* _parts;
 };
 
+void Step::PlaceOrderEM(Parts* parts)
+{
+	//is creating an instance of the event action how i pass the 
+	//event action in the schedule at function?
+//	PlaceOrderEA* ea;
+	SimExec::ScheduleEventAt(1, new OrderArrivalEA(this, parts), parts->GetLeadTime()->GetRV(), "OrderArrivalEA");
+}
+
 void Step::OrderArrivalEM(Parts* parts)
 {
 	//Logic: new count = current parts count + (initial count - current parts count)
@@ -77,21 +143,38 @@ void Step::OrderArrivalEM(Parts* parts)
 	newCount = iter->second->GetPartsCount();
 	
 	parts->SetPartsCount(newCount);
+	SimExec::CheckConditionalEvents(0, parts);
 }
 
 
 class Step::StartServiceEA : public EventAction {
 public:
-	StartServiceEA(Step* step, Aircraft* aircraft, RepairJob* repairJob) {
+	StartServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources) {
 		_step = step;
 		_aircraft = aircraft;
+		_acqResources = acqResources;
 	}
 
 	void Execute() {
-	//	_step->StartServiceEM(_aircraft, );
+		_step->StartServiceEM(_aircraft, _acqResources);
 	}
 private:
 	Step* _step;
+	Aircraft* _aircraft;
+	vector<string> _acqResources;
+};
+
+class Step::ScheduleDoneServiceEA : public EventAction {
+public:
+	ScheduleDoneServiceEA(Aircraft* aircraft)
+	{
+		_aircraft = aircraft;
+	}
+
+	void Execute()
+	{
+	}
+private:
 	Aircraft* _aircraft;
 };
 
@@ -154,6 +237,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for a bay \n";
 			// INSERT CODE FOR WAITING
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 		else
 		{
@@ -166,6 +250,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for an outspot \n";
 			// INSERT CODE FOR WAITING
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 	}
 
@@ -203,7 +288,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
-			
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 			iter++;
 		}
 
@@ -224,15 +309,16 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			}
 
 			else if (it->second->AreEnoughParts() == false) {
-	//			SimExec::ScheduleEventAt(1, /*new PlaceOrderEA*/, SimExec::GetSimulationTime())
+				SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, it->second), it->second->GetLeadTime()->GetRV(), "PlaceOrderEA");
 				//INSERT WAITING LOGIC
+				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources));
 			}
 
 				iter2++;
 		}
 
 		//SimExec::ScheduleEventAt(1, /*done step ea*/, /*distribution for step duration*/)
-
+		SimExec::ScheduleEventAt(1, new ScheduleDoneServiceEA(aircraft), this->_serviceTime->GetRV(), "ScheduleDoneServiceEA");
 	}
 
 	else if (_name == "inspection")
@@ -266,14 +352,14 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
-
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 			
 			//TO DO:
 			//if inspection results in failure = true
 				//schedule service EA
 			
 			//else
-				//SimExec::ScheduleEventAt(1, /*done step ea*/, /*distribution for step duration*/)
+				//SimExec::ScheduleEventAt(1, new ScheduleDoneServiceEA(aircraft), _serviceTime->GetRV(), "ScheduleDoneServiceEA"); **This will be the line to uncomment
 
 			iter++;
 		}
@@ -282,21 +368,6 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 	}
 
 }
-
-
-class Step::ScheduleDoneServiceEA : public EventAction {
-public:
-	ScheduleDoneServiceEA(Aircraft* aircraft) 
-	{
-		_aircraft = aircraft;
-	}
-
-	void Execute() 
-	{
-	}
-private:
-	Aircraft* _aircraft;
-};
 
 void Step::ScheduleDoneServiceEM(Aircraft* aircraft)
 {
@@ -331,6 +402,11 @@ void Step::ScheduleDoneServiceEM(Aircraft* aircraft)
 					//get steps
 				//if no
 					//schedule aircraft departure ea
+	//This is just a placeholder you may be able to clear an old iterator and just throw it there instead.
+	vector<string> resourceList;
+	SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "ScheduleStartServiceEA");
+	//I'm under the assumption that you'll be using an interator if not let me know when you finish and i'll come back and add the appropriate line
+	//SimExec::CheckConditionalEvents(it->second, 0);
 }
 
 
@@ -352,7 +428,9 @@ private:
 
 void Step::AddQueueEM(Aircraft* aircraft)
 {
-	//if a bay I fit in isn't available, i'm added to queue
+	_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
+	_numInQueue++;
+	CheckBays();
 }
 
 
@@ -576,6 +654,14 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 	_returnStep = returnStep;
 }
 
+void Step::CheckBays()
+{
+	vector<string> resourceList;
+	map<string, Resource*>::iterator it = _resourcePool.find("bay");
+	if (it->second->GetResourceCount() > 0)
+		SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
+}
+
 
 ////////////////////////////////////////////
 /////////////     OTHER      ///////////////
@@ -602,7 +688,7 @@ map<string, Parts*>::iterator Step::FindParts(string resource)
 }
 
 void Step::Execute(Aircraft* aircraft) {
-	//SimExec::ScheduleEventIn(0.0, new AddQueueEA(this, aircraft));
+	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AddQueueEA(this, aircraft), 0.0, "AddQueueEA");
 }
 
 void Step::AddResource(Resource* resource, string resourceName)
