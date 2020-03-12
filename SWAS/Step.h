@@ -6,6 +6,7 @@
 #include "Distribution.h"
 #include "Resource.h"
 #include "Parts.h"
+#include "PriorityQueue.h"
 
 class Step : public Task
 {
@@ -22,6 +23,7 @@ public:
 	void SetReqResource(string reqResource);
 	void SetReqParts(string reqParts);
 	void SetReturnStep(/*int stepId*/ int returnStep);
+	void CheckBays();
 
 	void AddResource(Resource* resource, string resourceName);
 	void AddParts(Parts* parts, string partsName);
@@ -58,6 +60,8 @@ private:
 	int _returnStep;		// Maybe this should be a pointer to the step instead of its "id"
 	map<string, Resource*> _reqResourceMap;		//map of required resources
 	map<string, Parts*> _reqPartsMap;		//map of required parts
+	PriorityQueue<Aircraft>* _priorityQueue;
+	
 	//vector<Resource*> _reqResourceVec;
 	//vector<Parts*> _reqPartsVec;
 	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
@@ -76,6 +80,8 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
+	class NeedResourcesEA;
+	class NeedPartsEA;
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);

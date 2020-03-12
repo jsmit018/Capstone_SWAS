@@ -15,6 +15,8 @@
 
 using namespace std;
 
+class RepairJob;
+
 class Aircraft {
 public:
 	Aircraft();

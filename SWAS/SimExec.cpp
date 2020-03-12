@@ -1,5 +1,6 @@
 #include "SimExec.h"
 #include "Resource.h"
+#include "Parts.h"
 
 
 /*SimExec::SimExec() : SimObj(){
@@ -61,13 +62,13 @@ public:
 		if (_condSet == 0) {
 			_condSet = c;
 		}
-		else if (_condSet->_priority < c->_priority) {
+		else if (_condSet->_priority > c->_priority) {
 			c->_nextCondEvent = _condSet;
 			_condSet = c;
 		}
 		else {
 			CondEvent* curr = _condSet;
-			while ((curr != 0) ? (c->_priority >= curr->_priority) : false) {
+			while ((curr != 0) ? (c->_priority <= curr->_priority) : false) {
 				curr = curr->_nextCondEvent;
 			}
 			if (curr->_nextCondEvent == 0) {
@@ -80,10 +81,10 @@ public:
 		}
 	}
 
-	bool CheckConditionalEvents(Resource* resource) {
+	bool CheckConditionalEvents(Resource* resource, Parts* parts) {
 		CondEvent* curr = _condSet;
 		while (curr != 0) {
-			if (curr->_cea->Condition(resource)) {
+			if (curr->_cea->Condition(resource, parts)) {
 				curr->_cea->Execute();
 				return true;
 			}
@@ -194,7 +195,7 @@ public:
 			cout << "Searching the list on where to place the event based on time and priority" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
-					if (e->_priority > curr->_nextEvent->_priority) {
+					if (e->_priority < curr->_nextEvent->_priority) {
 						break;
 					}
 				}
@@ -259,7 +260,7 @@ public:
 			cout << "Searching the list on where to place the event based on time and priority" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
-					if (e->_priority > curr->_nextEvent->_priority) {
+					if (e->_priority < curr->_nextEvent->_priority) {
 						break;
 					}
 				}
@@ -324,7 +325,7 @@ public:
 			cout << "Searching the list on where to place the event based on time and priority" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
-					if (e->_priority > curr->_nextEvent->_priority) {
+					if (e->_priority < curr->_nextEvent->_priority) {
 						break;
 					}
 				}
@@ -504,7 +505,7 @@ private:
 					Event* curr = _eventSet[previousBase][eventDay];
 					while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 						if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
-							if (currEvent->_priority > curr->_nextEvent->_priority) {
+							if (currEvent->_priority < curr->_nextEvent->_priority) {
 								break;
 							}
 						}
@@ -575,9 +576,9 @@ string SimExec::ConvertDate(Time month)
 	return _eventSet.ConvertMonth(month);
 }
 
-void SimExec::CheckConditionalEvents(Resource* resource)
+void SimExec::CheckConditionalEvents(Resource* resource, Parts* parts)
 {
-	while(_conditionalSet.CheckConditionalEvents(resource));
+	while(_conditionalSet.CheckConditionalEvents(resource, parts));
 }
 
 void SimExec::PrintEventSet()
