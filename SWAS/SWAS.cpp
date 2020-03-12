@@ -8,7 +8,6 @@
 #include "Distribution.h"
 #include "SinkTask.h"
 
-
 int main() {
 
 	//Where database connection code goes when DES is ready

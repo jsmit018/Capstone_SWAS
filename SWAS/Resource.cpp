@@ -206,14 +206,12 @@ string Resource::GetRepairProcess()
 
 void Resource::PrintResProperties()
 {
-//	cout << "IN PRINT RESOURCE PROPERTIES \n";
 	cout << "			Resource name: " << _resourceName << endl;
 	cout << "			Initial count: " << _resourceCount << endl;
 	cout << "			Resource footprint X: " << _length << endl;
 	cout << "			Resource footprint Y: " << _width << endl;
 	cout << "			Failure name: " << _failureName << endl;
 	cout << "			Failure type: " << _failureType << endl;
-//	cout << "			Failure dist: " << _failureDist << endl;
 	cout << "			Repair process: " << _repairProc << endl;
 	cout << endl;
 }

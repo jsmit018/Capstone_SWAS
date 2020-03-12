@@ -152,8 +152,9 @@ void RepairJob::PrintJobProperties()
 
     for (int i = 0; i < _vecSteps.size(); i++)
     {
-        _vecSteps[i]->Print();
+      //  _vecSteps[i]->Print();
         cout << endl;
+        _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }
