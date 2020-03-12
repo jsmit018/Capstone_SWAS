@@ -1,7 +1,0 @@
-#include "SimExec.h"
-
-
-int main() {
-
-	return 0;
-}
