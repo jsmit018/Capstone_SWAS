@@ -44,10 +44,9 @@ void Step::PlaceOrderEM(Parts* parts)
 {
 	//is creating an instance of the event action how i pass the 
 	//event action in the schedule at function?
-	PlaceOrderEA* ea;
+//	PlaceOrderEA* ea;
 
-	//give priority of event, event action object, distribution for lead time
-// 	SimExec::ScheduleEventAt(1, ea, parts->GetLeadTime());
+// 	SimExec::ScheduleEventAt(1, /* parts arrival ea*/, parts->GetLeadTime());
 
 }
 
@@ -74,7 +73,6 @@ void Step::OrderArrivalEM(Parts* parts)
 	//Logic: new count = current parts count + (initial count - current parts count)
 	int newCount;
 
-	//replace parts->SetPartsCount and GetPartsCount with the same from the parts pool
 	map<string, Parts*>::const_iterator iter = _reqPartsMap.find(parts->GetPartsName());
 	newCount = iter->second->GetPartsCount();
 	
@@ -104,7 +102,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 
 	for (int i = 0; i < _acquiredResources.size(); i++)
 	{
-		if (_indoorReq == 'y')
+		if (_indoorReq == 'Y' || _indoorReq == 'y')
 		{
 			if (_acquiredResources[i] == "bay")
 			{
@@ -138,17 +136,14 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 	// if each resource that can ever be used has one instance that is created in main, how do you access
 	// and how do you modify these values of that Resource;
 
-	// previously, you had a resource pool and gave that resource pool to the tasks (acquire, release, join)
-	// so does that mean you have to pass the resources down to step? so does step have a static container
-	// of resources or pools that is populated at initialization, (consequently shared and edited by all the steps?)
-	// in that case you must ensure that when a new step is created that it doesn't "zero out" the container
+	//step has a static container of resources and pools that is populated at initialization
 	// container is a container of resource object pointers, one for each possible resource
 
-	// if no
+	// if i don't have a bay or outside spot
 	if (hasResource == false)
 	{
 		// if inside step
-		if (_indoorReq == 'y')
+		if (_indoorReq == 'Y' || _indoorReq == 'y')
 		{
 			map<string, Resource*>::iterator it = _resourcePool.find("bay");
 			if (it->second->GetResourceCount() > 0)
@@ -157,8 +152,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				_acquiredResources.push_back(it->first);
 			}
 			else
-				cout << "we gotta wait for a bay \n";
-			// wait?? 
+				cout << "we have to wait for a bay \n";
+			// INSERT CODE FOR WAITING
 		}
 		else
 		{
@@ -169,31 +164,13 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				_acquiredResources.push_back(it->first);
 			}
 			else
-				cout << "we gotta wait for an outspot \n";
-			// wait?? 
+				cout << "we have to wait for an outspot \n";
+			// INSERT CODE FOR WAITING
 		}
 	}
 
 	// number of bays initialized with simulation initialization from GUI, where are they stored (aka how does Step
-	// get access to this information), how do I check if a bay is available
-
-
-		//if no
-			//if inside step (DEON: indoor req is in repairjob)
-				//check if bay is available
-					//if yes
-				//acquire bay
-					//if no
-						//wait 
-
-			//if outside step
-				//check if spot is available
-					//if yes
-						//acquire spot
-					//if no
-						//wait
-		//if yes
-			//continue
+	// get access to this information), how do I check if a bay is available -- determined by integration 
 
 	if (_name == "process")
 	{
@@ -204,78 +181,106 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			//compare key to acquired resources vector
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
+				//if it's already acquired, break
 				if (iter->first == _acquiredResources[i])
 					break;
 			}
 
 			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
 
-			if (it->second->GetResourceCount() <= it->second->GetNumResNeeded())
+			//otherwise if not acquired yet
+			//if resource count is greater than number needed
+			if (it->second->GetResourceCount() >= it->second->GetNumResNeeded())
 			{
 				//decrement appropriately
+				int newCount;
+				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
+				it->second->SetResourceCount(newCount);
+
+				//store in acquired resource vector
 				_acquiredResources.push_back(it->first);
 			}
 			else
-				cout << " we gotta wait for a/an " << it->first << endl;
-			//if not found
-				//if num of required resources is < or = num of avail resources
-					//acquire the object (num of available resources decrements)
-				//else
-					//wait til available (logic)
-
+				cout << " we have to wait for a/an " << it->first << endl;
+			//INSERT WAITING LOGIC
+			
 			iter++;
 		}
 
-
 		map<string, Parts*>::const_iterator iter2 = _reqPartsMap.begin();
+		
 		//for all parts listed in required map
 		while (iter2 != _reqPartsMap.end())
 		{
 			map<string, Parts*>::iterator it = _partsPool.find(iter2->first);
 
-			if (it->second->AreEnoughParts() == true)
-				cout << "need to decrement correct parts" << endl;
-			//decrement num of avail parts
-			else if (it->second->AreEnoughParts() == false)
+			if (it->second->AreEnoughParts() == true) {
+				cout << "decrementing parts" << endl;
 
-				//	it->second->PlaceOrder();
+				int newCount;
+				newCount = it->second->GetPartsCount() - it->second->GetNumPartsNeeded();
 
+				it->second->SetPartsCount(newCount);
+			}
 
+			else if (it->second->AreEnoughParts() == false) {
+	//			SimExec::ScheduleEventAt(1, /*new PlaceOrderEA*/, SimExec::GetSimulationTime())
+				//INSERT WAITING LOGIC
+			}
 
-
-					//if num of required parts is < or = num of avail parts
-					//acquire parts (num of avail parts decrement)
-				//else
-					//wait til available (logic)
 				iter2++;
 		}
 
-		//schedule Done service EA
+		//SimExec::ScheduleEventAt(1, /*done step ea*/, /*distribution for step duration*/)
 
-		//check if there are more steps
-			//if yes
-				//
 	}
 
 	else if (_name == "inspection")
 	{
+		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources listed in required map
+		while (iter != _reqResourceMap.end())
+		{
 			//compare key to acquired resources vector
-			//if not found
-				//if resource is available
-					//acquire the object
-				//else
-					//wait til available (logic)
+			for (int i = 0; i < _acquiredResources.size(); i++)
+			{
+				//if it's already acquired, break
+				if (iter->first == _acquiredResources[i])
+					break;
+			}
 
-		//if inspection results in failure = true
-			//schedule service EA
-		//else
-			//schedule Done service EA
+			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+
+			//otherwise if not acquired yet
+			//if resource count is greater than number needed
+			if (it->second->GetResourceCount() >= it->second->GetNumResNeeded())
+			{
+				//decrement appropriately
+				int newCount;
+				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
+				it->second->SetResourceCount(newCount);
+
+				//store in acquired resource vector
+				_acquiredResources.push_back(it->first);
+			}
+			else
+				cout << " we have to wait for a/an " << it->first << endl;
+			//INSERT WAITING LOGIC
+
+			
+			//TO DO:
+			//if inspection results in failure = true
+				//schedule service EA
+			
+			//else
+				//SimExec::ScheduleEventAt(1, /*done step ea*/, /*distribution for step duration*/)
+
+			iter++;
+		}
+
+
 	}
 
-
-
-	//SimExec::ScheduleEventIn(0.0, new WhateverEAIsCalled(this.nextStep, aircraft));
 }
 
 
@@ -295,52 +300,59 @@ private:
 
 void Step::ScheduleDoneServiceEM(Aircraft* aircraft)
 {
-	//if resources I have are needed for next step
-		//keep
-	//else
-		//schedule release resource ea
 
-	//if inside step
-		//check if next step is inside
-			//if no
-				//release bay
-			//if yes
-				//keep bay, add to acquired resource vector
+	//TO DO:
+	//check if there are more steps
+		//if yes
+			//get next step
+	
+			//if resources I have are needed for next step
+				//keep
+			//else
+				//schedule release resource ea
 
-	//if outside step
-		//check if next step is outside
-			//if no
-				//release spot
-			//if yes
-				//keep spot, add to acquired resource vector
+			//if inside step
+				//check if next step is inside
+					//if no
+						//release bay
+					//if yes
+						//keep bay, add to acquired resource vector
 
+			//if outside step
+				//check if next step is outside
+					//if no
+						//release spot
+					//if yes
+						//keep spot, add to acquired resource vector
+
+		//if no
+			//check if there are more repair jobs
+				//if yes
+					//get steps
+				//if no
+					//schedule aircraft departure ea
 }
 
 
 class Step::AddQueueEA : public EventAction {
-//public:
-//	AddQueueEA(Step* step, Aircraft* aircraft) {
-//		_step = step;
-//		_aircraft = aircraft;
-//	}
-//
-//	void Execute() {
-//		_step->AddQueueEM(_aircraft);
-//	}
-//
-//private:
-//	Step* _step;
-//	Aircraft* _aircraft;
+public:
+	AddQueueEA(Step* step, Aircraft* aircraft) {
+		_step = step;
+		_aircraft = aircraft;
+	}
+
+	void Execute() {
+		_step->AddQueueEM(_aircraft);
+	}
+
+private:
+	Step* _step;
+	Aircraft* _aircraft;
 };
 
 void Step::AddQueueEM(Aircraft* aircraft)
 {
-	//	_PriorityQueue.insert(pair<int, Aircraft*>(aircraft->GetAircraftPriority(), aircraft));
-
-	//_numberInQueue++;
-	//if (_bays > 0) {
-	//	//SimExec::ScheduleEventIn(0.0, new AcquireServerEA(this, aircraft));
-	//}
+	//if a bay I fit in isn't available, i'm added to queue
 }
 
 
@@ -569,6 +581,16 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 /////////////     OTHER      ///////////////
 ////////////////////////////////////////////
 
+void Step::AddToResPool(Resource* resource, string resourceName)
+{
+	_resourcePool[resourceName] = resource;
+}
+
+void Step::AddToPartsPool(Parts* parts, string partsName)
+{
+	_partsPool[partsName] = parts;
+}
+
 map<string, Resource*>::iterator Step::FindResource(string resource)
 {
 	return _reqResourceMap.find(resource); 
@@ -599,7 +621,6 @@ void Step::AcquireParts(Parts* parts)
 	int newCount;
 
 	//new count of resource pool is = to current count - num needed from req resource map
-
 }
 
 ////////////////////////////////////////////
@@ -655,13 +676,34 @@ void Step::PrintParts()
 void Step::PrintResources()
 {
 	map<string, Resource*>::iterator it = _reqResourceMap.begin();
-	//cout << "After creating the iterator to the map " << std::endl; 
 //	cout << "MAP SIZE: " << _reqResourceMap.size() << endl;
 	while (it != _reqResourceMap.end())
 	{
-		//cout << "in the loop \n";
-
 		it->second->PrintResProperties();
 		it++;
 	}
+}
+
+void Step::PrintPools()
+{
+	cout << "RESOURCE POOL" << endl;
+	map<string, Resource*>::iterator it = _resourcePool.begin();
+//	cout << "MAP SIZE: " << _resourcePool.size() << endl;
+	while (it != _resourcePool.end())
+	{
+		it->second->PrintResProperties();
+		it++;
+	}
+
+	cout << endl;
+
+	cout << "PARTS POOL:" << endl;
+	map<string, Parts*>::iterator it2 = _partsPool.begin();
+//	cout << "MAP SIZE: " << _partsPool.size() << endl;
+	while (it2 != _partsPool.end())
+	{
+		it2->second->PrintPartsProperties();
+		it2++;
+	}
+
 }

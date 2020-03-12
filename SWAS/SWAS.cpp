@@ -1,7 +1,6 @@
 #include "SimExec.h"
 #include "InputInterface.h"
 
-
 int main() {
 
 	//Where database connection code goes when DES is ready

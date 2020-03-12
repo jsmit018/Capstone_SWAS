@@ -12,6 +12,8 @@ public:
 	Step(string serviceTime, string name);
 	void Execute(Aircraft* aircraft);
 
+	static void AddToResPool(Resource* resource, string resourceName);
+	static void AddToPartsPool(Parts* parts, string partsName);
 	void SetName(string name);
 	void SetType(string type);
 	void SetInspecFailProb(string failureProb);
@@ -19,11 +21,12 @@ public:
 	void SetReqResource(string reqResource);
 	void SetReqParts(string reqParts);
 	void SetReturnStep(/*int stepId*/ int returnStep);
-	
+
 	void AddResource(Resource* resource, string resourceName);
 	void AddParts(Parts* parts, string partsName);
 	void PrintParts();
 	void PrintResources();
+	void PrintPools();
 	map<string, Resource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
 	bool IsResourceMapEnd(map<string, Resource*>::iterator it);
