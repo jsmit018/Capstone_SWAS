@@ -7,6 +7,7 @@
 #include "Resource.h"
 #include "Parts.h"
 #include "PriorityQueue.h"
+#include "Aircraft.h"
 
 class Step : public Task
 {
@@ -80,8 +81,8 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
-	class NeedResourcesEA;
-	class NeedPartsEA;
+	class WaitForResourceEA;
+	class WaitForPartsEA;
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);

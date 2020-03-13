@@ -48,5 +48,5 @@ private:
 	string _failureType;
 	Distribution* _failureDist;
 	string _repairProc;
-//	string _failureDistTemp; // remove and replace with distrib
+//	string _failureDistTemp ; // remove and replace with distrib
 };
