@@ -1,6 +1,7 @@
 #pragma once
 #include "SimObj.h"
 #include "Task.h"
+#include "Aircraft.h"
 #include "Distribution.h"
 #include <iostream>
 

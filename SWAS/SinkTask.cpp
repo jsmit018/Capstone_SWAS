@@ -1,5 +1,6 @@
 #include <iostream>
 #include "SinkTask.h"
+#include "Aircraft.h"
 
 SinkBlock::SinkBlock(string name) : Task(name) {
     _name = name;
@@ -19,7 +20,7 @@ int SinkBlock::GetTerminatedAircraft() {
 }
 
 void SinkBlock::Execute(Aircraft* aircraft) {
-   cout << "Aircraft has finished tour of maintenance, departing" << endl;
+   cout << "Aircraft, " << aircraft->GetAircraftType() << " number " << aircraft->GetAircraftID() << "has finished tour of maintenance, departing" << endl;
    _terminatedAircraft++; 
    delete aircraft;
 }

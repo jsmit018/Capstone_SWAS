@@ -171,6 +171,7 @@
     <ClInclude Include="Step.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="Warehouse.h" />
+    <ClInclude Include="PriorityQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
