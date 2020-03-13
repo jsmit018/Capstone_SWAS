@@ -434,7 +434,63 @@ void Step::AddQueueEM(Aircraft* aircraft)
 	CheckBays();
 }
 
+class Step::ReleaseResourceEA : public EventAction {
+public:
+	ReleaseResourceEA(Step* step, Resource* resource) {
+		_step = step;
+		_resource = resource;
+	}
 
+	void Execute() {
+		_step->ReleaseResourceEM(_resource);
+	}
+private:
+	Step* _step;
+	Resource* _resource;
+};
+
+void Step::ReleaseResourceEM(Resource* resource) {
+
+	int newCount;
+
+	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+
+	newCount = iter->second->GetResourceCount() + iter->second->GetNumResNeeded();
+	
+	resource->SetResourceCount(newCount);
+
+	IsResourceReleased(iter, newCount);
+
+}
+
+class Step::FailResourceEA : public EventAction {
+public:
+	FailResourceEA(Step* step, Resource* resource) {
+		_step = step;
+		_resource = resource;
+	}
+
+	void Execute() {
+		_step->FailResourceEM(_resource);
+	}
+private:
+	Step* _step;
+	Resource* _resource;
+};
+
+void Step::FailResourceEM(Resource* resource) {
+	int newCount;
+	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
+	//RepairJob* newJob;
+
+	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+
+	newCount = iter->second->GetResourceCount() - 1;
+	resource->SetResourceCount(newCount);
+
+	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
+	SimExec::ScheduleEventAt(1, new FailResourceEA(this, resource), this->_serviceTime->GetRV(), "FailResourceEA");
+};
 ////////////////////////////////////////////
 //////////////   BOOLEANS   ////////////////
 ////////////////////////////////////////////
@@ -458,6 +514,15 @@ bool Step::IsPartsMapEnd(map<string, Parts*>::iterator it)
 
 	return false;
 }
+
+bool Step::IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount)
+{
+	if (iter->second->GetResourceCount() == newCount)
+		return true;
+
+	return false;
+}
+
 
 ////////////////////////////////////////////
 //////////////    GETTERS    ///////////////
