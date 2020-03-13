@@ -401,7 +401,8 @@ private:
 
 void Step::FailResourceEM(Resource* resource) {
 	int newCount;
-	RepairJob* newJob;
+	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
+	//RepairJob* newJob;
 
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
 
@@ -409,6 +410,7 @@ void Step::FailResourceEM(Resource* resource) {
 	resource->SetResourceCount(newCount);
 
 	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
+	SimExec::ScheduleEventAt(1, new FailResourceEA(this, resource), this->_serviceTime->GetRV(), "FailResourceEA");
 };
 ////////////////////////////////////////////
 //////////////   BOOLEANS   ////////////////
