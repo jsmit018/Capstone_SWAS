@@ -6,6 +6,7 @@
 #include "Distribution.h"
 #include "Resource.h"
 #include "Parts.h"
+#include "RepairJob.h"
 
 class Step : public Task
 {
@@ -32,6 +33,7 @@ public:
 	map<string, Parts*>::iterator FindParts(string parts);
 	bool IsResourceMapEnd(map<string, Resource*>::iterator it);
 	bool IsPartsMapEnd(map<string, Parts*>::iterator it);
+	bool IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount);
 	string GetName();
 	//Time GetServiceTime();
 	int GetNumberInQueue();
@@ -76,6 +78,7 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
+	class FailResourceEA;
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
@@ -84,6 +87,7 @@ private:
 	void ScheduleDoneServiceEM(Aircraft* aircraft);
 	void AcquireResourceEM(Resource* resource);
 	void ReleaseResourceEM(Resource* resource);
-	
+	void FailResourceEM(Resource* resource);
+
 	void AcquireParts(Parts* parts);
 };

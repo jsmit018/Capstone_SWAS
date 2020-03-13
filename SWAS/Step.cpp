@@ -355,7 +355,61 @@ void Step::AddQueueEM(Aircraft* aircraft)
 	//if a bay I fit in isn't available, i'm added to queue
 }
 
+class Step::ReleaseResourceEA : public EventAction {
+public:
+	ReleaseResourceEA(Step* step, Resource* resource) {
+		_step = step;
+		_resource = resource;
+	}
 
+	void Execute() {
+		_step->ReleaseResourceEM(_resource);
+	}
+private:
+	Step* _step;
+	Resource* _resource;
+};
+
+void Step::ReleaseResourceEM(Resource* resource) {
+
+	int newCount;
+
+	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+
+	newCount = iter->second->GetResourceCount() + iter->second->GetNumResNeeded();
+	
+	resource->SetResourceCount(newCount);
+
+	IsResourceReleased(iter, newCount);
+
+}
+
+class Step::FailResourceEA : public EventAction {
+public:
+	FailResourceEA(Step* step, Resource* resource) {
+		_step = step;
+		_resource = resource;
+	}
+
+	void Execute() {
+		_step->FailResourceEM(_resource);
+	}
+private:
+	Step* _step;
+	Resource* _resource;
+};
+
+void Step::FailResourceEM(Resource* resource) {
+	int newCount;
+	RepairJob* newJob;
+
+	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+
+	newCount = iter->second->GetResourceCount() - 1;
+	resource->SetResourceCount(newCount);
+
+	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
+};
 ////////////////////////////////////////////
 //////////////   BOOLEANS   ////////////////
 ////////////////////////////////////////////
@@ -379,6 +433,15 @@ bool Step::IsPartsMapEnd(map<string, Parts*>::iterator it)
 
 	return false;
 }
+
+bool Step::IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount)
+{
+	if (iter->second->GetResourceCount() == newCount)
+		return true;
+
+	return false;
+}
+
 
 ////////////////////////////////////////////
 //////////////    GETTERS    ///////////////
