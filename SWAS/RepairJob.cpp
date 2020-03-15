@@ -143,7 +143,7 @@ void RepairJob::PrintJobProperties()
 {
     cout << "   Repair Job Name: " << _name << endl;
     //cout << "   Schedule Type: " << _schedType << endl;
-    //cout << "   Repair Job Priority: " << _priority << endl;
+  //  cout << "   Repair Job Priority: " << _priority << endl;
     //cout << "   Unplanned Probability: " << _unplannedProb << endl;
     //cout << "   Calendar Occurrence: " << _calendarDate << endl;
     //cout << "   Reccuring Amount: " << _recurringAmt << endl;
@@ -152,9 +152,9 @@ void RepairJob::PrintJobProperties()
 
     for (int i = 0; i < _vecSteps.size(); i++)
     {
-      //  _vecSteps[i]->Print();
+        _vecSteps[i]->Print();
         cout << endl;
-        _vecSteps[1]->PrintPools();
+     //   _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }

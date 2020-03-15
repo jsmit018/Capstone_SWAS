@@ -72,15 +72,15 @@ string Resource::GetResourceName()
 	return _resourceName;
 }
 
-void Resource::SetNumResNeeded(int numResNeeded)
+void Resource::SetNumResNeeded(int numNeeded)
 {
 	//get from step table values 
-
+	_numNeeded = numNeeded;
 }
 
 int Resource::GetNumResNeeded()
 {
-	return _numResNeeded;
+	return _numNeeded;
 }
 
 void Resource::SetResourceFootprint(double length, double width)
