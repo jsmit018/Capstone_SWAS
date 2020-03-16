@@ -490,38 +490,75 @@ private:
 
 		Event* currEvent = _eventSet[_overflow][_baseY];
 		int eventDay = 0;
-		while (currEvent != 0) {
-			if (currEvent->_timeMonth == previousBase)
-				eventDay = currEvent->_timeDay;
-			if (_eventSet[previousBase][eventDay] == 0)
-				_eventSet[previousBase][eventDay] = currEvent;
-			else {
-				/*Sort it into the list of events*/
-				if (currEvent->_timeOfDay < _eventSet[previousBase][eventDay]->_timeOfDay) {
-					currEvent->_nextEvent = _eventSet[previousBase][eventDay];
-					_eventSet[previousBase][eventDay] = currEvent;
-				}
-				else {
-					Event* curr = _eventSet[previousBase][eventDay];
-					while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
-						if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
-							if (currEvent->_priority < curr->_nextEvent->_priority) {
-								break;
-							}
+		if (previousBase == December){
+			while (currEvent != 0){
+				if (currEvent->_year == _year){
+					eventDay = currEvent->_timeDay;
+					if (_eventSet[previousBase][eventDay] == 0)
+						_eventSet[previousBase][eventDay] = currEvent;
+					else {
+						/*Sort it into the list of events*/
+						if (currEvent->_timeOfDay < _eventSet[previousBase][eventDay]->_timeOfDay) {
+							currEvent->_nextEvent = _eventSet[previousBase][eventDay];
+							_eventSet[previousBase][eventDay] = currEvent;
 						}
-						else
-							curr = curr->_nextEvent;
-					}
-					if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
-						curr->_nextEvent = currEvent;
+					else {
+						Event* curr = _eventSet[previousBase][eventDay];
+						while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
+							if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+								if (currEvent->_priority < curr->_nextEvent->_priority) {
+									break;
+								}
+							}
+							else
+								curr = curr->_nextEvent;
+						}
+						if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
+							curr->_nextEvent = currEvent;
+						}
+						else {
+							currEvent->_nextEvent = curr->_nextEvent;
+							curr->_nextEvent = currEvent;
+						}
+				}
+				else
+					continue;
+			}
+		}
+		else{
+			while (currEvent != 0) {
+				if (currEvent->_timeMonth == previousBase)
+					eventDay = currEvent->_timeDay;
+				if (_eventSet[previousBase][eventDay] == 0)
+					_eventSet[previousBase][eventDay] = currEvent;
+				else {
+					/*Sort it into the list of events*/
+					if (currEvent->_timeOfDay < _eventSet[previousBase][eventDay]->_timeOfDay) {
+						currEvent->_nextEvent = _eventSet[previousBase][eventDay];
+						_eventSet[previousBase][eventDay] = currEvent;
 					}
 					else {
-						currEvent->_nextEvent = curr->_nextEvent;
-						curr->_nextEvent = currEvent;
+						Event* curr = _eventSet[previousBase][eventDay];
+						while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
+							if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+								if (currEvent->_priority < curr->_nextEvent->_priority) {
+									break;
+								}
+							}
+							else
+								curr = curr->_nextEvent;
+						}
+						if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
+							curr->_nextEvent = currEvent;
+						}
+						else {
+							currEvent->_nextEvent = curr->_nextEvent;
+							curr->_nextEvent = currEvent;
+						}
 					}
 				}
+				currEvent = currEvent->_nextEvent;
 			}
-			currEvent = currEvent->_nextEvent;
 		}
 	}
 
