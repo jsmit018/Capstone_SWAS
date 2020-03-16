@@ -1,6 +1,6 @@
 #pragma once
-#include "SimObj.h"
-#include "Task.h"
+//#include "SimObj.h"
+//#include "Task.h"
 #include "Distribution.h"
 #include <string>
 #include <sstream>
@@ -14,18 +14,21 @@ public:
 	void PrintPartsProperties();
 
 	void SetPartsCount(int partsCount);
+	void SetInitPartsCount(int partsCount);
 	void SetNumPartsNeeded(int numNeeded);
 	void SetPartsName(string partsName);
 	void SetThreshold(int orderThreshold);
 	void SetLeadTime(string leadTime);
 
 	int GetPartsCount();
+	int GetInitPartsCount();
 	int GetNumPartsNeeded();
 	Distribution* GetLeadTime();
 	string GetPartsName();
 	int GetThreshold();
 
 private:
+	int _initCount;
 	int _partsCount;
 	int _numNeeded;
 	string _partsName;
