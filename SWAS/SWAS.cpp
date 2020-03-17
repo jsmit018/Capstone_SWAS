@@ -29,6 +29,9 @@ int main() {
 
 		Aircraft* firstAircraft = new Aircraft();
 		firstAircraft->GetMyJobList(iter->first);
+		//Mayhaps
+		//SourceBlock* firstAircraftofThisType = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
+			//it->first + " Source Object", #, /**/);
 	}
 	cout << "reading is finished" << endl;
 
@@ -38,10 +41,14 @@ int main() {
 	
 	/*
 		@TODO Insantiate Objects here from inputReader
+		Step* SystemMaintenance = new(inputReader.GetServiceTime(), "Warehouse Maintenance System");
+		Sink* SystemSink = new("System Sink");
+		
 	*/
 	/*
-		Source Object Next Task = Step
+		Source Objects Next Task = Step
 		Step Next Task = Sink
+		SystemMaintenance->SetNextTask(SystemSink);
 	/*
 	
 	/*
