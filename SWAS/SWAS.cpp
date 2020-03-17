@@ -45,7 +45,7 @@ int main() {
 		else if (iter->first == "Apache"){
 			//SourceBlock* Apache = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
 				//it->first + " Source Object", #, /**/);	
-		}*/
+		}
 	}
 	cout << "reading is finished" << endl;
 
