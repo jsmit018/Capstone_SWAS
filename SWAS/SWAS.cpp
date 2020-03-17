@@ -30,8 +30,22 @@ int main() {
 		Aircraft* firstAircraft = new Aircraft();
 		firstAircraft->GetMyJobList(iter->first);
 		//Mayhaps
-		//SourceBlock* firstAircraftofThisType = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
-			//it->first + " Source Object", #, /**/);
+		if (iter->first == "F-35"){
+			//SourceBlock* F_35 = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
+				//it->first + " Source Object", #, /**/);
+		}
+		else if (iter->first == "F-18"){
+			//SourceBlock* F_18 = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
+				//it->first + " Source Object", #, /**/);
+		}
+		else if (iter->first == "Fixed Wing"){
+			//SourceBlock* Fixed_Wing = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
+				//it->first + " Source Object", #, /**/);
+		}
+		else if (iter->first == "Apache"){
+			//SourceBlock* Apache = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
+				//it->first + " Source Object", #, /**/);	
+		}*/
 	}
 	cout << "reading is finished" << endl;
 
