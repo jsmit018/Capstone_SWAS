@@ -9,6 +9,8 @@
 
 using namespace std;
 
+map<string, Aircraft*> InputReader::_masterMap;
+
 InputReader::InputReader()
 {
 
@@ -17,7 +19,12 @@ InputReader::InputReader()
 InputReader::~InputReader()
 {
 	// Iterate through the whole map and deallocate all pointer objects using the syntaxt delete objectPointer;
+	map <string, Aircraft*>::const_iterator iter = _masterMap.begin();
 	// for each map element
+	while (iter != _masterMap.end())
+	{
+	//	Aircraft* toDelete = iter->first;
+	}
 	//	Aircraft * toDelete = map::iterator->first;
 	// if there are pointers within that object that pointer is pointing to
 		// first iterate through those to deallocate them
@@ -549,6 +556,8 @@ void InputReader::ReadInputData() //initialization for getting data
 						istringstream ssSteps(row[1]);
 						ssSteps >> jobPriority;
 					}
+
+					newStep->SetMyRJName(currentJob);
 					//cout << "&&&&&JOB PRIORITY" << jobPriority << endl;
 
 					//istringstream ssSteps(row[1]);
@@ -945,6 +954,16 @@ void InputReader::ReadInputData() //initialization for getting data
 	}
 }
 
+map<string, Aircraft*>::iterator InputReader::GetMasterMapBegin()
+{
+	return _masterMap.begin();
+}
+
+map<string, Aircraft*>::iterator InputReader::GetMasterMapEnd()
+{
+	return _masterMap.end();
+}
+
 void InputReader::PrintEverything()
 {
 	//Aircraft
@@ -959,4 +978,21 @@ void InputReader::PrintEverything()
 		cout << "_________________________________________________________________________________" << endl;
 		iter++;
 	}
+}
+
+int InputReader::GetMapSize()
+{
+	return _masterMap.size();
+}
+
+Aircraft* InputReader::GetAircraft(string aircraftName)
+{
+
+	map<string, Aircraft*>::const_iterator iter = _masterMap.find(aircraftName);
+	if (iter != _masterMap.end())
+	{
+		return iter->second;
+	}
+	else
+		return nullptr;
 }
