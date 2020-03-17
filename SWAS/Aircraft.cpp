@@ -9,11 +9,10 @@ Aircraft::Aircraft()
 {
 	_aircraftID = ++_nextID;
 }
-//** Andrea:: I'm not sure where this function would be called,this functionality of 
-//random, recurring, and calendar is handled by aircraft arrivals in the source object. I've really looked
-//into how this would fit with what we have, but I can't find a space especailly because it is trying to schedule physical steps and
-//would essentially undo a lot of the stuff that has already been coded. This function may be useful in the step code when you are
-//handling checking the RepairJobs & Steps. What I mean is when an aircraft that arrives from a random arrival would have a RepairJob
+//** Andrea:: I see that you called this function in main, however this functionality of 
+//random, recurring, and calendar is handled by aircraft arrivals in the source object. I see that this function is trying 
+//to schedule physical steps and would essentially undo a lot of the stuff that has already been coded. 
+//What I mean is when an aircraft that arrives from a random arrival would have a RepairJob
 //with steps that were populated from your WillSchedule() function which when the aircraft moves to the step object the logic
 //there will work through the repair job list. Same with Recurring and Calendar. When the Source Object creates an aircraft from that
 //EM it will have a RepairJob based off of its arrival that step will take care of. I'm sorry to say but this functionality right here
