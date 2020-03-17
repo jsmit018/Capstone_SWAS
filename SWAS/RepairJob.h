@@ -29,10 +29,12 @@ public:
 	char GetIndoorReq();
 	string GetCalendarDate();
 	double GetRecurring();
-	double GetUnplannedProb(); 
+	Distribution* GetUnplannedProb(); 
 	void GetNextStep();
 	int GetStepVecSize();
 	Step* GetStep(int stepID);
+	bool WillSchedule();
+	Step* GetFirstStep();
 
 	void AddStep(Step* step);
 	void AddResourceRepair(RepairJob* repairJob, string resourceName);
@@ -47,8 +49,7 @@ private:
 	string	_calendarDate;							// Calendar-schedule type repair jobs (date: mmddyyyy)
 	//split into day, month, year
 	double	_recurringAmt;							// Number of months between Recurring-schedule type repair jobs
-	string	_unplannedProb;							// Distribution for probability of certain repair job after random iat
-//	Distribution* _unplannedProb;					// replace string with this
+	Distribution* _unplannedProb;							// Distribution for probability of certain repair job after random iat
 	vector<Step*> _vecSteps;							// RepairJob has a vector of step objects
 	static map<string, RepairJob*> _resourceRepairMap;		//FOR EACH RESOURCE TYPE, MAKE REPAIR JOB
 	//int _activeStep;

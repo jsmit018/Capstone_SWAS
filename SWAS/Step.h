@@ -24,17 +24,20 @@ public:
 	void SetReqResource(string reqResource);
 	//void SetResNum(int numResNeeded); ///TODO read in and split
 	void SetReqParts(string reqParts);
-	void SetNumPartsNeeded(int numPartsNeeded);  //TODO read in and split
 	void SetReturnStep(/*int stepId*/ int returnStep);
 	void SetStepIndoorReq(char indoorReq);
+	void SetStepID(int stepID);
 	void SetRJPriority(int RJpriority);
 	Step* SetNextStep();
+	void SetMyRJName(string myRJ);
+	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
 	void AddParts(Parts* parts, string partsName);
 	void PrintParts();
 	void PrintResources();
 	void PrintPools();
+	void PrintEvent();
 	void CheckBays();
 	map<string, Resource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
@@ -47,18 +50,21 @@ public:
 	int GetNumberInQueue();
 	int GetRJPriority();
 	Resource* GetResourceObj(string name);
+	string GetMyRJName();
+	Step* GetNextStep(Aircraft * currAir, int currStep);
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
 	void AddQueueEM();						// if bay not avial, increment queue
 	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay
 	void Print();
 private:
+	string _myRJ;
 	Distribution* _serviceTime;
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
 	char _indoorReq; /// this is not populated right now
 	int _RJpriority; 
-//	int _stepID;
+	int _stepID;
 	int _numInQueue;
 	Step* _nextStep;	// NOT POPULATED
 	//	Resource* _bays;		//determined by Warehouse GUI
@@ -74,7 +80,12 @@ private:
 	PriorityQueue<Aircraft>* _priorityQueue;
 
 	bool haveAllResources();	//check for whether acquired resources can be released
-
+	bool ResourceInReqResource(string resource)
+	{
+		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
+			return false;
+		return true; 
+	}
 
 	/// to do //
 	static map<string, Resource*> _resourcePool;

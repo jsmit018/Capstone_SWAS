@@ -1,18 +1,60 @@
 //Aircraft.cpp: Andrea Robey
 
 #include "Aircraft.h"
+#include "InputInterface.h"
 
 int Aircraft::_nextID = 0;
 
 Aircraft::Aircraft()
 {
-	_aircraftID = ++_nextID; // here instead of in setID funciton
+	_aircraftID = ++_nextID;
+}
+void Aircraft::GetMyJobList(string aircraftType)
+{
+	_aircraftType = aircraftType;
+	
+	//iterate through all repair jobs in _allrepairJobs map
+
+	map<string, RepairJob*>::const_iterator iter = InputReader::GetAircraft(_aircraftType)->_allRepairJobsMap.begin();
+	while (iter != InputReader::GetAircraft(_aircraftType)->_allRepairJobsMap.end())
+	{
+		//for all repair jobs with schedule type "random"
+		if (iter->second->GetSchedType() == "Random") {
+
+			//roll dice on unplanned probability
+			if (iter->second->WillSchedule() == true)
+			{
+				cout << _aircraftType << "will have a Random Repair Job called: " << iter->second->GetName() << endl;
+
+				iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), this);
+			}
+
+			else
+				cout << _aircraftType << "will not have a Random Repair Job called: " << iter->second->GetName() << endl;
+		}
+
+		//for all repair jobs with schedule type "recurring"
+		if (iter->second->GetSchedType() == "Recurring") {
+
+			cout << _aircraftType << "has a Recurring Repair Job called: " << iter->second->GetName() << endl;
+			
+			iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), this);
+		}
+
+		//for all repair jobs with schedule type "calendar"
+		if (iter->second->GetSchedType() == "Calendar") {
+
+			cout << _aircraftType << "has a Calendar Repair Job called: " << iter->second->GetName() << endl;
+			
+			iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), this);
+		}
+	}
 }
 
 void Aircraft::SetSource(int sourceID)
 {
 	_sourceID = sourceID;
-}
+} 
 
 int Aircraft::GetSource()
 {
@@ -176,7 +218,7 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 
 Distribution* Aircraft::GetAircraftIAT()
 {
-	return _iatUnplanned; //check if this works
+	return _iatUnplanned; //check if this works?
 }
 
 void Aircraft::PrintProperties()
