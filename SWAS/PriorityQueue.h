@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include "SimExec.h"
-#include "Aircraft.h"
+//#include "Aircraft.h"
 
 using namespace std;
 

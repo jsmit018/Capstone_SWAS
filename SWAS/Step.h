@@ -6,8 +6,9 @@
 #include "Distribution.h"
 #include "Resource.h"
 #include "Parts.h"
-#include "RepairJob.h"
 #include "PriorityQueue.h"
+
+class Aircraft;
 
 class Step : public Task
 {
