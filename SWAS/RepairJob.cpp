@@ -7,7 +7,7 @@ RepairJob::RepairJob()
     _schedType = "Unplanned";
     _calendarDate = "n/a";
     _recurringAmt = 0.0;
-    _unplannedProb = "1";
+  //  _unplannedProb = "1";
 }
 
 //RepairJob::RepairJob(string name, int listSize) {
@@ -20,6 +20,26 @@ Step* RepairJob::GetStep(int stepID)
 {
     //setting stepID 
     return _vecSteps[stepID];
+}
+
+Step* RepairJob::GetFirstStep()
+{
+    return _vecSteps[1];
+}
+
+bool RepairJob::WillSchedule()
+{
+    if (_unplannedProb->GetRV() >= 0.51)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+Distribution* RepairJob::GetUnplannedProb()
+{
+    return _unplannedProb;
 }
 
 int RepairJob::GetStepVecSize()
@@ -83,6 +103,7 @@ void RepairJob::SetRecurring(double recurringAmt)
     //change to double
 }
 
+
 double RepairJob::GetRecurring()
 {
     return _recurringAmt;
@@ -90,8 +111,75 @@ double RepairJob::GetRecurring()
 
 void RepairJob::SetUnplannedProb(string unplannedProb)
 {
-    _unplannedProb = unplannedProb;
-    //change to distribution
+    istringstream unProb(unplannedProb);
+    string firstHalf;
+    string secHalf;
+
+    getline(unProb, firstHalf, '(');
+    getline(unProb, secHalf, ')');
+    //	cout << "first: " << firstHalf << endl;
+    //	cout << "sec: " << secHalf << endl;
+
+    istringstream nums(secHalf);
+    if (firstHalf == "Triangular" || firstHalf == "Tri")
+    {
+        double min, expected, max;
+        nums >> min;
+        nums >> expected;
+        nums >> max;
+        _unplannedProb = new Triangular(min, expected, max);
+    }
+
+    else if (firstHalf == "Exponential" || firstHalf == "Exp")
+    {
+        double mean;
+        nums >> mean;
+
+        _unplannedProb = new Exponential(mean);
+    }
+
+    else if (firstHalf == "Uniform" || firstHalf == "Uni")
+    {
+        double min, max;
+        nums >> min >> max;
+
+        _unplannedProb = new Uniform(min, max);
+    }
+
+    else if (firstHalf == "Normal" || firstHalf == "Norm")
+    {
+        double mean, stdev;
+        nums >> mean >> stdev;
+
+        _unplannedProb = new Normal(mean, stdev);
+    }
+
+    else if (firstHalf == "Poisson")
+    {
+        double mean;
+        nums >> mean;
+
+        _unplannedProb = new Poisson(mean);
+    }
+
+    else if (firstHalf == "Constant" || firstHalf == "Fixed")
+    {
+        double mean;
+        nums >> mean;
+
+        _unplannedProb = new Constant(mean);
+    }
+
+    else if (firstHalf == "Weibull")
+    {
+        double scale, shape;
+        nums >> scale >> shape;
+
+        _unplannedProb = new Weibull(scale, shape);
+    }
+
+    //Determines correct distribution and prints
+  //  _unplannedProb->PrintDistribution();
 }
 
 //
@@ -104,6 +192,15 @@ void RepairJob::AddStep(Step* step)
 {
    //    cout << "adding step \n";
     _vecSteps.push_back(step);
+
+    int stepID;
+
+    for (int i = 0; i < _vecSteps.size(); i++)
+    {
+        stepID = i + 1;
+        step->SetStepID(stepID);
+    }
+
     //    cout << endl << "new size " << vecSteps.size() << endl;
 };
 
@@ -142,9 +239,9 @@ RepairJob* RepairJob::GetResourceRepair(string resourceName)
 void RepairJob::PrintJobProperties()
 {
     cout << "   Repair Job Name: " << _name << endl;
-    //cout << "   Schedule Type: " << _schedType << endl;
-    //cout << "   Repair Job Priority: " << _priority << endl;
-    //cout << "   Unplanned Probability: " << _unplannedProb << endl;
+    cout << "   Schedule Type: " << _schedType << endl;
+  //  cout << "   Repair Job Priority: " << _priority << endl;
+    cout << "   Unplanned Probability: " << GetUnplannedProb() << endl;
     //cout << "   Calendar Occurrence: " << _calendarDate << endl;
     //cout << "   Reccuring Amount: " << _recurringAmt << endl;
     //cout << "   Indoor Requirement? " << _indoorReq << endl;
@@ -152,9 +249,9 @@ void RepairJob::PrintJobProperties()
 
     for (int i = 0; i < _vecSteps.size(); i++)
     {
-      //  _vecSteps[i]->Print();
+        _vecSteps[i]->Print();
         cout << endl;
-        _vecSteps[1]->PrintPools();
+     //   _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }

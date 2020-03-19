@@ -20,6 +20,7 @@ class RepairJob;
 class Aircraft {
 public:
 	Aircraft();
+	void GetMyJobList(string aircraftType);
 	void PrintProperties();
 
 	void SetSource(int sourceID);

@@ -56,6 +56,15 @@ int Parts::GetPartsCount()
 {
 	return _partsCount;
 }
+void Parts::SetInitPartsCount(int partsCount)
+{
+	_initCount = partsCount;
+}
+
+int Parts::GetInitPartsCount()
+{
+	return _initCount;
+}
 
 //send to Parts class
 void Parts::SetPartsName(string partsName)
@@ -160,7 +169,8 @@ Distribution* Parts::GetLeadTime()
 void Parts::PrintPartsProperties()
 {
 	cout << "			Parts name: " << _partsName << endl;
-	cout << "			Initial count: " << _partsCount << endl;
+	cout << "			Parts count: " << _partsCount << endl;
+	cout << "			Initial count: " << _initCount << endl;
 	cout << "			Order threshold: " << _orderThreshold << endl;
 	cout << endl;
 }
