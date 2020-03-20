@@ -20,6 +20,22 @@ void CalConverter::InsertDays(int month, int numDays)
 	}
 }
 
+int* CalConverter::GetCalArray() {
+	map<int, int>::const_iterator iter = _monthMap.begin();
+	_calArray = new int[_monthMap.size()];
+	while (iter != _monthMap.end()) {
+		_calArray[iter->first - 1] = iter->second;
+		iter++;
+	}
+
+	return _calArray;
+}
+
+map<int, int> CalConverter::GetMonthMap()
+{
+	return _monthMap;
+}
+
 TimeConverter::TimeConverter()
 {
 }

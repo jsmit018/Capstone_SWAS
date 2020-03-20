@@ -13,7 +13,7 @@ map<string, Aircraft*> InputReader::_masterMap;
 
 InputReader::InputReader()
 {
-
+	calConvert = new CalConverter();
 }
 
 InputReader::~InputReader()
@@ -33,7 +33,7 @@ InputReader::~InputReader()
 
 void InputReader::ReadInputData() //initialization for getting data
 {
-	CalConverter calConvert;
+	//CalConverter calConvert;
 	//Step step;
 	Resource resource;
 	string line;
@@ -106,7 +106,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					//					cout << "month " << month << " days, " << numDays << endl; 
 
-					calConvert.InsertDays(month, numDays);
+					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
 				}
 			}
@@ -978,6 +978,11 @@ void InputReader::PrintEverything()
 		cout << "_________________________________________________________________________________" << endl;
 		iter++;
 	}
+}
+
+CalConverter* InputReader::GetCalConverter()
+{
+	return calConvert;
 }
 
 int InputReader::GetMapSize()

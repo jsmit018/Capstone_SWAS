@@ -27,48 +27,42 @@ int main() {
 
 		cout << "Creating first " << iter->first << endl;
 
-		Aircraft* firstAircraft = new Aircraft();
-		firstAircraft->GetMyJobList(iter->first);
-		//Mayhaps
-		if (iter->first == "F-35"){
-			//SourceBlock* F_35 = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
-				//it->first + " Source Object", #, /**/);
+		//		Aircraft* firstAircraft = new Aircraft();
+		//		firstAircraft->GetMyJobList(iter->first);
+				//Mayhaps
+		if (iter->first == "F-35") {
+			map<string, RepairJob*>::const_iterator it = InputReader::GetAircraft(iter->first)->GetRJMapBegin();
+			//SourceBlock* F_35 = new SourceBlock(new Constant(it->second->GetRecurring()), iter->first, iter->second, iter->first + " Source Object", 1, /**/);
 		}
-		else if (iter->first == "F-18"){
+		else if (iter->first == "F-18") {
 			//SourceBlock* F_18 = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
 				//it->first + " Source Object", #, /**/);
 		}
-		else if (iter->first == "Fixed Wing"){
+		else if (iter->first == "Fixed Wing") {
 			//SourceBlock* Fixed_Wing = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
 				//it->first + " Source Object", #, /**/);
 		}
-		else if (iter->first == "Apache"){
+		else if (iter->first == "Apache") {
 			//SourceBlock* Apache = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
 				//it->first + " Source Object", #, /**/);	
 		}
 	}
 	cout << "reading is finished" << endl;
 
-	/*
-		SimExec::InitializeSimulation(11, /CalendarConverterDaysArrayHere/);
-	*/
-	
-	/*
-		@TODO Insantiate Objects here from inputReader
-		Step* SystemMaintenance = new(inputReader.GetServiceTime(), "Warehouse Maintenance System");
-		Sink* SystemSink = new("System Sink");
-		
-	*/
-	/*
-		Source Objects Next Task = Step
-		Step Next Task = Sink
-		SystemMaintenance->SetNextTask(SystemSink);
-	/*
-	
-	/*
-		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
-		//Print Values here
-	*/
+	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
+
+	//@TODO Insantiate Objects here
+	//Dummy "service time"
+	Step* SystemMaintenance = new Step("5", "Warehouse Maintenance System");
+	SinkBlock* SystemSink = new SinkBlock("System Sink");
+
+	//Source Objects Next Task = Step
+	//Step Next Task = Sink
+	SystemMaintenance->SetNextTask(SystemSink);
+
+	SimExec::RunSimulation();
+	//SimExec::RunSimulation(/endTime/);
+	//Print Values here
 
 	return 0;
 }

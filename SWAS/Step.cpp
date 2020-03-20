@@ -481,7 +481,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				continue; 
 
 			//schedule resource release ea
-			SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, it->second), 0.0, "ReleaseResourceEA");
+			SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 
 			//empty appropriate acquired vector index
 			_acquiredResources.erase(acquiredResources.begin() + i);
@@ -520,7 +520,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	//vector<string> resourceList;
 	
 	//SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
-	SimExec::ScheduleEventAT(1, new StartServiceEA(this, _priorityQueue->GetEntity(), _acquiredResources), 0.0, "StartServiceEA");
+	SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), _acquiredResources), 0.0, "StartServiceEA");
 	//I'm under the assumption that you'll be using an interator if not let me know when you finish and i'll come back and add the appropriate line
 	//SimExec::CheckConditionalEvents(it->second, 0);
 }
