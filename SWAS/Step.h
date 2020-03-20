@@ -51,7 +51,11 @@ public:
 	int GetRJPriority();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
-	Step* GetNextStep(Aircraft * currAir, int currStep);
+//	Step* GetNextStep(Aircraft * currAir, int currStep);
+	map<string, Parts*>::iterator GetPartsMapBegin();
+	map<string, Parts*>::iterator GetPartsMapEnd();
+	map<string, Resource*>::iterator GetResourceMapBegin();
+	map<string, Resource*>::iterator GetResourceMapEnd();
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
 	void AddQueueEM();						// if bay not avial, increment queue

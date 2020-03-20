@@ -462,6 +462,7 @@ string Step::GetMyRJName()
 {
 	return _myRJ;
 }
+
 void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 {
 	//increment stepid
@@ -627,6 +628,26 @@ Resource* Step::GetResourceObj(string name)
 	return it->second;
 }
 
+map<string, Resource*>::iterator Step::GetResourceMapBegin()
+{
+	return _reqResourceMap.begin();
+}
+
+map<string, Resource*>::iterator Step::GetResourceMapEnd()
+{
+	return _reqResourceMap.end();
+}
+
+map<string, Parts*>::iterator Step::GetPartsMapBegin()
+{
+	return _reqPartsMap.begin();
+}
+
+map<string, Parts*>::iterator Step::GetPartsMapEnd()
+{
+	return _reqPartsMap.end();
+}
+
 int Step::GetRJPriority()
 {
 	return _RJpriority;
@@ -639,6 +660,7 @@ int Step::GetRJPriority()
 void Step::SetStepID(int stepID)
 {
 	_stepID = stepID;
+	cout << "step id " << stepID << " " << _stepID << endl;
 }
 
 void Step::SetName(string name)

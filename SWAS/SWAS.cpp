@@ -29,6 +29,7 @@ int main() {
 
 		Aircraft* firstAircraft = new Aircraft();
 		firstAircraft->GetMyJobList(iter->first);
+		iter++;
 	}
 	cout << "reading is finished" << endl;
 

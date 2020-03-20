@@ -8,25 +8,62 @@ int Aircraft::_nextID = 0;
 Aircraft::Aircraft()
 {
 	_aircraftID = ++_nextID;
+
 }
 void Aircraft::GetMyJobList(string aircraftType)
 {
 	_aircraftType = aircraftType;
-	
-	//iterate through all repair jobs in _allrepairJobs map
 
-	map<string, RepairJob*>::const_iterator iter = InputReader::GetAircraft(_aircraftType)->_allRepairJobsMap.begin();
-	while (iter != InputReader::GetAircraft(_aircraftType)->_allRepairJobsMap.end())
-	{
-		//for all repair jobs with schedule type "random"
-		if (iter->second->GetSchedType() == "Random") {
+	cout << "BEFORE current repair map size" << InputReader::GetAircraft(aircraftType)->GetAllRJMapSize() << endl;
+
+	//iterate through all repair jobs in _allrepairJobs map in mastermap
+	cout << "getting my jobs" << endl;
+	map<string, RepairJob*>::iterator iter = InputReader::GetAircraft(_aircraftType)->GetRJMapBegin();
+
+	//while (iter != InputReader::GetAircraft(_aircraftType)->GetRJMapEnd())
+	while(InputReader::GetAircraft(_aircraftType)->IsMapEnd(iter))
+	{ 
+		cout << "in while loop" << endl;
+		/*
+		//for all repair jobs in allrepairjobs in mastermap with schedule type "random"
+		if (iter->second->GetSchedType() == "Random" || iter->second->GetSchedType() == "Unplanned") {
+
+			cout << "got random job" << endl;
 
 			//roll dice on unplanned probability
 			if (iter->second->WillSchedule() == true)
 			{
-				cout << _aircraftType << "will have a Random Repair Job called: " << iter->second->GetName() << endl;
+				cout << _aircraftType << " will have a Random Repair Job called: " << iter->second->GetName() << endl;
 
-				iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), this);
+				cout << "current map size" << InputReader::GetMapSize() << endl;
+				//cout << "current vec size" << iter->second->GetStepVecSize() << endl;
+
+				//make a copy of this repair job
+				RepairJob* currJob = new RepairJob(*iter->second);
+
+				cout << "current repair map size" << _allRepairJobsMap.size() << endl;
+
+				//give this copy to this new aircraft's myrepairjobs list
+				_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(),currJob));
+
+				cout << "NEW my map size" << GetMyRJMapSize() << endl;
+
+				map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
+				while (myJobIter != _myRepairJobs.end())
+				{
+					//	delete myJobIter->second;
+
+					//	schedule first step of this repair job
+					cout << "VEC SIZE" << myJobIter->second->GetStepVecSize() << endl; 
+					cout << endl;
+					//Step* firstStep = myJobIter->second->GetStep(1);
+					//myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+					myJobIter++;
+
+				}
+				cout << "AFTER current repair map size" << InputReader::GetAircraft(aircraftType)->GetAllRJMapSize() << endl;
+				//	cout << "NEW DELETE my map size" << GetMyRJMapSize() << endl;
+				continue;
 			}
 
 			else
@@ -34,23 +71,32 @@ void Aircraft::GetMyJobList(string aircraftType)
 		}
 
 		//for all repair jobs with schedule type "recurring"
-		if (iter->second->GetSchedType() == "Recurring") {
+		else if (iter->second->GetSchedType() == "Recurring") {
 
 			cout << _aircraftType << "has a Recurring Repair Job called: " << iter->second->GetName() << endl;
 			
+			//schedule first step of repair job
 			iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), this);
 		}
 
 		//for all repair jobs with schedule type "calendar"
-		if (iter->second->GetSchedType() == "Calendar") {
+		else if (iter->second->GetSchedType() == "Calendar") {
 
 			cout << _aircraftType << "has a Calendar Repair Job called: " << iter->second->GetName() << endl;
 			
+			//schedule first step of repair job
 			iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), this);
-		}
+		} */
+		iter++;
 	}
 }
 
+bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
+{
+	if (iter != _allRepairJobsMap.end())
+		return true;
+	return false; 
+}
 void Aircraft::SetSource(int sourceID)
 {
 	_sourceID = sourceID;
@@ -143,6 +189,16 @@ map<string,RepairJob*>::iterator Aircraft::GetRJMapBegin()
 map<string, RepairJob*>::iterator  Aircraft::GetRJMapEnd()
 {
 	return _allRepairJobsMap.end();
+}
+
+int Aircraft::GetAllRJMapSize()
+{
+	return _allRepairJobsMap.size();
+}
+
+int Aircraft::GetMyRJMapSize()
+{
+	return _myRepairJobs.size();
 }
 
 void Aircraft::SetAircraftIAT(string iatUnplanned)

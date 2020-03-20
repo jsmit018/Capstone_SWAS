@@ -10,21 +10,49 @@ RepairJob::RepairJob()
   //  _unplannedProb = "1";
 }
 
-//RepairJob::RepairJob(string name, int listSize) {
-//    _name = name;
-//    _activeStep = 0;
-//    _stepList = new Step*[listSize];
-//}
-//
+RepairJob::RepairJob(const RepairJob& mapRj)
+{
+    _name = mapRj._name;					            // Repair job name
+    _priority = mapRj._priority;		        		// Repair job priority
+    _schedType = mapRj._schedType;				        // Interarrival schedule type
+    _indoorReq = mapRj._indoorReq;				        // Y or N for indoor requirement of repair job
+    _calendarDate = mapRj._calendarDate;		    	// Calendar-schedule type repair jobs (date: mmddyyyy)
+    _recurringAmt = mapRj._recurringAmt;		    	// Number of months between Recurring-schedule type repair jobs
+    _unplannedProb = mapRj._unplannedProb;		    	// Distribution for probability of certain repair job after random iat
+    _vecSteps = mapRj._vecSteps;		                // RepairJob has a vector of step objects
+
+    // there is a need for a copy constructor for steps and you have to iterate through the vectors 
+    // and maps, to ensure that the copies are actual copies and not that the same pointers is not being shared 
+    // by different repair jobs
+
+    // for number of steps in mapRj._vecSteps
+    // Step * newStep = new Step(mapRj._vecSteps[i])
+    // _vecSteps.push_back(newStep)
+
+    // same thing as above for the map. so you haeve to iterate through the map and just do the copy 
+    // for each repair job
+
+    // and also maybe do it for distribution, but that might not matter honestly
+
+
+ //   cout << "***Vec Size: " << _vecSteps.size() << endl;
+   // cout << "***Vec Size: " << mapRj._vecSteps.size() << endl;
+    //cout << endl;
+    _resourceRepairMap = mapRj._resourceRepairMap;		//FOR EACH RESOURCE TYPE, MAKE REPAIR JOB
+//    cout << "***Map Size: " << _resourceRepairMap.size() << endl;
+ //   cout << endl;
+}
+
 Step* RepairJob::GetStep(int stepID)
 {
     //setting stepID 
     return _vecSteps[stepID];
+    cout << "ID " << stepID << endl;
 }
 
 Step* RepairJob::GetFirstStep()
 {
-    return _vecSteps[1];
+    return _vecSteps[0];
 }
 
 bool RepairJob::WillSchedule()
@@ -73,6 +101,7 @@ void RepairJob::SetSchedType(string schedType)
 
 string RepairJob::GetSchedType()
 {
+    cout << "TYPE: " << _schedType << endl;
     return _schedType;
 }
 
@@ -190,16 +219,18 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
 
 void RepairJob::AddStep(Step* step)
 {
-   //    cout << "adding step \n";
     _vecSteps.push_back(step);
 
-    int stepID;
+    cout << "adding step" << _vecSteps.size() << endl;
+    step->SetStepID(_vecSteps.size());
+    /*int stepID;
 
     for (int i = 0; i < _vecSteps.size(); i++)
     {
         stepID = i + 1;
+        cout << "step id from add step is " << stepID; 
         step->SetStepID(stepID);
-    }
+    }*/
 
     //    cout << endl << "new size " << vecSteps.size() << endl;
 };
