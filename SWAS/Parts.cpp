@@ -90,19 +90,25 @@ int Parts::GetThreshold()
 
 void Parts::SetLeadTime(string leadTime)
 {
+	//the string being passed in is now split into two strings
 	istringstream leadDist(leadTime);
 	string firstHalf;
 	string secHalf;
 
+	//they're split based on the ( and ) symbols. The parenthesis are treated as a delimiter.
 	getline(leadDist, firstHalf, '(');
 	getline(leadDist, secHalf, ')');
 //	cout << "first: " << firstHalf << endl;
 //	cout << "sec: " << secHalf << endl;
 
+	//this is used for the second half to turn the numbers into the doubles
 	istringstream nums(secHalf);
+	
+	//if statements for determining which distribution it is
 	if (firstHalf == "Triangular")
 	{
 		double min, expected, max;
+	//the first part of the string segment called "nums" is set a the double min. second one is double expected, etc. 
 		nums >> min;
 		nums >> expected;
 		nums >> max;
@@ -157,7 +163,7 @@ void Parts::SetLeadTime(string leadTime)
 		_leadTime = new Weibull(scale, shape);
 	}
 
-	//Determines correct distribution and prints
+	//Calls the print function added to each distribution - Determines correct distribution and prints
 	_leadTime->PrintDistribution();
 }
 
