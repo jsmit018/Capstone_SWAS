@@ -9,8 +9,6 @@
 #include "PriorityQueue.h"
 //#include "Aircraft.h"
 
-class Aircraft;
-
 class Step : public Task
 {
 public:
@@ -40,7 +38,7 @@ public:
 	void PrintResources();
 	void PrintPools();
 	void PrintEvent();
-	void InitialArrivalBayCheck();
+	void CheckBays();
 	map<string, Resource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
 	bool IsResourceMapEnd(map<string, Resource*>::iterator it);
@@ -53,7 +51,11 @@ public:
 	int GetRJPriority();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
-	Step* GetNextStep(Aircraft * currAir, int currStep);
+//	Step* GetNextStep(Aircraft * currAir, int currStep);
+	map<string, Parts*>::iterator GetPartsMapBegin();
+	map<string, Parts*>::iterator GetPartsMapEnd();
+	map<string, Resource*>::iterator GetResourceMapBegin();
+	map<string, Resource*>::iterator GetResourceMapEnd();
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
 	void AddQueueEM();						// if bay not avial, increment queue

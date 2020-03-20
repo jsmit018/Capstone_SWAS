@@ -13,27 +13,55 @@ map<string, Aircraft*> InputReader::_masterMap;
 
 InputReader::InputReader()
 {
-	calConvert = new CalConverter();
+
 }
 
 InputReader::~InputReader()
-{
-	// Iterate through the whole map and deallocate all pointer objects using the syntaxt delete objectPointer;
-	map <string, Aircraft*>::const_iterator iter = _masterMap.begin();
-	// for each map element
-	while (iter != _masterMap.end())
+{/*
+	// Iterate through the whole map and deallocate all pointer objects
+	map <string, Aircraft*>::const_iterator airIt = _masterMap.begin();
+	// for each aircraft element
+	while (airIt != _masterMap.end())
 	{
-	//	Aircraft* toDelete = iter->first;
-	}
-	//	Aircraft * toDelete = map::iterator->first;
-	// if there are pointers within that object that pointer is pointing to
-		// first iterate through those to deallocate them
-	// delete toDelete; 
+		//for each repairjob element
+		map <string, RepairJob*>::const_iterator rjIt = airIt->second->GetRJMapBegin();
+		while (rjIt != airIt->second->GetRJMapEnd())
+		{
+			//for each step element
+			for (int i = 0; i < rjIt->second->GetStepVecSize(); i++)
+			{			
+				//for each resource element
+				map <string, Resource*>::const_iterator resIt = rjIt->second->GetStep(i)->GetResourceMapBegin();
+				while (resIt != rjIt->second->GetStep(i)->GetResourceMapEnd())
+				{
+					Resource* toDelete = resIt->second;
+					delete toDelete;
+				}
+
+				//for each part element
+				map <string, Parts*>::const_iterator partsIt = rjIt->second->GetStep(i)->GetPartsMapBegin();
+				while (partsIt != rjIt->second->GetStep(i)->GetPartsMapEnd())
+				{
+					Parts* toDelete = partsIt->second;
+					delete toDelete;
+				}
+
+				Step* toDelete = rjIt->second->GetStep(i);
+				delete toDelete;
+			}
+
+			RepairJob* toDelete = rjIt->second;
+			delete toDelete;
+		}
+
+		Aircraft* toDelete = airIt->second;
+		delete toDelete;*/
+	//}
 }
 
 void InputReader::ReadInputData() //initialization for getting data
 {
-	//CalConverter calConvert;
+	CalConverter calConvert;
 	//Step step;
 	Resource resource;
 	string line;
@@ -106,7 +134,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					//					cout << "month " << month << " days, " << numDays << endl; 
 
-					calConvert->InsertDays(month, numDays);
+					calConvert.InsertDays(month, numDays);
 					getline(dataFile, line);
 				}
 			}
@@ -132,20 +160,20 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-
+					cout << "another line " << line << endl;
 					////parsing the whole file and storing individual strings
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -176,6 +204,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						//for each index, set each variable
 						//	istringstream iss0(row[0]);
 					airType = row[0];
+					cout << "ROW " << row[0];
 					newAir->SetAircraftType(airType);
 
 					istringstream iss1(row[1]);
@@ -191,16 +220,17 @@ void InputReader::ReadInputData() //initialization for getting data
 					newAir->SetAircraftFootprint(airLength, airWingspan);
 
 					_masterMap.insert(pair<string, Aircraft*>(airType, newAir));
-					for (map<string, Aircraft*>::const_iterator it = _masterMap.begin(); it != _masterMap.end(); ++it)
-					{
+					//for (map<string, Aircraft*>::const_iterator it = _masterMap.begin(); it != _masterMap.end(); ++it)
+					//{
 						//						cout << "MAP: " << it->first << endl;
 						//						cout << "OBJ: ";
 						//						it->second->PrintProperties();
 						//						cout << endl;
-					}
+					//}
 
-					//					cout << "after aircraft for loop \n";	
+					//						
 				}
+				cout << "after aircraft for loop \n";
 			}
 
 
@@ -213,12 +243,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -226,7 +256,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -289,12 +319,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -302,7 +332,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -382,12 +412,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -395,7 +425,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -441,12 +471,14 @@ void InputReader::ReadInputData() //initialization for getting data
 						map<string, Aircraft*>::iterator it = _masterMap.begin();
 						while (it != _masterMap.end())
 						{
-							it->second->AddRepairJob(newJob, unRepairName);
+							RepairJob* anotherOne = new RepairJob(*newJob);
+							it->second->AddRepairJob(anotherOne, unRepairName);
 							it++;
 						}
 					}
 					else
 					{
+						RepairJob* anotherOne = new RepairJob(*newJob);
 						//add new repair job to list of unplanType aircraft's repair jobs in the master map
 						_masterMap[unplanType]->AddRepairJob(newJob, unRepairName);
 					}
@@ -496,12 +528,14 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+
+					cout << "NEW STEP LINE " << line << endl;
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream iss(line);
 
@@ -509,7 +543,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 
 
 							////breaking up strings by comma
@@ -611,25 +645,33 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iter != _masterMap.end())
 					{
 						map<string, RepairJob*>::iterator it = iter->second->GetRJMapBegin();
+						cout << "aircraft name " << iter->second->GetAircraftType() << endl;
 
 						while(it != iter->second->GetRJMapEnd())
 						{
+							cout << it->second->GetName() << endl;
 							// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-								//cout << " about to add a step \n" << endl;
+								cout << " about to add a step \n" << endl;
+
+								cout << row[0] << " " << row[1] << " " << row[2] << " " <<
+									row[3] << " " << row[4] << " " << row[5] << " " <<
+									row[6] << " " << row[7] << " " << row[8] << " " << endl;
 								it->second->AddStep(newStep);
 
-								it++;
+								newStep->Print();
+								cout << "-----------------------------------------------------------------\n";
 							}
-							else
-								it++;
+							it++;
 						}
+
 						iter++;
 						
 					}
 
 				}
+
 			}
 
 			//////////////////////////////////////////
@@ -666,12 +708,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				//reading row as string
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -679,7 +721,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -748,12 +790,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				//reading row as string
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -761,7 +803,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -847,12 +889,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				//reading row as string
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -860,7 +902,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -978,11 +1020,6 @@ void InputReader::PrintEverything()
 		cout << "_________________________________________________________________________________" << endl;
 		iter++;
 	}
-}
-
-CalConverter* InputReader::GetCalConverter()
-{
-	return calConvert;
 }
 
 int InputReader::GetMapSize()
