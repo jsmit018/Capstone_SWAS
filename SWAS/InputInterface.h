@@ -32,6 +32,7 @@ public:
 	static int GetMapSize();
 private:
 	static map<string, Aircraft*> _masterMap;
+	static map<string, Resource*> _masterResourceMap;
 	CalConverter* calConvert;
 	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere

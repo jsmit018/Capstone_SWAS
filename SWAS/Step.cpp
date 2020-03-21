@@ -504,6 +504,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//get steps
 				//if no
 					//schedule aircraft departure ea
+					//Depart(aircraft);
 
 
 

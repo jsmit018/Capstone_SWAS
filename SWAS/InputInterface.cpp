@@ -10,6 +10,7 @@
 using namespace std;
 
 map<string, Aircraft*> InputReader::_masterMap;
+map<string, Resource*> InputReader::_masterResourceMap;
 
 InputReader::InputReader()
 {
@@ -814,6 +815,15 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					istringstream ssResource3(row[3]);
 					ssResource3 >> resourceFootprintY;
+
+					//_________________________________
+					/* testing for now*/
+					Resource* res = new Resource();
+					res->SetResourceName(resName);
+					res->SetResourceCount(resCount);
+					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
+					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
+					//_________________________________
 		
 
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();

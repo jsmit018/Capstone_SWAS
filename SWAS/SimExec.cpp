@@ -7,6 +7,17 @@
 
 }*/
 
+void PlayButton()
+{
+	SimExec::RunSimulation();
+}
+
+void PlayButton(Time month, Time day, Time timeOfDay, int year)
+{
+	SimExec::RunSimulation(month, day, timeOfDay, year);
+}
+
+
 struct SimExec::Event {
 	Event(EventAction* ea, Time timeMonth, Time timeDay, Time timeOfDay, int priority, int year, string eaName) {
 		_ea = ea;
@@ -534,6 +545,7 @@ private:
 SimExec::EventSet SimExec::_eventSet;
 SimExec::CondEventSet SimExec::_conditionalSet;
 SimulationTime SimExec::_simulationTime;
+bool SimExec::_simulationFlag;
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
 	cout << "Setting Simulation time to 0" << endl;
@@ -541,6 +553,7 @@ void SimExec::InitializeSimulation(int numBins, int* days) {
 	_simulationTime._month = 0;
 	_simulationTime._day = 0;
 	_simulationTime._year = 2020;
+	_simulationFlag = true;
 	_eventSet.InitEventSet(numBins, days);
 }
 
@@ -586,9 +599,13 @@ void SimExec::PrintEventSet()
 	_eventSet.PrintCalendar();
 }
 
-void SimExec::RunSimulation() {
-	cout << "Running Simulation" << endl;
-	while (_eventSet.HasEvent()) {
+//void SimExec::RunSimulation() {
+int SimExec::RunSimulation(){
+	//cout << "Running Simulation" << endl;
+	cout << "Executing Event" << endl;
+	//while (_eventSet.HasEvent() && _simulationFlag == true) {
+	//Commented out the while loop for tyler going to try moving the loop into unity.
+	if (_simulationFlag == true && _eventSet.HasEvent()){
 		_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
 		_simulationTime._month = _eventSet.GetMonth();
 		_simulationTime._day = _eventSet.GetDay();
@@ -599,24 +616,35 @@ void SimExec::RunSimulation() {
 		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
 			|| _eventSet.GetYear() != _simulationTime._year || _eventSet.GetMonth() != _simulationTime._month) : true)
 			while (_conditionalSet.CheckConditionalEvents());*/
+		if (!_eventSet.HasEvent())
+			FlipSimulationFlag();
+		return 0;
 	}
-	cout << "Simulation Terminating" << endl;
-	if (_simulationTime._timeOfDay >= 10) {
-		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-			<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
-	}
-	else if (_simulationTime._timeOfDay) {
-		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-			<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+	else if (_simulationFlag == false) {
+		cout << "Simulation Terminating" << endl;
+		if (_simulationTime._timeOfDay >= 10) {
+			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+				<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+		}
+		else if (_simulationTime._timeOfDay) {
+			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+				<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+		}
+		return 3;
 	}
 }
 
-void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
-	cout << "Running Simulation" << endl;
-	while (_eventSet.HasEvent()) {
-		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= (int)timeOfDay 
-			&& _simulationTime._year >= year)
-			break;
+//void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
+int SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
+	//cout << "Running Simulation" << endl;
+	cout << "Executing Event" << endl;
+	//while (_eventSet.HasEvent() && _simulationFlag == true) {
+	if (_eventSet.HasEvent() && _simulationFlag == true){
+		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= (int)timeOfDay
+			&& _simulationTime._year >= year) {
+			FlipSimulationFlag();
+			//break;
+		}
 		else {
 			_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
 			_simulationTime._month = _eventSet.GetMonth();
@@ -628,14 +656,36 @@ void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
 				|| _eventSet.GetYear() != _simulationTime._year || _eventSet.GetMonth() != _simulationTime._month) : true)
 				while (_conditioinalSet.CheckConditionalEvents());*/
+			return 0;
 		}
 	}
-	if (_simulationTime._timeOfDay >= 10) {
-		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-			<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+	else if (_simulationFlag == false) {
+		if (_simulationTime._timeOfDay >= 10) {
+			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+				<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+		}
+		else {
+			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+				<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+		}
+		return 3;
 	}
-	else{
-		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-			<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
-	}
+}
+
+void SimExec::FlipSimulationFlag()
+{
+	if (_simulationFlag == true)
+		_simulationFlag = false;
+	else
+		_simulationFlag = true;
+}
+
+bool SimExec::GetSimulationFlag()
+{
+	return _simulationFlag;
+}
+
+void StopSimulation()
+{
+	SimExec::FlipSimulationFlag();
 }

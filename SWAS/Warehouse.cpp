@@ -16,8 +16,10 @@
             //name
             //count
 //ties play button in GUI to run simulation (SWAS will have sleep til play function, could be trigger)
+//***SimExec hanldes this through PlayButton function in simulation executive that runs the simulation.
 //After Sim Stops
     //notifies GUI run is done
+	//***SimExec does this by returning a Flag 0 for sim is still running returns a 3 if the simulation is terminated.
     //calls output functions to print values
 
 Warehouse::Warehouse(double length, double width) {

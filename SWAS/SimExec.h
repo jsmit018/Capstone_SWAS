@@ -6,6 +6,11 @@
 
 using namespace std;
 
+void PlayButton();
+void PlayButton(Time month, Time day, Time timeOfDay, int year);
+void StopSimulation();
+
+
 struct SimulationTime {
 	Time _month;
 	Time _day;
@@ -24,8 +29,12 @@ public:
 	static void CheckConditionalEvents(Resource* resource = 0, Parts* parts = 0);
 	static void PrintEventSet();
 	static void InitializeSimulation(int numBins, int* days);
-	static void RunSimulation();
-	static void RunSimulation(Time month, Time day, Time timeOfDay, int year);
+	//static void RunSimulation();
+	static int RunSimulation();
+	//static void RunSimulation(Time month, Time day, Time timeOfDay, int year);
+	static int RunSimulation(Time month, Time day, Time timeOfDay, int year);
+	static void FlipSimulationFlag();
+	static bool GetSimulationFlag();
 
 private:
 	struct Event;
@@ -39,6 +48,8 @@ private:
 		January, February, March, April, May, June, July,
 		August, September, October, Novemember, December
 	};
+
+	static bool _simulationFlag;
 
 
 };

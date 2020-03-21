@@ -67,7 +67,7 @@ int main() {
 	Apache->SetNextTask(SystemMaintenance);
 	SystemMaintenance->SetNextTask(SystemSink);
 
-	SimExec::RunSimulation();
+	//SimExec::RunSimulation();
 	//SimExec::RunSimulation(/endTime/);
 	//Print Values here
 	return 0;
