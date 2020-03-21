@@ -11,6 +11,10 @@
 int main() {
 
 	//Where database connection code goes when DES is ready
+	SourceBlock* F_35 = NULL;
+	SourceBlock* F_18 = NULL;
+	SourceBlock* Fixed_Wing = NULL;
+	SourceBlock* Apache = NULL;
 
 
 	InputReader inputReader;
@@ -27,24 +31,24 @@ int main() {
 
 		cout << "Creating first " << iter->first << endl;
 
-		//		Aircraft* firstAircraft = new Aircraft();
-		//		firstAircraft->GetMyJobList(iter->first);
-				//Mayhaps
+		//Aircraft* firstAircraft = new Aircraft();
+		//firstAircraft->GetMyJobList(iter->first);
+		//Mayhaps
 		if (iter->first == "F-35") {
 			map<string, RepairJob*>::const_iterator it = InputReader::GetAircraft(iter->first)->GetRJMapBegin();
-			//SourceBlock* F_35 = new SourceBlock(new Constant(it->second->GetRecurring()), iter->first, iter->second, iter->first + " Source Object", 1, /**/);
+			F_35 = new SourceBlock(new Constant(it->second->GetRecurring()), iter->first, iter->second, iter->first + " Source Object", inputReader.GetF35Calendar()->GetNumEvents(), inputReader.GetF35Calendar());
 		}
 		else if (iter->first == "F-18") {
-			//SourceBlock* F_18 = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
-				//it->first + " Source Object", #, /**/);
+			map<string, RepairJob*>::const_iterator it = InputReader::GetAircraft(iter->first)->GetRJMapBegin();
+			F_18 = new SourceBlock(new Constant(it->second->GetRecurring()), iter->first, iter->second, iter->first + " Source Object", inputReader.GetF18Calendar()->GetNumEvents(), inputReader.GetF18Calendar());
 		}
 		else if (iter->first == "Fixed Wing") {
-			//SourceBlock* Fixed_Wing = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
-				//it->first + " Source Object", #, /**/);
+			map<string, RepairJob*>::const_iterator it = InputReader::GetAircraft(iter->first)->GetRJMapBegin();
+			Fixed_Wing = new SourceBlock(new Constant(it->second->GetRecurring()), iter->first, iter->second, iter->first + " Source Object", inputReader.GetFixedWingCalendar()->GetNumEvents(), inputReader.GetFixedWingCalendar());
 		}
 		else if (iter->first == "Apache") {
-			//SourceBlock* Apache = new (new Constant(inputReader.GetRecurring()), it->first, it->second,
-				//it->first + " Source Object", #, /**/);	
+			map<string, RepairJob*>::const_iterator it = InputReader::GetAircraft(iter->first)->GetRJMapBegin();
+			Apache = new SourceBlock(new Constant(it->second->GetRecurring()), iter->first, iter->second, iter->first + " Source Object", inputReader.GetApacheCalendar()->GetNumEvents(), inputReader.GetApacheCalendar());
 		}
 	}
 	cout << "reading is finished" << endl;
@@ -52,17 +56,19 @@ int main() {
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 
 	//@TODO Insantiate Objects here
-	//Dummy "service time"
 	Step* SystemMaintenance = new Step("5", "Warehouse Maintenance System");
 	SinkBlock* SystemSink = new SinkBlock("System Sink");
 
 	//Source Objects Next Task = Step
 	//Step Next Task = Sink
+	F_35->SetNextTask(SystemMaintenance);
+	F_18->SetNextTask(SystemMaintenance);
+	Fixed_Wing->SetNextTask(SystemMaintenance);
+	Apache->SetNextTask(SystemMaintenance);
 	SystemMaintenance->SetNextTask(SystemSink);
 
 	SimExec::RunSimulation();
 	//SimExec::RunSimulation(/endTime/);
 	//Print Values here
-
 	return 0;
 }

@@ -13,7 +13,11 @@ map<string, Aircraft*> InputReader::_masterMap;
 
 InputReader::InputReader()
 {
-
+	calConvert = new CalConverter();
+	F_35 = new CalendarObj();
+	F_18 = new CalendarObj();
+	Fixed_Wing = new CalendarObj();
+	Apache = new CalendarObj();
 }
 
 InputReader::~InputReader()
@@ -61,7 +65,7 @@ InputReader::~InputReader()
 
 void InputReader::ReadInputData() //initialization for getting data
 {
-	CalConverter calConvert;
+	//CalConverter calConvert;
 	//Step step;
 	Resource resource;
 	string line;
@@ -134,7 +138,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					//					cout << "month " << month << " days, " << numDays << endl; 
 
-					calConvert.InsertDays(month, numDays);
+					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
 				}
 			}
@@ -365,6 +369,73 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					if (schedType == "Calendar") {
 						schedCal = row[3];
+						istringstream calObj(schedCal);
+						string firstThird, secondThird, finalThird;
+						int monthToSched, dayToSched, yearToSched;
+						if (plannedType == "F-35") {
+							getline(calObj, firstThird, '/');
+							getline(calObj, secondThird, '/');
+							getline(calObj, finalThird, ',');
+							istringstream month(firstThird);
+							istringstream day(secondThird);
+							istringstream year(finalThird);
+							month >> monthToSched;
+							day >> dayToSched;
+							year >> yearToSched;
+							F_35->_months.push_back(monthToSched);
+							F_35->_days.push_back(dayToSched);
+							F_35->_year.push_back(yearToSched);
+							F_35->_timeOfDays.push_back(0.0);
+							F_35->UpdateNumEvents();
+						}
+						else if (plannedType == "F-18") {
+							getline(calObj, firstThird, '/');
+							getline(calObj, secondThird, '/');
+							getline(calObj, finalThird, ',');
+							istringstream month(firstThird);
+							istringstream day(secondThird);
+							istringstream year(finalThird);
+							month >> monthToSched;
+							day >> dayToSched;
+							year >> yearToSched;
+							F_18->_months.push_back(monthToSched);
+							F_18->_days.push_back(dayToSched);
+							F_18->_year.push_back(yearToSched);
+							F_18->_timeOfDays.push_back(0.0);
+							F_18->UpdateNumEvents();
+						}
+						else if (plannedType == "Fixed Wing") {
+							getline(calObj, firstThird, '/');
+							getline(calObj, secondThird, '/');
+							getline(calObj, finalThird, ',');
+							istringstream month(firstThird);
+							istringstream day(secondThird);
+							istringstream year(finalThird);
+							month >> monthToSched;
+							day >> dayToSched;
+							year >> yearToSched;
+							Fixed_Wing->_months.push_back(monthToSched);
+							Fixed_Wing->_days.push_back(dayToSched);
+							Fixed_Wing->_year.push_back(yearToSched);
+							Fixed_Wing->_timeOfDays.push_back(0.0);
+							Fixed_Wing->UpdateNumEvents();
+						}
+						else if (plannedType == "Apache") {
+							getline(calObj, firstThird, '/');
+							getline(calObj, secondThird, '/');
+							getline(calObj, finalThird, ',');
+							istringstream month(firstThird);
+							istringstream day(secondThird);
+							istringstream year(finalThird);
+							month >> monthToSched;
+							day >> dayToSched;
+							year >> yearToSched;
+							Apache->_months.push_back(monthToSched);
+							Apache->_days.push_back(dayToSched);
+							Apache->_year.push_back(yearToSched);
+							Apache->_timeOfDays.push_back(0.0);
+							Apache->UpdateNumEvents();
+						}
 						//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
 						newJob->SetCalendarDate(schedCal);
 					}
@@ -384,8 +455,6 @@ void InputReader::ReadInputData() //initialization for getting data
 										//cout << "PLANNED: " << endl;
 										//newJob->PrintJobProperties();
 										//cout << endl;
-
-
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
 				}
 			}
@@ -1020,6 +1089,31 @@ void InputReader::PrintEverything()
 		cout << "_________________________________________________________________________________" << endl;
 		iter++;
 	}
+}
+
+CalConverter* InputReader::GetCalConverter()
+{
+	return calConvert;
+}
+
+CalendarObj* InputReader::GetF35Calendar()
+{
+	return F_35;
+}
+
+CalendarObj* InputReader::GetF18Calendar()
+{
+	return F_18;
+}
+
+CalendarObj* InputReader::GetFixedWingCalendar()
+{
+	return Fixed_Wing;
+}
+
+CalendarObj* InputReader::GetApacheCalendar()
+{
+	return Apache;
 }
 
 int InputReader::GetMapSize()

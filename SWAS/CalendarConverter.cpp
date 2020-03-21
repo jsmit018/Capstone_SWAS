@@ -106,7 +106,7 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 	}
 }
 
-CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years)
+/*CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years)
 {
 	for (int i = 0; i < numEvents; ++i) {
 		_months[i] = months[i];
@@ -114,4 +114,19 @@ CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDa
 		_timeOfDays[i] = timeOfDays[i];
 		_years[i] = years[i];
 	}
+}*/
+
+CalendarObj::CalendarObj()
+{
+	_numEvents = 0;
+}
+
+void CalendarObj::UpdateNumEvents()
+{
+	_numEvents++;
+}
+
+int CalendarObj::GetNumEvents()
+{
+	return _numEvents;
 }

@@ -8,8 +8,8 @@
 
 class SourceBlock : public Task {
 public:
-	SourceBlock(Distribution* _interarrivalTimeRecurring, string aircraftType, Time timeForFirstAircraft, 	
-		Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule, CalendarObj* calobj, int numberOfAircraftToGenerate = NULL);
+	SourceBlock(Distribution* _interarrivalTimeRecurring, string aircraftType, Aircraft* aircraft, string name, 
+		int numOfCalendarEventsToSchedule, CalendarObj* calobj, int numberOfAircraftToGenerate = NULL);
 	string GetAircraftType();
 	void SetAircraftType(string aircraftType);
 	string GetName();

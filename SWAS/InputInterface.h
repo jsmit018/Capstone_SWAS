@@ -19,6 +19,11 @@ public:
 	~InputReader();
 	void ReadInputData();
 	void PrintEverything();
+	CalConverter* GetCalConverter();
+	CalendarObj* GetF35Calendar();
+	CalendarObj* GetF18Calendar();
+	CalendarObj* GetFixedWingCalendar();
+	CalendarObj* GetApacheCalendar();
 	map<string, Aircraft*>::iterator GetMasterMapBegin();
 	map<string, Aircraft*>::iterator GetMasterMapEnd();
 //	static void GetMyStep(string repairName, int stepId); //for getting step object 
@@ -27,7 +32,14 @@ public:
 	static int GetMapSize();
 private:
 	static map<string, Aircraft*> _masterMap;
+	CalConverter* calConvert;
 	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere
+
+	//Trial CalObjs
+	CalendarObj* F_35 = new CalendarObj();
+	CalendarObj* F_18 = new CalendarObj();
+	CalendarObj* Fixed_Wing = new CalendarObj();
+	CalendarObj* Apache = new CalendarObj();
 
 };
