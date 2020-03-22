@@ -29,6 +29,7 @@ public:
 //	static void GetMyStep(string repairName, int stepId); //for getting step object 
 	static Aircraft* GetAircraft(string aircraftName);
 	static map<string, Aircraft*> GetMasterMap();
+	static map<string, Resource*> GetMasterResourceMap();
 	static int GetMapSize();
 private:
 	static map<string, Aircraft*> _masterMap;

@@ -7,6 +7,7 @@
 #include "Aircraft.h"
 #include "Distribution.h"
 #include "SinkTask.h"
+#include "Warehouse.h"
 
 int main() {
 
@@ -15,7 +16,6 @@ int main() {
 	SourceBlock* F_18 = NULL;
 	SourceBlock* Fixed_Wing = NULL;
 	SourceBlock* Apache = NULL;
-
 
 	InputReader inputReader;
 
@@ -54,6 +54,7 @@ int main() {
 	cout << "reading is finished" << endl;
 
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
+	Warehouse::SetMasterMaps(inputReader);
 
 	//@TODO Insantiate Objects here
 	Step* SystemMaintenance = new Step("5", "Warehouse Maintenance System");
@@ -67,6 +68,7 @@ int main() {
 	Apache->SetNextTask(SystemMaintenance);
 	SystemMaintenance->SetNextTask(SystemSink);
 
+	/* Moved into a function for the GUI to use*/
 	//SimExec::RunSimulation();
 	//SimExec::RunSimulation(/endTime/);
 	//Print Values here

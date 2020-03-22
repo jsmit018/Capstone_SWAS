@@ -15,17 +15,24 @@
             //footprint
             //name
             //count
-//ties play button in GUI to run simulation (SWAS will have sleep til play function, could be trigger)
+//ties play button in GUI to run simulation (SWAS will have sleep til play function, could be trigger) [DONE]
 //***SimExec hanldes this through PlayButton function in simulation executive that runs the simulation.
 //After Sim Stops
-    //notifies GUI run is done
+    //notifies GUI run is done [DONE]
 	//***SimExec does this by returning a Flag 0 for sim is still running returns a 3 if the simulation is terminated.
-    //calls output functions to print values
+    //calls output functions to print values [ ]
+
+InputReader Warehouse::_inputReader;
 
 Warehouse::Warehouse(double length, double width) {
     _hangarLength = length;
     _hangarWidth = width;
     _index = 0;
+}
+
+void Warehouse::SetMasterMaps(InputReader inputReader)
+{
+	_inputReader = inputReader;
 }
 
 double Warehouse::GetLength()
@@ -50,6 +57,12 @@ double Warehouse::GetWidth()
 {
     cout << "Returning Hangar Width" << endl;
     return _hangarWidth;
+}
+
+Resource* Warehouse::GetResourceInformation(string resourceName)
+{
+	map<string, Resource*>::const_iterator resIter = _inputReader.GetMasterResourceMap().find(resourceName);
+	return resIter->second;
 }
 
 void Warehouse::UpdateListOfObjects(string objectName){

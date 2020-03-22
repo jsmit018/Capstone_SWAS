@@ -1142,3 +1142,13 @@ Aircraft* InputReader::GetAircraft(string aircraftName)
 	else
 		return nullptr;
 }
+
+map<string, Aircraft*> InputReader::GetMasterMap()
+{
+	return _masterMap;
+}
+
+map<string, Resource*> InputReader::GetMasterResourceMap()
+{
+	return _masterResourceMap;
+}
