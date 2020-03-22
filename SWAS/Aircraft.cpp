@@ -1,14 +1,12 @@
 //Aircraft.cpp: Andrea Robey
 
 #include "Aircraft.h"
-#include "InputInterface.h"
 
 int Aircraft::_nextID = 0;
 
 Aircraft::Aircraft()
 {
 	_aircraftID = ++_nextID;
-
 }
 void Aircraft::GetMyJobList(string aircraftType)
 {

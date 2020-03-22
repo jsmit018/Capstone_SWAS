@@ -6,6 +6,7 @@
 #pragma once
 #include "SimObj.h"
 #include "RepairJob.h"
+#include "InputInterface.h"
 #include <map>
 #include <string>
 #include <vector>

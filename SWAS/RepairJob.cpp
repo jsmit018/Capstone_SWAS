@@ -12,7 +12,6 @@ RepairJob::RepairJob()
 
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
-
     cout << "           COPYING REPAIR JOB" << endl;
     _name = mapRj._name;					            // Repair job name
     _priority = mapRj._priority;		        		// Repair job priority

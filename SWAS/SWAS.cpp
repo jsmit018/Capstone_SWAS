@@ -11,8 +11,6 @@
 int main() {
 
 	//Where database connection code goes when DES is ready
-
-
 	InputReader inputReader;
 
 	//populate master map
