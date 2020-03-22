@@ -31,22 +31,22 @@ InputReader::~InputReader()
 			for (int i = 0; i < rjIt->second->GetStepVecSize(); i++)
 			{			
 				//for each resource element
-				map <string, Resource*>::const_iterator resIt = rjIt->second->GetStep(i)->GetResourceMapBegin();
-				while (resIt != rjIt->second->GetStep(i)->GetResourceMapEnd())
+				map <string, Resource*>::const_iterator resIt = rjIt->second->GetStep(i+1)->GetResourceMapBegin();
+				while (resIt != rjIt->second->GetStep(i+1)->GetResourceMapEnd())
 				{
 					Resource* toDelete = resIt->second;
 					delete toDelete;
 				}
 
 				//for each part element
-				map <string, Parts*>::const_iterator partsIt = rjIt->second->GetStep(i)->GetPartsMapBegin();
-				while (partsIt != rjIt->second->GetStep(i)->GetPartsMapEnd())
+				map <string, Parts*>::const_iterator partsIt = rjIt->second->GetStep(i+1)->GetPartsMapBegin();
+				while (partsIt != rjIt->second->GetStep(i+1)->GetPartsMapEnd())
 				{
 					Parts* toDelete = partsIt->second;
 					delete toDelete;
 				}
 
-				Step* toDelete = rjIt->second->GetStep(i);
+				Step* toDelete = rjIt->second->GetStep(i+1);
 				delete toDelete;
 			}
 
@@ -514,9 +514,11 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				int stepID;
 				string stepName;
+				string stepNameTemp;
 				string stepType;
 				string inspecFailProb;
 				int returnStep;
+				Distribution* stepDurTemp = 0;
 				string stepDur;
 				string reqResource;
 				string reqParts;
@@ -542,7 +544,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					////parsing the whole file and storing individual strings
 					while (iss)
 					{
-						//csv empty cell has 11 commas
+						//csv empty cell has 10 commas
 						if (line != ",,,,,,,,,,") {
 
 
@@ -561,7 +563,7 @@ void InputReader::ReadInputData() //initialization for getting data
 							getline(iss, line);
 					}
 
-					Step* newStep = new Step(stepDur, stepName);
+					Step* newStep = new Step(stepDurTemp, stepNameTemp);
 
 					//	for (int i = 0; i < row.size(); ++i) {
 						//	cout << "line " << i << ": " << row[i] << endl;
@@ -758,9 +760,9 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Resource*>::iterator it = iter->second->GetStep(i)->FindResource(resName);
+								map<string, Resource*>::iterator it = iter->second->GetStep(i+1)->FindResource(resName);
 								
-								if (iter->second->GetStep(i)->IsResourceMapEnd(it))
+								if (iter->second->GetStep(i+1)->IsResourceMapEnd(it))
 									continue;
 								
 								it->second->SetResourceName(resName);
@@ -840,15 +842,15 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEP VECTORS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Resource*>::iterator it = iter->second->GetStep(i)->FindResource(resName);
+								map<string, Resource*>::iterator it = iter->second->GetStep(i+1)->FindResource(resName);
 
-								if (iter->second->GetStep(i)->IsResourceMapEnd(it))
-									iter->second->GetStep(i)->SetStepIndoorReq(iter->second->GetIndoorReq());
+								if (iter->second->GetStep(i+1)->IsResourceMapEnd(it))
+									iter->second->GetStep(i+1)->SetStepIndoorReq(iter->second->GetIndoorReq());
 
 									continue;
 //								iter->second->GetStep(i)->SetStepIndoorReq(iter->second->GetIndoorReq());
 
-								iter->second->GetStep(i)->SetRJPriority(iter->second->GetPriority());
+								iter->second->GetStep(i+1)->SetRJPriority(iter->second->GetPriority());
 								it->second->SetFailureName(row[1]);
 								it->second->SetFailureType(row[2]);
 								it->second->SetFailureDistr(row[3]);
@@ -941,9 +943,9 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Parts*>::iterator it = iter->second->GetStep(i)->FindParts(partName);
+								map<string, Parts*>::iterator it = iter->second->GetStep(i+1)->FindParts(partName);
 
-								if (iter->second->GetStep(i)->IsPartsMapEnd(it))
+								if (iter->second->GetStep(i+1)->IsPartsMapEnd(it))
 									continue;
 
 								it->second->SetPartsName(partName);

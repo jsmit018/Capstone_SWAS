@@ -7,6 +7,16 @@ Parts::Parts()
 	_orderThreshold = 0;
 }
 
+void Parts::CopyMapParts(const Parts& mapParts)
+{
+	_initCount = mapParts._initCount;
+	_partsCount = mapParts._partsCount;
+	_numNeeded = mapParts._numNeeded;
+	_partsName = mapParts._partsName;
+	_orderThreshold = mapParts._orderThreshold;
+	_leadTime = mapParts._leadTime;
+}
+
 void Parts::SetPartsCount(int partsCount)
 {
 	_partsCount = partsCount;

@@ -9,6 +9,7 @@ class Parts
 {
 public:
 	Parts();
+	void CopyMapParts(const Parts& mapParts);
 	void AcquireParts(int numNeeded);
 	bool AreEnoughParts();
 	void PrintPartsProperties();
@@ -33,7 +34,6 @@ private:
 	int _numNeeded;
 	string _partsName;
 	int _orderThreshold;
-
 	Distribution* _leadTime;
 
 };

@@ -7,6 +7,19 @@ Resource::Resource()
 	_repairProc = "none specified yet";
 }
 
+void Resource::CopyMapResource(const Resource& mapResource)
+{
+	_resourceCount = mapResource._resourceCount;
+	_numNeeded = mapResource._numNeeded;
+	_resourceName = mapResource._resourceName;
+	_length = mapResource._length;
+	_width = mapResource._width;
+	_failureName = mapResource._failureName;
+	_failureType = mapResource._failureType;
+	_failureDist = mapResource._failureDist;
+	_repairProc = mapResource._repairProc;
+}
+
 //@TODO will need to figure out logic for what happens if amount needed is greater
 void Resource::Acquire(int amountNeeded)
 {

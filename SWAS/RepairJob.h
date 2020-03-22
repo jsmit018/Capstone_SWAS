@@ -14,7 +14,7 @@ class RepairJob {
 public:
 	//RepairJob(string name);
 	RepairJob();
-	RepairJob(const RepairJob& mapRj);
+	void CopyRepairJob(const RepairJob& mapRj);
 	void SetName(string name);
 	void SetPriority(int priority);
 	void SetSchedType(string schedType);
