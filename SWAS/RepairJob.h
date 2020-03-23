@@ -23,14 +23,14 @@ public:
 	void SetRecurring(double recurringAmt);
 	void SetUnplannedProb(string unplannedProb); //switch to distribution pointer
 	void PrintJobProperties();
-	
+
 	string GetName();
 	int GetPriority();
 	string GetSchedType();
 	char GetIndoorReq();
 	string GetCalendarDate();
 	double GetRecurring();
-	Distribution* GetUnplannedProb(); 
+	Distribution* GetUnplannedProb();
 	void GetNextStep();
 	int GetStepVecSize();
 	Step* GetStep(int stepID);

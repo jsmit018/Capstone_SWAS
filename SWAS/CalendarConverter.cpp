@@ -20,6 +20,22 @@ void CalConverter::InsertDays(int month, int numDays)
 	}
 }
 
+int* CalConverter::GetCalArray() {
+	map<int, int>::const_iterator iter = _monthMap.begin();
+	_calArray = new int[_monthMap.size()];
+	while (iter != _monthMap.end()) {
+		_calArray[iter->first - 1] = iter->second;
+		iter++;
+	}
+
+	return _calArray;
+}
+
+map<int, int> CalConverter::GetMonthMap()
+{
+	return _monthMap;
+}
+
 TimeConverter::TimeConverter()
 {
 }
@@ -90,7 +106,7 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 	}
 }
 
-CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years)
+/*CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years)
 {
 	for (int i = 0; i < numEvents; ++i) {
 		_months[i] = months[i];
@@ -98,4 +114,19 @@ CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDa
 		_timeOfDays[i] = timeOfDays[i];
 		_years[i] = years[i];
 	}
+}*/
+
+CalendarObj::CalendarObj()
+{
+	_numEvents = 0;
+}
+
+void CalendarObj::UpdateNumEvents()
+{
+	_numEvents++;
+}
+
+int CalendarObj::GetNumEvents()
+{
+	return _numEvents;
 }

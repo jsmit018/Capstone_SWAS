@@ -54,7 +54,7 @@ public:
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
-//	Step* GetNextStep(Aircraft * currAir, int currStep);
+	//	Step* GetNextStep(Aircraft * currAir, int currStep);
 	map<string, Parts*>::iterator GetPartsMapBegin();
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
@@ -70,7 +70,7 @@ private:
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
 	char _indoorReq; /// this is not populated right now
-	int _RJpriority; 
+	int _RJpriority;
 	int _stepID;
 	int _numInQueue;
 	Step* _nextStep;	// NOT POPULATED
@@ -91,7 +91,7 @@ private:
 	{
 		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
 			return false;
-		return true; 
+		return true;
 	}
 
 	/// to do //

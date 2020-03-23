@@ -108,17 +108,17 @@ void Parts::SetLeadTime(string leadTime)
 	//they're split based on the ( and ) symbols. The parenthesis are treated as a delimiter.
 	getline(leadDist, firstHalf, '(');
 	getline(leadDist, secHalf, ')');
-//	cout << "first: " << firstHalf << endl;
-//	cout << "sec: " << secHalf << endl;
+	//	cout << "first: " << firstHalf << endl;
+	//	cout << "sec: " << secHalf << endl;
 
-	//this is used for the second half to turn the numbers into the doubles
+		//this is used for the second half to turn the numbers into the doubles
 	istringstream nums(secHalf);
-	
+
 	//if statements for determining which distribution it is
 	if (firstHalf == "Triangular")
 	{
 		double min, expected, max;
-	//the first part of the string segment called "nums" is set a the double min. second one is double expected, etc. 
+		//the first part of the string segment called "nums" is set a the double min. second one is double expected, etc. 
 		nums >> min;
 		nums >> expected;
 		nums >> max;

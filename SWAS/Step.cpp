@@ -144,7 +144,7 @@ public:
 		_step->PlaceOrderEM(_parts);
 	}
 private:
-	Step* _step; 
+	Step* _step;
 	Parts* _parts;
 };
 
@@ -350,7 +350,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			if (it->second->GetResourceCount() > 0)
 			{
 				//acquire resource
-				SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AcquireResourceEA(this, it->second),0.0,"AcquireResourceEA");
+				SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AcquireResourceEA(this, it->second), 0.0, "AcquireResourceEA");
 
 				//push it to acquired vector 
 				_acquiredResources.push_back(it->first);
@@ -470,7 +470,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 				//reschedule step of id = to return step id and all following steps
 			}
-			
+
 			else
 				SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _serviceTime->GetRV(), "DoneServiceEA");
 
@@ -516,19 +516,20 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	int nextId = _stepID + 1;
 	//if stepid <= containerSize;
 	if (nextId <= aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize())
-	{	//schedule next step
-	//	SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), /**/,"StartServiceEA");
-		
+	{	
+		//schedule next step
+		//	SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), /**/,"StartServiceEA");
+
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources in next step's required list
-		for(int i = 0; i < acquiredResources.size(); i++)
+		for (int i = 0; i < acquiredResources.size(); i++)
 		{
 			//if resource name is found in acquired vector
 			if (_nextStep->ResourceInReqResource(acquiredResources[i]))
-				continue; 
+				continue;
 
 			//schedule resource release ea
-			//SimExec::ScheduleEventAt() 
+			//	SimExec::ScheduleEventAt() 
 
 			//empty appropriate acquired vector index
 			_acquiredResources.erase(acquiredResources.begin() + i);
@@ -542,16 +543,16 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			//else if next step's indoor req is N
 				//schedule bay release ea
 	}
-		//if stepid > container size
-			//check if there are more repair jobs?
-				//if yes, get next repair job
-					//get steps
-				//if no
-					//schedule aircraft departure ea
+	//if stepid > container size
+		//check if there are more repair jobs?
+			//if yes, get next repair job
+				//get steps
+			//if no
+				//schedule aircraft departure ea
 
 
 	vector<string> resourceList;
-	
+
 	//SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
 	//I'm under the assumption that you'll be using an interator if not let me know when you finish and i'll come back and add the appropriate line
 	//SimExec::CheckConditionalEvents(it->second, 0);
@@ -567,14 +568,14 @@ void Step::AddQueueEM(Aircraft* aircraft)
 void Step::AcquireResourceEM(Resource* resource)
 {
 	int newCount;
-	
+
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
 
 	newCount = iter->second->GetResourceCount() - iter->second->GetNumResNeeded();
 	resource->SetResourceCount(newCount);
 }
 
-void Step::ReleaseResourceEM(Resource* resource) 
+void Step::ReleaseResourceEM(Resource* resource)
 {
 	int newCount;
 
@@ -586,7 +587,7 @@ void Step::ReleaseResourceEM(Resource* resource)
 
 }
 
-void Step::FailResourceEM(Resource* resource) 
+void Step::FailResourceEM(Resource* resource)
 {
 	int newCount;
 	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
@@ -905,8 +906,8 @@ void Step::SetReqResource(string reqResource)
 
 	while (getline(res, line, '&'))
 	{
-	//	cout << "LINE: " << line << endl;
-		
+		//	cout << "LINE: " << line << endl;
+
 		istringstream ss(line);
 		string resource;
 		string numString;
@@ -915,7 +916,7 @@ void Step::SetReqResource(string reqResource)
 		getline(ss, resource, '(');
 		getline(ss, numString, ')');
 
-	//	cout << "	R: " << resource << "	N: " << numString << endl;
+		//	cout << "	R: " << resource << "	N: " << numString << endl;
 
 		istringstream ssNum(numString);
 		ssNum >> num;
@@ -927,9 +928,9 @@ void Step::SetReqResource(string reqResource)
 		AddResource(newResource, resource, num);
 
 	}
-	
+
 	//ITERATE THROUGH STEP'S MAP OF RESOURCES, FIND MATCHING RESOURCE, ADD ATTRIBUTES
-	
+
 	if (sec != "")
 	{
 		newResource = new Resource();
@@ -937,7 +938,7 @@ void Step::SetReqResource(string reqResource)
 	}
 	if (third != "")
 	{
-		newResource = new Resource();	
+		newResource = new Resource();
 		//AddResource(newResource, third, /**/);
 	}
 	else
@@ -1072,17 +1073,23 @@ void Step::Print()
 		_inspecFailProb->PrintDistribution();
 		cout << endl;
 	}
-	cout << "		Service Time Distribution: " << _servTime << endl;
+	cout << "		Service Time Distribution: ";
+	if (_servTime == nullptr)
+		cout << "None \n";
+	else
+	{
+		_servTime->PrintDistribution();
+		cout << endl;
+	}
 	//cout << "		Required Resources: " << _reqRes << endl;
 	//cout << "		Required Parts: " << _reqParts << endl;
-//	cout << "		Return Step If Inspection Fails: " << _returnStep << endl;
-	cout << endl;
+	cout << "		Return Step If Inspection Fails: " << _returnStep << endl;
 
-	cout << "			Parts: " << endl;
+	cout << "			Parts - " << endl;
 	PrintParts();
 	cout << endl;
 
-	cout << "			Resources: " << endl;
+	cout << "			Resource - " << endl;
 	map<string, Resource*>::iterator it = _reqResourceMap.begin();
 	for (int i = 0; i < _reqResourceMap.size(); i++)
 	{

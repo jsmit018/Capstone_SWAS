@@ -6,7 +6,6 @@
 #pragma once
 #include "SimObj.h"
 #include "RepairJob.h"
-#include "InputInterface.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -25,7 +24,7 @@ public:
 	void PrintProperties();
 
 	void SetSource(int sourceID);
-//	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
+	//	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
 	void SetAircraftFootprint(double length, double wingspan);
 	void SetAircraftIAT(string iatUnplanned);
 	void SetAircraftType(string aircraftType);
@@ -33,6 +32,7 @@ public:
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
 	void AddRandRepairJob();	//populated when new craft is created - look at master, find random jobs, roll dice, add here
 	void AddSchedRepairJob();
+	void SetCalendarObj();
 	//void SetNextID(int id);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
@@ -49,6 +49,7 @@ public:
 	map<string, RepairJob*>::iterator  GetRJMapEnd();
 	Aircraft* New(); //new aircraft creation, need to add appropriate parameters
 	bool IsMapEnd(map<string, RepairJob*>::const_iterator iter);
+	bool AreMoreJobs(map<string, RepairJob*>::const_iterator iter);
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
@@ -60,7 +61,7 @@ private:
 	string	_repairJobName;								//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
 	map<string, RepairJob*> _myRepairJobs;
-	vector<string> mySchedRepairJobs;					//	Vector of sched repair job names unique to each new aircraft to be compared to master list
-	vector<string> myRandRepairJobs;					//	Vector of rand repair job names unique to each new aircraft to be compared to master list
+	//vector<string> mySchedRepairJobs;					//	Vector of sched repair job names unique to each new aircraft to be compared to master list
+	//vector<string> myRandRepairJobs;					//	Vector of rand repair job names unique to each new aircraft to be compared to master list
 	map<string, RepairJob*> _allRepairJobsMap;			//	Map of all possible repair jobs
 };

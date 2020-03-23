@@ -8,8 +8,13 @@
 
 class SourceBlock : public Task {
 public:
-	SourceBlock(Distribution* _interarrivalTimeRecurring, string aircraftType, Time timeForFirstAircraft, 	
-		Aircraft* aircraft, string name, int numOfCalendarEventsToSchedule, CalendarObj* calobj, int numberOfAircraftToGenerate = NULL);
+	SourceBlock(Distribution* _interarrivalTimeRecurring, 
+		string aircraftType, 
+		Aircraft* aircraft, 
+		string name,
+		int numOfCalendarEventsToSchedule, 
+		CalendarObj* calobj, 
+		int numberOfAircraftToGenerate = NULL);
 	string GetAircraftType();
 	void SetAircraftType(string aircraftType);
 	string GetName();
@@ -23,10 +28,10 @@ private:
 	int _numberOfAircraftToGenerate;
 	string _name;
 	int _numberGenerated;
-	class ScheduleNextEntityCalendarEA;
-	class ScheduleNextRandomEntityEA;
-	class ScheduleNextRecurringEA;
-	void ScheduleNextRandomEntityEM();
-	void ScheduleNextEntityCalendarEM();
-	void ScheduleNextRecurringEM();
+	class ScheduleNextCalendarAircraftEA;
+	class ScheduleNextRandomAircraftEA;
+	class ScheduleNextRecurringAircraftEA;
+	void ScheduleNextRandomAircraftEM();
+	void ScheduleNextCalendarAircraftEM();
+	void ScheduleNextRecurringAircraftEM();
 };

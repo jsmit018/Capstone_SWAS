@@ -21,7 +21,7 @@ public:
 	void PrintEverything();
 	map<string, Aircraft*>::iterator GetMasterMapBegin();
 	map<string, Aircraft*>::iterator GetMasterMapEnd();
-//	static void GetMyStep(string repairName, int stepId); //for getting step object 
+	//	static void GetMyStep(string repairName, int stepId); //for getting step object 
 	static Aircraft* GetAircraft(string aircraftName);
 	static map<string, Aircraft*> GetMasterMap();
 	static int GetMapSize();

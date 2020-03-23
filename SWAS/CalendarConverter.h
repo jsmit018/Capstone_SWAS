@@ -10,8 +10,11 @@ class CalConverter {
 public:
 	CalConverter();
 	void InsertDays(int month, int numDays);
+	int* GetCalArray();
+	map<int, int> GetMonthMap();
 private:
 	map<int, int> _monthMap;	// Map stores a number of days for each month (keys: 1-12)
+	int* _calArray;
 };
 
 class TimeConverter {
@@ -23,9 +26,14 @@ public:
 
 class CalendarObj {
 public:
-	CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years);
+	//CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years);
+	CalendarObj();
+	void UpdateNumEvents();
+	int GetNumEvents();
 	std::vector<Time> _months;
 	std::vector<Time> _days;
 	std::vector<Time> _timeOfDays;
-	std::vector<int> _years;
+	std::vector<int> _year;
+private:
+	int _numEvents;
 };

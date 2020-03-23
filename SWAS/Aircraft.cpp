@@ -1,12 +1,14 @@
 //Aircraft.cpp: Andrea Robey
 
 #include "Aircraft.h"
+#include "InputInterface.h"
 
 int Aircraft::_nextID = 0;
 
 Aircraft::Aircraft()
 {
 	_aircraftID = ++_nextID;
+
 }
 void Aircraft::GetMyJobList(string aircraftType)
 {
@@ -15,23 +17,16 @@ void Aircraft::GetMyJobList(string aircraftType)
 	//cout << "Master map's aircraft version all repair map size" << InputReader::GetAircraft(aircraftType)->GetAllRJMapSize() << endl;
 
 	//iterate through all repair jobs in _allrepairJobs map in mastermap
-	//cout << "getting my jobs" << endl;
 	map<string, RepairJob*>::iterator iter = InputReader::GetAircraft(_aircraftType)->GetRJMapBegin();
 
-	cout << endl;
-//	cout << "MASTER MAP REPAIR JOBS: " << iter->second->GetName() <<  "SIZE: " << GetAllRJMapSize() << endl;
-	cout << endl;
-
-	while(InputReader::GetAircraft(_aircraftType)->IsMapEnd(iter))
-	{ 
-	//	cout << "in while loop" << endl;
-		
+	while (InputReader::GetAircraft(_aircraftType)->IsMapEnd(iter))
+	{
 		//for all repair jobs in allrepairjobs in mastermap with schedule type "random"
 		if (iter->second->GetSchedType() == "Unplanned") {
 
-		//	cout << "got unplanned job" << endl;
+			//	cout << "got unplanned job" << endl;
 
-			//roll dice on unplanned probability to see if we're going to schedule it
+				//roll dice on unplanned probability to see if we're going to schedule it
 			if (iter->second->WillSchedule() == true)
 			{
 				cout << endl;
@@ -44,8 +39,8 @@ void Aircraft::GetMyJobList(string aircraftType)
 				//give this copy to this new aircraft's myrepairjobs list
 				_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
 
-	//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
-	//			cout << "Copied Job Is:	" << currJob->GetName() << endl;
+				//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
+				//			cout << "Copied Job Is:	" << currJob->GetName() << endl;
 				cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
 
 				map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
@@ -64,10 +59,10 @@ void Aircraft::GetMyJobList(string aircraftType)
 
 		//for all repair jobs with schedule type "recurring"
 		else if (iter->second->GetSchedType() == "Recurring") {
-		
+
 			cout << endl;
 			cout << _aircraftType << "	has a Recurring Repair Job called: " << iter->second->GetName() << endl;
-	
+
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
 			//give this copy to this new aircraft's myrepairjobs list
@@ -93,7 +88,7 @@ void Aircraft::GetMyJobList(string aircraftType)
 
 			cout << endl;
 			cout << _aircraftType << "	has a Calendar Repair Job called: " << iter->second->GetName() << endl;
-			
+
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
 			//give this copy to this new aircraft's myrepairjobs list
@@ -112,21 +107,42 @@ void Aircraft::GetMyJobList(string aircraftType)
 				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
 				myJobIter++;
 			}
-		} 
+			//note for andie: add cal obj to aircraft, get it through copy constructor and to initial instance
+			//in rj, split cal into tuple of ints: mm dd yyyy
+			//call populate calendarObj and call here
+			SetCalendarObj();
+
+			//then jordan can fill logic for populating calendarObj as necessary for his stuff 
+
+			
+		}
 		iter++;
 	}
+}
+
+void Aircraft::SetCalendarObj()
+{
+	//get rj's calendar tuple, do whatevs
 }
 
 bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
 {
 	if (iter != _allRepairJobsMap.end())
 		return true;
-	return false; 
+	return false;
 }
+
+bool Aircraft::AreMoreJobs(map<string, RepairJob*>::const_iterator iter)
+{
+	if (iter != _myRepairJobs.end())
+		return true;
+	return false;
+}
+
 void Aircraft::SetSource(int sourceID)
 {
 	_sourceID = sourceID;
-} 
+}
 
 int Aircraft::GetSource()
 {
@@ -202,7 +218,7 @@ int Aircraft::GetAircraftPriority()
 	return _priority;
 }
 
-map<string,RepairJob*>::iterator Aircraft::GetRJMapBegin()
+map<string, RepairJob*>::iterator Aircraft::GetRJMapBegin()
 {
 	return _allRepairJobsMap.begin();
 }
@@ -299,7 +315,7 @@ Distribution* Aircraft::GetAircraftIAT()
 }
 
 void Aircraft::PrintProperties()
-{	
+{
 	cout << "AIRCRAFT:" << endl;
 	cout << "Aircraft Type: " << _aircraftType << endl;
 	//cout << "Aircraft Priority: " << _priority << endl;
