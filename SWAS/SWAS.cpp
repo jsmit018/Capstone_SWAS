@@ -60,9 +60,9 @@ bool search(Node* head, string x)
 
 void ArriveAircraft()
 {
-	///////////////////////////////////////
-	///	TEMP DRIVER CODE FOR TESTING LL	///
-	///////////////////////////////////////
+	////////////////////////////////////////////
+	///	TEMPORARY DRIVER CODE FOR TESTING LL ///
+	////////////////////////////////////////////
 
 	/* Start with the empty list */
 	Node* head = NULL;
@@ -74,6 +74,9 @@ void ArriveAircraft()
 	push(&head, "Apache");
 	///////////////////////////////////////
 	///////////////////////////////////////
+
+	//Jordan TO DO: set up GUI to DES linked list in place of one above (maybe set it up in Input Interface?)
+	//Andie TO DO: set up logic for comparing linked list values to master map to pick correct aircraft [done]
 
 	InputReader inputReader;
 
@@ -90,63 +93,70 @@ void ArriveAircraft()
 		//if the current aircraft matches one in the linked list, create instance etc.
 		if (search(head, iter->first) == true)
 		{
-			cout << "Creating first instance of: " << iter->first << endl;
-			cout << endl;
-
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft();
+
+			cout << "Creating first instance of: " << /*iter->first*/ firstAircraft->GetAircraftType() << endl;
+			cout << endl;
 
 			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
 			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
 			firstAircraft->CopyMyJobList(iter->first);
-
-			firstAircraft->GetAircraftRecurIAT();
-			/* TO DO: IMPLEMENT GetNumCalEvents() AND GetCalendarObj() */
+			cout << "FIRST AIRCRAFT IAT IS:" << firstAircraft->GetAircraftIAT() << endl;
+			//Andie TO DO: IMPLEMENT GetNumCalEvents()
+						 //IMPLEMENT Get/Set vector of recurring iats in Aircraft.cpp
+			//Jordan TO DO: IMPLEMENT Set/GetCalendarObj in Aircraft.cpp 
+						//ADD logic for getting each value from the recurring IAT vector being passed to SourceBlock constructor of recurring
 
 			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them */
-			//SourceBlock* unplanArrival = new SourceBlock(/*recuring distribution*/, //iat distribution, there is none for cal
-			//											firstAircraft, // aircraft*
-			//											firstAircraft->GetAircraftType(), //aircraft name
-			//											firstAircraft->GetNumCalEvents(), //num cal events to sched
-			//											firstAircraft->GetCalendarObj(), //calobj*
-			//											10000);// num to generate - shouldn't need this
-			//
-			//SourceBlock* recurArrival = new SourceBlock(firstAircraft->GetAircraftIAT(), //iat distribution, there is none for cal
-			//											firstAircraft, // aircraft*
-			//											firstAircraft->GetAircraftType(), //aircraft name
-			//											firstAircraft->GetNumCalEvents(), //num cal events to sched
-			//											firstAircraft->GetCalendarObj(), //calobj*
-			//											10000);// num to generate - shouldn't need this
-			//
-			//SourceBlock* calArrival = new SourceBlock(NULL, //iat distribution, there is none for cal
-			//											firstAircraft, // aircraft*
-			//											firstAircraft->GetAircraftType(), //aircraft name
-			//											firstAircraft->GetNumCalEvents(), //num cal events to sched
-			//											firstAircraft->GetCalendarObj(), //calobj*
-			//											10000);// num to generate - shouldn't need this
-
-			//SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
-
-			///* TO DO: IMPLEMENT AreMoreSteps() AND GetNextStep() */
-			//if (firstAircraft->AreMoreSteps() == true) //(false if no more steps in vector or rjs in myMap)
-			//{	
-			//	/* getNextStep() keeps getting the next step til all steps in RJ are done,
-			//	can be made to take argument of RJ type (unplan,etc) then get next 
-			//	RJ of same type's first step */
+			/* Unplanned */
+			//SourceBlock* unplanArrival = new SourceBlock(
+			//	firstAircraft->GetAircraftIAT(),
+			//	firstAircraft->GetAircraftType(),
+			//	firstAircraft,
+			//	"WHAT IS NAME",
+			//	10000); // need to make sure there's an unlimited option
 			//	
-			//	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned"); 
-			//	unplanArrival->SetNextTask(nextUnplanStep);
-			//	nextUnplanStep->SetNextTask(depart);
+			///* Recurring */
+			//SourceBlock* recurArrival = new SourceBlock(
+			//	firstAircraft->GetRecurringIATs(),
+			//	firstAircraft->GetAircraftType(),
+			//	firstAircraft,
+			//	"WHAT IS NAME",
+			//	10000);
 
-			//	Step* nextRecurStep = firstAircraft->GetNextStep("Recurring"); 
-			//	recurArrival->SetNextTask(nextRecurStep);		
-			//	nextRecurStep->SetNextTask(depart);
+			///* Calendar */
+			//SourceBlock* calArrival = new SourceBlock(
+			//	firstAircraft->GetAircraftType(),
+			//	firstAircraft,
+			//	"WHAT IS NAME",
+			//	firstAircraft->GetNumCalEvents(),
+			//	firstAircraft->GetCalendarObj(),
+			//	10000);
+				
 
-			//	Step* nextCalStep = firstAircraft->GetNextStep("Calendar"); 
-			//	calArrival->SetNextTask(nextCalStep);	
-			//	nextCalStep->SetNextTask(depart);
+			SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
 
-			//}
+			//Andie TO DO: IMPLEMENT AreMoreSteps() AND GetNextStep()
+			if (firstAircraft->AreMoreSteps() == true) //(false if no more steps in vector or rjs in myMap)
+			{	
+				/* getNextStep() keeps getting the next step til all steps in RJ are done,
+				can be made to take argument of RJ type (unplan,etc) then get next 
+				RJ of same type's first step */
+				
+			/*	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned"); 
+				unplanArrival->SetNextTask(nextUnplanStep);
+				nextUnplanStep->SetNextTask(depart);
+
+				Step* nextRecurStep = firstAircraft->GetNextStep("Recurring"); 
+				recurArrival->SetNextTask(nextRecurStep);		
+				nextRecurStep->SetNextTask(depart);
+
+				Step* nextCalStep = firstAircraft->GetNextStep("Calendar"); 
+				calArrival->SetNextTask(nextCalStep);	
+				nextCalStep->SetNextTask(depart);*/
+
+			}
 		}
 
 		iter++;
