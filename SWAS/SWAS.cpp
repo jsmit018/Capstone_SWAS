@@ -7,6 +7,7 @@
 #include "Aircraft.h"
 #include "Distribution.h"
 #include "SinkTask.h"
+#include "Warehouse.h"
 #include <map>;
 
 using namespace std;
@@ -152,6 +153,8 @@ void ArriveAircraft()
 		iter++;
 	}
 
+	Warehouse::SetMasterMaps(inputReader);
+
 	cout << "reading is finished" << endl;
 }
 
@@ -160,10 +163,9 @@ int main() {
 
 	ArriveAircraft();
 
-	/*
-		SimExec::InitializeSimulation(11, /CalendarConverterDaysArrayHere/);
-	*/
+	SimExec::InitializeSimulation(CalConverter::GetMonthMap().size(), CalConverter::GetCalArray());
 
+	//This is done through the GUI visualization
 	/*
 		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
 		//Print Values here
