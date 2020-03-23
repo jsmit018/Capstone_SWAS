@@ -11,6 +11,7 @@ class Resource
 {
 public:
 	Resource();
+	void CopyMapResource(const Resource& mapResource);
 	void Acquire(int amountNeeded);
 	//virtual void Acquire() = 0;
 	void Release(int amountToRelease);
@@ -40,7 +41,7 @@ public:
 
 private:
 	int _resourceCount;
-	int _numNeeded; 
+	int _numNeeded;
 	string _resourceName;
 	double _length;
 	double _width;
@@ -48,5 +49,4 @@ private:
 	string _failureType;
 	Distribution* _failureDist;
 	string _repairProc;
-//	string _failureDistTemp ; // remove and replace with distrib
 };

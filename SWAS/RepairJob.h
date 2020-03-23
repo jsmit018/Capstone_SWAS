@@ -14,7 +14,7 @@ class RepairJob {
 public:
 	//RepairJob(string name);
 	RepairJob();
-	RepairJob(const RepairJob& mapRj);
+	void CopyRepairJob(const RepairJob& mapRj);
 	void SetName(string name);
 	void SetPriority(int priority);
 	void SetSchedType(string schedType);
@@ -23,15 +23,15 @@ public:
 	void SetRecurring(double recurringAmt);
 	void SetUnplannedProb(string unplannedProb); //switch to distribution pointer
 	void PrintJobProperties();
-	
+
 	string GetName();
 	int GetPriority();
 	string GetSchedType();
 	char GetIndoorReq();
 	string GetCalendarDate();
 	double GetRecurring();
-	Distribution* GetUnplannedProb(); 
-	void GetNextStep();
+	Distribution* GetUnplannedProb();
+	//void GetNextStep(string rjType);
 	int GetStepVecSize();
 	Step* GetStep(int stepID);
 	bool WillSchedule();

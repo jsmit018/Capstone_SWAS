@@ -7,20 +7,66 @@
 map<string, Resource*> Step::_resourcePool;
 map<string, Parts*> Step::_partsPool;
 
-Step::Step(string serviceTime, string name) : Task(name)
+Step::Step(Distribution* serviceTime, string name) : Task(name)
 {
 	_servTime = serviceTime;
 	_name = name;
 	_priorityQueue = new PriorityQueue<Aircraft>("Priority Queue");
 }
 
+void Step::CopyMapStep(const Step& mapStep)
+{
+	_myRJ = mapStep._myRJ;
+	_serviceTime = mapStep._serviceTime;
+	_name = mapStep._name;
+	_indoorReq = mapStep._indoorReq;
+	_RJpriority = mapStep._RJpriority;
+	_stepID = mapStep._stepID;
+	_numInQueue = mapStep._numInQueue;
+	_nextStep = mapStep._nextStep;
+	_type = mapStep._type;
+	_inspecFailProb = mapStep._inspecFailProb;
+	_servTime = mapStep._servTime;
+	_reqRes = mapStep._reqRes;
+	_reqParts = mapStep._reqParts;
+	_returnStep = mapStep._returnStep;
+
+	//iterate through vectors/nonstatic maps to use resource and parts and aircraft object copy constructors
+
+	//iterating through old required resource map, inserting its first and second into the new required resource map
+	map<string, Resource*>::const_iterator reqResIter = mapStep._reqResourceMap.begin();
+	while (reqResIter != mapStep._reqResourceMap.end())
+	{
+		Resource* newRes = new Resource();
+		newRes->CopyMapResource(*reqResIter->second);
+		_reqResourceMap.insert(pair<string, Resource*>(reqResIter->first, newRes));
+
+		reqResIter++;
+	}
+
+	map<string, Parts*>::const_iterator reqPartsIter = mapStep._reqPartsMap.begin();
+	while (reqPartsIter != mapStep._reqPartsMap.end())
+	{
+		Parts* newParts = new Parts();
+		newParts->CopyMapParts(*reqPartsIter->second);
+		_reqPartsMap.insert(pair<string, Parts*>(reqPartsIter->first, newParts));
+
+		reqPartsIter++;
+	}
+
+	//not needed to copy because theyre not used til its already been copied:
+	//vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
+	//PriorityQueue<Aircraft>* _priorityQueue;
+}
+
+
 ////////////////////////////////////////////
 /////////EVENT ACTIONS AND METHODS//////////
 ////////////////////////////////////////////
 
-class Step::NeedResourcesEA : public CondEventAction {
+class Step::WaitForResourceEA : public CondEventAction {
 public:
-	NeedResourcesEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+	WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
 		_step = step;
 		_resource = resource;
 		_aircraft = aircraft;
@@ -98,7 +144,7 @@ public:
 		_step->PlaceOrderEM(_parts);
 	}
 private:
-	Step* _step; 
+	Step* _step;
 	Parts* _parts;
 };
 
@@ -171,7 +217,7 @@ private:
 	Aircraft* _aircraft;
 };
 
-class Step::AcquireResourceEA {
+class Step::AcquireResourceEA : public EventAction {
 public:
 	AcquireResourceEA(Step* step, Resource* resource)
 	{
@@ -295,23 +341,24 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			}
 			else
 				cout << "we have to wait for a bay \n";
-			// INSERT CODE FOR WAITING
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			// WAITING
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 		else
 		{
 			map<string, Resource*>::iterator it = _resourcePool.find("outspot");
 			if (it->second->GetResourceCount() > 0)
 			{
-				// call acquire resource EA
-				
+				//acquire resource
+				SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AcquireResourceEA(this, it->second), 0.0, "AcquireResourceEA");
+
 				//push it to acquired vector 
 				_acquiredResources.push_back(it->first);
 			}
 			else
 				cout << "we have to wait for an outspot \n";
-			// INSERT CODE FOR WAITING
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			// WAITING
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 	}
 
@@ -349,7 +396,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 			iter++;
 		}
 
@@ -371,7 +418,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 
 			else if (it->second->AreEnoughParts() == false) {
 				SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, it->second), it->second->GetLeadTime()->GetRV(), "PlaceOrderEA");
-				//INSERT WAITING LOGIC
+				// WAITING
 				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources));
 			}
 
@@ -379,7 +426,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 		}
 
 		DoneServiceEA* doneEA = new DoneServiceEA(this, aircraft, _acquiredResources);
-		SimExec::ScheduleEventAt(1, doneEA, this->_serviceTime->GetRV(), "DoneServiceEA");
+		SimExec::ScheduleEventAt(1, doneEA/*new DoneServiceEA(this, aircraft, _acquiredResources)*/, this->_serviceTime->GetRV(), "DoneServiceEA");
 	}
 
 	else if (_name == "inspection")
@@ -413,7 +460,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedResourcesEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 
 			//TO DO:
 			//if inspection results in failure = true
@@ -423,7 +470,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 				//reschedule step of id = to return step id and all following steps
 			}
-			
+
 			else
 				SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _serviceTime->GetRV(), "DoneServiceEA");
 
@@ -469,54 +516,44 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	int nextId = _stepID + 1;
 	//if stepid <= containerSize;
 	if (nextId <= aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize())
-	{	//schedule next step
-		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+	{	
+		//schedule next step
+		//	SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), /**/,"StartServiceEA");
 
-		// next step 
-		
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources in next step's required list
-		for(int i = 0; i < acquiredResources.size(); i++)
+		for (int i = 0; i < acquiredResources.size(); i++)
 		{
 			//if resource name is found in acquired vector
 			if (_nextStep->ResourceInReqResource(acquiredResources[i]))
-				continue; 
+				continue;
 
 			//schedule resource release ea
-			//SimExec::ScheduleEventAt() 
-			SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
+			//	SimExec::ScheduleEventAt() 
 
 			//empty appropriate acquired vector index
 			_acquiredResources.erase(acquiredResources.begin() + i);
 		}
 
-	//	if (this->GetIndoorReq() == 'Y') {
+		//if (this->GetIndoorReq() == 'Y') {
 
-	//	}
+		//}
 			//if next step's indoor req is Y
 				//add bay to acquired resources vector
 			//else if next step's indoor req is N
 				//schedule bay release ea
 	}
-		//if stepid > container size
-			//check if there are more repair jobs?
-				//if yes, get next repair job
-					//get steps
-				//if no
-					//schedule aircraft departure ea
-					//Depart(aircraft);
+	//if stepid > container size
+		//check if there are more repair jobs?
+			//if yes, get next repair job
+				//get steps
+			//if no
+				//schedule aircraft departure ea
 
 
+	vector<string> resourceList;
 
-//*******Jordan: i don't know why you have added this vector resource list when I already have a map of required 
-//resources and a vector of acquired resources. So i'm not sure what you're talking about here. 
-//My logic is already handling comparing these two things. So you'll just need to add the following:
-
-
-	//This is just a placeholder you may be able to clear an old iterator and just throw it there instead.
-	//vector<string> resourceList;
-	
-	SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), _acquiredResources), 0.0, "StartServiceEA");
+	//SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
 	//I'm under the assumption that you'll be using an interator if not let me know when you finish and i'll come back and add the appropriate line
 	//SimExec::CheckConditionalEvents(it->second, 0);
 }
@@ -525,20 +562,20 @@ void Step::AddQueueEM(Aircraft* aircraft)
 {
 	_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
 	_numInQueue++;
-	InitialArrivalBayCheck();
+	CheckBays();
 }
 
 void Step::AcquireResourceEM(Resource* resource)
 {
 	int newCount;
-	
+
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
 
 	newCount = iter->second->GetResourceCount() - iter->second->GetNumResNeeded();
 	resource->SetResourceCount(newCount);
 }
 
-void Step::ReleaseResourceEM(Resource* resource) 
+void Step::ReleaseResourceEM(Resource* resource)
 {
 	int newCount;
 
@@ -547,12 +584,10 @@ void Step::ReleaseResourceEM(Resource* resource)
 
 	resource->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
-	//I had the conditional event check in the DoneService, but it would best be placed here,
-	//similarly to the way that it was placed in order parts.
-	SimExec::CheckConditionalEvents(resource, 0);
+
 }
 
-void Step::FailResourceEM(Resource* resource) 
+void Step::FailResourceEM(Resource* resource)
 {
 	int newCount;
 	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
@@ -655,6 +690,16 @@ map<string, Parts*>::iterator Step::GetPartsMapEnd()
 int Step::GetRJPriority()
 {
 	return _RJpriority;
+}
+
+int Step::GetRJIndoorReq()
+{
+	return _indoorReq;
+}
+
+Distribution* Step::GetServiceTime()
+{
+	return _servTime;
 }
 
 ////////////////////////////////////////////
@@ -770,7 +815,81 @@ void Step::SetInspecFailProb(string failureProb)
 
 void Step::SetServiceTime(string serviceTime)
 {
-	_servTime = serviceTime;
+	//the string being passed in is now split into two strings
+	istringstream serveDist(serviceTime);
+	string firstHalf;
+	string secHalf;
+
+	//they're split based on the ( and ) symbols. The parenthesis are treated as a delimiter.
+	getline(serveDist, firstHalf, '(');
+	getline(serveDist, secHalf, ')');
+	//	cout << "first: " << firstHalf << endl;
+	//	cout << "sec: " << secHalf << endl;
+
+		//this is used for the second half to turn the numbers into the doubles
+	istringstream nums(secHalf);
+
+	//if statements for determining which distribution it is
+	if (firstHalf == "Triangular" || firstHalf == "Tri")
+	{
+		double min, expected, max;
+		//the first part of the string segment called "nums" is set a the double min. second one is double expected, etc. 
+		nums >> min;
+		nums >> expected;
+		nums >> max;
+		_servTime = new Triangular(min, expected, max);
+	}
+
+	else if (firstHalf == "Exponential")
+	{
+		double mean;
+		nums >> mean;
+
+		_servTime = new Exponential(mean);
+	}
+
+	else if (firstHalf == "Uniform")
+	{
+		double min, max;
+		nums >> min >> max;
+
+		_servTime = new Uniform(min, max);
+	}
+
+	else if (firstHalf == "Normal")
+	{
+		double mean, stdev;
+		nums >> mean >> stdev;
+
+		_servTime = new Normal(mean, stdev);
+	}
+
+	else if (firstHalf == "Poisson")
+	{
+		double mean;
+		nums >> mean;
+
+		_servTime = new Poisson(mean);
+	}
+
+	else if (firstHalf == "Constant" || firstHalf == "Fixed")
+	{
+		double mean;
+		nums >> mean;
+
+		_servTime = new Constant(mean);
+	}
+
+	else if (firstHalf == "Weibull")
+	{
+		double scale, shape;
+		nums >> scale >> shape;
+
+		_servTime = new Weibull(scale, shape);
+	}
+
+	//Calls the print function added to each distribution - Determines correct distribution and prints
+	_servTime->PrintDistribution();
 }
 
 void Step::SetReqResource(string reqResource)
@@ -787,8 +906,8 @@ void Step::SetReqResource(string reqResource)
 
 	while (getline(res, line, '&'))
 	{
-	//	cout << "LINE: " << line << endl;
-		
+		//	cout << "LINE: " << line << endl;
+
 		istringstream ss(line);
 		string resource;
 		string numString;
@@ -797,7 +916,7 @@ void Step::SetReqResource(string reqResource)
 		getline(ss, resource, '(');
 		getline(ss, numString, ')');
 
-	//	cout << "	R: " << resource << "	N: " << numString << endl;
+		//	cout << "	R: " << resource << "	N: " << numString << endl;
 
 		istringstream ssNum(numString);
 		ssNum >> num;
@@ -806,19 +925,12 @@ void Step::SetReqResource(string reqResource)
 
 
 		newResource = new Resource();
-		//*******HELP
 		AddResource(newResource, resource, num);
 
 	}
 
-
-//	map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
-
-//	newResource = new Resource();
-	//AddResource(newResource, first, /**/);
-	
 	//ITERATE THROUGH STEP'S MAP OF RESOURCES, FIND MATCHING RESOURCE, ADD ATTRIBUTES
-	
+
 	if (sec != "")
 	{
 		newResource = new Resource();
@@ -826,7 +938,7 @@ void Step::SetReqResource(string reqResource)
 	}
 	if (third != "")
 	{
-		newResource = new Resource();	
+		newResource = new Resource();
 		//AddResource(newResource, third, /**/);
 	}
 	else
@@ -881,14 +993,12 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 
 //jordan: is this for intiial arrival/first step? if so, can we rename FirstBayCheck or something similar so its clear?
 //we're also checking bays in the startstepservice so i just want to differentiate them clearly
-void Step::InitialArrivalBayCheck()
+void Step::CheckBays()
 {
-	//jordan:: why is a resourceList being created and passed? we've already got a map of required resources and
-	//a vector of acquired vectors both belonging to step
-	//vector<string> resourceList;
+	vector<string> resourceList;
 	map<string, Resource*>::iterator it = _resourcePool.find("bay");
 	if (it->second->GetResourceCount() > 0)
-		SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), _acquiredResources), 0.0, "StartServiceEA");
+		SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
 }
 
 
@@ -963,17 +1073,23 @@ void Step::Print()
 		_inspecFailProb->PrintDistribution();
 		cout << endl;
 	}
-	cout << "		Service Time Distribution: " << _servTime << endl;
+	cout << "		Service Time Distribution: ";
+	if (_servTime == nullptr)
+		cout << "None \n";
+	else
+	{
+		_servTime->PrintDistribution();
+		cout << endl;
+	}
 	//cout << "		Required Resources: " << _reqRes << endl;
 	//cout << "		Required Parts: " << _reqParts << endl;
-//	cout << "		Return Step If Inspection Fails: " << _returnStep << endl;
-	cout << endl;
+	cout << "		Return Step If Inspection Fails: " << _returnStep << endl;
 
-	cout << "			Parts: " << endl;
+	cout << "			Parts - " << endl;
 	PrintParts();
 	cout << endl;
 
-	cout << "			Resources: " << endl;
+	cout << "			Resource - " << endl;
 	map<string, Resource*>::iterator it = _reqResourceMap.begin();
 	for (int i = 0; i < _reqResourceMap.size(); i++)
 	{

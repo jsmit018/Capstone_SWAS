@@ -9,7 +9,7 @@ using namespace std;
 class CalConverter {
 public:
 	CalConverter();
-	void InsertDays(int month, int numDays); 
+	void InsertDays(int month, int numDays);
 	int* GetCalArray();
 	map<int, int> GetMonthMap();
 private:

@@ -12,7 +12,8 @@
 class Step : public Task
 {
 public:
-	Step(string serviceTime, string name);
+	Step(Distribution* serviceTime, string name);
+	void CopyMapStep(const Step& mapStep);
 	void Execute(Aircraft* aircraft);
 
 	static void AddToResPool(Resource* resource, string resourceName);
@@ -20,7 +21,7 @@ public:
 	void SetName(string name);
 	void SetType(string type);
 	void SetInspecFailProb(string failureProb);
-	void SetServiceTime(string serviceTime);
+	void SetServiceTime(string serviceTime); //change to distribution
 	void SetReqResource(string reqResource);
 	//void SetResNum(int numResNeeded); ///TODO read in and split
 	void SetReqParts(string reqParts);
@@ -49,9 +50,11 @@ public:
 	//Time GetServiceTime();
 	int GetNumberInQueue();
 	int GetRJPriority();
+	int GetRJIndoorReq();
+	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
-//	Step* GetNextStep(Aircraft * currAir, int currStep);
+	//	Step* GetNextStep(Aircraft * currAir, int currStep);
 	map<string, Parts*>::iterator GetPartsMapBegin();
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
@@ -67,14 +70,14 @@ private:
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
 	char _indoorReq; /// this is not populated right now
-	int _RJpriority; 
+	int _RJpriority;
 	int _stepID;
 	int _numInQueue;
 	Step* _nextStep;	// NOT POPULATED
 	//	Resource* _bays;		//determined by Warehouse GUI
 	string _type;
 	Distribution* _inspecFailProb;
-	string _servTime;
+	Distribution* _servTime;
 	string _reqRes;			//break up into two parts, store into map
 	string _reqParts;		//break up into two parts, store into map
 	int _returnStep;		// Maybe this should be a pointer to the step instead of its "id"
@@ -88,7 +91,7 @@ private:
 	{
 		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
 			return false;
-		return true; 
+		return true;
 	}
 
 	/// to do //
@@ -103,7 +106,7 @@ private:
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
 	class FailResourceEA;
-	class NeedResourcesEA;
+	class WaitForResourceEA;
 	class NeedPartsEA;
 
 	void PlaceOrderEM(Parts* parts);

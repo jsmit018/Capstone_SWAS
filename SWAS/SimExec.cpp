@@ -4,7 +4,6 @@
 
 
 /*SimExec::SimExec() : SimObj(){
-
 }*/
 
 void PlayButton()
@@ -63,7 +62,7 @@ struct SimExec::CondEvent {
 };
 
 class SimExec::CondEventSet {
-public: 
+public:
 	CondEventSet() {
 		_condSet = 0;
 	}
@@ -591,7 +590,7 @@ string SimExec::ConvertDate(Time month)
 
 void SimExec::CheckConditionalEvents(Resource* resource, Parts* parts)
 {
-	while(_conditionalSet.CheckConditionalEvents(resource, parts));
+	while (_conditionalSet.CheckConditionalEvents(resource, parts));
 }
 
 void SimExec::PrintEventSet()
@@ -600,12 +599,12 @@ void SimExec::PrintEventSet()
 }
 
 //void SimExec::RunSimulation() {
-int SimExec::RunSimulation(){
+int SimExec::RunSimulation() {
 	//cout << "Running Simulation" << endl;
 	cout << "Executing Event" << endl;
 	//while (_eventSet.HasEvent() && _simulationFlag == true) {
 	//Commented out the while loop for tyler going to try moving the loop into unity.
-	if (_simulationFlag == true && _eventSet.HasEvent()){
+	if (_simulationFlag == true && _eventSet.HasEvent()) {
 		_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
 		_simulationTime._month = _eventSet.GetMonth();
 		_simulationTime._day = _eventSet.GetDay();
@@ -639,7 +638,7 @@ int SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 	//cout << "Running Simulation" << endl;
 	cout << "Executing Event" << endl;
 	//while (_eventSet.HasEvent() && _simulationFlag == true) {
-	if (_eventSet.HasEvent() && _simulationFlag == true){
+	if (_eventSet.HasEvent() && _simulationFlag == true) {
 		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= (int)timeOfDay
 			&& _simulationTime._year >= year) {
 			FlipSimulationFlag();
