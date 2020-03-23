@@ -2,7 +2,10 @@
 #include "SimObj.h"
 #include "Distribution.h"
 #include "CalendarConverter.h"
+//#include "InputInterface.h"
 #include <iostream>
+
+class InputReader;
 
 using namespace std;
 
@@ -21,6 +24,8 @@ struct SimulationTime {
 class SimExec : public SimObj {
 public:
 	static SimulationTime GetSimulationTime();
+	static InputReader GetInputReader();
+	static void SetInputReader(InputReader inputReader);
 	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName);
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName);
 	static void ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring = 1);
@@ -44,6 +49,7 @@ private:
 	class CondEventSet;
 	static EventSet _eventSet;
 	static CondEventSet _conditionalSet;
+	static InputReader _inputReader;
 	enum months {
 		January, February, March, April, May, June, July,
 		August, September, October, Novemember, December

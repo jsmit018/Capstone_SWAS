@@ -4,9 +4,6 @@
 
 using namespace std;
 
-int CalConverter::_calArray;
-map<int, int> CalConverter::_monthMap;
-
 CalConverter::CalConverter()
 {
 

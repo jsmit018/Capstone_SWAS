@@ -1,6 +1,7 @@
 #include "SimExec.h"
 #include "Resource.h"
 #include "Parts.h"
+#include "InputInterface.h"
 
 
 /*SimExec::SimExec() : SimObj(){
@@ -544,6 +545,7 @@ private:
 SimExec::EventSet SimExec::_eventSet;
 SimExec::CondEventSet SimExec::_conditionalSet;
 SimulationTime SimExec::_simulationTime;
+InputReader SimExec::_inputReader;
 bool SimExec::_simulationFlag;
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
@@ -559,6 +561,16 @@ void SimExec::InitializeSimulation(int numBins, int* days) {
 SimulationTime SimExec::GetSimulationTime() {
 	cout << "Returning Simulation Time" << endl;
 	return _simulationTime;
+}
+
+InputReader SimExec::GetInputReader()
+{
+	return _inputReader;
+}
+
+void SimExec::SetInputReader(InputReader inputReader)
+{
+	_inputReader = inputReader;
 }
 
 void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName) {

@@ -562,7 +562,7 @@ void Step::AddQueueEM(Aircraft* aircraft)
 {
 	_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
 	_numInQueue++;
-	CheckBays();
+	InitialArrivalBayCheck();
 }
 
 void Step::AcquireResourceEM(Resource* resource)
@@ -993,7 +993,7 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 
 //jordan: is this for intiial arrival/first step? if so, can we rename FirstBayCheck or something similar so its clear?
 //we're also checking bays in the startstepservice so i just want to differentiate them clearly
-void Step::CheckBays()
+void Step::InitialArrivalBayCheck()
 {
 	vector<string> resourceList;
 	map<string, Resource*>::iterator it = _resourcePool.find("bay");

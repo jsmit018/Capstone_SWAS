@@ -85,6 +85,8 @@ void ArriveAircraft()
 	inputReader.ReadInputData();
 	inputReader.PrintEverything();
 
+	SimExec::SetInputReader(inputReader);
+
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
 	//for all unique aircraft types in the master map 
@@ -173,7 +175,7 @@ int main() {
 
 	ArriveAircraft();
 
-	SimExec::InitializeSimulation(CalConverter::GetMonthMap().size(), CalConverter::GetCalArray());
+	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
 	/*

@@ -10,11 +10,11 @@ class CalConverter {
 public:
 	CalConverter();
 	void InsertDays(int month, int numDays);
-	static int* GetCalArray();
-	static map<int, int> GetMonthMap();
+	int* GetCalArray();
+	map<int, int> GetMonthMap();
 private:
-	static map<int, int> _monthMap;	// Map stores a number of days for each month (keys: 1-12)
-	static int* _calArray;
+	map<int, int> _monthMap;	// Map stores a number of days for each month (keys: 1-12)
+	int* _calArray;
 };
 
 class TimeConverter {

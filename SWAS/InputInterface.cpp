@@ -10,6 +10,7 @@
 using namespace std;
 
 map<string, Aircraft*> InputReader::_masterMap;
+map<string, Resource*> InputReader::_masterResourceMap;
 
 InputReader::InputReader()
 {
@@ -1002,6 +1003,11 @@ void InputReader::PrintEverything()
 	}
 }
 
+CalConverter* InputReader::GetCalConverter()
+{
+	return calConvert;
+}
+
 int InputReader::GetMapSize()
 {
 	return _masterMap.size();
@@ -1017,4 +1023,14 @@ Aircraft* InputReader::GetAircraft(string aircraftName)
 	}
 	else
 		return nullptr;
+}
+
+map<string, Aircraft*> InputReader::GetMasterMap()
+{
+	return _masterMap;
+}
+
+map<string, Resource*> InputReader::GetMasterResourceMap()
+{
+	return _masterResourceMap;
 }
