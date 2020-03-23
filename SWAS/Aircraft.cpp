@@ -217,6 +217,12 @@ string Aircraft::GetAircraftType()
 	return _aircraftType;
 }
 
+vector<Distribution*> Aircraft::GetRecurringIATs()
+{
+	return _recurIatVec;
+}
+
+
 void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 {
 	_allRepairJobsMap[repairJobName] = repairJob;
@@ -229,6 +235,12 @@ void Aircraft::AddRandRepairJob()
 void Aircraft::AddSchedRepairJob()
 {
 }
+
+int Aircraft::GetNumCalEvents()
+{
+	return _numCalEvents;
+}
+
 
 RepairJob* Aircraft::GetRepairJobObj(string name)
 {
@@ -340,31 +352,10 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 //	_iatUnplanned->PrintDistribution();
 }
 
-void Aircraft::SetAircraftRecurIAT()
-{
-
-//	map<string, RepairJob*>::iterator iter = _myRepairJobs.find(name);
-
-//	double iatRecurring = iter->second->GetRecurring();
-
-//	_iatRecurring = new Constant(iatRecurring);
-	
-}
-
-Distribution* Aircraft::GetAircraftRecurIAT()
-{
-	//Determines correct distribution and prints
-	cout << "*****************************IAT RECURRING IS: ";
-	_iatRecurring->PrintDistribution();
-	cout << endl;
-
-	return _iatRecurring;
-
-}
-
 Distribution* Aircraft::GetAircraftIAT()
 {
 	return _iatUnplanned; //check if this works?
+	_iatUnplanned->PrintDistribution();
 }
 
 void Aircraft::PrintProperties()

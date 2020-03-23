@@ -8,13 +8,40 @@
 
 class SourceBlock : public Task {
 public:
-	SourceBlock(Distribution* _interarrivalTimeRecurring, 
+	/*Constructor for Unplanned Arrivals*/
+	SourceBlock(
+		Distribution* unplannedIat, 
 		string aircraftType, 
 		Aircraft* aircraft, 
 		string name,
-		int numOfCalendarEventsToSchedule, 
+		int numberOfAircraftToGenerate = NULL);
+
+	/*Constructor for Recurring Arrivals*/
+	SourceBlock(
+		vector<Distribution*> recurringIATs,
+		string aircraftType,
+		Aircraft* aircraft,
+		string name,
+		int numberOfAircraftToGenerate = NULL);
+
+	/*Constructor for Calendar Arrivals*/
+	SourceBlock(
+		string aircraftType, 
+		Aircraft* aircraft, 
+		string name,
+		int numCalEventsToSched,
 		CalendarObj* calobj, 
 		int numberOfAircraftToGenerate = NULL);
+
+	/*Old Constructor*/
+	/*SourceBlock(Distribution* iat,
+		string aircraftType,
+		Aircraft* aircraft,
+		string name,
+		int numOfCalendarEventsToSchedule,
+		CalendarObj* calobj,
+		int numberOfAircraftToGenerate = NULL);*/
+
 	string GetAircraftType();
 	void SetAircraftType(string aircraftType);
 	string GetName();

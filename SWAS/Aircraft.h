@@ -27,7 +27,6 @@ public:
 	//	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
 	void SetAircraftFootprint(double length, double wingspan);
 	void SetAircraftIAT(string iatUnplanned);
-	void SetAircraftRecurIAT();
 	void SetAircraftType(string aircraftType);
 	void SetAircraftPriority(int priority);
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
@@ -35,6 +34,7 @@ public:
 	void AddSchedRepairJob();
 	void SetCalendarObj();
 	void SetNumCalEvents(int numCalEvents);
+	void SetRecurringIATs(vector<Distribution*> recurIatVec);
 	//void SetNextID(int id);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
@@ -42,13 +42,13 @@ public:
 	int GetAircraftID();
 	double GetAircraftFootprint();
 	Distribution* GetAircraftIAT(); //switch to distribution pointer
-	Distribution* GetAircraftRecurIAT(); 
 	string GetAircraftType();
 	int GetAircraftPriority();
 	int GetNextAircraftID();
 	int GetAllRJMapSize();
 	int GetMyRJMapSize();
 	int GetNumCalEvents();
+	vector<Distribution*> GetRecurringIATs();
 	Step* GetNextStep(string rjType);
 	CalendarObj* GetCalendarObj();
 
@@ -67,7 +67,9 @@ private:
 	int _numCalEvents;
 	double	_length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	double	_wingspan;									//	Aircraft size y dimension
-	string	_repairJobName;								//	Repair job name
+	string	_repairJobName;				
+	vector<Distribution*> _recurIatVec;
+	//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
 	Distribution* _iatRecurring;
 	CalendarObj* _myCalObj;

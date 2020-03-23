@@ -6,7 +6,7 @@ RepairJob::RepairJob()
 {
     _schedType = "Unplanned";
     _calendarDate = "n/a";
-    _recurringAmt = 0.0;
+    //_recurringAmt = 0.0;
     //  _unplannedProb = "1";
 }
 
@@ -133,14 +133,18 @@ string RepairJob::GetCalendarDate()
     return _calendarDate;
 }
 
-void RepairJob::SetRecurring(double recurringAmt)
+void RepairJob::SetRecurringAmt(double recurringAmt)
 {
-    _recurringAmt = recurringAmt;
-    //change to double
+    _recurringAmt = new Constant(recurringAmt);
+    	cout << "*****************************IAT RECURRING IS: ";
+        _recurringAmt->PrintDistribution();
+    	cout << endl;
+
+    //change to distribution
 }
 
 
-double RepairJob::GetRecurring()
+Distribution* RepairJob::GetRecurringAmt()
 {
     return _recurringAmt;
 }

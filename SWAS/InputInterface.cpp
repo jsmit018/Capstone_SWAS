@@ -369,7 +369,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
 						//						cout << "recur: " << schedRecur << endl;
-						newJob->SetRecurring(schedRecur);
+						newJob->SetRecurringAmt(schedRecur);
 					}
 
 					istringstream unss4(row[4]);
