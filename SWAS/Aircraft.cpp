@@ -10,7 +10,7 @@ Aircraft::Aircraft()
 	_aircraftID = ++_nextID;
 
 }
-void Aircraft::GetMyJobList(string aircraftType)
+void Aircraft::CopyMyJobList(string aircraftType)
 {
 	_aircraftType = aircraftType;
 
@@ -132,11 +132,42 @@ bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
 	return false;
 }
 
-bool Aircraft::AreMoreJobs(map<string, RepairJob*>::const_iterator iter)
+bool Aircraft::AreMoreJobs()
 {
+	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	if (iter != _myRepairJobs.end())
 		return true;
 	return false;
+}
+
+bool Aircraft::AreMoreSteps()
+{
+//	iter = _myRepairJobs.begin();
+//	for (int i = 0; i < iter->second->GetStepVecSize(); i++)
+//	
+//		if (i != iter->second->GetStepVecSize()-1)
+			return true;
+//		return false;
+//	}
+//
+}
+
+void Aircraft::SetNumCalEvents(int numCalEvents)
+{
+	_numCalEvents = numCalEvents;
+}
+
+CalendarObj* Aircraft::GetCalendarObj()
+{
+	return _myCalObj;
+}
+
+Step* Aircraft::GetNextStep(string rjType)
+{
+	//return the next step in the current repair job's list
+	//if no more steps, check that there are more repairjobs using AreMoreJobs(rjType)
+	//if more jobs, next step is first step of the next repair job of same type
+	return _nextStep;
 }
 
 void Aircraft::SetSource(int sourceID)
@@ -248,7 +279,7 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 	getline(iatUn, secHalf, ')');
 
 	istringstream nums(secHalf);
-	if (firstHalf == "Triangular")
+	if (firstHalf == "Triangular" || firstHalf == "Tri")
 	{
 		double min, expected, max;
 		nums >> min;
@@ -307,6 +338,28 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 
 	//Determines correct distribution and prints
 //	_iatUnplanned->PrintDistribution();
+}
+
+void Aircraft::SetAircraftRecurIAT()
+{
+
+//	map<string, RepairJob*>::iterator iter = _myRepairJobs.find(name);
+
+//	double iatRecurring = iter->second->GetRecurring();
+
+//	_iatRecurring = new Constant(iatRecurring);
+	
+}
+
+Distribution* Aircraft::GetAircraftRecurIAT()
+{
+	//Determines correct distribution and prints
+	cout << "*****************************IAT RECURRING IS: ";
+	_iatRecurring->PrintDistribution();
+	cout << endl;
+
+	return _iatRecurring;
+
 }
 
 Distribution* Aircraft::GetAircraftIAT()

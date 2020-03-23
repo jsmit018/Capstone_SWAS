@@ -381,7 +381,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					//newJob->PrintJobProperties();
 					//cout << endl;
 
-
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
 				}
 			}
@@ -436,10 +435,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					RepairJob* newJob = new RepairJob();
-
-					//	for (int i = 0; i < row.size(); ++i) {
-						//	cout << "line " << i << ": " << row[i] << endl;
-					//	}
 
 					unplanType = row[0];
 					//					cout << "craft type: " << unplanType << endl;
@@ -561,12 +556,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					Step* newStep = new Step(stepDurTemp, stepNameTemp);
 
-					//	for (int i = 0; i < row.size(); ++i) {
-						//	cout << "line " << i << ": " << row[i] << endl;
-					//	}
-//					cout << "row : " << row[0] << endl;
-					//	cout << "row size " << row.size() << endl; 
-
 					//if on the first line of the table, current job is first line, row[0] and job priority is first line, row[1]
 					if (rowCounter == 0) {
 						currentJob = row[0];
@@ -579,7 +568,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//if new line's job name value isn't empty, new job name value is current job
 					if (row[0] != "")
 					{
-						//						cout << "non blank row " << endl;
+						//cout << "non blank row " << endl;
 						currentJob = row[0];
 					}
 					//if new line's priority value isn't empty, new prioruty value is current priority
@@ -620,13 +609,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					//reqResource = row[8];
 					newStep->SetReqResource(row[8]);
 
-					/*istringstream ssSteps4(row[9]);
-					ssSteps4 >> numResources;*/
-					//			newStep->SetNumResNeeded(row[9]);
-								//*******TODO GIVE TO STEP, GIVE TO RESOURCES
-
-								//reqParts = row[10];
-							//	newStep->SetReqParts(row[10]);
 					newStep->SetReqParts(row[9]);
 
 					if (row.size() == 12)

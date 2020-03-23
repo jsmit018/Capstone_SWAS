@@ -31,7 +31,7 @@ public:
 	string GetCalendarDate();
 	double GetRecurring();
 	Distribution* GetUnplannedProb();
-	void GetNextStep();
+	//void GetNextStep(string rjType);
 	int GetStepVecSize();
 	Step* GetStep(int stepID);
 	bool WillSchedule();
