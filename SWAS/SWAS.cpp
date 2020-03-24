@@ -16,45 +16,45 @@ using namespace std;
 ///	Temporary for testing linked list searching ///
 ///			until GUI LL is available			///
 ///////////////////////////////////////////////////
-
-/* Link list node */
-class Node
-{
-public:
-	string key;
-	Node* next;
-};
-
-/* Given a reference (pointer to pointer) to the head
-of a list and an int, push a new node on the front
-of the list. */
-void push(Node** head_ref, string new_key)
-{
-	/* allocate node */
-	Node* new_node = new Node();
-
-	/* put in the key */
-	new_node->key = new_key;
-
-	/* link the old list off the new node */
-	new_node->next = (*head_ref);
-
-	/* move the head to point to the new node */
-	(*head_ref) = new_node;
-}
-
-/* Checks whether the value x is present in linked list */
-bool search(Node* head, string x)
-{
-	Node* current = head; // Initialize current  
-	while (current != NULL)
-	{
-		if (current->key == x)
-			return true;
-		current = current->next;
-	}
-	return false;
-}
+//
+///* Link list node */
+//class Node
+//{
+//public:
+//	string key;
+//	Node* next;
+//};
+//
+///* Given a reference (pointer to pointer) to the head
+//of a list and an int, push a new node on the front
+//of the list. */
+//void push(Node** head_ref, string new_key)
+//{
+//	/* allocate node */
+//	Node* new_node = new Node();
+//
+//	/* put in the key */
+//	new_node->key = new_key;
+//
+//	/* link the old list off the new node */
+//	new_node->next = (*head_ref);
+//
+//	/* move the head to point to the new node */
+//	(*head_ref) = new_node;
+//}
+//
+///* Checks whether the value x is present in linked list */
+//bool search(Node* head, string x)
+//{
+//	Node* current = head; // Initialize current  
+//	while (current != NULL)
+//	{
+//		if (current->key == x)
+//			return true;
+//		current = current->next;
+//	}
+//	return false;
+//}
 ///////////////////////////////////////////////////
 
 
@@ -65,14 +65,14 @@ void ArriveAircraft()
 	///	TEMPORARY DRIVER CODE FOR TESTING LL ///
 	////////////////////////////////////////////
 
-	/* Start with the empty list */
-	Node* head = NULL;
-	string x = "F-35";
+	///* Start with the empty list */
+	//Node* head = NULL;
+	//string x = "F-35";
 
-	/* Use push() to construct */
-	push(&head, "F-18");
-	push(&head, "F-15");
-	push(&head, "Apache");
+	///* Use push() to construct */
+	//push(&head, "F-18");
+	//push(&head, "F-15");
+	//push(&head, "Apache");
 
 	///////////////////////////////////////
 	///////////////////////////////////////
@@ -84,6 +84,8 @@ void ArriveAircraft()
 
 	InputReader inputReader;
 
+	inputReader.AddSelectedAircraft("F-35");
+
 	//populate master map
 	inputReader.ReadInputData();
 	inputReader.PrintEverything();
@@ -94,6 +96,7 @@ void ArriveAircraft()
 
 	//for all unique aircraft types in the master map 
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
+	while(iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
 		//if (search(head, iter->first) == true)
@@ -172,7 +175,7 @@ void ArriveAircraft()
 				//	calArrival->SetNextTask(nextCalStep);
 				//	nextCalStep->SetNextTask(depart);
 
-			//}
+			
 		}
 
 		iter++;

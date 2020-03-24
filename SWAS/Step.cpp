@@ -538,7 +538,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, /*add repair job */ vector<string> 
 			_acquiredResources.erase(acquiredResources.begin() + i);
 		}
 
-
+		
 		////TODO: THIS BAY STUFF. TOO TIRED, MESSING IT UP
 		////if next step's indoor req is Y and i already have bay it in my acquired list
 		//if (aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++)->GetRJIndoorReq() == 'Y') {
@@ -554,7 +554,21 @@ void Step::DoneServiceEM(Aircraft* aircraft, /*add repair job */ vector<string> 
 		//}
 
 	}
-		//check if done, if no, get next step
+	/*get next repairjob ->getfirst step and schedule it
+	
+
+
+	aircraft function recieves rpeiajob name
+		get the reparijobobject
+		get its priority
+		iterate through mymap
+		find next repairjob with lowest priority
+
+		outside loop declar varfaible to track priority
+		keep track of variable at each loop iterateion  */
+
+	
+	//check if done, if no, get next step
 		//if yes we're done 
 		
 

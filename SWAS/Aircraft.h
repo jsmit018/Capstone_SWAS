@@ -36,7 +36,7 @@ public:
 	void AddSchedRepairJob();
 	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
-	void SetRecurringIATs(vector<Distribution*> recurIatVec);
+	void AddRecurringIAT(Distribution* iatRecurring);
 	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
 	//void SetNextID(int id);
 
@@ -72,6 +72,7 @@ private:
 	double	_wingspan;									//	Aircraft size y dimension
 	string	_repairJobName;				
 	vector<Distribution*> _recurIatVec;
+	map<Distribution*, RepairJob*> _recurIatMap;
 	//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
 	Distribution* _iatRecurring;

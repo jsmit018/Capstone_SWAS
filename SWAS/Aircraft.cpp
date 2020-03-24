@@ -102,12 +102,14 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 		//for all repair jobs with schedule type "calendar"
 		else if (iter->second->GetSchedType() == "Calendar") {
-
+			
 			cout << endl;
 			cout << _aircraftType << "	has a Calendar Repair Job called: " << iter->second->GetName() << endl;
 
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
+			
+
 			//give this copy to this new aircraft's myrepairjobs list
 			_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
 			
@@ -129,6 +131,17 @@ void Aircraft::CopyMyJobList(string aircraftType)
 		}
 		iter++;
 	}
+}
+
+
+
+void Aircraft::AddRecurringIAT(Distribution* iatRecurring)
+{
+	map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
+	//while (myJobIter != _myRepairJobs.end())
+	//{
+	//	
+	//}
 }
 
 void Aircraft::SetCalendarObj(string date)
