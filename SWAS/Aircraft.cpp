@@ -110,19 +110,22 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			//note for andie: add cal obj to aircraft, get it through copy constructor and to initial instance
 			//in rj, split cal into tuple of ints: mm dd yyyy
 			//call populate calendarObj and call here
-			SetCalendarObj();
-
-			//then jordan can fill logic for populating calendarObj as necessary for his stuff 
-
+			//**Andie -- Make sure we only do this if its calendar
+			//SetCalendarObj();
+			//then jordan can fill logic for populating calendarObj as necessary for his stuff [DONE] -- in the function
 			
 		}
 		iter++;
 	}
 }
 
-void Aircraft::SetCalendarObj()
+void Aircraft::SetCalendarObj(Time month, Time day, int year)
 {
 	//get rj's calendar tuple, do whatevs
+	_myCalObj->_months.push_back(month);
+	_myCalObj->_days.push_back(day);
+	_myCalObj->_year.push_back(year);
+	_myCalObj->_timeOfDays.push_back(0.0);
 }
 
 bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)

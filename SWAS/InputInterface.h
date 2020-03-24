@@ -19,6 +19,8 @@ public:
 	~InputReader();
 	void ReadInputData();
 	void PrintEverything();
+	void AddSelectedAircraft(string aircraftName);
+	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();
 	map<string, Aircraft*>::iterator GetMasterMapBegin();
 	map<string, Aircraft*>::iterator GetMasterMapEnd();
@@ -31,6 +33,8 @@ private:
 	static map<string, Aircraft*> _masterMap;
 	static map<string, Resource*> _masterResourceMap;
 	CalConverter* calConvert;
+	struct GUISelectedAircraft;
+	GUISelectedAircraft* _GUIListHead;
 	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere
 

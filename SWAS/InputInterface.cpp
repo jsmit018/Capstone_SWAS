@@ -12,6 +12,15 @@ using namespace std;
 map<string, Aircraft*> InputReader::_masterMap;
 map<string, Resource*> InputReader::_masterResourceMap;
 
+struct InputReader::GUISelectedAircraft {
+	GUISelectedAircraft(string aircraftName) {
+		_aircraftName = aircraftName;
+		_nextAircraft = NULL;
+	}
+	string _aircraftName;
+	GUISelectedAircraft* _nextAircraft;
+};
+
 InputReader::InputReader()
 {
 	calConvert = new CalConverter();
@@ -727,6 +736,11 @@ void InputReader::ReadInputData() //initialization for getting data
 					istringstream ssResource3(row[3]);
 					ssResource3 >> resourceFootprintY;
 
+					Resource* res = new Resource();
+					res->SetResourceName(resName);
+					res->SetResourceCount(resCount);
+					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
+					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
 
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
 					//ITERATE THROUGH MASTER MAP
@@ -1006,6 +1020,40 @@ void InputReader::PrintEverything()
 CalConverter* InputReader::GetCalConverter()
 {
 	return calConvert;
+}
+
+void InputReader::AddSelectedAircraft(string aircraftName)
+{
+	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
+	
+	if (_GUIListHead == NULL) {
+		_GUIListHead = newAircraft;
+	}
+	else {
+		GUISelectedAircraft* iter = _GUIListHead;
+		while (iter != NULL)
+		{
+			iter = iter->_nextAircraft;
+		}
+		iter = newAircraft;
+	}
+
+}
+
+bool InputReader::FindSelectedAircraft(string aircraftName)
+{
+	GUISelectedAircraft* iter = _GUIListHead;
+	while (iter != NULL)
+	{
+		if (iter->_aircraftName == aircraftName) {
+			return true;
+		}
+		else
+		{
+			iter = iter->_nextAircraft;
+		}
+	}
+	return false;
 }
 
 int InputReader::GetMapSize()

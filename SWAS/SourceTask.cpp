@@ -26,6 +26,20 @@ private:
 	SourceBlock* _source;
 };
 
+class SourceBlock::ScheduleNextUnplannedAircraftEA : public EventAction {
+public:
+	ScheduleNextUnplannedAircraftEA(SourceBlock* source) {
+		_source = source;
+	}
+
+	void Execute() {
+		_source->ScheduleNextUnplannedAircraftEM();
+	}
+
+private:
+	SourceBlock* _source;
+};
+
 /*Constructor for Unplanned*/
 SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircraft, string name, 
 	int numberOfAircraftToGenerate) : Task(name)
@@ -44,7 +58,7 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
 	_numberGenerated = 0;
 
-	SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this),
+	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this),
 		_interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 }
 
@@ -58,17 +72,23 @@ SourceBlock::SourceBlock(vector<Distribution*> recurringIAT, string aircraftType
 	cout << "Initializing Aircraft Distributions" << endl;
 	/*need to take the vector of recurring IATs and set multiple*/
 	//_interarrivalTimeRecurring = 
+	_interarrivalTimeRecurring = recurringIAT;
 
 	cout << "Printing Aircraft Distributions" << endl;
-	_interarrivalTimeRecurring->PrintDistribution();
+	
+	for (int i = 0; i < _interarrivalTimeRecurring.size(); ++i) {
+		_interarrivalTimeRecurring[i]->PrintDistribution();
+	} 
 
 	_aircraftType = aircraftType;
 	_aircraft = aircraft;
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
 	_numberGenerated = 0;
 
-	SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this), 
-		_interarrivalTimeRecurring->GetRV(), "ScheduleNextRecurringAircraftEA");
+	for (int i = 0; i < _interarrivalTimeRecurring.size(); ++i) {
+		SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this),
+			_interarrivalTimeRecurring[i]->GetRV(), "ScheduleNextRecurringAircraftEA");
+	}
 }
 
 /*Constructor for Calendar*/
@@ -105,20 +125,6 @@ SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
 //	SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this), _interarrivalTimeRecurring->GetRV(), "ScheduleNextRecurringAircraftEA");
 //}
 
-class SourceBlock::ScheduleNextRandomAircraftEA : public EventAction {
-public:
-	ScheduleNextRandomAircraftEA(SourceBlock* source) {
-		_source = source;
-	}
-
-	void Execute() {
-		_source->ScheduleNextRandomAircraftEM();
-	}
-
-private:
-	SourceBlock* _source;
-};
-
 string SourceBlock::GetAircraftType() {
 	return _aircraftType;
 }
@@ -137,16 +143,19 @@ int SourceBlock::GetNumberGenerated() {
 
 void SourceBlock::ScheduleNextCalendarAircraftEM() {
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
-		cout << "Scheduling Random aircraft arrival" << endl;
-		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
+		//Not doing this anymore!
+		//cout << "Scheduling Random aircraft arrival" << endl;
+		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
 		cout << "Departing new Aircraft" << endl;
 		Depart(_aircraft->New());
 		_numberGenerated++;
 	}
 }
 
-void SourceBlock::ScheduleNextRandomAircraftEM() {
+void SourceBlock::ScheduleNextUnplannedAircraftEM() {
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
+		cout << "Scheduling Unplanned Aircraft Arrival" << endl;
+		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 		cout << "Departing Unexpected Arrival" << endl;
 		Depart(_aircraft->New());
 		_numberGenerated++;
@@ -155,10 +164,14 @@ void SourceBlock::ScheduleNextRandomAircraftEM() {
 
 void SourceBlock::ScheduleNextRecurringAircraftEM() {
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
-		cout << "Scheduling next Recurring arrival" << endl;
-		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this), _interarrivalTimeRecurring->GetRV(), "ScheduleNextRecurringAircraftEA");
-		cout << "Scheduling next Random Aircraft arrival" << endl;
-		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
+		//Scheduling recurring aircrafts
+		for (int i = 0; i < _interarrivalTimeRecurring.size(); ++i) {
+			cout << "Scheduling next Recurring arrival" << endl;
+			SimExec::ScheduleEventAtRecurring(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this), _interarrivalTimeRecurring[i]->GetRV(), "ScheduleNextRecurringAircraftEA");
+		}
+		//No longer doing this!
+		//cout << "Scheduling next Random Aircraft arrival" << endl;
+		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
 		cout << "Departing new Aircraft" << endl;
 		Depart(_aircraft->New());
 		_numberGenerated++;
