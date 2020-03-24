@@ -10,6 +10,21 @@ Aircraft::Aircraft()
 	_aircraftID = ++_nextID;
 
 }
+
+//void Aircraft::CopyAircraftInfo(const Aircraft& mapAircraft)
+Aircraft::Aircraft(const Aircraft& mapAircraft)
+{
+	_aircraftType = mapAircraft._aircraftType;						//	Aircraft name: i.e. F35
+	_priority = mapAircraft._priority;								//	Aircraft priority: helps determine first to be served in queues
+	_numCalEvents = mapAircraft._numCalEvents;
+	_length = mapAircraft._length;									//	Aircraft size x dimension  ***make a tuple or struct later
+	_wingspan = mapAircraft._wingspan;								//	Aircraft size y dimension
+	_repairJobName = mapAircraft._repairJobName;
+	_iatUnplanned = mapAircraft._iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
+
+	//recurIat vector, calobj and others populated after this copy
+}
+
 void Aircraft::CopyMyJobList(string aircraftType)
 {
 	_aircraftType = aircraftType;
