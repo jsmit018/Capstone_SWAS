@@ -16,45 +16,45 @@ using namespace std;
 ///	Temporary for testing linked list searching ///
 ///			until GUI LL is available			///
 ///////////////////////////////////////////////////
-
-/* Link list node */
-class Node
-{
-public:
-	string key;
-	Node* next;
-};
-
-/* Given a reference (pointer to pointer) to the head
-of a list and an int, push a new node on the front
-of the list. */
-void push(Node** head_ref, string new_key)
-{
-	/* allocate node */
-	Node* new_node = new Node();
-
-	/* put in the key */
-	new_node->key = new_key;
-
-	/* link the old list off the new node */
-	new_node->next = (*head_ref);
-
-	/* move the head to point to the new node */
-	(*head_ref) = new_node;
-}
-
-/* Checks whether the value x is present in linked list */
-bool search(Node* head, string x)
-{
-	Node* current = head; // Initialize current  
-	while (current != NULL)
-	{
-		if (current->key == x)
-			return true;
-		current = current->next;
-	}
-	return false;
-}
+//
+///* Link list node */
+//class Node
+//{
+//public:
+//	string key;
+//	Node* next;
+//};
+//
+///* Given a reference (pointer to pointer) to the head
+//of a list and an int, push a new node on the front
+//of the list. */
+//void push(Node** head_ref, string new_key)
+//{
+//	/* allocate node */
+//	Node* new_node = new Node();
+//
+//	/* put in the key */
+//	new_node->key = new_key;
+//
+//	/* link the old list off the new node */
+//	new_node->next = (*head_ref);
+//
+//	/* move the head to point to the new node */
+//	(*head_ref) = new_node;
+//}
+//
+///* Checks whether the value x is present in linked list */
+//bool search(Node* head, string x)
+//{
+//	Node* current = head; // Initialize current  
+//	while (current != NULL)
+//	{
+//		if (current->key == x)
+//			return true;
+//		current = current->next;
+//	}
+//	return false;
+//}
 ///////////////////////////////////////////////////
 
 
@@ -65,14 +65,14 @@ void ArriveAircraft()
 	///	TEMPORARY DRIVER CODE FOR TESTING LL ///
 	////////////////////////////////////////////
 
-	/* Start with the empty list */
-	Node* head = NULL;
-	string x = "F-35";
+	///* Start with the empty list */
+	//Node* head = NULL;
+	//string x = "F-35";
 
-	/* Use push() to construct */
-	push(&head, "F-18");
-	push(&head, "F-15");
-	push(&head, "Apache");
+	///* Use push() to construct */
+	//push(&head, "F-18");
+	//push(&head, "F-15");
+	//push(&head, "Apache");
 
 	///////////////////////////////////////
 	///////////////////////////////////////
@@ -84,26 +84,26 @@ void ArriveAircraft()
 
 	InputReader inputReader;
 
+	inputReader.AddSelectedAircraft("F-35");
+
 	//populate master map
 	inputReader.ReadInputData();
 	inputReader.PrintEverything();
 
-	cout << "Giving the Simulation Executive InputReader Information for Initialization" << endl;
 	SimExec::SetInputReader(inputReader);
-	
-	////****I moved this up here because we want to make sure we are sending all aircraft to the same sink! and the string paramemter in this obj
-	////Is just the name of what we wanted to call the object.
-	SinkBlock* depart = new SinkBlock("System Sink");
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
 	//for all unique aircraft types in the master map 
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
-	while (iter != inputReader.GetMasterMapEnd())
+	while(iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		if (search(head, iter->first) == true)
+		//if (search(head, iter->first) == true)
+		if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
+			cout << "IN IF ***********" << endl;
+			cout << endl;
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			
@@ -122,55 +122,60 @@ void ArriveAircraft()
 						//ADD logic for getting each value from the recurring IAT vector being passed to SourceBlock constructor of recurring [DONE]
 
 			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them */
-			/* Unplanned */
+			
+			///* Unplanned */
 			//SourceBlock* unplanArrival = new SourceBlock(
 			//	firstAircraft->GetAircraftIAT(),
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME" --------- Name is the name of the source object,
+			//	"Unplanned Arrival", // like dis?--------- Name is the name of the source object,
 			//	10000); // need to make sure there's an unlimited option ------------ there is, the default value is NULL so if its not given a value it will be unlimited
 			//	
+
 			///* Recurring */
 			//SourceBlock* recurArrival = new SourceBlock(
 			//	firstAircraft->GetRecurringIATs(),
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME",
+			//	"Recurring Arrival",
 			//	10000);
 
 			///* Calendar */
 			//SourceBlock* calArrival = new SourceBlock(
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME",
+			//	"Calendar Arrival",
 			//	firstAircraft->GetNumCalEvents(),
 			//	firstAircraft->GetCalendarObj(),
 			//	10000);
-				
+			//	
 
-			////////************************ Check where inputReader is instantiated.
 			//SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
 
-			//Andie TO DO: IMPLEMENT AreMoreSteps() AND GetNextStep()
-			if (firstAircraft->AreMoreSteps() == true) //(false if no more steps in vector or rjs in myMap)
-			{	
+			//unplanArrival->SetNextTask(depart);
+			//recurArrival->SetNextTask(depart);
+			//calArrival->SetNextTask(depart);
+
+	
+
+			//if more steps
 				/* getNextStep() keeps getting the next step til all steps in RJ are done,
-				can be made to take argument of RJ type (unplan,etc) then get next 
+				can be made to take argument of RJ type (unplan,etc) then get next
 				RJ of same type's first step */
-				
-			/*	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned"); 
-				unplanArrival->SetNextTask(nextUnplanStep);
-				nextUnplanStep->SetNextTask(depart);
 
-				Step* nextRecurStep = firstAircraft->GetNextStep("Recurring"); 
-				recurArrival->SetNextTask(nextRecurStep);		
-				nextRecurStep->SetNextTask(depart);
+				//	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned");
+				//	unplanArrival->SetNextTask(nextUnplanStep);
+				//	nextUnplanStep->SetNextTask(depart);
 
-				Step* nextCalStep = firstAircraft->GetNextStep("Calendar"); 
-				calArrival->SetNextTask(nextCalStep);	
-				nextCalStep->SetNextTask(depart);*/
+				//	Step* nextRecurStep = firstAircraft->GetNextStep("Recurring");
+				//	recurArrival->SetNextTask(nextRecurStep);
+				//	nextRecurStep->SetNextTask(depart);
 
-			}
+				//	Step* nextCalStep = firstAircraft->GetNextStep("Calendar");
+				//	calArrival->SetNextTask(nextCalStep);
+				//	nextCalStep->SetNextTask(depart);
+
+			
 		}
 
 		iter++;
@@ -186,20 +191,13 @@ int main() {
 
 	ArriveAircraft();
 
-	cout << "Calling Initialize Simulation Function" << endl;
-	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
+//	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
 	/*
 		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
 		//Print Values here
 	*/
-
-	///Just For testing purposes we will need a RunSim to see how the DES operates -> lets look at 10 of each arrival first over 2 years to see what happens
-	cout << "Calling Run Simulation" << endl;
-	while (SimExec::GetSimulationFlag) {
-		SimExec::RunSimulation(0, 0, 0.0, 2022);
-	}
 
 	return 0;
 }

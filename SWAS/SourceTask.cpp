@@ -41,15 +41,15 @@ private:
 };
 
 /*Constructor for Unplanned*/
-SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircraft, string name, 
+SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircraft, string name,
 	int numberOfAircraftToGenerate) : Task(name)
 {
 	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;
 	_name = name;
-	
+
 	cout << "Initializing Aircraft Distributions" << endl;
 	_interarrivalTimeRND = aircraft->GetAircraftIAT();
-	
+
 	cout << "Printing Aircraft Distributions" << endl;
 	_interarrivalTimeRND->PrintDistribution();
 
@@ -69,17 +69,17 @@ SourceBlock::SourceBlock(vector<Distribution*> recurringIAT, string aircraftType
 {
 	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;
 	_name = name;
-	
+
 	cout << "Initializing Aircraft Distributions" << endl;
 	/*need to take the vector of recurring IATs and set multiple*/
 	//_interarrivalTimeRecurring = 
 	_interarrivalTimeRecurring = recurringIAT;
 
 	cout << "Printing Aircraft Distributions" << endl;
-	
+
 	for (int i = 0; i < _interarrivalTimeRecurring.size(); ++i) {
 		_interarrivalTimeRecurring[i]->PrintDistribution();
-	} 
+	}
 
 	_aircraftType = aircraftType;
 	_aircraft = aircraft;

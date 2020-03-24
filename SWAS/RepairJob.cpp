@@ -124,6 +124,7 @@ char RepairJob::GetIndoorReq()
 void RepairJob::SetCalendarDate(string calendarDate)
 {
     //isstringstream this into tuple of <m,d,y>
+    _calendarDate = calendarDate;
 
 }
 
@@ -131,15 +132,13 @@ string RepairJob::GetCalendarDate()
 {
     //return tuple
     return _calendarDate;
+   
 }
 
 void RepairJob::SetRecurringAmt(double recurringAmt)
 {
     _recurringAmt = new Constant(recurringAmt);
-    	cout << "*****************************IAT RECURRING IS: ";
-        _recurringAmt->PrintDistribution();
-    	cout << endl;
-
+ 
     //change to distribution
 }
 

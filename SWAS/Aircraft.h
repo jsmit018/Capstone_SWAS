@@ -34,9 +34,10 @@ public:
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
 	void AddRandRepairJob();	//populated when new craft is created - look at master, find random jobs, roll dice, add here
 	void AddSchedRepairJob();
-	void SetCalendarObj(Time month, Time day, int year);
+	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
-	void SetRecurringIATs(vector<Distribution*> recurIatVec);
+	void AddRecurringIAT(Distribution* iatRecurring);
+	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
 	//void SetNextID(int id);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
@@ -51,11 +52,8 @@ public:
 	int GetMyRJMapSize();
 	int GetNumCalEvents();
 	vector<Distribution*> GetRecurringIATs();
-	Step* GetNextStep(string rjType);
-	Step* GetNextStep(string rjType, int stepID);
+	Step* GetNextStep();
 	CalendarObj* GetCalendarObj();
-	void CleanCompletedRepairJob();
-	map<string, RepairJob*> GetHeadRepairJob();
 
 	map<string, RepairJob*>::iterator  GetRJMapBegin();
 	map<string, RepairJob*>::iterator  GetRJMapEnd();
@@ -74,6 +72,7 @@ private:
 	double	_wingspan;									//	Aircraft size y dimension
 	string	_repairJobName;				
 	vector<Distribution*> _recurIatVec;
+	map<Distribution*, RepairJob*> _recurIatMap;
 	//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
 	Distribution* _iatRecurring;

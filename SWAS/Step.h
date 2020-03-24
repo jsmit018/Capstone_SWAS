@@ -29,7 +29,6 @@ public:
 	void SetStepIndoorReq(char indoorReq);
 	void SetStepID(int stepID);
 	void SetRJPriority(int RJpriority);
-	Step* SetNextStep();
 	void SetMyRJName(string myRJ);
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
 
@@ -54,7 +53,6 @@ public:
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
-	//	Step* GetNextStep(Aircraft * currAir, int currStep);
 	map<string, Parts*>::iterator GetPartsMapBegin();
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();

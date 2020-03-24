@@ -372,14 +372,15 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					if (schedType == "Calendar") {
 						schedCal = row[3];
-						//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
+						//cout << "calendar date: " << schedCal << endl;						
+						//newJob->SetSchedType(schedType);
 						newJob->SetCalendarDate(schedCal);
 					}
 
 					else if (schedType == "Recurring") {
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
-						//						cout << "recur: " << schedRecur << endl;
+						//cout << "recur: " << schedRecur << endl;
 						newJob->SetRecurringAmt(schedRecur);
 					}
 
@@ -1026,7 +1027,7 @@ CalConverter* InputReader::GetCalConverter()
 void InputReader::AddSelectedAircraft(string aircraftName)
 {
 	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
-	
+
 	if (_GUIListHead == NULL) {
 		_GUIListHead = newAircraft;
 	}
