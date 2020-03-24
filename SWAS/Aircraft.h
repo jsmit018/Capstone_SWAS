@@ -34,7 +34,7 @@ public:
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
 	void AddRandRepairJob();	//populated when new craft is created - look at master, find random jobs, roll dice, add here
 	void AddSchedRepairJob();
-	void SetCalendarObj();
+	void SetCalendarObj(Time month, Time day, int year);
 	void SetNumCalEvents(int numCalEvents);
 	void SetRecurringIATs(vector<Distribution*> recurIatVec);
 	//void SetNextID(int id);

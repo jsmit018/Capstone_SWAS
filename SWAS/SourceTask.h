@@ -48,7 +48,7 @@ public:
 	int GetNumberGenerated();
 	void Execute(Aircraft* aircraft);
 private:
-	Distribution* _interarrivalTimeRecurring;
+	vector<Distribution*> _interarrivalTimeRecurring;
 	Distribution* _interarrivalTimeRND;
 	Aircraft* _aircraft;
 	string _aircraftType;
@@ -56,9 +56,9 @@ private:
 	string _name;
 	int _numberGenerated;
 	class ScheduleNextCalendarAircraftEA;
-	class ScheduleNextRandomAircraftEA;
+	class ScheduleNextUnplannedAircraftEA;
 	class ScheduleNextRecurringAircraftEA;
-	void ScheduleNextRandomAircraftEM();
+	void ScheduleNextUnplannedAircraftEM();
 	void ScheduleNextCalendarAircraftEM();
 	void ScheduleNextRecurringAircraftEM();
 };

@@ -39,7 +39,7 @@ public:
 	void PrintResources();
 	void PrintPools();
 	void PrintEvent();
-	void CheckBays();
+	void InitialArrivalBayCheck();
 	map<string, Resource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
 	bool IsResourceMapEnd(map<string, Resource*>::iterator it);

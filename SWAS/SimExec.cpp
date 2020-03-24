@@ -1,6 +1,7 @@
 #include "SimExec.h"
 #include "Resource.h"
 #include "Parts.h"
+#include "InputInterface.h"
 
 
 /*SimExec::SimExec() : SimObj(){
@@ -15,7 +16,6 @@ void PlayButton(Time month, Time day, Time timeOfDay, int year)
 {
 	SimExec::RunSimulation(month, day, timeOfDay, year);
 }
-
 
 struct SimExec::Event {
 	Event(EventAction* ea, Time timeMonth, Time timeDay, Time timeOfDay, int priority, int year, string eaName) {
@@ -544,6 +544,7 @@ private:
 SimExec::EventSet SimExec::_eventSet;
 SimExec::CondEventSet SimExec::_conditionalSet;
 SimulationTime SimExec::_simulationTime;
+InputReader SimExec::_inputReader;
 bool SimExec::_simulationFlag;
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
@@ -559,6 +560,16 @@ void SimExec::InitializeSimulation(int numBins, int* days) {
 SimulationTime SimExec::GetSimulationTime() {
 	cout << "Returning Simulation Time" << endl;
 	return _simulationTime;
+}
+
+InputReader SimExec::GetInputReader()
+{
+	return _inputReader;
+}
+
+void SimExec::SetInputReader(InputReader inputReader)
+{
+	_inputReader = inputReader;
 }
 
 void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName) {
@@ -610,6 +621,10 @@ int SimExec::RunSimulation() {
 		_simulationTime._day = _eventSet.GetDay();
 		_simulationTime._year = _eventSet.GetYear();
 		EventAction* ea = _eventSet.GetEventAction();
+		if (ea == 0) {
+			FlipSimulationFlag();
+			return 3;
+		}
 		ea->Execute();
 		delete ea;
 		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
@@ -650,6 +665,10 @@ int SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 			_simulationTime._day = _eventSet.GetDay();
 			_simulationTime._year = _eventSet.GetYear();
 			EventAction* ea = _eventSet.GetEventAction();
+			if (ea == 0) {
+				FlipSimulationFlag();
+				return 3;
+			}
 			ea->Execute();
 			delete ea;
 			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day

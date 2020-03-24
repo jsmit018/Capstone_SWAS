@@ -7,6 +7,7 @@
 #include "Aircraft.h"
 #include "Distribution.h"
 #include "SinkTask.h"
+#include "Warehouse.h"
 #include <map>;
 
 using namespace std;
@@ -72,10 +73,13 @@ void ArriveAircraft()
 	push(&head, "F-18");
 	push(&head, "F-15");
 	push(&head, "Apache");
+
 	///////////////////////////////////////
 	///////////////////////////////////////
 
-	//Jordan TO DO: set up GUI to DES linked list in place of one above (maybe set it up in Input Interface?)
+	///*****For Andrea LL is done :) when instantiating the aircraft use inputReader.FindSelectedAircraft(aircraftName);
+
+	//Jordan TO DO: set up GUI to DES linked list in place of one above (maybe set it up in Input Interface?) [DONE]
 	//Andie TO DO: set up logic for comparing linked list values to master map to pick correct aircraft [done]
 
 	InputReader inputReader;
@@ -83,6 +87,8 @@ void ArriveAircraft()
 	//populate master map
 	inputReader.ReadInputData();
 	inputReader.PrintEverything();
+
+	SimExec::SetInputReader(inputReader);
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
@@ -107,8 +113,8 @@ void ArriveAircraft()
 			cout << "FIRST AIRCRAFT IAT IS:" << firstAircraft->GetAircraftIAT() << endl;
 			//Andie TO DO: IMPLEMENT GetNumCalEvents()
 						 //IMPLEMENT Get/Set vector of recurring iats in Aircraft.cpp
-			//Jordan TO DO: IMPLEMENT Set/GetCalendarObj in Aircraft.cpp 
-						//ADD logic for getting each value from the recurring IAT vector being passed to SourceBlock constructor of recurring
+			//Jordan TO DO: IMPLEMENT Set/GetCalendarObj in Aircraft.cpp [DONE]
+						//ADD logic for getting each value from the recurring IAT vector being passed to SourceBlock constructor of recurring [DONE]
 
 			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them */
 			/* Unplanned */
@@ -116,8 +122,8 @@ void ArriveAircraft()
 			//	firstAircraft->GetAircraftIAT(),
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME",
-			//	10000); // need to make sure there's an unlimited option
+			//	"WHAT IS NAME" --------- Name is the name of the source object,
+			//	10000); // need to make sure there's an unlimited option ------------ there is, the default value is NULL so if its not given a value it will be unlimited
 			//	
 			///* Recurring */
 			//SourceBlock* recurArrival = new SourceBlock(
@@ -164,6 +170,8 @@ void ArriveAircraft()
 		iter++;
 	}
 
+	Warehouse::SetMasterMaps(inputReader);
+
 	cout << "reading is finished" << endl;
 }
 
@@ -172,10 +180,9 @@ int main() {
 
 	ArriveAircraft();
 
-	/*
-		SimExec::InitializeSimulation(11, /CalendarConverterDaysArrayHere/);
-	*/
+	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
+	//This is done through the GUI visualization
 	/*
 		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
 		//Print Values here
