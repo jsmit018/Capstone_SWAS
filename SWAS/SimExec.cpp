@@ -17,7 +17,6 @@ void PlayButton(Time month, Time day, Time timeOfDay, int year)
 	SimExec::RunSimulation(month, day, timeOfDay, year);
 }
 
-
 struct SimExec::Event {
 	Event(EventAction* ea, Time timeMonth, Time timeDay, Time timeOfDay, int priority, int year, string eaName) {
 		_ea = ea;
