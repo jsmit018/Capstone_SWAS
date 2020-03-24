@@ -88,6 +88,7 @@ void ArriveAircraft()
 	inputReader.ReadInputData();
 	inputReader.PrintEverything();
 
+	cout << "Giving the Simulation Executive InputReader Information for Initialization" << endl;
 	SimExec::SetInputReader(inputReader);
 	
 	////****I moved this up here because we want to make sure we are sending all aircraft to the same sink! and the string paramemter in this obj
@@ -185,6 +186,7 @@ int main() {
 
 	ArriveAircraft();
 
+	cout << "Calling Initialize Simulation Function" << endl;
 	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
@@ -194,6 +196,7 @@ int main() {
 	*/
 
 	///Just For testing purposes we will need a RunSim to see how the DES operates -> lets look at 10 of each arrival first over 2 years to see what happens
+	cout << "Calling Run Simulation" << endl;
 	while (SimExec::GetSimulationFlag) {
 		SimExec::RunSimulation(0, 0, 0.0, 2022);
 	}

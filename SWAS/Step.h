@@ -106,6 +106,7 @@ private:
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
 	class FailResourceEA;
+	class RestoreResourceEA;
 	class WaitForResourceEA;
 	class NeedPartsEA;
 
@@ -117,6 +118,7 @@ private:
 	void AcquireResourceEM(Resource* resource);
 	void ReleaseResourceEM(Resource* resource);
 	void FailResourceEM(Resource* resource);
+	void RestoreResourceEM(Resource* resource);
 
 	void AcquireParts(Parts* parts);
 };

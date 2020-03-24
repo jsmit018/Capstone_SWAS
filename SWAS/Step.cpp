@@ -264,6 +264,22 @@ private:
 	Resource* _resource;
 };
 
+class Step::RestoreResourceEA : public EventAction {
+public:
+	RestoreResourceEA(Step* step, Resource* resource) {
+		_step = step;
+		_resource = resource;
+	}
+
+	void Execute() {
+		_step->RestoreResourceEM(_resource);
+	}
+
+private:
+	Step* _step;
+	Resource* _resource;
+};
+
 // PLACE ORDER/ REPLENISH order process
 	// schedule an event that will act as "place order"   -> placeorderEA does placeOrderEM
 	// "place order" execution will schedule a "order arrived/ parts replenish event"	 placeOrderEM schedules partsArrivalEA
@@ -272,6 +288,7 @@ private:
 void Step::PlaceOrderEM(Parts* parts)
 {
 	//Schedule Order Arrivals EA at now + lead time
+	cout << "Parts total has fallen below its identified threshold, placing an order" << endl;
 	SimExec::ScheduleEventAt(1, new OrderArrivalEA(this, parts), parts->GetLeadTime()->GetRV(), "OrderArrivalEA");
 }
 
@@ -342,6 +359,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for a bay \n";
 			// WAITING
+			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 		else
@@ -358,6 +376,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for an outspot \n";
 			// WAITING
+			cout << "Outspot unavailable, Adding Plane to Conditional Event List until it is." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 	}
@@ -396,6 +415,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
+			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 			iter++;
 		}
@@ -417,14 +437,17 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			}
 
 			else if (it->second->AreEnoughParts() == false) {
-				SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, it->second), it->second->GetLeadTime()->GetRV(), "PlaceOrderEA");
+				cout << "There are not enough parts scheduling to place a new order" << endl;
+				SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, it->second), 0.0, "PlaceOrderEA");
 				// WAITING
+				cout << "Adding Aircraft to the Conditional Event list until " << it->first << " becomes available" << endl;
 				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources));
 			}
 
 			iter2++;
 		}
 
+		cout << "Aircraft has finished a maintenance step, scheduling a DoneService" << endl;
 		DoneServiceEA* doneEA = new DoneServiceEA(this, aircraft, _acquiredResources);
 		SimExec::ScheduleEventAt(1, doneEA, this->_serviceTime->GetRV(), "DoneServiceEA");
 	}
@@ -460,19 +483,23 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
+			cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 
 			//TO DO:
 			//if inspection results in failure = true
 			if (IsInpectionFail(_inspecFailProb) == true)
 			{
-				//IS THIS RIGHT			
+				//IS THIS RIGHT		
+				cout << "Inspection failed, Rescheduling appropriate maintenance." << endl;
 				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 				//reschedule step of id = to return step id and all following steps
 			}
 
-			else
+			else {
+				cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
 				SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _serviceTime->GetRV(), "DoneServiceEA");
+			}
 
 			iter++;
 		}
@@ -518,6 +545,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	if (nextId <= aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize())
 	{	
 		//schedule next step
+		cout << "Current Maintenance step has finished, scheduling the next maintenance step." << endl;
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
@@ -529,6 +557,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				continue;
 
 			//schedule resource release ea
+			cout << "Release appropriate resource not needed for the next maintenance step" << endl;
 			SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 
 			//empty appropriate acquired vector index
@@ -546,8 +575,11 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	else if (nextId > aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize()) {
 		//aircraft->GetRepairJobObj(_myRJ).
 		/////Same concept as in the Aircraft Function it just updates _MyRJ string to the new repair job. 
+		cout << "Repair Job has been completed, removing it from the active list of repair jobs" << endl;
 		aircraft->CleanCompletedRepairJob();
+		cout << "Checking to see if there are any more repair jobs" << endl;
 		if (aircraft->AreMoreJobs()) {
+			cout << "Still repairs that need to be completed scheduling the next Repair Jobs first step" << endl;
 			map<string, RepairJob*>::const_iterator it = aircraft->GetHeadRepairJob().begin();
 			_myRJ = it->first;
 			SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetFirstStep(), aircraft, _acquiredResources), 0.0, "StartServiceEA");
@@ -556,6 +588,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			////So I looked in SWAS.cpp what SetNextTask does is it inidicates to the system that once an aircraft is finished with source when the
 			////Depart function from task is called, it will transfer the Entity(Aircraft) from one object to the next, so this function call will send
 			////the Aircraft from the Step to Depart(Sink object).
+			cout << "All repairs for, " << aircraft->GetAircraftType() << " are completed, exiting the facility" << endl;
 			Depart(aircraft);
 		}
 	}
@@ -568,7 +601,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 
 	//vector<string> resourceList;
-
+	///**Discontinued Scheduling Statement
 	//SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), _acquiredResources), 0.0, "StartServiceEA");
 }
 
@@ -616,8 +649,18 @@ void Step::FailResourceEM(Resource* resource)
 	resource->SetResourceCount(newCount);
 
 	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
-	SimExec::ScheduleEventAt(1, new FailResourceEA(this, resource), this->_serviceTime->GetRV(), "FailResourceEA");
-};
+	//This Event action should actually be scheduling a restore resource instead of a fail one.
+	cout << "Resource has failed, scheduling a restore resource" << endl;
+	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_serviceTime->GetRV(), "RestoreResourceEA");
+}
+
+void Step::RestoreResourceEM(Resource* resource)
+{
+	cout << "Resource has been restored, updating amount and checking conditional events" << endl;
+	resource->RestoreResource();
+	SimExec::CheckConditionalEvents(resource, 0);
+}
+
 
 ////////////////////////////////////////////
 //////////////   BOOLEANS   ////////////////
@@ -1012,6 +1055,7 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 //we're also checking bays in the startstepservice so i just want to differentiate them clearly
 void Step::InitialArrivalBayCheck()
 {
+	/////***Discontinued logic - Opted instead for Virtual Queue
 	/*vector<string> resourceList;
 	map<string, Resource*>::iterator it = _resourcePool.find("bay");
 	if (it->second->GetResourceCount() > 0)
@@ -1027,6 +1071,7 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
 	//TO DO
 	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(), 0.0, "StartServiceEA");
+	cout << "Aircraft Arrives for Maintenance, initiating StartService" << endl;
 	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
 
@@ -1051,7 +1096,8 @@ map<string, Parts*>::iterator Step::FindParts(string resource)
 }
 
 void Step::Execute(Aircraft* aircraft) {
-	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AddQueueEA(this, aircraft), 0.0, "AddQueueEA");
+	////****Discontinued Logic
+	//SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AddQueueEA(this, aircraft), 0.0, "AddQueueEA");
 }
 
 void Step::AddResource(Resource* resource, string resourceName, int numNeeded)
