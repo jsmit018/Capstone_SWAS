@@ -70,7 +70,7 @@ void ArriveAircraft()
 	string x = "F-35";
 
 	/* Use push() to construct */
-	push(&head, "F-18");
+	//push(&head, "F-18");
 	push(&head, "F-15");
 	push(&head, "Apache");
 
@@ -88,7 +88,10 @@ void ArriveAircraft()
 	inputReader.ReadInputData();
 	inputReader.PrintEverything();
 
-	SimExec::SetInputReader(inputReader);
+	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
+
+
+	//SimExec::SetInputReader(inputReader);
 	//inputReader.AddSelectedAircraft("F-35");
 	//inputReader.AddSelectedAircraft("F-18");
 	//inputReader.AddSelectedAircraft("F-Apache");
@@ -100,8 +103,8 @@ void ArriveAircraft()
 	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		//if (search(head, iter->first) == true)
-		if(inputReader.FindSelectedAircraft(iter->first) == true)
+		if (search(head, iter->first) == true)
+		//if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
@@ -190,13 +193,17 @@ int main() {
 
 	ArriveAircraft();
 
-	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
+	//SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
 	/*
 		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
 		//Print Values here
 	*/
+
+	/*while (SimExec::GetSimulationFlag) {
+		SimExec::RunSimulation(0, 0, 0, 2022);
+	}*/
 
 	return 0;
 }

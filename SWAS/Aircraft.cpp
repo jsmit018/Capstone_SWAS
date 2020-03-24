@@ -218,7 +218,7 @@ CalendarObj* Aircraft::GetCalendarObj()
 RepairJob* Aircraft::GetNextRepairJob(string rjName)
 {
 	RepairJob* nextJob = this->GetRepairJobObj(rjName);
-
+	/*
 	int highPriority = INT_MAX;
 	int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
 
@@ -237,9 +237,10 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			}
 
 			iter++;
-		}
+		}*/
 
-		return nextJob;// need to set
+	return nextJob;// need to set
+
 		
 	/*aircraft function recieves rpeiajob name
 		get the repair jobobject

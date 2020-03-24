@@ -150,7 +150,8 @@ void SourceBlock::ScheduleNextCalendarAircraftEM() {
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
 		cout << "Calendar Scheduled aircraft has arrived, ";
 		cout << "Departing new Aircraft" << endl;
-		Depart(_aircraft->New());
+		//Depart(_aircraft->New());
+		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
 		_numberGenerated++;
 	}
 }
@@ -161,7 +162,8 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM() {
 		cout << "Scheduling Unplanned Aircraft Arrival" << endl;
 		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 		cout << "Departing Unplanned Arrival" << endl;
-		Depart(_aircraft->New());
+		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
+		//Depart(_aircraft->New());
 		_numberGenerated++;
 	}
 }
@@ -178,7 +180,8 @@ void SourceBlock::ScheduleNextRecurringAircraftEM() {
 		//cout << "Scheduling next Random Aircraft arrival" << endl;
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
 		cout << "Departing new Aircraft" << endl;
-		Depart(_aircraft->New());
+		//Depart(_aircraft->New());
+		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
 		_numberGenerated++;
 	}
 }
