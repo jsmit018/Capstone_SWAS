@@ -218,27 +218,27 @@ CalendarObj* Aircraft::GetCalendarObj()
 RepairJob* Aircraft::GetNextRepairJob(string rjName)
 {
 	RepairJob* nextJob = this->GetRepairJobObj(rjName);
-//
-//	int highPriority = INT_MAX;
-//	int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
-//
-//	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
-//		while (iter != _myRepairJobs.end())
-//		{
-//
-//			if (iter->second->GetPriority() > myPriority)
-//			{
-//				if (iter->second->GetPriority() < highPriority)
-//				{
-//					highPriority = iter->second->GetPriority();
-//
-//					nextJob = iter->second;
-//				}
-//			}
-//
-//			iter++;
-//		}
-//
+
+	int highPriority = INT_MAX;
+	int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
+
+	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
+		while (iter != _myRepairJobs.end())
+		{
+
+			if (iter->second->GetPriority() > myPriority)
+			{
+				if (iter->second->GetPriority() < highPriority)
+				{
+					highPriority = iter->second->GetPriority();
+
+					nextJob = iter->second;
+				}
+			}
+
+			iter++;
+		}
+
 		return nextJob;// need to set
 		
 	/*aircraft function recieves rpeiajob name
