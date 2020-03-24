@@ -89,6 +89,10 @@ void ArriveAircraft()
 	inputReader.PrintEverything();
 
 	SimExec::SetInputReader(inputReader);
+	
+	////****I moved this up here because we want to make sure we are sending all aircraft to the same sink! and the string paramemter in this obj
+	////Is just the name of what we wanted to call the object.
+	SinkBlock* depart = new SinkBlock("System Sink");
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
@@ -143,7 +147,8 @@ void ArriveAircraft()
 			//	10000);
 				
 
-			SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
+			////////************************ Check where inputReader is instantiated.
+			//SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
 
 			//Andie TO DO: IMPLEMENT AreMoreSteps() AND GetNextStep()
 			if (firstAircraft->AreMoreSteps() == true) //(false if no more steps in vector or rjs in myMap)

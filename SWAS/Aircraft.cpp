@@ -206,7 +206,10 @@ Step* Aircraft::GetNextStep(string rjType)
 	////if more jobs, next step is first step of the next repair job of same type
 	return _nextStep;
 }
-
+////******Andrea:: So we can either use this function below as is - or we can use the one that I coded into step let me know which you would prefer
+////So b/c my brain was hurting the easiest way to check to see if there were any new repair jobs was to just nix the head of the map everytime its finsihed
+////So once you nix the head of the map we check to see AreMoreJobs() if yes then we know there is another repair job so we just get the new begininng's
+////first step otherwise you just get the next step. The same holds true in Step.cpp
 Step* Aircraft::GetNextStep(string rjType, int stepID)
 {
 	int nextID = stepID + 1;

@@ -545,6 +545,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	}
 	else if (nextId > aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize()) {
 		//aircraft->GetRepairJobObj(_myRJ).
+		/////Same concept as in the Aircraft Function it just updates _MyRJ string to the new repair job. 
 		aircraft->CleanCompletedRepairJob();
 		if (aircraft->AreMoreJobs()) {
 			map<string, RepairJob*>::const_iterator it = aircraft->GetHeadRepairJob().begin();
@@ -552,7 +553,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetFirstStep(), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 		}
 		else {
-			return; //This should return to somewhere to depart aircraft
+			////So I looked in SWAS.cpp what SetNextTask does is it inidicates to the system that once an aircraft is finished with source when the
+			////Depart function from task is called, it will transfer the Entity(Aircraft) from one object to the next, so this function call will send
+			////the Aircraft from the Step to Depart(Sink object).
+			Depart(aircraft);
 		}
 	}
 	//if stepid > container size
