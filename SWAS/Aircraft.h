@@ -51,6 +51,7 @@ public:
 	int GetAllRJMapSize();
 	int GetMyRJMapSize();
 	int GetNumCalEvents();
+	RepairJob* GetNextRepairJob(string rjName);
 	vector<Distribution*> GetRecurringIATs();
 	Step* GetNextStep();
 	CalendarObj* GetCalendarObj();

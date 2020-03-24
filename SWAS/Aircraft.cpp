@@ -215,6 +215,41 @@ CalendarObj* Aircraft::GetCalendarObj()
 	return _myCalObj;
 }
 
+RepairJob* Aircraft::GetNextRepairJob(string rjName)
+{
+	RepairJob* nextJob = this->GetRepairJobObj(rjName);
+//
+//	int highPriority = INT_MAX;
+//	int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
+//
+//	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
+//		while (iter != _myRepairJobs.end())
+//		{
+//
+//			if (iter->second->GetPriority() > myPriority)
+//			{
+//				if (iter->second->GetPriority() < highPriority)
+//				{
+//					highPriority = iter->second->GetPriority();
+//
+//					nextJob = iter->second;
+//				}
+//			}
+//
+//			iter++;
+//		}
+//
+		return nextJob;// need to set
+		
+	/*aircraft function recieves rpeiajob name
+		get the repair jobobject
+		get its priority
+		iterate through mymap
+		find next repairjob with lowest priority
+		outside loop declar varfaible to track priority
+		keep track of variable at each loop iterateion*/
+}
+
 Step* Aircraft::GetNextStep()
 {
 	//need to take arguments of aircraft, repairjob and stepid 
@@ -269,6 +304,7 @@ void Aircraft::SetAircraftType(string aircraftType)
 	_aircraftType = aircraftType;
 	//	cout << "Aircraft Type: " << aircraftType << endl;
 }
+
 
 string Aircraft::GetAircraftType()
 {

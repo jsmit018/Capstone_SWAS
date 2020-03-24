@@ -564,6 +564,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			_acquiredResources.erase(acquiredResources.begin() + i);
 		}
 
+
 		//if (this->GetIndoorReq() == 'Y') {
 
 		//}
@@ -571,27 +572,26 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//add bay to acquired resources vector
 			//else if next step's indoor req is N
 				//schedule bay release ea
+
+
+
 	}
-	else if (nextId > aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize()) {
-		//aircraft->GetRepairJobObj(_myRJ).
-		/////Same concept as in the Aircraft Function it just updates _MyRJ string to the new repair job. 
-		cout << "Repair Job has been completed, removing it from the active list of repair jobs" << endl;
-		aircraft->CleanCompletedRepairJob();
-		cout << "Checking to see if there are any more repair jobs" << endl;
-		if (aircraft->AreMoreJobs()) {
-			cout << "Still repairs that need to be completed scheduling the next Repair Jobs first step" << endl;
-			map<string, RepairJob*>::const_iterator it = aircraft->GetHeadRepairJob().begin();
-			_myRJ = it->first;
-			SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetFirstStep(), aircraft, _acquiredResources), 0.0, "StartServiceEA");
-		}
-		else {
-			////So I looked in SWAS.cpp what SetNextTask does is it inidicates to the system that once an aircraft is finished with source when the
-			////Depart function from task is called, it will transfer the Entity(Aircraft) from one object to the next, so this function call will send
-			////the Aircraft from the Step to Depart(Sink object).
-			cout << "All repairs for, " << aircraft->GetAircraftType() << " are completed, exiting the facility" << endl;
-			Depart(aircraft);
-		}
+	else if (nextId = aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize())
+	{
+	/*	aircraft->GetNextRepairJob(_myRJ);
+		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");*/
+
 	}
+	
+	
+	//	else {
+	//		////So I looked in SWAS.cpp what SetNextTask does is it inidicates to the system that once an aircraft is finished with source when the
+	//		////Depart function from task is called, it will transfer the Entity(Aircraft) from one object to the next, so this function call will send
+	//		////the Aircraft from the Step to Depart(Sink object).
+	//		cout << "All repairs for, " << aircraft->GetAircraftType() << " are completed, exiting the facility" << endl;
+	//		Depart(aircraft);
+	//	}
+	//}
 	//if stepid > container size
 		//check if there are more repair jobs?
 			//if yes, get next repair job

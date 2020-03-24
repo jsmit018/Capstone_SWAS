@@ -89,18 +89,20 @@ void ArriveAircraft()
 	inputReader.PrintEverything();
 
 	SimExec::SetInputReader(inputReader);
+	//inputReader.AddSelectedAircraft("F-35");
+	//inputReader.AddSelectedAircraft("F-18");
+	//inputReader.AddSelectedAircraft("F-Apache");
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
 	//for all unique aircraft types in the master map 
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
+	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
 		//if (search(head, iter->first) == true)
 		if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
-			cout << "IN IF ***********" << endl;
-			cout << endl;
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			
@@ -110,9 +112,9 @@ void ArriveAircraft()
 			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
 			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
 			firstAircraft->CopyMyJobList(iter->first);
-			cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
+//			cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
 
-			cout << "FIRST AIRCRAFT IAT IS:" << firstAircraft->GetAircraftIAT() << endl;
+//			cout << "FIRST AIRCRAFT IAT IS:" << firstAircraft->GetAircraftIAT() << endl;
 			//Andie TO DO: IMPLEMENT GetNumCalEvents()
 						 //IMPLEMENT Get/Set vector of recurring iats in Aircraft.cpp
 			//Jordan TO DO: IMPLEMENT Set/GetCalendarObj in Aircraft.cpp [DONE]
@@ -131,7 +133,7 @@ void ArriveAircraft()
 
 			///* Recurring */
 			//SourceBlock* recurArrival = new SourceBlock(
-			//	firstAircraft->GetRecurringIATs(),
+			//	firstAircraft->GetRecurringIATs(), //get a map
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
 			//	"Recurring Arrival",
@@ -188,7 +190,7 @@ int main() {
 
 	ArriveAircraft();
 
-//	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
+	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
 	/*

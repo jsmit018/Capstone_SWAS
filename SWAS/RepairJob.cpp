@@ -123,8 +123,7 @@ char RepairJob::GetIndoorReq()
 
 void RepairJob::SetCalendarDate(string calendarDate)
 {
-    //isstringstream this into tuple of <m,d,y>
-
+    _calendarDate = calendarDate;
 }
 
 string RepairJob::GetCalendarDate()
