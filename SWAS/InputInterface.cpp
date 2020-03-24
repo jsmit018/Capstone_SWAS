@@ -24,7 +24,6 @@ struct InputReader::GUISelectedAircraft {
 InputReader::InputReader()
 {
 	calConvert = new CalConverter();
-	_GUIListHead = NULL;
 }
 
 InputReader::~InputReader()
@@ -137,6 +136,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					str >> month;
 					if (str.peek() == ',')
 						str.ignore();
+					if (month == 0)
+						break;
 					str >> numDays;
 
 					//					cout << "month " << month << " days, " << numDays << endl; 
@@ -372,15 +373,14 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					if (schedType == "Calendar") {
 						schedCal = row[3];
-						//cout << "calendar date: " << schedCal << endl;						
-						//newJob->SetSchedType(schedType);
+						//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
 						newJob->SetCalendarDate(schedCal);
 					}
 
 					else if (schedType == "Recurring") {
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
-						//cout << "recur: " << schedRecur << endl;
+						//						cout << "recur: " << schedRecur << endl;
 						newJob->SetRecurringAmt(schedRecur);
 					}
 
@@ -1027,7 +1027,7 @@ CalConverter* InputReader::GetCalConverter()
 void InputReader::AddSelectedAircraft(string aircraftName)
 {
 	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
-
+	
 	if (_GUIListHead == NULL) {
 		_GUIListHead = newAircraft;
 	}
@@ -1050,7 +1050,10 @@ bool InputReader::FindSelectedAircraft(string aircraftName)
 		if (iter->_aircraftName == aircraftName) {
 			return true;
 		}
-		iter = iter->_nextAircraft;
+		else
+		{
+			iter = iter->_nextAircraft;
+		}
 	}
 	return false;
 }
