@@ -94,11 +94,13 @@ void ArriveAircraft()
 
 	//for all unique aircraft types in the master map 
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
-	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		if (search(head, iter->first) == true)
+		//if (search(head, iter->first) == true)
+		if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
+			cout << "IN IF ***********" << endl;
+			cout << endl;
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			
@@ -117,54 +119,60 @@ void ArriveAircraft()
 						//ADD logic for getting each value from the recurring IAT vector being passed to SourceBlock constructor of recurring [DONE]
 
 			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them */
-			/* Unplanned */
+			
+			///* Unplanned */
 			//SourceBlock* unplanArrival = new SourceBlock(
 			//	firstAircraft->GetAircraftIAT(),
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME" --------- Name is the name of the source object,
+			//	"Unplanned Arrival", // like dis?--------- Name is the name of the source object,
 			//	10000); // need to make sure there's an unlimited option ------------ there is, the default value is NULL so if its not given a value it will be unlimited
 			//	
+
 			///* Recurring */
 			//SourceBlock* recurArrival = new SourceBlock(
 			//	firstAircraft->GetRecurringIATs(),
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME",
+			//	"Recurring Arrival",
 			//	10000);
 
 			///* Calendar */
 			//SourceBlock* calArrival = new SourceBlock(
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"WHAT IS NAME",
+			//	"Calendar Arrival",
 			//	firstAircraft->GetNumCalEvents(),
 			//	firstAircraft->GetCalendarObj(),
 			//	10000);
-				
+			//	
 
-			SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
+			//SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
 
-			//Andie TO DO: IMPLEMENT AreMoreSteps() AND GetNextStep()
-			if (firstAircraft->AreMoreSteps() == true) //(false if no more steps in vector or rjs in myMap)
-			{	
+			//unplanArrival->SetNextTask(depart);
+			//recurArrival->SetNextTask(depart);
+			//calArrival->SetNextTask(depart);
+
+	
+
+			//if more steps
 				/* getNextStep() keeps getting the next step til all steps in RJ are done,
-				can be made to take argument of RJ type (unplan,etc) then get next 
+				can be made to take argument of RJ type (unplan,etc) then get next
 				RJ of same type's first step */
-				
-			/*	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned"); 
-				unplanArrival->SetNextTask(nextUnplanStep);
-				nextUnplanStep->SetNextTask(depart);
 
-				Step* nextRecurStep = firstAircraft->GetNextStep("Recurring"); 
-				recurArrival->SetNextTask(nextRecurStep);		
-				nextRecurStep->SetNextTask(depart);
+				//	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned");
+				//	unplanArrival->SetNextTask(nextUnplanStep);
+				//	nextUnplanStep->SetNextTask(depart);
 
-				Step* nextCalStep = firstAircraft->GetNextStep("Calendar"); 
-				calArrival->SetNextTask(nextCalStep);	
-				nextCalStep->SetNextTask(depart);*/
+				//	Step* nextRecurStep = firstAircraft->GetNextStep("Recurring");
+				//	recurArrival->SetNextTask(nextRecurStep);
+				//	nextRecurStep->SetNextTask(depart);
 
-			}
+				//	Step* nextCalStep = firstAircraft->GetNextStep("Calendar");
+				//	calArrival->SetNextTask(nextCalStep);
+				//	nextCalStep->SetNextTask(depart);
+
+			//}
 		}
 
 		iter++;
@@ -180,7 +188,7 @@ int main() {
 
 	ArriveAircraft();
 
-	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
+//	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
 	/*

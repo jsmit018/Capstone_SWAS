@@ -136,6 +136,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					str >> month;
 					if (str.peek() == ',')
 						str.ignore();
+					if (month == 0)
+						break;
 					str >> numDays;
 
 					//					cout << "month " << month << " days, " << numDays << endl; 

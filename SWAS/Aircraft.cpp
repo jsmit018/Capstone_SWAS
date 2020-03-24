@@ -66,6 +66,8 @@ void Aircraft::CopyMyJobList(string aircraftType)
 					myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
 					myJobIter++;
 				}
+
+
 			}
 
 			else
@@ -108,11 +110,12 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			currJob->CopyRepairJob(*iter->second);
 			//give this copy to this new aircraft's myrepairjobs list
 			_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
-
+			
+			SetCalendarObj(currJob->GetCalendarDate());
 			//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
 //			cout << "Copied Recurring Job Is:	" << currJob->GetName() << endl;
-			cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
-			cout << endl;
+			//cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
+			//cout << endl;
 
 			map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
 			while (myJobIter != _myRepairJobs.end())
@@ -122,25 +125,57 @@ void Aircraft::CopyMyJobList(string aircraftType)
 				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
 				myJobIter++;
 			}
-			//note for andie: add cal obj to aircraft, get it through copy constructor and to initial instance
-			//in rj, split cal into tuple of ints: mm dd yyyy
-			//call populate calendarObj and call here
-			//**Andie -- Make sure we only do this if its calendar
-			//SetCalendarObj();
-			//then jordan can fill logic for populating calendarObj as necessary for his stuff [DONE] -- in the function
 			
 		}
 		iter++;
 	}
 }
 
-void Aircraft::SetCalendarObj(Time month, Time day, int year)
+void Aircraft::SetCalendarObj(string date)
 {
-	//get rj's calendar tuple, do whatevs
-	_myCalObj->_months.push_back(month);
-	_myCalObj->_days.push_back(day);
-	_myCalObj->_year.push_back(year);
-	_myCalObj->_timeOfDays.push_back(0.0);
+	Time month;
+	Time day;
+	int year;
+
+	cout << "STRING " << date << endl;
+	istringstream calDate(date);
+	//calDate >> month >> delim >> day >> delim >> 
+
+	string first;
+	string sec;
+	string third;
+
+	getline(calDate, first, '-');
+	getline(calDate, sec, '-');
+	getline(calDate, third, '-');
+
+	cout << "*********************" << endl;
+	cout << "FIRST " << first << endl;
+	cout << "SEC " << sec << endl;
+	cout << "THIRD " << third << endl;
+	cout << endl;
+	cout << endl;
+	cout << endl;
+
+	//istringstream num1(first);
+	//istringstream num2(sec);
+	//istringstream num3(third);
+
+	//num1 >> month;
+	//num2 >> day;
+	//num3 >> year;
+
+
+	//_myCalObj->_months.push_back(month);
+	//_myCalObj->_days.push_back(day);
+	//_myCalObj->_year.push_back(year);
+	//_myCalObj->_timeOfDays.push_back(0.0);
+}
+
+
+void Aircraft::SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID)
+{
+	
 }
 
 bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
@@ -180,11 +215,16 @@ CalendarObj* Aircraft::GetCalendarObj()
 	return _myCalObj;
 }
 
-Step* Aircraft::GetNextStep(string rjType)
+Step* Aircraft::GetNextStep()
 {
-	//return the next step in the current repair job's list
-	//if no more steps, check that there are more repairjobs using AreMoreJobs(rjType)
-	//if more jobs, next step is first step of the next repair job of same type
+	//need to take arguments of aircraft, repairjob and stepid 
+		
+		//if stepid + 1 > container size
+			//get next step
+		//else 
+			//check if there are more repair jobs? (bool in aircraft for more jobs
+				//if yes, get next repair job
+					//get first step
 	return _nextStep;
 }
 

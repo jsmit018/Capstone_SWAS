@@ -34,9 +34,10 @@ public:
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
 	void AddRandRepairJob();	//populated when new craft is created - look at master, find random jobs, roll dice, add here
 	void AddSchedRepairJob();
-	void SetCalendarObj(Time month, Time day, int year);
+	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
 	void SetRecurringIATs(vector<Distribution*> recurIatVec);
+	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
 	//void SetNextID(int id);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
@@ -51,7 +52,7 @@ public:
 	int GetMyRJMapSize();
 	int GetNumCalEvents();
 	vector<Distribution*> GetRecurringIATs();
-	Step* GetNextStep(string rjType);
+	Step* GetNextStep();
 	CalendarObj* GetCalendarObj();
 
 	map<string, RepairJob*>::iterator  GetRJMapBegin();

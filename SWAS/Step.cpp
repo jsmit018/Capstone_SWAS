@@ -500,6 +500,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 //	
 //}
 
+
+
 void Step::SetMyRJName(string myRJ)
 {
 	_myRJ = myRJ;
@@ -510,7 +512,7 @@ string Step::GetMyRJName()
 	return _myRJ;
 }
 
-void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
+void Step::DoneServiceEM(Aircraft* aircraft, /*add repair job */ vector<string> acquiredResources)
 {
 	//increment stepid
 	int nextId = _stepID + 1;
@@ -521,6 +523,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+
 		//for all resources in next step's required list
 		for (int i = 0; i < acquiredResources.size(); i++)
 		{
@@ -535,20 +538,28 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			_acquiredResources.erase(acquiredResources.begin() + i);
 		}
 
-		//if (this->GetIndoorReq() == 'Y') {
+
+		////TODO: THIS BAY STUFF. TOO TIRED, MESSING IT UP
+		////if next step's indoor req is Y and i already have bay it in my acquired list
+		//if (aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++)->GetRJIndoorReq() == 'Y') {
+		//	//add bay to acquired resources vector
+		//	_acquiredResources.push_back("bay");
 
 		//}
-			//if next step's indoor req is Y
-				//add bay to acquired resources vector
-			//else if next step's indoor req is N
-				//schedule bay release ea
+		////else if next step's indoor req is Y and i already have it in my acquired list
+		//else if (aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++)->GetRJIndoorReq() == 'N') {
+		//	//schedule bay release ea
+		//	SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "Release Bay");
+
+		//}
+
 	}
-	//if stepid > container size
-		//check if there are more repair jobs?
-			//if yes, get next repair job
-				//get steps
-			//if no
-				//schedule aircraft departure ea
+		//check if done, if no, get next step
+		//if yes we're done 
+		
+
+			//otherwise we're done
+
 
 
 	vector<string> resourceList;
@@ -1011,7 +1022,7 @@ void Step::InitialArrivalBayCheck()
 void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
 	//TO DO
-	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(), 0.0, "StartServiceEA");
+	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartFirstStep");
 }
 
 void Step::AddToResPool(Resource* resource, string resourceName)
