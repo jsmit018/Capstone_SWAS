@@ -193,5 +193,10 @@ int main() {
 		//Print Values here
 	*/
 
+	///Just For testing purposes we will need a RunSim to see how the DES operates -> lets look at 10 of each arrival first over 2 years to see what happens
+	while (SimExec::GetSimulationFlag) {
+		SimExec::RunSimulation(0, 0, 0.0, 2022);
+	}
+
 	return 0;
 }

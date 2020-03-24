@@ -2,7 +2,7 @@
 
 //To Do:
 //warehouse gui has class that when the program opens, start function (GUI initialization) is called
-//start function gets values from here
+//start function gets values from here [DONE] -- Gets all of the relevant information from the master maps.
     //these values are: 
         //resources
             //footprint
