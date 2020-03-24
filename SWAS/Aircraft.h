@@ -20,6 +20,8 @@ class RepairJob;
 class Aircraft {
 public:
 	Aircraft();
+	Aircraft(const Aircraft& mapAircraft);
+	//void CopyAircraftInfo(const Aircraft& mapAircraft);
 	void CopyMyJobList(string aircraftType);
 	void PrintProperties();
 

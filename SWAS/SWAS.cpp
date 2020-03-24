@@ -94,14 +94,16 @@ void ArriveAircraft()
 		if (search(head, iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type */
-			Aircraft* firstAircraft = new Aircraft();
-
-			cout << "Creating first instance of: " << /*iter->first*/ firstAircraft->GetAircraftType() << endl;
+			Aircraft* firstAircraft = new Aircraft(*iter->second);
+			
+			cout << "Creating first instance of: " << firstAircraft->GetAircraftType() << endl;
 			cout << endl;
 
 			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
 			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
 			firstAircraft->CopyMyJobList(iter->first);
+			cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
+
 			cout << "FIRST AIRCRAFT IAT IS:" << firstAircraft->GetAircraftIAT() << endl;
 			//Andie TO DO: IMPLEMENT GetNumCalEvents()
 						 //IMPLEMENT Get/Set vector of recurring iats in Aircraft.cpp
