@@ -551,17 +551,16 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//schedule aircraft departure ea
 
 
-	vector<string> resourceList;
+	//vector<string> resourceList;
 
-	//SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
-	//I'm under the assumption that you'll be using an interator if not let me know when you finish and i'll come back and add the appropriate line
+	//SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), _acquiredResources), 0.0, "StartServiceEA");
 }
 
 void Step::AddQueueEM(Aircraft* aircraft)
 {
-	_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
-	_numInQueue++;
-	InitialArrivalBayCheck();
+	//_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
+	//_numInQueue++;
+	//InitialArrivalBayCheck();
 }
 
 void Step::AcquireResourceEM(Resource* resource)
@@ -997,10 +996,10 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 //we're also checking bays in the startstepservice so i just want to differentiate them clearly
 void Step::InitialArrivalBayCheck()
 {
-	vector<string> resourceList;
+	/*vector<string> resourceList;
 	map<string, Resource*>::iterator it = _resourcePool.find("bay");
 	if (it->second->GetResourceCount() > 0)
-		SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");
+		SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");*/
 }
 
 
@@ -1012,6 +1011,7 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
 	//TO DO
 	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(), 0.0, "StartServiceEA");
+	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
 
 void Step::AddToResPool(Resource* resource, string resourceName)
