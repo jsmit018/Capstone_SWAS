@@ -621,6 +621,10 @@ int SimExec::RunSimulation() {
 		_simulationTime._day = _eventSet.GetDay();
 		_simulationTime._year = _eventSet.GetYear();
 		EventAction* ea = _eventSet.GetEventAction();
+		if (ea == 0) {
+			FlipSimulationFlag();
+			return 3;
+		}
 		ea->Execute();
 		delete ea;
 		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
@@ -661,6 +665,10 @@ int SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 			_simulationTime._day = _eventSet.GetDay();
 			_simulationTime._year = _eventSet.GetYear();
 			EventAction* ea = _eventSet.GetEventAction();
+			if (ea == 0) {
+				FlipSimulationFlag();
+				return 3;
+			}
 			ea->Execute();
 			delete ea;
 			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
