@@ -24,6 +24,7 @@ struct InputReader::GUISelectedAircraft {
 InputReader::InputReader()
 {
 	calConvert = new CalConverter();
+	_GUIListHead = NULL;
 }
 
 InputReader::~InputReader()
@@ -1048,10 +1049,7 @@ bool InputReader::FindSelectedAircraft(string aircraftName)
 		if (iter->_aircraftName == aircraftName) {
 			return true;
 		}
-		else
-		{
-			iter = iter->_nextAircraft;
-		}
+		iter = iter->_nextAircraft;
 	}
 	return false;
 }

@@ -52,7 +52,10 @@ public:
 	int GetNumCalEvents();
 	vector<Distribution*> GetRecurringIATs();
 	Step* GetNextStep(string rjType);
+	Step* GetNextStep(string rjType, int stepID);
 	CalendarObj* GetCalendarObj();
+	void CleanCompletedRepairJob();
+	map<string, RepairJob*> GetHeadRepairJob();
 
 	map<string, RepairJob*>::iterator  GetRJMapBegin();
 	map<string, RepairJob*>::iterator  GetRJMapEnd();

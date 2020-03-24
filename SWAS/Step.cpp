@@ -543,6 +543,18 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			//else if next step's indoor req is N
 				//schedule bay release ea
 	}
+	else if (nextId > aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize()) {
+		//aircraft->GetRepairJobObj(_myRJ).
+		aircraft->CleanCompletedRepairJob();
+		if (aircraft->AreMoreJobs()) {
+			map<string, RepairJob*>::const_iterator it = aircraft->GetHeadRepairJob().begin();
+			_myRJ = it->first;
+			SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetFirstStep(), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+		}
+		else {
+			return; //This should return to somewhere to depart aircraft
+		}
+	}
 	//if stepid > container size
 		//check if there are more repair jobs?
 			//if yes, get next repair job

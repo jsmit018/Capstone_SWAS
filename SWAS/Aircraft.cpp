@@ -180,11 +180,49 @@ CalendarObj* Aircraft::GetCalendarObj()
 	return _myCalObj;
 }
 
+void Aircraft::CleanCompletedRepairJob()
+{
+	//This is a "Cheap way of doing this" just remove the first one if the map is empty then no more jobs
+	_myRepairJobs.erase(_myRepairJobs.begin());
+}
+
+map<string, RepairJob*> Aircraft::GetHeadRepairJob()
+{
+	return _myRepairJobs;
+}
+
 Step* Aircraft::GetNextStep(string rjType)
 {
-	//return the next step in the current repair job's list
-	//if no more steps, check that there are more repairjobs using AreMoreJobs(rjType)
-	//if more jobs, next step is first step of the next repair job of same type
+	////return the next step in the current repair job's list
+	//int nextId = _stepID + 1;
+	////if stepid <= containerSize;
+	//if (nextId <= aircraft->GetRepairJobObj(_myRepairJobs)->GetStepVecSize())
+	//{
+	//	//schedule next step
+	//	//SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+	//	_nextStep = GetRepairJobObj(_myRepairJobs)->GetStep(_nextID++);
+	//}
+	////if no more steps, check that there are more repairjobs using AreMoreJobs(rjType)
+	////if more jobs, next step is first step of the next repair job of same type
+	return _nextStep;
+}
+
+Step* Aircraft::GetNextStep(string rjType, int stepID)
+{
+	int nextID = stepID + 1;
+	if (nextID <= GetRepairJobObj(rjType)->GetStepVecSize()) {
+		_nextStep = GetRepairJobObj(rjType)->GetStep(nextID);
+	}
+	else {
+		//Check To see if there is a next repairjob in the list
+		CleanCompletedRepairJob();
+		if (AreMoreJobs()) {
+			map<string, RepairJob*>::const_iterator it = _myRepairJobs.begin();
+			_nextStep = GetRepairJobObj(it->first)->GetFirstStep();
+		}
+		else
+			return 0;
+	}
 	return _nextStep;
 }
 
