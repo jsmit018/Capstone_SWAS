@@ -81,15 +81,6 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			cout << _aircraftType << "	has a Recurring Repair Job called: " << iter->second->GetName() << endl;
 
 			RepairJob* currJob = new RepairJob();
-			currJob->CopyRepairJob(*iter->second);
-			//give this copy to this new aircraft's myrepairjobs list
-			_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
-
-			//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
-//			cout << "Copied Recurring Job Is:	" << currJob->GetName() << endl;
-			cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
-			cout << endl;
-
 			map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
 			while (myJobIter != _myRepairJobs.end())
 			{
@@ -122,6 +113,9 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			{
 				//	schedule first step of this repair job
 				Step* firstStep = myJobIter->second->GetStep(1);
+				//So this may have caused a problem when I was trying to do this for the demo
+				//We populated Calobj but we never gave it anywhere o:, so ima update this.
+				//Gonna update this function to schedule calendar steps
 				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
 				myJobIter++;
 			}
@@ -149,6 +143,8 @@ void Aircraft::SetCalendarObj(string date)
 	getline(calDate, sec, '-');
 	getline(calDate, third, '-');
 
+	//From Debugging Date is read in (dd/mm/yyyy)
+	//I remember you said it was read in (mm/dd//yyyy) - Just what I noticed!
 	cout << "*********************" << endl;
 	cout << "FIRST " << first << endl;
 	cout << "SEC " << sec << endl;
@@ -157,19 +153,19 @@ void Aircraft::SetCalendarObj(string date)
 	cout << endl;
 	cout << endl;
 
-	//istringstream num1(first);
-	//istringstream num2(sec);
-	//istringstream num3(third);
+	istringstream num1(first);
+	istringstream num2(sec);
+	istringstream num3(third);
 
-	//num1 >> month;
-	//num2 >> day;
-	//num3 >> year;
+	num1 >> day;
+	num2 >> month;
+	num3 >> year;
 
 
-	//_myCalObj->_months.push_back(month);
-	//_myCalObj->_days.push_back(day);
-	//_myCalObj->_year.push_back(year);
-	//_myCalObj->_timeOfDays.push_back(0.0);
+	_myCalObj->_months.push_back(month);
+	_myCalObj->_days.push_back(day);
+	_myCalObj->_year.push_back(year);
+	_myCalObj->_timeOfDays.push_back(0.0);
 }
 
 
@@ -242,7 +238,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	return nextJob;// need to set
 
 		
-	/*aircraft function recieves rpeiajob name
+	/*aircraft function recieves repairjob name
 		get the repair jobobject
 		get its priority
 		iterate through mymap

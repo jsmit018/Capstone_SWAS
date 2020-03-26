@@ -31,6 +31,8 @@ public:
 	void SetRJPriority(int RJpriority);
 	void SetMyRJName(string myRJ);
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
+	//void ScheudleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
+	//void ScheduleRecurringStep(Step* step, Aircraft* aircraft);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
 	void AddParts(Parts* parts, string partsName);

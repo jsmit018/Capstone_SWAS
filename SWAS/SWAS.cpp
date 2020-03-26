@@ -18,43 +18,43 @@ using namespace std;
 ///////////////////////////////////////////////////
 
 /* Link list node */
-class Node
-{
-public:
-	string key;
-	Node* next;
-};
+//class Node
+//{
+//public:
+//	string key;
+//	Node* next;
+//};
 
 /* Given a reference (pointer to pointer) to the head
 of a list and an int, push a new node on the front
 of the list. */
-void push(Node** head_ref, string new_key)
-{
-	/* allocate node */
-	Node* new_node = new Node();
-
-	/* put in the key */
-	new_node->key = new_key;
-
-	/* link the old list off the new node */
-	new_node->next = (*head_ref);
-
-	/* move the head to point to the new node */
-	(*head_ref) = new_node;
-}
+//void push(Node** head_ref, string new_key)
+//{
+//	/* allocate node */
+//	Node* new_node = new Node();
+//
+//	/* put in the key */
+//	new_node->key = new_key;
+//
+//	/* link the old list off the new node */
+//	new_node->next = (*head_ref);
+//
+//	/* move the head to point to the new node */
+//	(*head_ref) = new_node;
+//}
 
 /* Checks whether the value x is present in linked list */
-bool search(Node* head, string x)
-{
-	Node* current = head; // Initialize current  
-	while (current != NULL)
-	{
-		if (current->key == x)
-			return true;
-		current = current->next;
-	}
-	return false;
-}
+//bool search(Node* head, string x)
+//{
+//	Node* current = head; // Initialize current  
+//	while (current != NULL)
+//	{
+//		if (current->key == x)
+//			return true;
+//		current = current->next;
+//	}
+//	return false;
+//}
 ///////////////////////////////////////////////////
 
 
@@ -66,13 +66,13 @@ void ArriveAircraft()
 	////////////////////////////////////////////
 
 	/* Start with the empty list */
-	Node* head = NULL;
-	string x = "F-35";
+	/*Node* head = NULL;
+	string x = "F-35";*/
 
 	/* Use push() to construct */
 	//push(&head, "F-18");
-	push(&head, "F-15");
-	push(&head, "Apache");
+	//push(&head, "F-15");
+	//push(&head, "Apache");
 
 	///////////////////////////////////////
 	///////////////////////////////////////
@@ -90,11 +90,13 @@ void ArriveAircraft()
 
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 
-
+	///May not even need this now since this is done above^
 	//SimExec::SetInputReader(inputReader);
-	//inputReader.AddSelectedAircraft("F-35");
-	//inputReader.AddSelectedAircraft("F-18");
-	//inputReader.AddSelectedAircraft("F-Apache");
+	///
+
+	inputReader.AddSelectedAircraft("F-35");
+	inputReader.AddSelectedAircraft("F-18");
+	inputReader.AddSelectedAircraft("F-Apache");
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
@@ -103,8 +105,8 @@ void ArriveAircraft()
 	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		if (search(head, iter->first) == true)
-		//if(inputReader.FindSelectedAircraft(iter->first) == true)
+		//if (search(head, iter->first) == true)
+		if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
@@ -130,7 +132,7 @@ void ArriveAircraft()
 			//	firstAircraft->GetAircraftIAT(),
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
-			//	"Unplanned Arrival", // like dis?--------- Name is the name of the source object,
+			//	"Unplanned Arrival", // like dis?--------- Name is the name of the source object, ------- Yieeeees just like that
 			//	10000); // need to make sure there's an unlimited option ------------ there is, the default value is NULL so if its not given a value it will be unlimited
 			//	
 
@@ -201,6 +203,7 @@ int main() {
 		//Print Values here
 	*/
 
+	//Just for a simulation run to test runtime releated function calls
 	/*while (SimExec::GetSimulationFlag) {
 		SimExec::RunSimulation(0, 0, 0, 2022);
 	}*/
