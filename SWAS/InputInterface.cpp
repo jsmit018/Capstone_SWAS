@@ -140,7 +140,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						break;
 					str >> numDays;
 
-					//					cout << "month " << month << " days, " << numDays << endl; 
+				//	cout << "month " << month << " days, " << numDays << endl; 
 
 					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
@@ -176,7 +176,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-					cout << "another line " << line << endl;
+				//	cout << "another line " << line << endl;
 					////parsing the whole file and storing individual strings
 					while (ss)
 					{
@@ -212,7 +212,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						//for each index, set each variable
 						//	istringstream iss0(row[0]);
 					airType = row[0];
-					cout << "ROW " << row[0];
+					//cout << "ROW " << row[0];
 					newAir->SetAircraftType(airType);
 
 					istringstream iss1(row[1]);
@@ -238,7 +238,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					//						
 				}
-				cout << "after aircraft for loop \n";
+			//	cout << "after aircraft for loop \n";
 			}
 
 
@@ -393,6 +393,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					//newJob->PrintJobProperties();
 					//cout << endl;
 
+
+					
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
 				}
 			}
@@ -539,7 +541,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					getline(dataFile, line);
 
-					cout << "NEW STEP LINE " << line << endl;
+				//	cout << "NEW STEP LINE " << line << endl;
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream iss(line);
@@ -637,23 +639,23 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iter != _masterMap.end())
 					{
 						map<string, RepairJob*>::iterator it = iter->second->GetRJMapBegin();
-						cout << "aircraft name " << iter->second->GetAircraftType() << endl;
+					//	cout << "aircraft name " << iter->second->GetAircraftType() << endl;
 
 						while (it != iter->second->GetRJMapEnd())
 						{
-							cout << it->second->GetName() << endl;
+						//	cout << "rj name: " << it->second->GetName() << endl;
 							// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-								cout << " about to add a step \n" << endl;
+		//						cout << " about to add a step \n" << endl;
 
-								cout << row[0] << " " << row[1] << " " << row[2] << " " <<
+		/*						cout << row[0] << " " << row[1] << " " << row[2] << " " <<
 									row[3] << " " << row[4] << " " << row[5] << " " <<
 									row[6] << " " << row[7] << " " << row[8] << " " << endl;
-								it->second->AddStep(newStep);
+			*/					it->second->AddStep(newStep);
 
-								newStep->Print();
-								cout << "-----------------------------------------------------------------\n";
+			//					newStep->Print();
+			//					cout << "-----------------------------------------------------------------\n";
 							}
 							it++;
 						}
@@ -843,14 +845,14 @@ void InputReader::ReadInputData() //initialization for getting data
 									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
 
 								continue;
-								//								iter->second->GetStep(i)->SetStepIndoorReq(iter->second->GetIndoorReq());
+								//iter->second->GetStep(i)->SetStepIndoorReq(iter->second->GetIndoorReq());
 
 								iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
 								it->second->SetFailureName(row[1]);
 								it->second->SetFailureType(row[2]);
 								it->second->SetFailureDistr(row[3]);
 								it->second->SetRepairProcess(row[4]);
-								//						it->second->PrintResProperties();
+								//it->second->PrintResProperties();
 							}
 
 							iter++;
@@ -1048,11 +1050,14 @@ bool InputReader::FindSelectedAircraft(string aircraftName)
 	while (iter != NULL)
 	{
 		if (iter->_aircraftName == aircraftName) {
+	//		cout << "FOUND AIRCRAFT " << iter->_aircraftName << endl;
+
 			return true;
 		}
 		else
 		{
 			iter = iter->_nextAircraft;
+	//		cout << "NEXT AIRCRAFT ITER FOR LINKED LIST" << endl;
 		}
 	}
 	return false;

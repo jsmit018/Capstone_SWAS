@@ -12,6 +12,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include "InputInterface.h"
+#include "CalendarConverter.h"
 
 using namespace std;
 
@@ -32,15 +34,18 @@ public:
 	void SetAircraftType(string aircraftType);
 	void SetAircraftPriority(int priority);
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
+	void AddRecurIAT(string repairJobName, Distribution* iatRecurring);
+
 	void AddRandRepairJob();	//populated when new craft is created - look at master, find random jobs, roll dice, add here
 	void AddSchedRepairJob();
 	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
 	void SetRecurringIATs(vector<Distribution*> recurIatVec);
-	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
+//	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
 	//void SetNextID(int id);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
+	RepairJob* GetMyRepairJobObj(string name); //used for searching 
 	int GetSource();
 	int GetAircraftID();
 	double GetAircraftFootprint();
@@ -58,6 +63,8 @@ public:
 
 	map<string, RepairJob*>::iterator  GetRJMapBegin();
 	map<string, RepairJob*>::iterator  GetRJMapEnd();
+	map<string, Distribution*>::iterator  GetRecurMapBegin();
+	map<string, Distribution*>::iterator  GetRecurMapEnd();
 	Aircraft* New(); //new aircraft creation, need to add appropriate parameters
 	bool IsMapEnd(map<string, RepairJob*>::const_iterator iter);
 	bool AreMoreJobs();
@@ -79,6 +86,7 @@ private:
 	CalendarObj* _myCalObj;
 	Step* _nextStep;
 	map<string, RepairJob*> _myRepairJobs;
+	map<string, Distribution*> _myRecurIATmap;				//  Recurring IATs for all of my recurring repairjobs
 	//vector<string> mySchedRepairJobs;					//	Vector of sched repair job names unique to each new aircraft to be compared to master list
 	//vector<string> myRandRepairJobs;					//	Vector of rand repair job names unique to each new aircraft to be compared to master list
 	map<string, RepairJob*> _allRepairJobsMap;			//	Map of all possible repair jobs

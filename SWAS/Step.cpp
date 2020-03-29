@@ -359,7 +359,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for a bay \n";
 			// WAITING
-			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
+//			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 		else
@@ -376,7 +376,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for an outspot \n";
 			// WAITING
-			cout << "Outspot unavailable, Adding Plane to Conditional Event List until it is." << endl;
+	//		cout << "Outspot unavailable, Adding Plane Step to Conditional Event List until it is." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
 	}
@@ -415,7 +415,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
-			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
+//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 			iter++;
 		}
@@ -492,7 +492,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			{
 				//IS THIS RIGHT		
 				cout << "Inspection failed, Rescheduling appropriate maintenance." << endl;
-				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
+				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 				//reschedule step of id = to return step id and all following steps
 			}
 
@@ -542,11 +542,11 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	//increment stepid
 	int nextId = _stepID + 1;
 	//if stepid <= containerSize;
-	if (nextId <= aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize())
+	if (nextId <= aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{	
 		//schedule next step
 		cout << "Current Maintenance step has finished, scheduling the next maintenance step." << endl;
-		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources in next step's required list
@@ -554,6 +554,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		{
 			//if resource name is found in acquired vector
 			if (_nextStep->ResourceInReqResource(acquiredResources[i]))
+				//go to next resource
 				continue;
 
 			//schedule resource release ea
@@ -565,39 +566,35 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		}
 
 
-		//if (this->GetIndoorReq() == 'Y') {
-
-		//}
-			//if next step's indoor req is Y
-				//add bay to acquired resources vector
-			//else if next step's indoor req is N
-				//schedule bay release ea
-
-
-
 	}
-	else if (nextId = aircraft->GetRepairJobObj(_myRJ)->GetStepVecSize())
+	//else if repair job is done, get the next one
+	else if (nextId = aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{
-	/*	aircraft->GetNextRepairJob(_myRJ);
-		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");*/
+		//if no more jobs, we're done
+		if (aircraft->GetNextRepairJob(_myRJ) == NULL)
+		{
+			//this aircraft is done, so it will depart (according to the setnext task in SWAS)
+			return;
+		}
 
+		//next id is the next repairjob's first step
+		nextId = aircraft->GetNextRepairJob(_myRJ)->GetFirstStep()->GetID();
+		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextId), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	}
+
 	
 	
 	//	else {
-	//		////So I looked in SWAS.cpp what SetNextTask does is it inidicates to the system that once an aircraft is finished with source when the
-	//		////Depart function from task is called, it will transfer the Entity(Aircraft) from one object to the next, so this function call will send
+	//		////So I looked in SWAS.cpp what SetNextTask does is it 
+			///inidicates to the system that once an aircraft is finished with source when the
+	//		////Depart function from task is called, it will transfer the Entity(Aircraft) from 
+				//one object to the next, so this function call will send
 	//		////the Aircraft from the Step to Depart(Sink object).
 	//		cout << "All repairs for, " << aircraft->GetAircraftType() << " are completed, exiting the facility" << endl;
 	//		Depart(aircraft);
 	//	}
 	//}
-	//if stepid > container size
-		//check if there are more repair jobs?
-			//if yes, get next repair job
-				//get steps
-			//if no
-				//schedule aircraft departure ea
+
 
 
 	//vector<string> resourceList;
@@ -769,7 +766,7 @@ Distribution* Step::GetServiceTime()
 void Step::SetStepID(int stepID)
 {
 	_stepID = stepID;
-	cout << "step id " << stepID << " " << _stepID << endl;
+//	cout << "step id " << stepID << " " << _stepID << endl;
 }
 
 void Step::SetName(string name)
@@ -870,7 +867,7 @@ void Step::SetInspecFailProb(string failureProb)
 	}
 
 	//Determines correct distribution and prints
-	_inspecFailProb->PrintDistribution();
+//	_inspecFailProb->PrintDistribution();
 }
 
 void Step::SetServiceTime(string serviceTime)
@@ -949,7 +946,7 @@ void Step::SetServiceTime(string serviceTime)
 	}
 
 	//Calls the print function added to each distribution - Determines correct distribution and prints
-	_servTime->PrintDistribution();
+//	_servTime->PrintDistribution();
 }
 
 void Step::SetReqResource(string reqResource)
@@ -981,7 +978,7 @@ void Step::SetReqResource(string reqResource)
 		istringstream ssNum(numString);
 		ssNum >> num;
 
-		cout << "	R: " << resource << "	N: " << num << endl;
+	//	cout << "	R: " << resource << "	N: " << num << endl;
 
 
 		newResource = new Resource();
@@ -1071,7 +1068,7 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
 	//TO DO
 	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(), 0.0, "StartServiceEA");
-	cout << "Aircraft Arrives for Maintenance, initiating StartService" << endl;
+	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID  << "st Step of " << _myRJ << " has been scheduled " << endl;
 //	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
 
