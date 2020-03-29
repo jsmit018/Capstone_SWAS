@@ -56,7 +56,7 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 				//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
 				//			cout << "Copied Job Is:	" << currJob->GetName() << endl;
-				cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
+				//cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
 
 				map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
 				while (myJobIter != _myRepairJobs.end())
@@ -87,8 +87,8 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 			//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
 //			cout << "Copied Recurring Job Is:	" << currJob->GetName() << endl;
-			cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
-			cout << endl;
+	//		cout << "Vec Step Size Is	" << currJob->GetStepVecSize() << endl;
+	//		cout << endl;
 
 			map<string, RepairJob*>::const_iterator myJobIter = _myRepairJobs.begin();
 			while (myJobIter != _myRepairJobs.end())
@@ -137,7 +137,7 @@ void Aircraft::SetCalendarObj(string date)
 	Time day;
 	int year;
 
-	cout << "STRING " << date << endl;
+//	cout << "STRING " << date << endl;
 	istringstream calDate(date);
 	//calDate >> month >> delim >> day >> delim >> 
 
@@ -150,9 +150,9 @@ void Aircraft::SetCalendarObj(string date)
 	getline(calDate, third, '-');
 
 	cout << "*********************" << endl;
-	cout << "FIRST " << first << endl;
-	cout << "SEC " << sec << endl;
-	cout << "THIRD " << third << endl;
+//	cout << "FIRST " << first << endl;
+//	cout << "SEC " << sec << endl;
+//	cout << "THIRD " << third << endl;
 	cout << endl;
 	cout << endl;
 	cout << endl;

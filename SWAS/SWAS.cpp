@@ -100,12 +100,13 @@ void ArriveAircraft()
 	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		//if (search(head, iter->first) == true)
-		if(inputReader.FindSelectedAircraft(iter->first) == true)
+		if (search(head, iter->first) == true)
+		//if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
-			
+			cout << "_____________________________________________" << endl;
+			cout << "_____________________________________________" << endl;
 			cout << "Creating first instance of: " << firstAircraft->GetAircraftType() << endl;
 			cout << endl;
 
@@ -190,7 +191,7 @@ int main() {
 
 	ArriveAircraft();
 
-	SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
+	//SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
 
 	//This is done through the GUI visualization
 	/*

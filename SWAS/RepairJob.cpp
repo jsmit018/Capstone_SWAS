@@ -13,7 +13,7 @@ RepairJob::RepairJob()
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
 
-    cout << "           COPYING REPAIR JOB" << endl;
+    cout << "Copying " << _name << " repair job."<< endl;
     _name = mapRj._name;					            // Repair job name
     _priority = mapRj._priority;		        		// Repair job priority
     _schedType = mapRj._schedType;				        // Interarrival schedule type
@@ -107,7 +107,7 @@ void RepairJob::SetSchedType(string schedType)
 
 string RepairJob::GetSchedType()
 {
-    cout << "TYPE: " << _schedType << endl;
+  //  cout << "TYPE: " << _schedType << endl;
     return _schedType;
 }
 

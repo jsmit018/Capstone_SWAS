@@ -1072,7 +1072,7 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 	//TO DO
 	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(), 0.0, "StartServiceEA");
 	cout << "Aircraft Arrives for Maintenance, initiating StartService" << endl;
-	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
+//	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
 
 void Step::AddToResPool(Resource* resource, string resourceName)
