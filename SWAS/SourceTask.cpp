@@ -62,7 +62,7 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 	_name = name;
 
 	cout << "Initializing Aircraft Distributions" << endl;
-	_interarrivalTimeRND = aircraft->GetAircraftIAT();
+	_interarrivalTimeRND = iat;
 
 	cout << "Printing Aircraft Distributions" << endl;
 	_interarrivalTimeRND->PrintDistribution();
@@ -145,7 +145,7 @@ SourceBlock::SourceBlock(map<string, RepairJob*> list, string aircraftType, Airc
 
 /*Constructor for Calendar*/
 SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
-	int numCalEventsToSched, CalendarObj* calobj, int numberOfAircraftToGenerate) : Task(name)
+	int numCalEventsToSched, CalendarObj* calobj) : Task(name)
 {
 	cout << "Scheduling list of Calendar Events" << endl;
 	for (int i = 0; i < numCalEventsToSched; ++i) {

@@ -35,12 +35,13 @@ public:
 
 	/*Constructor for Calendar Arrivals*/
 	SourceBlock(
-		string aircraftType, 
-		Aircraft* aircraft, 
+		string aircraftType,
+		Aircraft* aircraft,
 		string name,
 		int numCalEventsToSched,
-		CalendarObj* calobj, 
-		int numberOfAircraftToGenerate = NULL);
+		CalendarObj* calobj);
+		//Removing the below line, as this is set through numCalEvents
+		//int numberOfAircraftToGenerate = NULL);
 
 	/*Old Constructor*/
 	/*SourceBlock(Distribution* iat,
