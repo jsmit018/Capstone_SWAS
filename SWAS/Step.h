@@ -31,8 +31,6 @@ public:
 	void SetRJPriority(int RJpriority);
 	void SetMyRJName(string myRJ);
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
-	//void ScheudleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
-	//void ScheduleRecurringStep(Step* step, Aircraft* aircraft);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
 	void AddParts(Parts* parts, string partsName);
@@ -59,6 +57,12 @@ public:
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
+
+	//For Testing
+	//----------------------
+	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
+	void SceduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
+	//----------------------
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
 	void AddQueueEM();						// if bay not avial, increment queue

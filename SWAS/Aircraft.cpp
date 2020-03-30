@@ -21,6 +21,9 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	_wingspan = mapAircraft._wingspan;								//	Aircraft size y dimension
 	_repairJobName = mapAircraft._repairJobName;
 
+	//Initialize CalendarObj
+	_myCalObj = new CalendarObj();
+
 	////iterating through old recurring iat map, inserting its first and second into the new recurring iat map
 	//map<string, Distribution*>::const_iterator recurIter = mapAircraft._myRecurIATmap.begin();
 	//while (recurIter != mapAircraft._myRecurIATmap.end())
@@ -111,7 +114,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			{
 				//////	schedule first step of this repair job
 				Step* firstStep = myJobIter->second->GetStep(1);
-				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//Testing
+				//------------
+				myJobIter->second->GetStep(1)->ScheduleFirstRecurringStep(firstStep, this);
+				//------------
 				myJobIter++;
 			}
 		}
@@ -138,7 +145,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			{
 				//	schedule first step of this repair job
 				Step* firstStep = myJobIter->second->GetStep(1);
-				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//Testing
+				//------------
+				myJobIter->second->GetStep(1)->SceduleCalendarStep(firstStep, this, _myCalObj);
+				//------------
 				myJobIter++;
 			}
 			
@@ -193,10 +204,15 @@ void Aircraft::SetCalendarObj(string date)
 
 	/*Jordan: These throw exceptions during runtime: */
 
-	//_myCalObj->_months.push_back(month);
-	//_myCalObj->_days.push_back(day);
-	//_myCalObj->_year.push_back(year);
-	//_myCalObj->_timeOfDays.push_back(0.0);
+	// 3/30: Fixed runtime issues with _myCalObj push_back. [Jordan]
+	//**Issue: Throws read access error
+	//**Solution: _myCalObj was not instantiated.
+
+	_myCalObj->_months.push_back(month - 1);
+	_myCalObj->_days.push_back(day - 1);
+	_myCalObj->_year.push_back(year);
+	_myCalObj->_timeOfDays.push_back(0.0);
+	_myCalObj->UpdateNumEvents();
 }
 
 

@@ -17,11 +17,20 @@ public:
 		int numberOfAircraftToGenerate = NULL);
 
 	/*Constructor for Recurring Arrivals*/
-	SourceBlock(
+	/*SourceBlock(
 		vector<Distribution*> recurringIATs,
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
+		int numberOfAircraftToGenerate = NULL);*/
+	SourceBlock(
+		//vector<Distribution*> recurringIATs,
+		//map<string, Distribution*> recurringIATS,
+		map<string, RepairJob*> list,
+		string aircraftType,
+		Aircraft* aircraft,
+		string name,
+		//string myRJ,
 		int numberOfAircraftToGenerate = NULL);
 
 	/*Constructor for Calendar Arrivals*/
@@ -60,5 +69,6 @@ private:
 	class ScheduleNextRecurringAircraftEA;
 	void ScheduleNextUnplannedAircraftEM();
 	void ScheduleNextCalendarAircraftEM();
-	void ScheduleNextRecurringAircraftEM();
+	//void ScheduleNextRecurringAircraftEM();
+	void ScheduleNextRecurringAircraftEM(RepairJob* repairJob);
 };

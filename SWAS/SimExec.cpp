@@ -12,9 +12,9 @@ void PlayButton()
 	SimExec::RunSimulation();
 }
 
-void PlayButton(Time month, Time day, Time timeOfDay, int year)
+void PlayButton(Time month, Time day, int year)
 {
-	SimExec::RunSimulation(month, day, timeOfDay, year);
+	SimExec::RunSimulation(month, day, year);
 }
 
 struct SimExec::Event {
@@ -208,6 +208,8 @@ public:
 					if (e->_priority < curr->_nextEvent->_priority) {
 						break;
 					}
+					else
+						curr = curr->_nextEvent;
 				}
 				else
 					curr = curr->_nextEvent;
@@ -253,9 +255,9 @@ public:
 			binX = Month;
 			binY = Day;
 		}
-		cout << "Checking to see if Month and Day tuple is 0" << endl;
+		/*cout << "Checking to see if Month and Day tuple is 0" << endl;
 		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
-		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;
+		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;*/
 		if (_eventSet[binX][binY] == 0) {
 			cout << "Tuple is 0, adding the event to the head of the list" << endl;
 			_eventSet[binX][binY] = e;
@@ -273,6 +275,8 @@ public:
 					if (e->_priority < curr->_nextEvent->_priority) {
 						break;
 					}
+					else
+						curr = curr->_nextEvent;
 				}
 				else
 					curr = curr->_nextEvent;
@@ -318,9 +322,9 @@ public:
 			binX = Month;
 			binY = Day;
 		}
-		cout << "Checking to see if Month and Day tuple is 0" << endl;
+		/*cout << "Checking to see if Month and Day tuple is 0" << endl;
 		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
-		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;
+		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;*/
 		if (_eventSet[binX][binY] == 0) {
 			cout << "Tuple is 0, adding the event to the head of the list" << endl;
 			_eventSet[binX][binY] = e;
@@ -338,6 +342,8 @@ public:
 					if (e->_priority < curr->_nextEvent->_priority) {
 						break;
 					}
+					else
+						curr = curr->_nextEvent;
 				}
 				else
 					curr = curr->_nextEvent;
@@ -649,14 +655,15 @@ int SimExec::RunSimulation() {
 }
 
 //void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
-int SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
+int SimExec::RunSimulation(Time month, Time day, int year) {
 	//cout << "Running Simulation" << endl;
 	cout << "Executing Event" << endl;
 	//while (_eventSet.HasEvent() && _simulationFlag == true) {
 	if (_eventSet.HasEvent() && _simulationFlag == true) {
-		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= (int)timeOfDay
-			&& _simulationTime._year >= year) {
+		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= 0
+			&& _simulationTime._year >= year ) {
 			FlipSimulationFlag();
+			return 3;
 			//break;
 		}
 		else {

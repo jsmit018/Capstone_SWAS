@@ -1035,11 +1035,11 @@ void InputReader::AddSelectedAircraft(string aircraftName)
 	}
 	else {
 		GUISelectedAircraft* iter = _GUIListHead;
-		while (iter != NULL)
+		while (iter->_nextAircraft != NULL)
 		{
 			iter = iter->_nextAircraft;
 		}
-		iter = newAircraft;
+		iter->_nextAircraft = newAircraft;
 	}
 
 }

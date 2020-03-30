@@ -81,10 +81,11 @@ void ArriveAircraft()
 	inputReader.ReadInputData();
 	//inputReader.PrintEverything();
 
-	SimExec::SetInputReader(inputReader);
+	//SimExec::SetInputReader(inputReader);
+	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
-	inputReader.AddSelectedAircraft("F-Apache");
+	inputReader.AddSelectedAircraft("Apache");
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
@@ -93,12 +94,15 @@ void ArriveAircraft()
 	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		//	if (search(head, iter->first) == true)
+		// if (search(head, iter->first) == true)
 
 		//Jordan: this find aircraft function is not working 100%
 		//	We are receiving the first aircraft found and iterating, but not getting any more aircraft afterwards 
 		//	After comparing it to my test LL search function, may need to pass head as a param, but 
 		//	Can't with it being a private struct to this input reader)
+		
+		// 3/30: AddSelectedAircraft function has been updated to correctly reflect additions [Jordan}
+		// 3/30: Tested FindSelectedAircraft Function w/ updated AddSelectedAircraft, and the two work together.
 
 		if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
@@ -191,6 +195,9 @@ int main() {
 		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
 		//Print Values here
 	*/
+
+	//while (SimExec::GetSimulationFlag())
+		//SimExec::RunSimulation(0, 0, 2021);
 
 	return 0;
 }

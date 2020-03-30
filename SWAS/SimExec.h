@@ -10,7 +10,7 @@ class InputReader;
 using namespace std;
 
 void PlayButton();
-void PlayButton(Time month, Time day, Time timeOfDay, int year);
+void PlayButton(Time month, Time day, int year);
 void StopSimulation();
 
 
@@ -37,7 +37,7 @@ public:
 	//static void RunSimulation();
 	static int RunSimulation();
 	//static void RunSimulation(Time month, Time day, Time timeOfDay, int year);
-	static int RunSimulation(Time month, Time day, Time timeOfDay, int year);
+	static int RunSimulation(Time month, Time day, int year);
 	static void FlipSimulationFlag();
 	static bool GetSimulationFlag();
 
