@@ -12,8 +12,7 @@ RepairJob::RepairJob()
 
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
-
-    cout << "           COPYING REPAIR JOB" << endl;
+    cout << "       Copying " << mapRj._name << " repair job."<< endl;
     _name = mapRj._name;					            // Repair job name
     _priority = mapRj._priority;		        		// Repair job priority
     _schedType = mapRj._schedType;				        // Interarrival schedule type
@@ -36,9 +35,9 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
         newStep->CopyMapStep(*mapRj._vecSteps[i]);
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
-        cout << endl;
+      //  cout << endl;
         //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
-        cout << endl;
+      //  cout << endl;
     }
     // and also maybe for distribution, but that might not matter?
 
@@ -52,7 +51,7 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 Step* RepairJob::GetStep(int stepID)
 {
     //setting stepID 
-  //  cout << "ID IS      " << stepID << endl;
+     //  cout << "ID IS      " << stepID << endl;
     return _vecSteps[stepID - 1];
 }
 
@@ -86,7 +85,8 @@ void RepairJob::SetName(string name)
     _name = name;
 }
 
-string RepairJob::GetName() {
+string RepairJob::GetName()
+{
     return _name;
 }
 
@@ -107,7 +107,7 @@ void RepairJob::SetSchedType(string schedType)
 
 string RepairJob::GetSchedType()
 {
-    cout << "TYPE: " << _schedType << endl;
+  //  cout << "TYPE: " << _schedType << endl;
     return _schedType;
 }
 
@@ -135,11 +135,11 @@ string RepairJob::GetCalendarDate()
 void RepairJob::SetRecurringAmt(double recurringAmt)
 {
     _recurringAmt = new Constant(recurringAmt);
-    	cout << "*****************************IAT RECURRING IS: ";
-        _recurringAmt->PrintDistribution();
-    	cout << endl;
 
-    //change to distribution
+ 	//cout << "*****************************IAT RECURRING IS: ";
+  //     _recurringAmt->PrintDistribution();
+  // 	cout << endl;
+
 }
 
 
@@ -221,17 +221,12 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
   //  _unplannedProb->PrintDistribution();
 }
 
-//
-//void RepairJob::GetNextStep() {
-//    _activeStep++;
-//}
-//
 
 void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
 
-    cout << "adding step" << _vecSteps.size() << endl;
+  //  cout << "adding step" << _vecSteps.size() << endl;
     step->SetStepID(_vecSteps.size());
     /*int stepID;
     for (int i = 0; i < _vecSteps.size(); i++)

@@ -63,6 +63,8 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 		_interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 }
 
+
+//Jordan: Need to take map of recurring IAT and schedule, instead of vector
 /*Constructor for Recurring*/
 SourceBlock::SourceBlock(vector<Distribution*> recurringIAT, string aircraftType, Aircraft* aircraft, string name,
 	int numberOfAircraftToGenerate) : Task(name)
@@ -71,7 +73,7 @@ SourceBlock::SourceBlock(vector<Distribution*> recurringIAT, string aircraftType
 	_name = name;
 
 	cout << "Initializing Aircraft Distributions" << endl;
-	/*need to take the vector of recurring IATs and set multiple*/
+	/*need to take the map of recurring IATs and set multiple*/
 	//_interarrivalTimeRecurring = 
 	_interarrivalTimeRecurring = recurringIAT;
 
