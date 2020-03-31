@@ -55,14 +55,22 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 
 Step* RepairJob::GetStep(int stepID)
 {
+    if (_vecSteps.size() == 0)
+    {
+        cout << "NO STEPS!" << endl;
+    }
+    
     //setting stepID 
      //  cout << "ID IS      " << stepID << endl;
     return _vecSteps[stepID - 1];
+    
 }
 
 Step* RepairJob::GetFirstStep()
 {
     return _vecSteps[0];
+
+
 }
 
 bool RepairJob::WillSchedule()
@@ -309,7 +317,8 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-        _vecSteps[1]->PrintPools();
+//        _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }
+

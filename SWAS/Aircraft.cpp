@@ -598,9 +598,9 @@ void Aircraft::PrintMyProperties()
 	//cout << "After creating the iterator to the map " << std::endl; 
 	while (it != _myRepairJobs.end())
 	{
-		//cout << "in the loop \n";
+		cout << "in the loop \n";
 
-//		it->second->PrintJobProperties();
+		it->second->PrintJobProperties();
 		it++;
 	}
 }

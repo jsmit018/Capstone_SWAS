@@ -74,6 +74,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 
 	ifstream dataFile("SWASInputData.csv");
+	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
 
