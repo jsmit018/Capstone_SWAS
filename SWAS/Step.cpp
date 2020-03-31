@@ -17,7 +17,7 @@ Step::Step(Distribution* serviceTime, string name) : Task(name)
 void Step::CopyMapStep(const Step& mapStep)
 {
 	_myRJ = mapStep._myRJ;
-	_serviceTime = mapStep._serviceTime;
+	//_serviceTime = mapStep._serviceTime;
 	_name = mapStep._name;
 	_indoorReq = mapStep._indoorReq;
 	_RJpriority = mapStep._RJpriority;
@@ -25,7 +25,7 @@ void Step::CopyMapStep(const Step& mapStep)
 	_numInQueue = mapStep._numInQueue;
 	_nextStep = mapStep._nextStep;
 	_type = mapStep._type;
-	_inspecFailProb = mapStep._inspecFailProb;
+	//_inspecFailProb = mapStep._inspecFailProb->CopyThis();
 	_servTime = mapStep._servTime;
 	_reqRes = mapStep._reqRes;
 	_reqParts = mapStep._reqParts;
@@ -40,7 +40,7 @@ void Step::CopyMapStep(const Step& mapStep)
 		Resource* newRes = new Resource();
 		newRes->CopyMapResource(*reqResIter->second);
 		_reqResourceMap.insert(pair<string, Resource*>(reqResIter->first, newRes));
-
+		
 		reqResIter++;
 	}
 
@@ -449,7 +449,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 
 		cout << "Aircraft has finished a maintenance step, scheduling a DoneService" << endl;
 		DoneServiceEA* doneEA = new DoneServiceEA(this, aircraft, _acquiredResources);
-		SimExec::ScheduleEventAt(1, doneEA, this->_serviceTime->GetRV(), "DoneServiceEA");
+		SimExec::ScheduleEventAt(1, doneEA, this->_servTime->GetRV(), "DoneServiceEA");
 	}
 
 	else if (_name == "inspection")
@@ -498,7 +498,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 
 			else {
 				cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-				SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _serviceTime->GetRV(), "DoneServiceEA");
+				SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 			}
 
 			iter++;
@@ -648,7 +648,7 @@ void Step::FailResourceEM(Resource* resource)
 	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
 	//This Event action should actually be scheduling a restore resource instead of a fail one.
 	cout << "Resource has failed, scheduling a restore resource" << endl;
-	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_serviceTime->GetRV(), "RestoreResourceEA");
+	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
 }
 
 void Step::RestoreResourceEM(Resource* resource)

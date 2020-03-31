@@ -25,8 +25,8 @@ public:
 		int numberOfAircraftToGenerate = NULL);*/
 	SourceBlock(
 		//vector<Distribution*> recurringIATs,
-		//map<string, Distribution*> recurringIATS,
-		map<string, RepairJob*> list,
+		map<string, Distribution*> recurringIATS,
+		map<string, RepairJob*> list, //this is using unecessary memory - just look it up from aircraft's prexisting map - see sourcetask.cpp
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,

@@ -74,6 +74,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 
 	ifstream dataFile("SWASInputData.csv");
+	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
 
@@ -254,7 +255,6 @@ void InputReader::ReadInputData() //initialization for getting data
 				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
-
 					getline(dataFile, line);
 					if (line == ",,,,,,,,,,")
 						break;
@@ -284,17 +284,19 @@ void InputReader::ReadInputData() //initialization for getting data
 					unplannedType = row[0];
 
 					unplannedIAT = row[1];
-
 					//compare to string
 					map<string, Aircraft*>::const_iterator iter = _masterMap.find(unplannedType);
 					if (iter == _masterMap.end()) {
 						printf("end of map \n");
 						cout << "unplanned type: " << unplannedType << endl;
+
 					}
 
 					iter->second->SetAircraftIAT(unplannedIAT);
-					//						iter->second->PrintProperties();
-					//						cout << endl;
+					
+					//		iter->second->PrintProperties();
+					//		cout << endl;
+
 				}
 			}
 
@@ -382,6 +384,14 @@ void InputReader::ReadInputData() //initialization for getting data
 						unss3 >> schedRecur;
 						//						cout << "recur: " << schedRecur << endl;
 						newJob->SetRecurringAmt(schedRecur);
+
+						map<string, Aircraft*>::const_iterator iter = _masterMap.begin();
+							while (iter != _masterMap.end())
+							{
+								iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
+								iter++;
+							}
+
 					}
 
 					istringstream unss4(row[4]);
@@ -459,8 +469,9 @@ void InputReader::ReadInputData() //initialization for getting data
 					newJob->SetName(unRepairName);
 
 					repJobProb = row[2];
-					//	cout << "probability: " << repJobProb << endl;
+					//cout << "probability: " << repJobProb << endl;
 					newJob->SetUnplannedProb(repJobProb);
+
 
 					istringstream unss(row[3]);
 					unss >> unIndoorReq;

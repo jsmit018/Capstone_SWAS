@@ -61,18 +61,18 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;
 	_name = name;
 
-	cout << "Initializing Aircraft Distributions" << endl;
-	_interarrivalTimeRND = iat;
+	//cout << "Initializing Aircraft Distributions" << endl;
+	_interarrivalTimeRND = iat->CopyThis();
 
-	cout << "Printing Aircraft Distributions" << endl;
-	_interarrivalTimeRND->PrintDistribution();
+	//cout << "Printing Aircraft Distributions" << endl;
+	//_interarrivalTimeRND->PrintDistribution();
 
 	_aircraftType = aircraftType;
 	_aircraft = aircraft;
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
 	_numberGenerated = 0;
 
-	cout << "Scheduling First Unplanned Aircraft Arrival" << endl;
+	//cout << "Scheduling First Unplanned Aircraft Arrival" << endl;
 	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this),
 		_interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 }
@@ -109,7 +109,15 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 //	}
 //}
 
-SourceBlock::SourceBlock(map<string, RepairJob*> list, string aircraftType, Aircraft* aircraft, string name,
+//recurring constructor
+//Jordan : This needs to take the map and search prexisting maps as previously discussed
+//There's no reason to pass yet another map (the repair job map you've included) when the info is already avail
+//in other words, the recurringIAT <string, distribution*>map it is receving has a string of the repair job name attached to a recurring 
+//distribution instead of passing another map that doesn't exist, take the key of the recurringIat map being passed and search the aircraft's 
+//myrepairjob map for the same name. if the repair job string from our recurringIAT map is found in the myrepairjobs map, you've found
+//the recurring IAt's repair jobs and you'll schedule an arrival of this aircraft with a using the distribution you already were passed in the map.
+
+SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, map<string, RepairJob*> list, string aircraftType, Aircraft* aircraft, string name,
 	int numberOfAircraftToGenerate) : Task(name)
 {
 	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;

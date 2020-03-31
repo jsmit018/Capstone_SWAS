@@ -26,6 +26,7 @@ public:
 	//void CopyAircraftInfo(const Aircraft& mapAircraft);
 	void CopyMyJobList(string aircraftType);
 	void PrintProperties();
+	void PrintMyProperties();
 
 	void SetSource(int sourceID);
 	//	void SetAircraftID(int aircraftID); //may not need because handling it in constructor
@@ -35,12 +36,10 @@ public:
 	void SetAircraftPriority(int priority);
 	void AddRepairJob(RepairJob* repairJob, string repairJobName); //map of aircraft's repair jobs
 	void AddRecurIAT(string repairJobName, Distribution* iatRecurring);
-
-	void AddRandRepairJob();	//populated when new craft is created - look at master, find random jobs, roll dice, add here
-	void AddSchedRepairJob();
+	void AddMyRepairJob(string jobName, RepairJob* myJob);
 	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
-	void SetRecurringIATs(vector<Distribution*> recurIatVec);
+//	void SetRecurringIATs(vector<Distribution*> recurIatVec);
 //	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
 	//void SetNextID(int id);
 
@@ -55,14 +54,16 @@ public:
 	int GetNextAircraftID();
 	int GetAllRJMapSize();
 	int GetMyRJMapSize();
-	int GetNumCalEvents();
+	map<string, Distribution*> GetRecurIatMap();
 	RepairJob* GetNextRepairJob(string rjName);
-	vector<Distribution*> GetRecurringIATs();
+	//vector<Distribution*> GetRecurringIATs();
 	Step* GetNextStep();
 	CalendarObj* GetCalendarObj();
 
 	map<string, RepairJob*>::iterator  GetRJMapBegin();
 	map<string, RepairJob*>::iterator  GetRJMapEnd();
+	map<string, RepairJob*>::iterator  GetMyRJMapBegin();
+	map<string, RepairJob*>::iterator  GetMyRJMapEnd();
 	map<string, Distribution*>::iterator  GetRecurMapBegin();
 	map<string, Distribution*>::iterator  GetRecurMapEnd();
 	Aircraft* New(); //new aircraft creation, need to add appropriate parameters
