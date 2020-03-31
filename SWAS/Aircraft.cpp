@@ -20,17 +20,38 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	_length = mapAircraft._length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	_wingspan = mapAircraft._wingspan;								//	Aircraft size y dimension
 	_repairJobName = mapAircraft._repairJobName;
+	//cout << "MY UNPLANNED IAT " << _aircraftType << endl; 
+	//mapAircraft._iatUnplanned->PrintDistribution();
+	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis();
 
-	////iterating through old recurring iat map, inserting its first and second into the new recurring iat map
-	//map<string, Distribution*>::const_iterator recurIter = mapAircraft._myRecurIATmap.begin();
-	//while (recurIter != mapAircraft._myRecurIATmap.end())
-	//{
-	//	Resource* newRes = new Resource();
-	//	newRes->CopyMapResource(*recurIter->second);
-	//	_myRecurIATmap.insert(pair<string, Resource*>(recurIter->first, newRes));
 
-	//	recurIter++;
-	//}
+	//Initialize CalendarObj
+	_myCalObj = new CalendarObj();
+
+
+	//cout << "			old recur map size" << endl;
+	//cout << mapAircraft._myRecurIATmap.size();
+	//cout << endl;
+	//cout << endl;
+
+
+	//iterating through old recurring iat map, inserting its first and second into the new recurring iat map
+	map<string, Distribution*>::const_iterator recurIter = mapAircraft._myRecurIATmap.begin();
+	while (recurIter != mapAircraft._myRecurIATmap.end())
+	{
+
+		Distribution* newDist = recurIter->second->CopyThis();
+	
+		_myRecurIATmap.insert(pair<string, Distribution*>(recurIter->first, newDist));
+		//cout << "RECUR IAT ";
+		//newDist->PrintDistribution();
+		//cout << endl;
+
+
+
+		recurIter++;
+	}
+
 
 
 	//recurIat vector, calobj and others populated after this copy
@@ -62,7 +83,9 @@ void Aircraft::CopyMyJobList(string aircraftType)
 				currJob->CopyRepairJob(*iter->second);
 
 				//give this copy to this new aircraft's myrepairjobs list
-				_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
+				cout << "ABOUT TO ADD JOB " << currJob->GetName() <<" TO" << this->GetAircraftType() << "MY LIST." << endl;
+				this->AddMyRepairJob(currJob->GetName(), currJob);
+				//_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
 
 
 				//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
@@ -92,7 +115,10 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
 			//give this copy to this new aircraft's myrepairjobs list
-			_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
+			//_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
+			cout << "ABOUT TO ADD JOB " << currJob->GetName() << " TO" << this->GetAircraftType() << "MY LIST." << endl;
+
+			this->AddMyRepairJob(currJob->GetName(), currJob);
 
 			_myRecurIATmap.insert(pair<string, Distribution*>(iter->second->GetName(), iter->second->GetRecurringAmt()));
 
@@ -111,7 +137,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			{
 				//////	schedule first step of this repair job
 				Step* firstStep = myJobIter->second->GetStep(1);
-				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//Testing
+				//------------
+				myJobIter->second->GetStep(1)->ScheduleFirstRecurringStep(firstStep, this);
+				//------------
 				myJobIter++;
 			}
 		}
@@ -125,8 +155,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
 			//give this copy to this new aircraft's myrepairjobs list
-			_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
-			
+			//_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
+			cout << "ABOUT TO ADD JOB " << currJob->GetName() << " TO" << this->GetAircraftType() << "MY LIST." << endl;
+
+			this->AddMyRepairJob(currJob->GetName(), currJob);
+
 			SetCalendarObj(currJob->GetCalendarDate());
 			//			cout << "NEW my own repair job map size:	" << GetMyRJMapSize() << endl;
 //			cout << "Copied Recurring Job Is:	" << currJob->GetName() << endl;
@@ -138,7 +171,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			{
 				//	schedule first step of this repair job
 				Step* firstStep = myJobIter->second->GetStep(1);
-				myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//myJobIter->second->GetStep(1)->ScheduleFirstStep(firstStep, this);
+				//Testing
+				//------------
+				myJobIter->second->GetStep(1)->SceduleCalendarStep(firstStep, this, _myCalObj);
+				//------------
 				myJobIter++;
 			}
 			
@@ -193,10 +230,15 @@ void Aircraft::SetCalendarObj(string date)
 
 	/*Jordan: These throw exceptions during runtime: */
 
-	//_myCalObj->_months.push_back(month);
-	//_myCalObj->_days.push_back(day);
-	//_myCalObj->_year.push_back(year);
-	//_myCalObj->_timeOfDays.push_back(0.0);
+	// 3/30: Fixed runtime issues with _myCalObj push_back. [Jordan]
+	//**Issue: Throws read access error
+	//**Solution: _myCalObj was not instantiated.
+
+	_myCalObj->_months.push_back(month - 1);
+	_myCalObj->_days.push_back(day - 1);
+	_myCalObj->_year.push_back(year);
+	_myCalObj->_timeOfDays.push_back(0.0);
+	_myCalObj->UpdateNumEvents();
 }
 
 
@@ -280,14 +322,6 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 
 Step* Aircraft::GetNextStep()
 {
-	//need to take arguments of aircraft, repairjob and stepid 
-		
-		//if stepid + 1 > container size
-			//get next step
-		//else 
-			//check if there are more repair jobs? (bool in aircraft for more jobs
-				//if yes, get next repair job
-					//get first step
 	return _nextStep;
 }
 
@@ -339,10 +373,10 @@ string Aircraft::GetAircraftType()
 	return _aircraftType;
 }
 
-vector<Distribution*> Aircraft::GetRecurringIATs()
-{
-	return _recurIatVec;
-}
+//vector<Distribution*> Aircraft::GetRecurringIATs()
+//{
+//	return _recurIatVec;
+//}
 
 
 void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
@@ -350,19 +384,11 @@ void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 	_allRepairJobsMap[repairJobName] = repairJob;
 }
 
-void Aircraft::AddRandRepairJob()
+void Aircraft::AddMyRepairJob(string jobName, RepairJob * myJob)
 {
-}
+	_myRepairJobs.insert(pair<string, RepairJob*>(jobName, myJob));
 
-void Aircraft::AddSchedRepairJob()
-{
 }
-
-int Aircraft::GetNumCalEvents()
-{
-	return _numCalEvents;
-}
-
 
 RepairJob* Aircraft::GetRepairJobObj(string name)
 {
@@ -399,6 +425,16 @@ map<string, RepairJob*>::iterator Aircraft::GetRJMapBegin()
 map<string, RepairJob*>::iterator  Aircraft::GetRJMapEnd()
 {
 	return _allRepairJobsMap.end();
+}
+
+map<string, RepairJob*>::iterator Aircraft::GetMyRJMapBegin()
+{
+	return _myRepairJobs.begin();
+}
+
+map<string, RepairJob*>::iterator  Aircraft::GetMyRJMapEnd()
+{
+	return _myRepairJobs.end();
 }
 
 map<string, Distribution*>::iterator Aircraft::GetRecurMapBegin()
@@ -497,15 +533,28 @@ Distribution* Aircraft::GetAircraftIAT()
 	return _iatUnplanned; //check if this works?
 	//_iatUnplanned->PrintDistribution();
 }
+map<string, Distribution*> Aircraft::GetRecurIatMap()
+{
+	return _myRecurIATmap;
+}
 
 void Aircraft::PrintProperties()
 {
 	cout << "AIRCRAFT:" << endl;
 	cout << "Aircraft Type: " << _aircraftType << endl;
-	//cout << "Aircraft Priority: " << _priority << endl;
-	//cout << "Aircraft Length: " << _length << endl;
-	//cout << "Aircraft Wingspan: " << _wingspan << endl;
-	//cout << endl;
+	cout << "Aircraft Priority: " << _priority << endl;
+	cout << "Aircraft Length: " << _length << endl;
+	cout << "Aircraft Wingspan: " << _wingspan << endl;
+	cout << "Aircraft's Unplanned Arrival ";
+	_iatUnplanned->PrintDistribution();
+	cout << "Aircraft's Recurring Arrivals";
+	map<string, Distribution*>::const_iterator iter = _myRecurIATmap.begin();
+	while (iter != _myRecurIATmap.end())
+	{
+		iter->second->PrintDistribution();
+		iter++;
+	}
+	cout << endl;
 	//cout << "Repair Jobs:" << endl;
 	cout << endl;
 
@@ -516,6 +565,42 @@ void Aircraft::PrintProperties()
 		//cout << "in the loop \n";
 
 		it->second->PrintJobProperties();
+		it++;
+	}
+}
+
+void Aircraft::PrintMyProperties()
+{
+	cout << "AIRCRAFT:" << endl;
+	cout << "Aircraft Type: " << _aircraftType << endl;
+	cout << "Aircraft Priority: " << _priority << endl;
+	cout << "Aircraft Length: " << _length << endl;
+	cout << "Aircraft Wingspan: " << _wingspan << endl;
+	cout << "Aircraft's Unplanned Arrival: " << endl;
+	cout << "		";
+	_iatUnplanned->PrintDistribution();
+	cout << "Aircraft's Recurring Arrivals: " << endl;
+
+	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
+	while (iter != _myRepairJobs.end())
+	{
+		cout << "		";
+		iter->second->GetRecurringAmt()->PrintDistribution();
+		cout << endl;
+		iter++;
+	}
+	cout << endl;
+	//cout << "Repair Jobs:" << endl;
+	cout << endl;
+
+	cout << "MY JOB LIST SIZE IS " << _myRepairJobs.size() << endl;
+	map<string, RepairJob*>::iterator it = _myRepairJobs.begin();
+	//cout << "After creating the iterator to the map " << std::endl; 
+	while (it != _myRepairJobs.end())
+	{
+		//cout << "in the loop \n";
+
+//		it->second->PrintJobProperties();
 		it++;
 	}
 }

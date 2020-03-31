@@ -36,7 +36,6 @@ public:
 	Step* GetStep(int stepID);
 	bool WillSchedule();
 	Step* GetFirstStep();
-
 	void AddStep(Step* step);
 	void AddResourceRepair(RepairJob* repairJob, string resourceName);
 	RepairJob* GetResourceRepair(string resourceName);

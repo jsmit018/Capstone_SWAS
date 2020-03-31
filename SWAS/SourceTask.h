@@ -17,21 +17,31 @@ public:
 		int numberOfAircraftToGenerate = NULL);
 
 	/*Constructor for Recurring Arrivals*/
-	SourceBlock(
+	/*SourceBlock(
 		vector<Distribution*> recurringIATs,
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
+		int numberOfAircraftToGenerate = NULL);*/
+	SourceBlock(
+		//vector<Distribution*> recurringIATs,
+		map<string, Distribution*> recurringIATS,
+		map<string, RepairJob*> list, //this is using unecessary memory - just look it up from aircraft's prexisting map - see sourcetask.cpp
+		string aircraftType,
+		Aircraft* aircraft,
+		string name,
+		//string myRJ,
 		int numberOfAircraftToGenerate = NULL);
 
 	/*Constructor for Calendar Arrivals*/
 	SourceBlock(
-		string aircraftType, 
-		Aircraft* aircraft, 
+		string aircraftType,
+		Aircraft* aircraft,
 		string name,
 		int numCalEventsToSched,
-		CalendarObj* calobj, 
-		int numberOfAircraftToGenerate = NULL);
+		CalendarObj* calobj);
+		//Removing the below line, as this is set through numCalEvents
+		//int numberOfAircraftToGenerate = NULL);
 
 	/*Old Constructor*/
 	/*SourceBlock(Distribution* iat,
@@ -60,5 +70,6 @@ private:
 	class ScheduleNextRecurringAircraftEA;
 	void ScheduleNextUnplannedAircraftEM();
 	void ScheduleNextCalendarAircraftEM();
-	void ScheduleNextRecurringAircraftEM();
+	//void ScheduleNextRecurringAircraftEM();
+	void ScheduleNextRecurringAircraftEM(RepairJob* repairJob);
 };

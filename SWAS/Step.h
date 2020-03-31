@@ -58,6 +58,12 @@ public:
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
 
+	//For Testing
+	//----------------------
+	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
+	void SceduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
+	//----------------------
+
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
 	void AddQueueEM();						// if bay not avial, increment queue
 	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay

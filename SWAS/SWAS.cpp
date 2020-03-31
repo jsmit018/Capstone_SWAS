@@ -17,7 +17,7 @@ using namespace std;
 ///			until GUI LL is available			///
 ///////////////////////////////////////////////////
 
-/* Link list node */
+///* Link list node */
 //class Node
 //{
 //public:
@@ -74,17 +74,21 @@ void ArriveAircraft()
 
 	///////////////////////////////////////
 	///////////////////////////////////////
-
+	 
 	InputReader inputReader;
 
 	//populate master map
 	inputReader.ReadInputData();
 	//inputReader.PrintEverything();
 
-	SimExec::SetInputReader(inputReader);
+	//SimExec::SetInputReader(inputReader);
+	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
-	inputReader.AddSelectedAircraft("F-Apache");
+	inputReader.AddSelectedAircraft("Apache");
+
+	//Name this sink block whatever you want -- Check comment in the loop as to why this was moved
+	SinkBlock* depart = new SinkBlock("SWAS System Sink");
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
@@ -93,16 +97,22 @@ void ArriveAircraft()
 	while (iter != inputReader.GetMasterMapEnd())
 	{
 		//if the current aircraft matches one in the linked list, create instance etc.
-		//	if (search(head, iter->first) == true)
+		//if (search(head, iter->first) == true)
 
 		//Jordan: this find aircraft function is not working 100%
 		//	We are receiving the first aircraft found and iterating, but not getting any more aircraft afterwards 
 		//	After comparing it to my test LL search function, may need to pass head as a param, but 
 		//	Can't with it being a private struct to this input reader)
+		
+		// 3/30: AddSelectedAircraft function has been updated to correctly reflect additions [Jordan}
+		// 3/30: Tested FindSelectedAircraft Function w/ updated AddSelectedAircraft, and the two work together.
 
 		if(inputReader.FindSelectedAircraft(iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type */
+			//iter->second->PrintProperties(); 
+			iter->second->GetAircraftIAT()->PrintDistribution();
+
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			cout << "_____________________________________________" << endl;
 			cout << "_____________________________________________" << endl;
@@ -110,47 +120,95 @@ void ArriveAircraft()
 
 			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
 			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
+
 			firstAircraft->CopyMyJobList(iter->first);
-		//	cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
+			//cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
+
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << "AbOUT TO PRINT ALL THIGNS " << endl;
+			firstAircraft->PrintMyProperties();
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << endl;
+			cout << endl;
+
 
 			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them: */
 			
-			///* Unplanned */
-			//SourceBlock* unplanArrival = new SourceBlock(
-			//	firstAircraft->GetAircraftIAT(),
-			//	firstAircraft->GetAircraftType(),
-			//	firstAircraft,
-			//	"Unplanned Arrival",
-			//	10000); 
-			//	
+			/* Unplanned */
+			//Set Number of Aircraft Arrivals		
+		//	firstAircraft->GetAircraftIAT()->PrintDistribution();
+		//	cout << endl;
 
+			SourceBlock* unplanArrival = new SourceBlock(
+				firstAircraft->GetAircraftIAT(),
+				firstAircraft->GetAircraftType(),
+				firstAircraft,
+				"Unplanned Arrival",
+				10); 
+
+
+			//Infinite number of aircraft arrivals
+			/*SourceBlock* unplanArrival = new SourceBlock(
+				firstAircraft->GetAircraftIAT(),
+				firstAircraft->GetAircraftType(),
+				firstAircraft,
+				"Unplanned Arrival");*/
+
+			//______________________________________________________________________________
 			///* Recurring */
+			//Set number of Aircraft Arrivals
 			//SourceBlock* recurArrival = new SourceBlock(
-			//	firstAircraft->GetRecurringIATs(), //get a map
+			//	firstAircraft->GetRecurringIATs(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
+																				//as we discussed previously, the map was set up as <string, Distribution*>. see the recurring 
+																				//source constructor for info, as the logic when approaching it that way is redundant.
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
 			//	"Recurring Arrival",
-			//	10000);
+			//	1000);
 
+			//Infinite number of recurring aircraft arrival
+			//SourceBlock* recurArrival = new SourceBlock(
+			//	firstAircraft->GetRecurIatMap(), //get a map
+			//	firstAircraft->GetAircraftType(),
+			//	firstAircraft,
+			//	"Recurring Arrival",
+			//	1000);
+			//______________________________________________________________________________
 			///* Calendar */
+			//Note** -- During test Instantiation, CalenderObj was size 0. This would cause a read access error << im assuming you've fixed this?
 			//SourceBlock* calArrival = new SourceBlock(
 			//	firstAircraft->GetAircraftType(),
 			//	firstAircraft,
 			//	"Calendar Arrival",
-			//	1, //should only be one instance of this calendar event arrival
-			//	firstAircraft->GetCalendarObj(),
-			//	10000);
+			//	1, //should only be one instance of this calendar event arrival -- Changing it to the below line to ensure flexibility, if it throws 
+			//	//or causes errors 1 is fine
+				//Jordan: there will never be more than one event for one calendar repair job arrival. so this may be unnecessary, unless i'm misunderstanding
+				//the value this represents
+			//	//firstAircraft->GetCalendarObj()->GetNumEvents(), 
+			//	firstAircraft->GetCalendarObj());
 			
+			//______________________________________________________________________________
 
+
+			//According to the proposal, We said that there would be one sink to collect all aircraft.
+			///This will be commented out and moved before this loop to ensure we aren't creating multiple sinks.
+
+			//Jordan:
+			//I don't care how we handle sink, do it however you want.
 			//SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
 
-			//unplanArrival->SetNextTask(depart);
-			//recurArrival->SetNextTask(depart);
-			//calArrival->SetNextTask(depart);
 
-	
 
-			////potential future logic below, unused now that first steps will lead to last step of last repair job:
+
+			////POTENTIAL future logic below, unused now that first steps will lead to last step of last repair job:
 
 			//////if more steps
 			////	/* getNextStep() keeps getting the next step til all steps in RJ are done,
@@ -184,13 +242,9 @@ int main() {
 
 	ArriveAircraft();
 
-	//SimExec::InitializeSimulation(SimExec::GetInputReader().GetCalConverter()->GetMonthMap().size(), SimExec::GetInputReader().GetCalConverter()->GetCalArray());
-
-	//This is done through the GUI visualization
-	/*
-		SimExec::RunSimulation() || SimExec::RunSimulation(/endTime/);
-		//Print Values here
-	*/
+	///Included for simulation testing purposes -> will be moved during GUI integration
+	//while (SimExec::GetSimulationFlag())
+		//SimExec::RunSimulation(0, 0, 2021);
 
 	return 0;
 }
