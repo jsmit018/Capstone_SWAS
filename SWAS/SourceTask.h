@@ -26,7 +26,7 @@ public:
 	SourceBlock(
 		//vector<Distribution*> recurringIATs,
 		map<string, Distribution*> recurringIATS,
-		map<string, RepairJob*> list, //this is using unecessary memory - just look it up from aircraft's prexisting map - see sourcetask.cpp
+		//map<string, RepairJob*> list, //this is using unecessary memory - just look it up from aircraft's prexisting map - see sourcetask.cpp
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
@@ -58,7 +58,8 @@ public:
 	int GetNumberGenerated();
 	void Execute(Aircraft* aircraft);
 private:
-	vector<Distribution*> _interarrivalTimeRecurring;
+	//vector<Distribution*> _interarrivalTimeRecurring;
+	map<string, Distribution*> _recurringIATs;
 	Distribution* _interarrivalTimeRND;
 	Aircraft* _aircraft;
 	string _aircraftType;
@@ -71,5 +72,5 @@ private:
 	void ScheduleNextUnplannedAircraftEM();
 	void ScheduleNextCalendarAircraftEM();
 	//void ScheduleNextRecurringAircraftEM();
-	void ScheduleNextRecurringAircraftEM(RepairJob* repairJob);
+	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob);
 };

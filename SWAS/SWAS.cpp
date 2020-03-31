@@ -104,7 +104,7 @@ void ArriveAircraft()
 		//	After comparing it to my test LL search function, may need to pass head as a param, but 
 		//	Can't with it being a private struct to this input reader)
 		
-		// 3/30: AddSelectedAircraft function has been updated to correctly reflect additions [Jordan}
+		// 3/30: AddSelectedAircraft function has been updated to correctly reflect additions [Jordan]
 		// 3/30: Tested FindSelectedAircraft Function w/ updated AddSelectedAircraft, and the two work together.
 
 		if(inputReader.FindSelectedAircraft(iter->first) == true)
@@ -120,7 +120,7 @@ void ArriveAircraft()
 
 			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
 			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
-
+			// 3/31: Changed in SetCalendarObj in the date to delimit from - to / based off of debugging. 
 			firstAircraft->CopyMyJobList(iter->first);
 			//cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
 
@@ -130,7 +130,7 @@ void ArriveAircraft()
 			cout << endl;
 			cout << endl;
 			cout << endl;
-			cout << "AbOUT TO PRINT ALL THIGNS " << endl;
+			cout << "ABOUT TO PRINT ALL THIGNS " << endl;
 			firstAircraft->PrintMyProperties();
 			cout << endl;
 			cout << endl;
@@ -147,6 +147,7 @@ void ArriveAircraft()
 		//	firstAircraft->GetAircraftIAT()->PrintDistribution();
 		//	cout << endl;
 
+			//Debugged and Confirmed this Schedules correctly
 			SourceBlock* unplanArrival = new SourceBlock(
 				firstAircraft->GetAircraftIAT(),
 				firstAircraft->GetAircraftType(),
@@ -165,14 +166,14 @@ void ArriveAircraft()
 			//______________________________________________________________________________
 			///* Recurring */
 			//Set number of Aircraft Arrivals
-			//SourceBlock* recurArrival = new SourceBlock(
-			//	firstAircraft->GetRecurringIATs(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
+			// 3/31: Instantiates recurring Arrivals -> Minor Bug, is the RepairJob reads in as Null.
+			SourceBlock* recurArrival = new SourceBlock(
+				firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
 																				//as we discussed previously, the map was set up as <string, Distribution*>. see the recurring 
-																				//source constructor for info, as the logic when approaching it that way is redundant.
-			//	firstAircraft->GetAircraftType(),
-			//	firstAircraft,
-			//	"Recurring Arrival",
-			//	1000);
+				firstAircraft->GetAircraftType(),
+				firstAircraft,
+				"Recurring Arrival",
+				10);
 
 			//Infinite number of recurring aircraft arrival
 			//SourceBlock* recurArrival = new SourceBlock(
@@ -184,28 +185,25 @@ void ArriveAircraft()
 			//______________________________________________________________________________
 			///* Calendar */
 			//Note** -- During test Instantiation, CalenderObj was size 0. This would cause a read access error << im assuming you've fixed this?
-			//SourceBlock* calArrival = new SourceBlock(
-			//	firstAircraft->GetAircraftType(),
-			//	firstAircraft,
-			//	"Calendar Arrival",
-			//	1, //should only be one instance of this calendar event arrival -- Changing it to the below line to ensure flexibility, if it throws 
-			//	//or causes errors 1 is fine
-				//Jordan: there will never be more than one event for one calendar repair job arrival. so this may be unnecessary, unless i'm misunderstanding
-				//the value this represents
-			//	//firstAircraft->GetCalendarObj()->GetNumEvents(), 
-			//	firstAircraft->GetCalendarObj());
+			// 3/31: Solution: I have created 
+			//if (firstAircraft->GetCalendarObj()->GetNumEvents() == 0)
+			//	cout << "No Associated Calendar Arrivals with " << firstAircraft->GetAircraftType() << endl;
+			//else {
+			//	SourceBlock* calArrival = new SourceBlock(
+			//		firstAircraft->GetAircraftType(),
+			//		firstAircraft,
+			//		"Calendar Arrival",
+			//		1, //should only be one instance of this calendar event arrival -- Changing it to the below line to ensure flexibility, if it throws 
+			//	//	//or causes errors 1 is fine
+			//		//Jordan: there will never be more than one event for one calendar repair job arrival. so this may be unnecessary, unless i'm misunderstanding
+			//		//the value this represents
+			//		//Andrea: Unless I misunderstood, when I was constructing this. There was a possibility that any X aircraft could have Y number of Calendar events/sim
+			//		//These functions were in the case that were so.
+			//		//firstAircraft->GetCalendarObj()->GetNumEvents(), 
+			//		firstAircraft->GetCalendarObj());
+			//}
 			
 			//______________________________________________________________________________
-
-
-			//According to the proposal, We said that there would be one sink to collect all aircraft.
-			///This will be commented out and moved before this loop to ensure we aren't creating multiple sinks.
-
-			//Jordan:
-			//I don't care how we handle sink, do it however you want.
-			//SinkBlock* depart = new SinkBlock(firstAircraft->GetAircraftType());
-
-
 
 
 			////POTENTIAL future logic below, unused now that first steps will lead to last step of last repair job:

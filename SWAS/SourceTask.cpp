@@ -28,16 +28,18 @@ private:
 
 class SourceBlock::ScheduleNextRecurringAircraftEA : public EventAction {
 public:
-	ScheduleNextRecurringAircraftEA(SourceBlock* source, RepairJob* repairJob) {
+	ScheduleNextRecurringAircraftEA(SourceBlock* source, Distribution* recurringiAT, RepairJob* repairJob) {
 		_source = source;
 		_repairJob = repairJob;
+		_recurringIAT = recurringiAT;
 	}
 	void Execute() {
-		_source->ScheduleNextRecurringAircraftEM(_repairJob);
+		_source->ScheduleNextRecurringAircraftEM(_recurringIAT, _repairJob);
 	}
 private:
 	SourceBlock* _source;
 	RepairJob* _repairJob;
+	Distribution* _recurringIAT;
 };
 
 class SourceBlock::ScheduleNextUnplannedAircraftEA : public EventAction {
@@ -117,22 +119,20 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 //myrepairjob map for the same name. if the repair job string from our recurringIAT map is found in the myrepairjobs map, you've found
 //the recurring IAt's repair jobs and you'll schedule an arrival of this aircraft with a using the distribution you already were passed in the map.
 
-SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, map<string, RepairJob*> list, string aircraftType, Aircraft* aircraft, string name,
+SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, string aircraftType, Aircraft* aircraft, string name,
 	int numberOfAircraftToGenerate) : Task(name)
 {
 	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;
 	_name = name;
-	//_myRJ = myRJ;
 
 	cout << "Initializing Aircraft Distributions" << endl;
-	/*need to take the vector of recurring IATs and set multiple*/
-	//_interarrivalTimeRecurring = 
+	/*need to take the map of recurring IATs and set multiple*/
+	_recurringIATs = recurringIATS;
 
 	cout << "Printing Aircraft Distributions" << endl;
-	map<string, RepairJob*>::const_iterator it = list.begin();
-	//for (int i = 0; i < _interarrivalTimeRecurring.size(); ++i) {
-	while (it != list.end()) {
-		it->second->GetRecurringAmt()->PrintDistribution();
+	map<string, Distribution*>::const_iterator it = _recurringIATs.begin();
+	while (it != _recurringIATs.end()) {
+		it->second->PrintDistribution();
 		it++;
 	}
 
@@ -141,17 +141,28 @@ SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, map<string, R
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
 	_numberGenerated = 0;
 
-	it = list.begin();
-	cout << "Scheduling first Recurring Aircraft Arrival(s)" << endl;
+	it = _recurringIATs.begin();
+	//cout << "Scheduling first Recurring Aircraft Arrival(s)" << endl;
 	//for (int i = 0; i < _interarrivalTimeRecurring.size(); ++i) {
-	while (it != list.end()) {
-		SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, it->second),
-			it->second->GetRecurringAmt()->GetRV(), "ScheduleNextRecurringAircraftEA");
+	while (it != _recurringIATs.end()) {
+		//map<string, RepairJob*>::const_iterator iter = aircraft->GetMyRJMapBegin();
+		/*while (iter != aircraft->GetMyRJMapEnd()) {
+			if (it->first == iter->first)
+				break;
+			else {
+				iter++;
+			}
+		}*/
+		RepairJob* newptr = aircraft->GetMyRepairJobObj(it->first);
+		SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, it->second, newptr),
+			it->second->GetRV(), "ScheduleNextRecurringAircraftEA");
 		it++;
+		delete newptr;
 	}
 }
 
 /*Constructor for Calendar*/
+
 SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
 	int numCalEventsToSched, CalendarObj* calobj) : Task(name)
 {
@@ -244,16 +255,16 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM() {
 //	}
 //}
 
-void SourceBlock::ScheduleNextRecurringAircraftEM(RepairJob* repairJob) {
+void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob) {
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
 		//Scheduling recurring aircrafts
 		cout << "Recurring Aircraft has arrived, ";
-		cout << "Scheduling next Recurring arrival(s)" << endl;
-		SimExec::ScheduleEventAtRecurring(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, repairJob), repairJob->GetRecurringAmt()->GetRV(), "ScheduleNextRecurringAircraftEA");
+		cout << "Scheduling next Recurring Repair Job: " << repairJob->GetName() << endl;
+		SimExec::ScheduleEventAtRecurring(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, recurringIAT, repairJob), recurringIAT->GetRV(), "ScheduleNextRecurringAircraftEA");
 		//No longer doing this!
 		//cout << "Scheduling next Random Aircraft arrival" << endl;
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
-		cout << "Departing new Aircraft" << endl;
+		//cout << "Departing new Aircraft" << endl;
 		//Depart(_aircraft->New());
 		_numberGenerated++;
 	}

@@ -203,9 +203,9 @@ void Aircraft::SetCalendarObj(string date)
 	string sec;
 	string third;
 
-	getline(calDate, first, '-');
-	getline(calDate, sec, '-');
-	getline(calDate, third, '-');
+	getline(calDate, first, '/');
+	getline(calDate, sec, '/');
+	getline(calDate, third, '/');
 
 //	cout << "*********************" << endl;
 //	cout << "FIRST " << first << endl;
