@@ -141,7 +141,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						break;
 					str >> numDays;
 
-				//	cout << "month " << month << " days, " << numDays << endl; 
+					//	cout << "month " << month << " days, " << numDays << endl; 
 
 					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
@@ -177,8 +177,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-				//	cout << "another line " << line << endl;
-					////parsing the whole file and storing individual strings
+					//	cout << "another line " << line << endl;
+						////parsing the whole file and storing individual strings
 					while (ss)
 					{
 						//csv empty cell has 11 commas
@@ -239,7 +239,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					//						
 				}
-			//	cout << "after aircraft for loop \n";
+				//	cout << "after aircraft for loop \n";
 			}
 
 
@@ -293,7 +293,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					iter->second->SetAircraftIAT(unplannedIAT);
-					
+
 					//		iter->second->PrintProperties();
 					//		cout << endl;
 
@@ -386,11 +386,11 @@ void InputReader::ReadInputData() //initialization for getting data
 						newJob->SetRecurringAmt(schedRecur);
 
 						map<string, Aircraft*>::const_iterator iter = _masterMap.begin();
-							while (iter != _masterMap.end())
-							{
-								iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
-								iter++;
-							}
+						while (iter != _masterMap.end())
+						{
+							iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
+							iter++;
+						}
 
 					}
 
@@ -404,7 +404,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//cout << endl;
 
 
-					
+
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
 				}
 			}
@@ -552,7 +552,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					getline(dataFile, line);
 
-				//	cout << "NEW STEP LINE " << line << endl;
+					//	cout << "NEW STEP LINE " << line << endl;
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream iss(line);
@@ -650,23 +650,23 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iter != _masterMap.end())
 					{
 						map<string, RepairJob*>::iterator it = iter->second->GetRJMapBegin();
-					//	cout << "aircraft name " << iter->second->GetAircraftType() << endl;
+						//	cout << "aircraft name " << iter->second->GetAircraftType() << endl;
 
 						while (it != iter->second->GetRJMapEnd())
 						{
-						//	cout << "rj name: " << it->second->GetName() << endl;
-							// create object, get the name of the repair job in the aircraft object and check that it exists
+							//	cout << "rj name: " << it->second->GetName() << endl;
+								// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-		//						cout << " about to add a step \n" << endl;
+								//						cout << " about to add a step \n" << endl;
 
-		/*						cout << row[0] << " " << row[1] << " " << row[2] << " " <<
-									row[3] << " " << row[4] << " " << row[5] << " " <<
-									row[6] << " " << row[7] << " " << row[8] << " " << endl;
-			*/					it->second->AddStep(newStep);
+								/*						cout << row[0] << " " << row[1] << " " << row[2] << " " <<
+															row[3] << " " << row[4] << " " << row[5] << " " <<
+															row[6] << " " << row[7] << " " << row[8] << " " << endl;
+									*/					it->second->AddStep(newStep);
 
-			//					newStep->Print();
-			//					cout << "-----------------------------------------------------------------\n";
+									//					newStep->Print();
+									//					cout << "-----------------------------------------------------------------\n";
 							}
 							it++;
 						}
@@ -1040,7 +1040,7 @@ CalConverter* InputReader::GetCalConverter()
 void InputReader::AddSelectedAircraft(string aircraftName)
 {
 	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
-	
+
 	if (_GUIListHead == NULL) {
 		_GUIListHead = newAircraft;
 	}
@@ -1061,14 +1061,14 @@ bool InputReader::FindSelectedAircraft(string aircraftName)
 	while (iter != NULL)
 	{
 		if (iter->_aircraftName == aircraftName) {
-	//		cout << "FOUND AIRCRAFT " << iter->_aircraftName << endl;
+			//		cout << "FOUND AIRCRAFT " << iter->_aircraftName << endl;
 
 			return true;
 		}
 		else
 		{
 			iter = iter->_nextAircraft;
-	//		cout << "NEXT AIRCRAFT ITER FOR LINKED LIST" << endl;
+			//		cout << "NEXT AIRCRAFT ITER FOR LINKED LIST" << endl;
 		}
 	}
 	return false;

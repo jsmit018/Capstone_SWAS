@@ -40,7 +40,7 @@ void Step::CopyMapStep(const Step& mapStep)
 		Resource* newRes = new Resource();
 		newRes->CopyMapResource(*reqResIter->second);
 		_reqResourceMap.insert(pair<string, Resource*>(reqResIter->first, newRes));
-		
+
 		reqResIter++;
 	}
 
@@ -306,6 +306,10 @@ void Step::OrderArrivalEM(Parts* parts)
 
 void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 {
+	cout << "Step " << this->GetID() << " of " << this->GetMyRJName() << " started on "
+		<< aircraft->GetAircraftType() << " of ID " << aircraft->GetAircraftID() << endl;
+
+
 	//check if acquired resource vector has bay or spot
 	bool hasResource = false;
 
@@ -543,7 +547,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	int nextId = _stepID + 1;
 	//if stepid <= containerSize;
 	if (nextId <= aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
-	{	
+	{
 		//schedule next step
 		cout << "Current Maintenance step has finished, scheduling the next maintenance step." << endl;
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
@@ -581,19 +585,6 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		nextId = aircraft->GetNextRepairJob(_myRJ)->GetFirstStep()->GetID();
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextId), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	}
-
-	
-	
-	//	else {
-	//		////So I looked in SWAS.cpp what SetNextTask does is it 
-			///inidicates to the system that once an aircraft is finished with source when the
-	//		////Depart function from task is called, it will transfer the Entity(Aircraft) from 
-				//one object to the next, so this function call will send
-	//		////the Aircraft from the Step to Depart(Sink object).
-	//		cout << "All repairs for, " << aircraft->GetAircraftType() << " are completed, exiting the facility" << endl;
-	//		Depart(aircraft);
-	//	}
-	//}
 
 
 
@@ -740,7 +731,7 @@ void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
-void Step::SceduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj)
+void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj)
 {
 	for (int i = 0; i < calobj->GetNumEvents(); ++i) {
 		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
@@ -780,7 +771,7 @@ Distribution* Step::GetServiceTime()
 void Step::SetStepID(int stepID)
 {
 	_stepID = stepID;
-//	cout << "step id " << stepID << " " << _stepID << endl;
+	//	cout << "step id " << stepID << " " << _stepID << endl;
 }
 
 void Step::SetName(string name)
@@ -992,7 +983,7 @@ void Step::SetReqResource(string reqResource)
 		istringstream ssNum(numString);
 		ssNum >> num;
 
-	//	cout << "	R: " << resource << "	N: " << num << endl;
+		//	cout << "	R: " << resource << "	N: " << num << endl;
 
 
 		newResource = new Resource();
@@ -1078,12 +1069,36 @@ void Step::InitialArrivalBayCheck()
 /////////////     OTHER      ///////////////
 ////////////////////////////////////////////
 
+//now exclusive to unplanned
 void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
-	//TO DO
+	///todo: will replace mymap with myunplannedjobsmap in future
+//	map<string, RepairJob*>::const_iterator iter = aircraft->GetMyRJMapBegin();
+//
+//	while (iter != aircraft->GetMyRJMapEnd())
+//	{
+//		if (iter->second->GetSchedType() == "Unplanned")
+//		{
+//			/* roll dice on unplanned probability to see if we're going to schedule it */
+//			if (iter->second->WillSchedule() == true)
+//			{
+//				cout << aircraft->GetAircraftType() << "	will have a Random Repair Job called: " << iter->second->GetName() << endl;
+//
+//
+//				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
+//				cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
+//
+//				iter++;
+//			}
+//
+//			else
+//				cout << aircraft->GetAircraftType() << "	will not have a Random Repair Job called: " << iter->second->GetName() << endl;
+//		}
+//	}
+////
 	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
-	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID  << "st Step of " << _myRJ << " has been scheduled " << endl;
-//	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
+	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
+	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
 
 void Step::AddToResPool(Resource* resource, string resourceName)

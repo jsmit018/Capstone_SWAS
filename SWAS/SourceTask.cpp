@@ -79,8 +79,6 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 		_interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 }
 
-
-//Jordan: Need to take map of recurring IAT and schedule, instead of vector
 /*Constructor for Recurring*/
 //SourceBlock::SourceBlock(vector<Distribution*> recurringIAT, string aircraftType, Aircraft* aircraft, string name,
 //	int numberOfAircraftToGenerate) : Task(name)
@@ -111,14 +109,9 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 //	}
 //}
 
-//recurring constructor
-//Jordan : This needs to take the map and search prexisting maps as previously discussed
-//There's no reason to pass yet another map (the repair job map you've included) when the info is already avail
-//in other words, the recurringIAT <string, distribution*>map it is receving has a string of the repair job name attached to a recurring 
-//distribution instead of passing another map that doesn't exist, take the key of the recurringIat map being passed and search the aircraft's 
-//myrepairjob map for the same name. if the repair job string from our recurringIAT map is found in the myrepairjobs map, you've found
-//the recurring IAt's repair jobs and you'll schedule an arrival of this aircraft with a using the distribution you already were passed in the map.
 
+
+//recurring constructor
 SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, string aircraftType, Aircraft* aircraft, string name,
 	int numberOfAircraftToGenerate) : Task(name)
 {
@@ -162,15 +155,15 @@ SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, string aircra
 }
 
 /*Constructor for Calendar*/
-
+//scheduling aircraft arrival
 SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
-	int numCalEventsToSched, CalendarObj* calobj) : Task(name)
+	/*int numCalEventsToSched,*/ CalendarObj* calobj) : Task(name)
 {
-	cout << "Scheduling list of Calendar Events" << endl;
-	for (int i = 0; i < numCalEventsToSched; ++i) {
-		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _aircraft->GetAircraftPriority(), new ScheduleNextCalendarAircraftEA(this), "ScheduleNextCalendarAircraftEA");
-		cout << "Calendar Event Scheduled" << endl;
-	}
+	//cout << "Scheduling list of Calendar Events" << endl;
+	//for (int i = 0; i < numCalEventsToSched; ++i) {
+	//	SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _aircraft->GetAircraftPriority(), new ScheduleNextCalendarAircraftEA(this), "ScheduleNextCalendarAircraftEA");
+	//	cout << "Calendar Event Scheduled" << endl;
+	//}
 }
 
 /*Old Constructor*/
@@ -218,6 +211,9 @@ void SourceBlock::ScheduleNextCalendarAircraftEM() {
 		//cout << "Scheduling Random aircraft arrival" << endl;
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
 		cout << "Calendar Scheduled aircraft has arrived, ";
+
+
+
 		cout << "Departing new Aircraft" << endl;
 		//Depart(_aircraft->New());
 		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
@@ -227,7 +223,7 @@ void SourceBlock::ScheduleNextCalendarAircraftEM() {
 
 void SourceBlock::ScheduleNextUnplannedAircraftEM() {
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
-		cout << "Unpanned Aircraft has arrived, ";
+		cout << "Unplanned Aircraft has arrived, ";
 		cout << "Scheduling Unplanned Aircraft Arrival" << endl;
 		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 		cout << "Departing Unplanned Arrival" << endl;

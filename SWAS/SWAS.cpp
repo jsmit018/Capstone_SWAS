@@ -57,29 +57,47 @@ using namespace std;
 //}
 ///////////////////////////////////////////////////
 
-void ArriveAircraft()
+
+//Jordan, this is what's happening.
+/////In InitializeAircraft() (Previously named ArriveAircraft())
+//for each aircraft in GUI selection
+	//instantiates it by copying from master map
+		//calls copymyjobs() which
+			//iterates through master map to find its repairjobs list
+			//iterates through its list of jobs and copy to _myjobsmap
+	//iterates through _myjobs (map of all of its jobs - i.e. 2 unplanned, 1 recurring, 2 calendar)
+		//if job is calendar event
+			//calls calendar sourceblock to schedule this aircraft type's calendar repairjob to arrive at date. this will happen for all calendar events in mymap
+						//**this is why you still need the sourceblock calendar constructor i made. It needs to be scheduled through source, even though its only once.
+						//**because of this, you do NOT need to specify any numbers. it will always be 1 event per calendar repairjob
+						//**I've removed the calling of schedulefirststep from Step so that we can remove the need for a counter i was trying to describe to you
+						//**so this is what needs to be happen in SourceTask:
+						//**in whatever you're calling your "arrival" EM, it won't "schedule next calendar event" because there's only one per cal job. 
+						//**it needs to call the appropriate function schedulefirststep() -- if you pass the repairjob, you can access this function 
+						//**it was a good idea to have separate schedulefirststep functions - recurring and calendar could have the same since they require specific repair jobs
+						//**the step logic takes care of the rest of the steps.
+
+		//if job is recurring event
+			//calls recurring sourceblock schedules first arrival at recur iat 
+				//**in whatever youre calling your arrival EM, it still schedules next recurring event in the recurring iat amount from the map i've provided
+				//**now it needs to call the function schedulefirststep() -- if you pass the repairjob, you can access this function
+
+		//if job is unplanned event
+			//calls unplanned sourceblock schedules first arrival at unplanned iat  
+				//**in whatever youre calling your arrival EM, it still schedules next unplanned event in the unplanned iat
+				//**now it needs to call the function schedulefirststep() -- i've modified it to handle the logic for "am i the random job being scheduled"
+
+
+
+
+void InitializeAircraft()
 {
-	////////////////////////////////////////////
-	///	TEMPORARY DRIVER CODE FOR TESTING LL ///
-	////////////////////////////////////////////
-
-	///* Start with the empty list */
-	//Node* head = NULL;
-	//string x = "F-35";
-
-	///* Use push() to construct */
-	//push(&head, "F-18");
-	//push(&head, "F-15");
-	//push(&head, "Apache");
-
-	///////////////////////////////////////
-	///////////////////////////////////////
-	 
 	InputReader inputReader;
 
 	//populate master map
 	inputReader.ReadInputData();
 	//inputReader.PrintEverything();
+	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
@@ -96,134 +114,71 @@ void ArriveAircraft()
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
 	while (iter != inputReader.GetMasterMapEnd())
 	{
-		//if the current aircraft matches one in the linked list, create instance etc.
+		/*If the current aircraft matches one in the linked list, create instance etc.*/
 		//if (search(head, iter->first) == true)
-
-		//Jordan: this find aircraft function is not working 100%
-		//	We are receiving the first aircraft found and iterating, but not getting any more aircraft afterwards 
-		//	After comparing it to my test LL search function, may need to pass head as a param, but 
-		//	Can't with it being a private struct to this input reader)
-		
-		// 3/30: AddSelectedAircraft function has been updated to correctly reflect additions [Jordan]
-		// 3/30: Tested FindSelectedAircraft Function w/ updated AddSelectedAircraft, and the two work together.
-
-		if(inputReader.FindSelectedAircraft(iter->first) == true)
+		if (inputReader.FindSelectedAircraft(iter->first) == true)
 		{
-			/* Create the first instance of that particular aircraft type */
 			//iter->second->PrintProperties(); 
-			iter->second->GetAircraftIAT()->PrintDistribution();
+			//iter->second->GetAircraftIAT()->PrintDistribution();
 
+			/* Create the first instance of that particular aircraft type by copying from master map */
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
-			cout << "_____________________________________________" << endl;
-			cout << "_____________________________________________" << endl;
-			cout << "Creating first instance of: " << firstAircraft->GetAircraftType() << endl;
+			cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
 
-			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
-			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
-			// 3/31: Changed in SetCalendarObj in the date to delimit from - to / based off of debugging. 
 			firstAircraft->CopyMyJobList(iter->first);
-			//cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
 
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << "ABOUT TO PRINT ALL THIGNS " << endl;
-			firstAircraft->PrintMyProperties();
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
+			map<string, RepairJob*>::const_iterator myIter = firstAircraft->GetMyRJMapBegin();
 
+			while (myIter != firstAircraft->GetMyRJMapEnd())
+			{
+				if (myIter->second->GetSchedType() == "Calendar")
+				{
+					////// calendarsourceblock schedules calendar arrival at date 
+					//(sourceblock schedules arrival, arrival happens once)
+					cout << endl;
+					cout << "Scheduling first calendar arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << endl;
+					SourceBlock* calArrival = new SourceBlock(
+						firstAircraft->GetAircraftType(),
+						firstAircraft,
+						"Calendar Arrival",
+						firstAircraft->GetCalendarObj());
+				}
 
-			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them: */
-			
-			/* Unplanned */
-			//Set Number of Aircraft Arrivals		
-		//	firstAircraft->GetAircraftIAT()->PrintDistribution();
-		//	cout << endl;
+				else if (myIter->second->GetSchedType() == "Recurring")
+				{
+					////// recurringsourceblock schedules first arrival at recur iat 
+					//(sourceblock schedules arrival, arrival schedules next arrival)
+					cout << endl;
+					cout << "Scheduling first recurring arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << endl;
+					SourceBlock* recurArrival = new SourceBlock(
+						firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
+																						//as we discussed previously, the map was set up as <string, Distribution*>. see the recurring 
+						firstAircraft->GetAircraftType(),
+						firstAircraft,
+						"Recurring Arrival",
+						10);
+				}
 
-			//Debugged and Confirmed this Schedules correctly
-			SourceBlock* unplanArrival = new SourceBlock(
-				firstAircraft->GetAircraftIAT(),
-				firstAircraft->GetAircraftType(),
-				firstAircraft,
-				"Unplanned Arrival",
-				10); 
+				else if (myIter->second->GetSchedType() == "Unplanned")
+				{
+					////// unplannedsourceblock schedules first arrival at unpl iat  
+					//(sourceblock schedules arrival, arrival schedules next arrival)
+					cout << endl;
+					cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << endl;
+					SourceBlock* unplanArrival = new SourceBlock(
+						firstAircraft->GetAircraftIAT(),
+						firstAircraft->GetAircraftType(),
+						firstAircraft,
+						"Unplanned Arrival",
+						10);
 
+				}
 
-			//Infinite number of aircraft arrivals
-			/*SourceBlock* unplanArrival = new SourceBlock(
-				firstAircraft->GetAircraftIAT(),
-				firstAircraft->GetAircraftType(),
-				firstAircraft,
-				"Unplanned Arrival");*/
-
-			//______________________________________________________________________________
-			///* Recurring */
-			//Set number of Aircraft Arrivals
-			// 3/31: Instantiates recurring Arrivals -> Minor Bug, is the RepairJob reads in as Null.
-			SourceBlock* recurArrival = new SourceBlock(
-				firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
-																				//as we discussed previously, the map was set up as <string, Distribution*>. see the recurring 
-				firstAircraft->GetAircraftType(),
-				firstAircraft,
-				"Recurring Arrival",
-				10);
-
-			//Infinite number of recurring aircraft arrival
-			//SourceBlock* recurArrival = new SourceBlock(
-			//	firstAircraft->GetRecurIatMap(), //get a map
-			//	firstAircraft->GetAircraftType(),
-			//	firstAircraft,
-			//	"Recurring Arrival",
-			//	1000);
-			//______________________________________________________________________________
-			///* Calendar */
-			//Note** -- During test Instantiation, CalenderObj was size 0. This would cause a read access error << im assuming you've fixed this?
-			// 3/31: Solution: I have created 
-			//if (firstAircraft->GetCalendarObj()->GetNumEvents() == 0)
-			//	cout << "No Associated Calendar Arrivals with " << firstAircraft->GetAircraftType() << endl;
-			//else {
-			//	SourceBlock* calArrival = new SourceBlock(
-			//		firstAircraft->GetAircraftType(),
-			//		firstAircraft,
-			//		"Calendar Arrival",
-			//		1, //should only be one instance of this calendar event arrival -- Changing it to the below line to ensure flexibility, if it throws 
-			//	//	//or causes errors 1 is fine
-			//		//Jordan: there will never be more than one event for one calendar repair job arrival. so this may be unnecessary, unless i'm misunderstanding
-			//		//the value this represents
-			//		//Andrea: Unless I misunderstood, when I was constructing this. There was a possibility that any X aircraft could have Y number of Calendar events/sim
-			//		//These functions were in the case that were so.
-			//		//firstAircraft->GetCalendarObj()->GetNumEvents(), 
-			//		firstAircraft->GetCalendarObj());
-			//}
-			
-			//______________________________________________________________________________
-
-
-			////POTENTIAL future logic below, unused now that first steps will lead to last step of last repair job:
-
-			//////if more steps
-			////	/* getNextStep() keeps getting the next step til all steps in RJ are done,
-			////	can be made to take argument of RJ type (unplan,etc) then get next
-			////	RJ of same type's first step */
-
-			////	//	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned");
-			////	//	unplanArrival->SetNextTask(nextUnplanStep);
-			////	//	nextUnplanStep->SetNextTask(depart);
-
-			////	//	Step* nextRecurStep = firstAircraft->GetNextStep("Recurring");
-			////	//	recurArrival->SetNextTask(nextRecurStep);
-			////	//	nextRecurStep->SetNextTask(depart);
-
-			////	//	Step* nextCalStep = firstAircraft->GetNextStep("Calendar");
-			////	//	calArrival->SetNextTask(nextCalStep);
-			////	//	nextCalStep->SetNextTask(depart);
+				myIter++;
+			}
 
 		}
 
@@ -232,14 +187,70 @@ void ArriveAircraft()
 
 	Warehouse::SetMasterMaps(inputReader);
 
-	cout << "reading is finished" << endl;
+
 }
+
+
+//CODE COMMENTS KEPT JUST IN CASE
+//			/* Unplanned */
+//			//Set Number of Aircraft Arrivals		
+//		//	firstAircraft->GetAircraftIAT()->PrintDistribution();
+//		//	cout << endl;
+//
+//			//Debugged and Confirmed this Schedules correctly
+//			SourceBlock* unplanArrival = new SourceBlock(
+//				firstAircraft->GetAircraftIAT(),
+//				firstAircraft->GetAircraftType(),
+//				firstAircraft,
+//				"Unplanned Arrival",
+//				10); 
+//
+//
+//			//Infinite number of aircraft arrivals
+//			/*SourceBlock* unplanArrival = new SourceBlock(
+//				firstAircraft->GetAircraftIAT(),
+//				firstAircraft->GetAircraftType(),
+//				firstAircraft,
+//				"Unplanned Arrival");*/
+//
+//			//______________________________________________________________________________
+//			///* Recurring */
+
+//			//Infinite number of recurring aircraft arrival
+//			//SourceBlock* recurArrival = new SourceBlock(
+//			//	firstAircraft->GetRecurIatMap(), //get a map
+//			//	firstAircraft->GetAircraftType(),
+//			//	firstAircraft,
+//			//	"Recurring Arrival",
+//			//	1000);
+
+//
+//
+//			////POTENTIAL future logic below, unused now that first steps will lead to last step of last repair job:
+//
+//			//////if more steps
+//			////	/* getNextStep() keeps getting the next step til all steps in RJ are done,
+//			////	can be made to take argument of RJ type (unplan,etc) then get next
+//			////	RJ of same type's first step */
+//
+//			////	//	Step* nextUnplanStep = firstAircraft->GetNextStep("Unplanned");
+//			////	//	unplanArrival->SetNextTask(nextUnplanStep);
+//			////	//	nextUnplanStep->SetNextTask(depart);
+//
+//			////	//	Step* nextRecurStep = firstAircraft->GetNextStep("Recurring");
+//			////	//	recurArrival->SetNextTask(nextRecurStep);
+//			////	//	nextRecurStep->SetNextTask(depart);
+//
+//			////	//	Step* nextCalStep = firstAircraft->GetNextStep("Calendar");
+//			////	//	calArrival->SetNextTask(nextCalStep);
+//			////	//	nextCalStep->SetNextTask(depart);
+//
+
 
 
 int main() {
 
-	ArriveAircraft();
-
+	InitializeAircraft();
 	///Included for simulation testing purposes -> will be moved during GUI integration
 	//while (SimExec::GetSimulationFlag())
 		//SimExec::RunSimulation(0, 0, 2021);

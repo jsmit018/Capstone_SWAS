@@ -10,9 +10,9 @@ class SourceBlock : public Task {
 public:
 	/*Constructor for Unplanned Arrivals*/
 	SourceBlock(
-		Distribution* unplannedIat, 
-		string aircraftType, 
-		Aircraft* aircraft, 
+		Distribution* unplannedIat,
+		string aircraftType,
+		Aircraft* aircraft,
 		string name,
 		int numberOfAircraftToGenerate = NULL);
 
@@ -38,19 +38,19 @@ public:
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
-		int numCalEventsToSched,
+		//int numCalEventsToSched,
 		CalendarObj* calobj);
-		//Removing the below line, as this is set through numCalEvents
-		//int numberOfAircraftToGenerate = NULL);
+	//Removing the below line, as this is set through numCalEvents
+	//int numberOfAircraftToGenerate = NULL);
 
-	/*Old Constructor*/
-	/*SourceBlock(Distribution* iat,
-		string aircraftType,
-		Aircraft* aircraft,
-		string name,
-		int numOfCalendarEventsToSchedule,
-		CalendarObj* calobj,
-		int numberOfAircraftToGenerate = NULL);*/
+/*Old Constructor*/
+/*SourceBlock(Distribution* iat,
+	string aircraftType,
+	Aircraft* aircraft,
+	string name,
+	int numOfCalendarEventsToSchedule,
+	CalendarObj* calobj,
+	int numberOfAircraftToGenerate = NULL);*/
 
 	string GetAircraftType();
 	void SetAircraftType(string aircraftType);
