@@ -6,6 +6,9 @@
 
 using namespace std;
 
+/**
+ * Base class  for distirubtion to be inherited  by the unique distribtuion types
+ */
 class Distribution
 {
 public:
@@ -20,6 +23,9 @@ private:
 	static string _seedType;
 };
 
+/**
+ * Class for an Exponential Distribution
+ */
 class Exponential : public Distribution
 {
 public:
@@ -35,6 +41,9 @@ private:
 	double _mean;
 };
 
+/**
+ * Class for a Unifrom Distribution
+ */
 class Uniform : public Distribution
 {
 public:
@@ -51,6 +60,9 @@ private:
 	double _max;
 };
 
+/**
+ * Class for a Triangular Distribution
+ */
 class Triangular : public Distribution
 {
 public:
@@ -68,6 +80,9 @@ private:
 	double _max;
 };
 
+/**
+ * Class for a Normal Distribution
+ */
 class Normal : public Distribution
 {
 public:
@@ -83,6 +98,9 @@ private:
 	double _stdev;
 };
 
+/**
+ * Class for a Poisson Distribution
+ */
 class Poisson : public Distribution
 {
 public:
@@ -98,6 +116,9 @@ private:
 	double _mean;
 };
 
+/**
+ * Class for a Constant Distribution
+ */
 class Constant : public Distribution
 {
 public:
@@ -111,6 +132,9 @@ private:
 	double _mean;
 };
 
+/**
+ * Class for a Weibull Distribution
+ */
 class Weibull : public Distribution
 {
 public:

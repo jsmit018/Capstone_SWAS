@@ -1,13 +1,25 @@
 #include "Distribution.h"
 
+/**
+ * Distribution constructor
+ */
 Distribution::Distribution() {}
 
+/**
+ * Sets the initial seed type to "null" before it is read in
+ */
 string Distribution::_seedType = "null";
 
+/**
+ * Pringt function for the inherited parent class of Distribution
+ */
 void Distribution::PrintDistribution()
 {
 }
 
+/**
+ * Creates a generator for Ditribution to be used for the random variable creation
+ */
 std::default_random_engine Distribution::generator;
 
 //void Distribution::SetSystemSeed(int seed) {
@@ -17,36 +29,57 @@ std::default_random_engine Distribution::generator;
 
 //}
 
+/**
+ * Sets the seedType of distribution based on the seed type listed in the input file
+ */
 void Distribution::SetSystemSeedType(string seedType) {
 	_seedType = seedType;
 }
 
+/**
+ * Exponential Distribution constructor that sets the mean and creates the specified distribution
+ */
 Exponential::Exponential(double mean) : Distribution()
 {
 	_mean = mean;
 	_distr = new std::exponential_distribution<double>(1.0 / mean);
 }
 
+/**
+ * Gets a random variable for the distribution
+ */
 double Exponential::GetRV()
 {
 	return _distr->operator()(generator);
 }
 
+/**
+ * Prints the Exponential Distributions values
+ */
 void Exponential::PrintDistribution()
 {
 	printf("Exponential - mean: %f \n", _mean);
 }
 
+/**
+ * Returns the mean of the Exponential Distribution
+ */
 double Exponential::GetMean()
 {
 	return _mean;
 }
 
+/**
+ * Returns the distibution itself
+ */
 std::exponential_distribution<double>* Exponential::GetDistr()
 {
 	return _distr;
 }
 
+/**
+ * Creates an Exponential Distribution pointer in order to copy the distribution
+ */
 Distribution* Exponential::CopyThis()
 {
 	Exponential* newptr = new Exponential(_mean);
@@ -60,6 +93,9 @@ Distribution* Exponential::CopyThis()
 //	_distr = old_child->GetDistr();
 //}
 
+/**
+ * Uniform Distribution constructor that sets the min, max, and creates the specified distribution
+ */
 Uniform::Uniform(double min, double max) : Distribution()
 {
 	_min = min;
@@ -77,17 +113,27 @@ Uniform::Uniform(double min, double max) : Distribution()
 //	return _max; 
 //}
 //
+
+/**
+ * Gets a random variable for the distribution
+ */
 double Uniform::GetRV()
 {
 	return _distr->operator()(generator);
 }
 
+/**
+ * Prints the Uniform Distribution values
+ */
 void Uniform::PrintDistribution()
 {
 	printf("Uniform - min, max: %f %f \n", _min, _max);
 
 }
 
+/**
+ * Creates an Uniform Distribution pointer in order to copy the distribution
+ */
 Distribution* Uniform::CopyThis()
 {
 	Uniform* newptr = new Uniform(_min, _max);
@@ -102,6 +148,9 @@ Distribution* Uniform::CopyThis()
 //	_max = old_child->GetMax();
 //}
 
+/**
+ * Triangular Distribution constructor that sets the min, max, expected, and creates the specified distribution
+ */
 Triangular::Triangular(double min, double expected, double max) : Distribution()
 {
 	_min = min;
@@ -160,11 +209,17 @@ double Triangular::GetExpected()
 	return _expected;
 }*/
 
+/**
+ * Returns the distibution itself
+ */
 std::uniform_real_distribution<double>* Triangular::GetDistr()
 {
 	return _distr;
 }
 
+/**
+ * Gets a random variable for the distribution
+ */
 double Triangular::GetRV()
 {
 	double u = _distr->operator()(generator);
@@ -176,6 +231,9 @@ double Triangular::GetRV()
 	return x;
 }
 
+/**
+ * Creates an Triangular Distribution pointer in order to copy the distribution
+ */
 Distribution * Triangular::CopyThis()
 {
 	Triangular* newptr = new Triangular(_min,_expected, _max);
@@ -197,11 +255,17 @@ Distribution * Triangular::CopyThis()
 //	_distr = old_child->GetDistr();
 //}
 
+/**
+ * Prints the Triangular Distribution values
+ */
 void Triangular::PrintDistribution()
 {
 	printf("Triangular - min, expected, max: %f %f %f \n", _min, _expected, _max);
 }
 
+/**
+ * Normal Distribution constructor that sets the mean, standard deviation, and creates the specified distribution
+ */
 Normal::Normal(double mean, double stdev)
 {
 	_mean = mean;
@@ -209,6 +273,9 @@ Normal::Normal(double mean, double stdev)
 	_distr = new std::normal_distribution<double>(mean, stdev);
 }
 
+/**
+ * Creates an Normal Distribution pointer in order to copy the distribution
+ */
 Distribution* Normal::CopyThis()
 {
 	Normal* newptr = new Normal(_mean, _stdev);
@@ -225,6 +292,9 @@ Distribution* Normal::CopyThis()
 //	return _stdev;
 //}
 
+/**
+ * Gets a random variable for the distribution
+ */
 double Normal::GetRV()
 {
 	return _distr->operator()(generator);
@@ -237,17 +307,26 @@ double Normal::GetRV()
 //	_stdev = old_child->GetStdev();
 //}
 
+/**
+ * Prints the Normal Distribution values
+ */
 void Normal::PrintDistribution()
 {
 	printf("Normal - mean, stdev: %f %f\n", _mean, _stdev);
 }
 
+/**
+ * Poisson Distribution constructor that sets the mean and creates the specified distribution
+ */
 Poisson::Poisson(double mean)
 {
 	_mean = mean;
 	_distr = new std::poisson_distribution<int>(mean);
 }
 
+/**
+ * Returns the distibution itself
+ */
 std::poisson_distribution<int>* Poisson::GetDistr()
 {
 	return _distr; 
@@ -258,11 +337,17 @@ std::poisson_distribution<int>* Poisson::GetDistr()
 //	return _mean;
 //}
 
+/**
+ * Gets a random variable for the distribution
+ */
 double Poisson::GetRV()
 {
 	return _distr->operator()(generator);
 }
 
+/**
+ * Creates an Poisson Distribution pointer in order to copy the distribution
+ */
 Distribution* Poisson::CopyThis()
 {
 	Poisson* newptr = new Poisson(_mean);
@@ -276,11 +361,17 @@ Distribution* Poisson::CopyThis()
 //	_distr = old_child->GetDistr();
 //}
 
+/**
+ * Prints the Poisson Distribution values
+ */
 void Poisson::PrintDistribution()
 {
 	printf("Poisson - mean: %f\n", _mean);
 }
 
+/**
+ * Constant Distribution constructor that sets the mean.
+ */
 Constant::Constant(double mean)
 {
 	_mean = mean;
@@ -291,11 +382,17 @@ Constant::Constant(double mean)
 //	return _mean;
 //}
 
+/**
+ * Gets a random variable for the distribution
+ */
 double Constant::GetRV()
 {
 	return _mean;
 }
 
+/**
+ * Creates an Constant Distribution pointer in order to copy the distribution
+ */
 Distribution* Constant::CopyThis()
 {
 	Constant* newptr = new Constant(_mean);
@@ -308,11 +405,17 @@ Distribution* Constant::CopyThis()
 //	_mean = old_child->GetMean();
 //}
 
+/**
+ * Prints the Constant Distribution values
+ */
 void Constant::PrintDistribution()
 {
 	printf("Constant - mean: %f\n", _mean);
 }
 
+/**
+ * Weibull Distribution constructor that sets the scale, shape, and creates the specified distribution
+ */
 Weibull::Weibull(double scale, double shape)
 {
 	_scale = scale;
@@ -330,17 +433,26 @@ Weibull::Weibull(double scale, double shape)
 //	return _shape;
 //}
 
+/**
+ * Creates an Weibull Distribution pointer in order to copy the distribution
+ */
 Distribution* Weibull::CopyThis()
 {
 	Weibull* newptr = new Weibull(_scale, _shape);
 	return newptr;
 }
 
+/**
+ * Gets a random variable for the distribution
+ */
 double Weibull::GetRV()
 {
 	return _distr->operator()(generator);
 }
 
+/**
+ * Prints the Weibull Distribution values
+ */
 void Weibull::PrintDistribution()
 {
 	printf("Weibull - scale, shape: %f %f %f\n", _scale, _shape);
