@@ -344,7 +344,9 @@ int Aircraft::GetNextAircraftID()
 
 Aircraft* Aircraft::New()
 {
-	return new Aircraft(); // add appropriate parameters
+	Aircraft* newAircraft = new Aircraft(*this);
+	return newAircraft; // add appropriate parameters
+	//return new Aircraft();
 }
 
 void Aircraft::SetAircraftFootprint(double length, double wingspan)

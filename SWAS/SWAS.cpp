@@ -122,6 +122,9 @@ void InitializeAircraft()
 			//iter->second->GetAircraftIAT()->PrintDistribution();
 
 			/* Create the first instance of that particular aircraft type by copying from master map */
+			//Test count//
+			int count = 1;
+			//____________
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
 
@@ -136,13 +139,14 @@ void InitializeAircraft()
 					////// calendarsourceblock schedules calendar arrival at date 
 					//(sourceblock schedules arrival, arrival happens once)
 					cout << endl;
-					cout << "Scheduling first calendar arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
 					SourceBlock* calArrival = new SourceBlock(
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Calendar Arrival",
-						firstAircraft->GetCalendarObj());
+						firstAircraft->GetCalendarObj(),
+						myIter->second);
 				}
 
 				else if (myIter->second->GetSchedType() == "Recurring")
@@ -150,7 +154,7 @@ void InitializeAircraft()
 					////// recurringsourceblock schedules first arrival at recur iat 
 					//(sourceblock schedules arrival, arrival schedules next arrival)
 					cout << endl;
-					cout << "Scheduling first recurring arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << "Scheduling recurring arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
 					SourceBlock* recurArrival = new SourceBlock(
 						firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
@@ -166,14 +170,17 @@ void InitializeAircraft()
 					////// unplannedsourceblock schedules first arrival at unpl iat  
 					//(sourceblock schedules arrival, arrival schedules next arrival)
 					cout << endl;
-					cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
+					//cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Unplanned Arrival",
+						myIter->second,
 						10);
+					count++;
 
 				}
 
@@ -253,7 +260,7 @@ int main() {
 	InitializeAircraft();
 	///Included for simulation testing purposes -> will be moved during GUI integration
 	//while (SimExec::GetSimulationFlag())
-		//SimExec::RunSimulation(0, 0, 2021);
+	//	SimExec::RunSimulation(0, 0, 2021);
 
 	return 0;
 }

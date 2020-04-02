@@ -438,8 +438,12 @@ public:
 					AdvanceDay();
 			}
 			Event* next = _eventSet[_baseX][_baseY];
-			cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
-			_eventSet[_baseX][_baseY] = next->_nextEvent;
+			if (GetTimeOfDay() >= 10)
+				cout << "Executing event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at " << GetTimeOfDay() << "00 in " << GetYear() << endl;
+			else
+				cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at 0" << GetTimeOfDay() << "00 in " << GetYear() << endl;
+			//cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
+			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
 			EventAction* ea = next->_ea;
 			delete next;
 			_numEvents--;

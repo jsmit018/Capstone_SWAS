@@ -14,6 +14,7 @@ public:
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
+		RepairJob* repairJob,
 		int numberOfAircraftToGenerate = NULL);
 
 	/*Constructor for Recurring Arrivals*/
@@ -39,7 +40,8 @@ public:
 		Aircraft* aircraft,
 		string name,
 		//int numCalEventsToSched,
-		CalendarObj* calobj);
+		CalendarObj* calobj,
+		RepairJob* repairJob);
 	//Removing the below line, as this is set through numCalEvents
 	//int numberOfAircraftToGenerate = NULL);
 
@@ -69,8 +71,8 @@ private:
 	class ScheduleNextCalendarAircraftEA;
 	class ScheduleNextUnplannedAircraftEA;
 	class ScheduleNextRecurringAircraftEA;
-	void ScheduleNextUnplannedAircraftEM();
-	void ScheduleNextCalendarAircraftEM();
+	void ScheduleNextUnplannedAircraftEM(RepairJob* repairJob);
+	void ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calobj);
 	//void ScheduleNextRecurringAircraftEM();
 	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob);
 };
