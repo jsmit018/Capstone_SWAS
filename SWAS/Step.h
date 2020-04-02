@@ -23,7 +23,6 @@ public:
 	void SetInspecFailProb(string failureProb);
 	void SetServiceTime(string serviceTime); //change to distribution
 	void SetReqResource(string reqResource);
-	//void SetResNum(int numResNeeded); ///TODO read in and split
 	void SetReqParts(string reqParts);
 	void SetReturnStep(/*int stepId*/ int returnStep);
 	void SetStepIndoorReq(char indoorReq);
@@ -37,7 +36,7 @@ public:
 	void PrintParts();
 	void PrintResources();
 	void PrintPools();
-	void PrintEvent();
+	//void PrintEvent();
 	void InitialArrivalBayCheck();
 	map<string, Resource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
@@ -61,7 +60,7 @@ public:
 	//For Testing
 	//----------------------
 	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
-	void SceduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
+	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
 	//----------------------
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource

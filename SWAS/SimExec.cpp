@@ -142,21 +142,21 @@ public:
 				_eventSet[i] = new Event * [days[i]];
 
 		}
-		cout << "Initializing the linked list of each Month & Day" << endl;
+		//		cout << "Initializing the linked list of each Month & Day" << endl;
 		for (int i = 0; i < numBins + 1; ++i) {
 			if (i == 12) {
-				cout << "Overflow Initialzed" << endl;
+				//				cout << "Overflow Initialzed" << endl;
 				_eventSet[i][0] = 0;
 			}
 			for (int j = 0; j < days[i]; ++j) {
-				cout << ConvertMonth(i) << " " << j + 1 << " initialized" << endl;
+				//				cout << ConvertMonth(i) << " " << j + 1 << " initialized" << endl;
 				if (i == February && j == 27 && _year % 4 == 0) {
-					cout << ConvertMonth(i) << " " << j + 2 << " initialized" << endl;
+					//					cout << ConvertMonth(i) << " " << j + 2 << " initialized" << endl;
 					_eventSet[i][j + 1] = 0;
 				}
 				_eventSet[i][j] = 0;
 				if (i == 12 && j == 1) {
-					cout << "Overflow Initialzed breaking initialization loop" << endl;
+					//					cout << "Overflow Initialzed breaking initialization loop" << endl;
 					break;
 				}
 			}
@@ -364,27 +364,27 @@ public:
 	}
 
 	Time GetTimeOfDay() {
-		cout << "Returning time of day" << endl;
+		//	cout << "Returning time of day" << endl;
 		return _eventSet[_baseX][_baseY]->_timeOfDay;
 	}
 
 	Time GetMonth() {
-		cout << "Returning Month" << endl;
+		//	cout << "Returning Month" << endl;
 		return _eventSet[_baseX][_baseY]->_timeMonth;
 	}
 
 	Time GetDay() {
-		cout << "Returning Day of the Month" << endl;
+		//	cout << "Returning Day of the Month" << endl;
 		return _eventSet[_baseX][_baseY]->_timeDay;
 	}
 
 	int GetYear() {
-		cout << "Returning Year" << endl;
+		//	cout << "Returning Year" << endl;
 		return _eventSet[_baseX][_baseY]->_year;
 	}
 
 	string ConvertMonth(Time month) {
-		cout << "Converting month into a string" << endl;
+		//	cout << "Converting month into a string" << endl;
 		switch ((int)month) {
 		case 0:
 			return "January";
@@ -661,7 +661,7 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 	//while (_eventSet.HasEvent() && _simulationFlag == true) {
 	if (_eventSet.HasEvent() && _simulationFlag == true) {
 		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= 0
-			&& _simulationTime._year >= year ) {
+			&& _simulationTime._year >= year) {
 			FlipSimulationFlag();
 			return 3;
 			//break;

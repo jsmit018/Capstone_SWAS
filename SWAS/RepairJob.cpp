@@ -7,13 +7,14 @@ RepairJob::RepairJob()
     _schedType = "Unplanned";
     _calendarDate = "n/a";
     //_recurringAmt = 0.0;
-   _unplannedProb = new Constant(0.0);
-   _recurringAmt = new Constant(0.0);
+    _unplannedProb = new Constant(0.0);
+    _recurringAmt = new Constant(0.0);
 }
 
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
-    cout << "       Copying " << mapRj._name << " repair job."<< endl;
+    //   cout << "       Copying " << mapRj._name << " repair job."<< endl;
+     //   cout << endl;
     _name = mapRj._name;					            // Repair job name
     _priority = mapRj._priority;		        		// Repair job priority
     _schedType = mapRj._schedType;				        // Interarrival schedule type
@@ -22,9 +23,6 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
 
-    //cout << "TEST ";
-    //_unplannedProb->PrintDistribution();
-    //cout << endl;
 
     // to ensure that the copies are actual copies and 
     //that the same pointers is not being shared by different repair jobs:
@@ -40,9 +38,9 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
         newStep->CopyMapStep(*mapRj._vecSteps[i]);
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
-      //  cout << endl;
-        //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
-      //  cout << endl;
+        //  cout << endl;
+          //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
+        //  cout << endl;
     }
     // and also maybe for distribution, but that might not matter?
 
@@ -59,11 +57,11 @@ Step* RepairJob::GetStep(int stepID)
     {
         cout << "NO STEPS!" << endl;
     }
-    
+
     //setting stepID 
      //  cout << "ID IS      " << stepID << endl;
     return _vecSteps[stepID - 1];
-    
+
 }
 
 Step* RepairJob::GetFirstStep()
@@ -120,8 +118,18 @@ void RepairJob::SetSchedType(string schedType)
 
 string RepairJob::GetSchedType()
 {
-  //  cout << "TYPE: " << _schedType << endl;
+    /*   cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << "*************#*#*#*#*#**#*##" << endl;
+      cout << "TYPE: " << _schedType << endl;*/
     return _schedType;
+
+    cout << endl;
+    cout << endl;
 }
 
 void RepairJob::SetIndoorReq(char indoorReq)
@@ -150,7 +158,7 @@ void RepairJob::SetRecurringAmt(double recurringAmt)
     _recurringAmt = new Constant(recurringAmt);
 
 
- 	//cout << "*****************************IAT RECURRING IS: ";
+    //cout << "*****************************IAT RECURRING IS: ";
   //     _recurringAmt->PrintDistribution();
   // 	cout << endl;
 
@@ -242,7 +250,7 @@ void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
 
-  //  cout << "adding step" << _vecSteps.size() << endl;
+    //  cout << "adding step" << _vecSteps.size() << endl;
     step->SetStepID(_vecSteps.size());
     /*int stepID;
     for (int i = 0; i < _vecSteps.size(); i++)
@@ -279,17 +287,6 @@ void RepairJob::PrintResourceRepairs()
         iter++;
     }
 }
-//
-//void RepairJob::GetNextStep()
-//{
-//    for (int i; i < _vecSteps.size(); i++)
-//    {
-//        if (i = _vecSteps.size() + 1 || )
-//        {
-//
-//        }
-//    }
-//}
 
 RepairJob* RepairJob::GetResourceRepair(string resourceName)
 {
@@ -301,7 +298,7 @@ RepairJob* RepairJob::GetResourceRepair(string resourceName)
 
 void RepairJob::PrintJobProperties()
 {
- 
+
     cout << "   Repair Job Name: " << _name << endl;
     cout << "   Schedule Type: " << _schedType << endl;
     cout << "   Repair Job Priority: " << _priority << endl;
@@ -317,7 +314,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-//        _vecSteps[1]->PrintPools();
+        //        _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }
