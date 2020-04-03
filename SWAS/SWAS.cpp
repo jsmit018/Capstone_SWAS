@@ -57,6 +57,9 @@ using namespace std;
 //}
 ///////////////////////////////////////////////////
 
+/**
+* Function to populate the master map and for aircraft to arrive
+*/
 void ArriveAircraft()
 {
 	////////////////////////////////////////////
@@ -74,13 +77,19 @@ void ArriveAircraft()
 
 	///////////////////////////////////////
 	///////////////////////////////////////
-	 
+
+	/**
+	* Creates an object of the input reader class
+	*/
 	InputReader inputReader;
 
 	//populate master map
 	inputReader.ReadInputData();
 	//inputReader.PrintEverything();
 
+	/**
+	* Reads in the aircraft types
+	*/
 	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	inputReader.AddSelectedAircraft("F-35");
@@ -103,11 +112,11 @@ void ArriveAircraft()
 		//	We are receiving the first aircraft found and iterating, but not getting any more aircraft afterwards 
 		//	After comparing it to my test LL search function, may need to pass head as a param, but 
 		//	Can't with it being a private struct to this input reader)
-		
+
 		// 3/30: AddSelectedAircraft function has been updated to correctly reflect additions [Jordan]
 		// 3/30: Tested FindSelectedAircraft Function w/ updated AddSelectedAircraft, and the two work together.
 
-		if(inputReader.FindSelectedAircraft(iter->first) == true)
+		if (inputReader.FindSelectedAircraft(iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type */
 			//iter->second->PrintProperties(); 
@@ -118,8 +127,8 @@ void ArriveAircraft()
 			cout << "_____________________________________________" << endl;
 			cout << "Creating first instance of: " << firstAircraft->GetAircraftType() << endl;
 
-			/* Look up all of that particular aircraft type's repair jobs (and associated steps, 
-			resources, parts, etc.) from the master map and copy them to this new aircraft's list */ 
+			/* Look up all of that particular aircraft type's repair jobs (and associated steps,
+			resources, parts, etc.) from the master map and copy them to this new aircraft's list */
 			// 3/31: Changed in SetCalendarObj in the date to delimit from - to / based off of debugging. 
 			firstAircraft->CopyMyJobList(iter->first);
 			//cout << "MY RJ MAP SIZE : " << firstAircraft->GetMyRJMapSize() << endl;
@@ -141,7 +150,7 @@ void ArriveAircraft()
 
 
 			/* Then schedule the next unplanned, recurring, and calendar arrivals if they have them: */
-			
+
 			/* Unplanned */
 			//Set Number of Aircraft Arrivals		
 		//	firstAircraft->GetAircraftIAT()->PrintDistribution();
@@ -153,7 +162,7 @@ void ArriveAircraft()
 				firstAircraft->GetAircraftType(),
 				firstAircraft,
 				"Unplanned Arrival",
-				10); 
+				10);
 
 
 			//Infinite number of aircraft arrivals
@@ -163,10 +172,10 @@ void ArriveAircraft()
 				firstAircraft,
 				"Unplanned Arrival");*/
 
-			//______________________________________________________________________________
-			///* Recurring */
-			//Set number of Aircraft Arrivals
-			// 3/31: Instantiates recurring Arrivals -> Minor Bug, is the RepairJob reads in as Null.
+				//______________________________________________________________________________
+				///* Recurring */
+				//Set number of Aircraft Arrivals
+				// 3/31: Instantiates recurring Arrivals -> Minor Bug, is the RepairJob reads in as Null.
 			SourceBlock* recurArrival = new SourceBlock(
 				firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
 																				//as we discussed previously, the map was set up as <string, Distribution*>. see the recurring 
@@ -202,7 +211,7 @@ void ArriveAircraft()
 			//		//firstAircraft->GetCalendarObj()->GetNumEvents(), 
 			//		firstAircraft->GetCalendarObj());
 			//}
-			
+
 			//______________________________________________________________________________
 
 
@@ -235,7 +244,9 @@ void ArriveAircraft()
 	cout << "reading is finished" << endl;
 }
 
-
+/**
+* Calls the function ArriveAircraft()
+*/
 int main() {
 
 	ArriveAircraft();
