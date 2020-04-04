@@ -11,7 +11,9 @@
 //#include "Resource.h"
 
 using namespace std;
-
+/**
+ * Class that is responsible for inputting data from the database into all necessary formats and data structures
+ */
 class InputReader
 {
 public:

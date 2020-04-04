@@ -9,9 +9,15 @@
 
 using namespace std;
 
+/**
+ * Creation of static maps for both Aircraft and Resources
+ */
 map<string, Aircraft*> InputReader::_masterMap;
 map<string, Resource*> InputReader::_masterResourceMap;
 
+/**
+ * A struct that holds a selected aircraft based off the aircrafts name
+ */
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
 		_aircraftName = aircraftName;
@@ -21,6 +27,9 @@ struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft* _nextAircraft;
 };
 
+/**
+ * Instatntiates an object for calender conversion
+ */
 InputReader::InputReader()
 {
 	calConvert = new CalConverter();
@@ -65,6 +74,12 @@ InputReader::~InputReader()
 		//}
 }
 
+/**
+ * Reads in the input data via the steps:
+	1. Gets seed type and number of runs
+	2. Reads in calender information reading in month, number of days, and inputiing them into the calnder conversion method
+	3. Reads in aircraft information
+ */
 void InputReader::ReadInputData() //initialization for getting data
 {
 	//CalConverter calConvert;
@@ -141,7 +156,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						break;
 					str >> numDays;
 
-				//	cout << "month " << month << " days, " << numDays << endl; 
+					//	cout << "month " << month << " days, " << numDays << endl; 
 
 					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
@@ -177,8 +192,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-				//	cout << "another line " << line << endl;
-					////parsing the whole file and storing individual strings
+					//	cout << "another line " << line << endl;
+						////parsing the whole file and storing individual strings
 					while (ss)
 					{
 						//csv empty cell has 11 commas
@@ -239,7 +254,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					//						
 				}
-			//	cout << "after aircraft for loop \n";
+				//	cout << "after aircraft for loop \n";
 			}
 
 
@@ -293,7 +308,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					iter->second->SetAircraftIAT(unplannedIAT);
-					
+
 					//		iter->second->PrintProperties();
 					//		cout << endl;
 
@@ -386,11 +401,11 @@ void InputReader::ReadInputData() //initialization for getting data
 						newJob->SetRecurringAmt(schedRecur);
 
 						map<string, Aircraft*>::const_iterator iter = _masterMap.begin();
-							while (iter != _masterMap.end())
-							{
-								iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
-								iter++;
-							}
+						while (iter != _masterMap.end())
+						{
+							iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
+							iter++;
+						}
 
 					}
 
@@ -404,7 +419,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//cout << endl;
 
 
-					
+
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
 				}
 			}
@@ -552,7 +567,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					getline(dataFile, line);
 
-				//	cout << "NEW STEP LINE " << line << endl;
+					//	cout << "NEW STEP LINE " << line << endl;
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream iss(line);
@@ -650,23 +665,23 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iter != _masterMap.end())
 					{
 						map<string, RepairJob*>::iterator it = iter->second->GetRJMapBegin();
-					//	cout << "aircraft name " << iter->second->GetAircraftType() << endl;
+						//	cout << "aircraft name " << iter->second->GetAircraftType() << endl;
 
 						while (it != iter->second->GetRJMapEnd())
 						{
-						//	cout << "rj name: " << it->second->GetName() << endl;
-							// create object, get the name of the repair job in the aircraft object and check that it exists
+							//	cout << "rj name: " << it->second->GetName() << endl;
+								// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-		//						cout << " about to add a step \n" << endl;
+								//						cout << " about to add a step \n" << endl;
 
-		/*						cout << row[0] << " " << row[1] << " " << row[2] << " " <<
-									row[3] << " " << row[4] << " " << row[5] << " " <<
-									row[6] << " " << row[7] << " " << row[8] << " " << endl;
-			*/					it->second->AddStep(newStep);
+								/*						cout << row[0] << " " << row[1] << " " << row[2] << " " <<
+															row[3] << " " << row[4] << " " << row[5] << " " <<
+															row[6] << " " << row[7] << " " << row[8] << " " << endl;
+									*/					it->second->AddStep(newStep);
 
-			//					newStep->Print();
-			//					cout << "-----------------------------------------------------------------\n";
+									//					newStep->Print();
+									//					cout << "-----------------------------------------------------------------\n";
 							}
 							it++;
 						}
@@ -1006,16 +1021,25 @@ void InputReader::ReadInputData() //initialization for getting data
 	}
 }
 
+/**
+ * Returns the head index of the master map containing the aircraft
+ */
 map<string, Aircraft*>::iterator InputReader::GetMasterMapBegin()
 {
 	return _masterMap.begin();
 }
 
+/**
+ * Returns the end index of the master map containing the aircraft
+ */
 map<string, Aircraft*>::iterator InputReader::GetMasterMapEnd()
 {
 	return _masterMap.end();
 }
 
+/**
+ * Creates an Exponential Distribution pointer in order to copy the distribution
+ */
 void InputReader::PrintEverything()
 {
 	//Aircraft
@@ -1032,15 +1056,21 @@ void InputReader::PrintEverything()
 	}
 }
 
+/**
+ * Returns the calendear conversion object
+ */
 CalConverter* InputReader::GetCalConverter()
 {
 	return calConvert;
 }
 
+/**
+ * Adds a selected aircraft to the list. The head of the list if empty or iterates to the next available index in the list
+ */
 void InputReader::AddSelectedAircraft(string aircraftName)
 {
 	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
-	
+
 	if (_GUIListHead == NULL) {
 		_GUIListHead = newAircraft;
 	}
@@ -1055,30 +1085,39 @@ void InputReader::AddSelectedAircraft(string aircraftName)
 
 }
 
+/**
+ * Creates an Exponential Distribution pointer in order to copy the distribution
+ */
 bool InputReader::FindSelectedAircraft(string aircraftName)
 {
 	GUISelectedAircraft* iter = _GUIListHead;
 	while (iter != NULL)
 	{
 		if (iter->_aircraftName == aircraftName) {
-	//		cout << "FOUND AIRCRAFT " << iter->_aircraftName << endl;
+			//		cout << "FOUND AIRCRAFT " << iter->_aircraftName << endl;
 
 			return true;
 		}
 		else
 		{
 			iter = iter->_nextAircraft;
-	//		cout << "NEXT AIRCRAFT ITER FOR LINKED LIST" << endl;
+			//		cout << "NEXT AIRCRAFT ITER FOR LINKED LIST" << endl;
 		}
 	}
 	return false;
 }
 
+/**
+ * Rerturns the size of the static map holding all airplanes
+ */
 int InputReader::GetMapSize()
 {
 	return _masterMap.size();
 }
 
+/**
+ * Given an aircraft name it searches the master map for it and if not found returns a null pointer
+ */
 Aircraft* InputReader::GetAircraft(string aircraftName)
 {
 
@@ -1091,11 +1130,17 @@ Aircraft* InputReader::GetAircraft(string aircraftName)
 		return nullptr;
 }
 
+/**
+ * Returns the static map holding all aircraft
+ */
 map<string, Aircraft*> InputReader::GetMasterMap()
 {
 	return _masterMap;
 }
 
+/**
+ * Returnes the static map holding all the resources
+ */
 map<string, Resource*> InputReader::GetMasterResourceMap()
 {
 	return _masterResourceMap;
