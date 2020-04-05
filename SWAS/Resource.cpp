@@ -1,5 +1,8 @@
 #include "Resource.h"
 
+/**
+* Sets the failure name, failure type, and repair process to "none specified yet"
+*/
 Resource::Resource()
 {
 	_failureName = "none specified yet";
@@ -7,6 +10,9 @@ Resource::Resource()
 	_repairProc = "none specified yet";
 }
 
+/**
+* Sets the resource count, number of resources needed, resource name, resource length, resource width, failure name, failure type, failure distribution, and repair process to default values
+*/
 void Resource::CopyMapResource(const Resource& mapResource)
 {
 	_resourceCount = mapResource._resourceCount;
@@ -20,6 +26,9 @@ void Resource::CopyMapResource(const Resource& mapResource)
 	_repairProc = mapResource._repairProc;
 }
 
+/**
+* Acquires resources by subtracting the amount of resources needed from the resource count
+*/
 //@TODO will need to figure out logic for what happens if amount needed is greater
 void Resource::Acquire(int amountNeeded)
 {
@@ -35,11 +44,17 @@ void Resource::Acquire(int amountNeeded)
 	_resourceCount -= amountNeeded;
 }
 
+/**
+* Adds the amount of resources to release to the resource count; increases the resource count by the amount of resources to release
+*/
 void Resource::Release(int amountToRelease)
 {
 	_resourceCount += amountToRelease;
 }
 
+/**
+* Checks if the amount of resources needed is greater than the resource count; if so, returns false; else, returns true
+*/
 bool Resource::IsAvailable(int amountNeeded)
 {
 	if (amountNeeded > _resourceCount)
@@ -49,12 +64,18 @@ bool Resource::IsAvailable(int amountNeeded)
 	}
 }
 
+/**
+* Schedules a resource failure event
+*/
 void Resource::FailResource()
 {
 	//@TODO write the algorithm for a resource failure essentially is just scheduling an event
 	//so needed EA and EM
 }
 
+/**
+* Increases the resource count
+*/
 void Resource::RestoreResource()
 {
 	//May probably need an associated Event to Execute function call. 
@@ -65,68 +86,107 @@ void Resource::RestoreResource()
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
 
+/**
+* Sets the resource count
+*/
 void Resource::SetResourceCount(int resourceCount)
 {
 	_resourceCount = resourceCount;
 }
 
+/**
+* Returns the resource count
+*/
 int Resource::GetResourceCount()
 {
 	return _resourceCount;
 }
 
+/**
+* Sets the resource name
+*/
 void Resource::SetResourceName(string resourceName)
 {
 	_resourceName = resourceName;
 }
 
+/**
+* Returns the resource name
+*/
 string Resource::GetResourceName()
 {
 	return _resourceName;
 }
 
+/**
+* Sets the number of resources needed
+*/
 void Resource::SetNumResNeeded(int numNeeded)
 {
 	//get from step table values 
 	_numNeeded = numNeeded;
 }
 
+/**
+* Returns the number of resources needed
+*/
 int Resource::GetNumResNeeded()
 {
 	return _numNeeded;
 }
 
+/**
+* Sets the resource length and width
+*/
 void Resource::SetResourceFootprint(double length, double width)
 {
 	_length = length;
 	_width = width;
 }
 
+/**
+* Returns the resource length and width
+*/
 double Resource::GetResourceFootprint()
 {
 	return _length, _width;
 }
 
+/**
+* Sets the resource failure name
+*/
 void Resource::SetFailureName(string failureName)
 {
 	_failureName = failureName;
 }
 
+/**
+* Returns the resource failure name
+*/
 string Resource::GetFailureName()
 {
 	return _failureName;
 }
 
+/**
+* Sets the resource failure type
+*/
 void Resource::SetFailureType(string failureType)
 {
 	_failureType = failureType;
 }
 
+/**
+* Returns the resource failure type
+*/
 string Resource::GetFailureType()
 {
 	return _failureType;
 }
 
+/**
+* Turns the failure distribution from a string into the correct distribution, either triangular, exponential, uniform, normal, poisson, constant, or Weibull; prints the distribution
+*/
 void Resource::SetFailureDistr(string failureDistr)
 {
 	//turn failure distr from string into distributions
@@ -202,21 +262,33 @@ void Resource::SetFailureDistr(string failureDistr)
 
 }
 
+/**
+* Returns the resource failure distribution
+*/
 Distribution* Resource::GetFailureDistr()
 {
 	return _failureDist; //check if this works
 }
 
+/**
+* Sets the repair process
+*/
 void Resource::SetRepairProcess(string repairProc)
 {
 	_repairProc = repairProc;
 }
 
+/**
+* Returns the repair process
+*/
 string Resource::GetRepairProcess()
 {
 	return _repairProc;
 }
 
+/**
+* Prints the resource name, initial count, resource footprint X, resource footprint Y, failure name, failure type, and repair process
+*/
 void Resource::PrintResProperties()
 {
 	cout << "			Resource name: " << _resourceName << endl;
