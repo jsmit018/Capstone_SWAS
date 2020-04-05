@@ -6,6 +6,9 @@
 
 using namespace std;
 
+/**
+ * Base class for calendar converter to be inherited by all other classes
+ */
 class CalConverter {
 public:
 	CalConverter();
@@ -13,10 +16,16 @@ public:
 	int* GetCalArray();
 	map<int, int> GetMonthMap();
 private:
-	map<int, int> _monthMap;	// Map stores a number of days for each month (keys: 1-12)
+/**
+ * Map stores a number of days for each month (keys: 1-12)
+ */
+	map<int, int> _monthMap;
 	int* _calArray;
 };
 
+/**
+ * This class is the time converter to Month Day
+ */
 class TimeConverter {
 public:
 	TimeConverter();
@@ -24,9 +33,12 @@ public:
 		int baseY, int* endOfMonth, int recurring = 0, Time simTime = 0);
 };
 
+/**
+ * class CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years);
+ */
 class CalendarObj {
 public:
-	//CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years);
+   
 	CalendarObj();
 	void UpdateNumEvents();
 	int GetNumEvents();
