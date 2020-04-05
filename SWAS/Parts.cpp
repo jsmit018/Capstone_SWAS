@@ -66,6 +66,7 @@ int Parts::GetPartsCount()
 {
 	return _partsCount;
 }
+
 void Parts::SetInitPartsCount(int partsCount)
 {
 	_initCount = partsCount;
@@ -174,7 +175,8 @@ void Parts::SetLeadTime(string leadTime)
 	}
 
 	//Calls the print function added to each distribution - Determines correct distribution and prints
-	_leadTime->PrintDistribution();
+//	cout << "LEAD TIME ";
+//	_leadTime->PrintDistribution();
 }
 
 Distribution* Parts::GetLeadTime()

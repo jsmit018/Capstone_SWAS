@@ -35,7 +35,7 @@ public:
 	void AddParts(Parts* parts, string partsName);
 	void PrintParts();
 	void PrintResources();
-	void PrintPools();
+	static void PrintPools();
 	//void PrintEvent();
 	void InitialArrivalBayCheck();
 	map<string, Resource*>::iterator FindResource(string resource);

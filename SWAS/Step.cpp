@@ -321,12 +321,15 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				break;
 			}
 		}
+		/*IF TARMAC HAS LIMITED SPOTS*/
+		/*
 		else {
 			if (_acquiredResources[i] == "outspot") {
 				hasResource = true;
 				break;
 			}
 		}
+		*/
 	}
 
 	// mechanics
@@ -357,6 +360,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			map<string, Resource*>::iterator it = _resourcePool.find("bay");
 			if (it->second->GetResourceCount() > 0)
 			{
+				cout << "Getting a Bay" << endl;
 				// call decrement function, push it to acquired vector 
 				_acquiredResources.push_back(it->first);
 			}
@@ -366,11 +370,15 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 //			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
+
+		/*IF TARMAC HAS LIMITED SPOTS */
+	/*	
 		else
-		{
+		{ 
 			map<string, Resource*>::iterator it = _resourcePool.find("outspot");
 			if (it->second->GetResourceCount() > 0)
 			{
+
 				//acquire resource
 				SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AcquireResourceEA(this, it->second), 0.0, "AcquireResourceEA");
 
@@ -380,9 +388,10 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			else
 				cout << "we have to wait for an outspot \n";
 			// WAITING
-	//		cout << "Outspot unavailable, Adding Plane Step to Conditional Event List until it is." << endl;
+			cout << "Outspot unavailable, Adding Plane Step to Conditional Event List until it is." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
 		}
+	*/
 	}
 
 	// number of bays initialized with simulation initialization from GUI, where are they stored (aka how does Step
@@ -1073,9 +1082,9 @@ void Step::InitialArrivalBayCheck()
 void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
 	///todo: will replace mymap with myunplannedjobsmap in future
-//	map<string, RepairJob*>::const_iterator iter = aircraft->GetMyRJMapBegin();
+//	map<string, RepairJob*>::const_iterator iter = aircraft->GetMyUnplannedRJMapBegin();
 //
-//	while (iter != aircraft->GetMyRJMapEnd())
+//	while (iter != aircraft->GetMyUnplannedRJMapEnd())
 //	{
 //		if (iter->second->GetSchedType() == "Unplanned")
 //		{
@@ -1100,6 +1109,8 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
+
+
 
 void Step::AddToResPool(Resource* resource, string resourceName)
 {
@@ -1158,19 +1169,21 @@ void Step::Print()
 	cout << "		Inspection Failure Probability: ";
 	if (_inspecFailProb == nullptr)
 		cout << "None \n";
-	else
-	{
-		_inspecFailProb->PrintDistribution();
-		cout << endl;
-	}
+	//else
+	//{
+		//cout << "Service time is ";
+	//	_inspecFailProb->PrintDistribution();
+	//	cout << endl;
+	//}
 	cout << "		Service Time Distribution: ";
 	if (_servTime == nullptr)
 		cout << "None \n";
-	else
-	{
-		_servTime->PrintDistribution();
-		cout << endl;
-	}
+	//else
+	//{
+	//	cout << "Service time is ";
+	//	_servTime->PrintDistribution();
+	//	cout << endl;
+	//}
 	//cout << "		Required Resources: " << _reqRes << endl;
 	//cout << "		Required Parts: " << _reqParts << endl;
 	cout << "		Return Step If Inspection Fails: " << _returnStep << endl;
@@ -1218,7 +1231,7 @@ void Step::PrintPools()
 {
 	cout << "RESOURCE POOL" << endl;
 	map<string, Resource*>::iterator it = _resourcePool.begin();
-	//	cout << "MAP SIZE: " << _resourcePool.size() << endl;
+		cout << "MAP SIZE: " << _resourcePool.size() << endl;
 	while (it != _resourcePool.end())
 	{
 		it->second->PrintResProperties();
@@ -1229,7 +1242,7 @@ void Step::PrintPools()
 
 	cout << "PARTS POOL:" << endl;
 	map<string, Parts*>::iterator it2 = _partsPool.begin();
-	//	cout << "MAP SIZE: " << _partsPool.size() << endl;
+		cout << "MAP SIZE: " << _partsPool.size() << endl;
 	while (it2 != _partsPool.end())
 	{
 		it2->second->PrintPartsProperties();
