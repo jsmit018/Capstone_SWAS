@@ -2,18 +2,25 @@
 
 map<string, RepairJob*> RepairJob::_resourceRepairMap;
 
+/**
+ * Repair Job constructor that initializes the schedule type to "unplanned", the calendar date to "n/a", and the unplanned probability and recurring amount to constant(0.0). 
+ */
 RepairJob::RepairJob()
 {
     _schedType = "Unplanned";
     _calendarDate = "n/a";
     //_recurringAmt = 0.0;
-   _unplannedProb = new Constant(0.0);
-   _recurringAmt = new Constant(0.0);
+    _unplannedProb = new Constant(0.0);
+    _recurringAmt = new Constant(0.0);
 }
 
+/**
+ * Sets _name, _priority, _schedType, _indoorReq, _calendarDate, _recurringAmt, and _unplannedProb equal to the appropriate repair job map variables. For number of steps in mapRj._vecSteps, new step object is created and for each index of the old vector, copy the old step object (which catalyzes the sequence of copying objects within step). Store new step copy into new step vector.
+ */
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
-    cout << "       Copying " << mapRj._name << " repair job."<< endl;
+    //   cout << "       Copying " << mapRj._name << " repair job."<< endl;
+     //   cout << endl;
     _name = mapRj._name;					            // Repair job name
     _priority = mapRj._priority;		        		// Repair job priority
     _schedType = mapRj._schedType;				        // Interarrival schedule type
@@ -22,9 +29,6 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
 
-    //cout << "TEST ";
-    //_unplannedProb->PrintDistribution();
-    //cout << endl;
 
     // to ensure that the copies are actual copies and 
     //that the same pointers is not being shared by different repair jobs:
@@ -40,9 +44,9 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
         newStep->CopyMapStep(*mapRj._vecSteps[i]);
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
-      //  cout << endl;
-        //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
-      //  cout << endl;
+        //  cout << endl;
+          //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
+        //  cout << endl;
     }
     // and also maybe for distribution, but that might not matter?
 
@@ -53,19 +57,25 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     //cout << endl;
 }
 
+/**
+ * Returns the step ID of the repair job from vecSteps if vecSteps does not equal zero.
+ */
 Step* RepairJob::GetStep(int stepID)
 {
     if (_vecSteps.size() == 0)
     {
         cout << "NO STEPS!" << endl;
     }
-    
+
     //setting stepID 
      //  cout << "ID IS      " << stepID << endl;
     return _vecSteps[stepID - 1];
-    
+
 }
 
+/**
+ * Returns the first step of a repair job from vecSteps.
+ */
 Step* RepairJob::GetFirstStep()
 {
     return _vecSteps[0];
@@ -73,6 +83,9 @@ Step* RepairJob::GetFirstStep()
 
 }
 
+/**
+ * Bool function that states whether or not an unplanned event will be scheduled.
+ */
 bool RepairJob::WillSchedule()
 {
     if (_unplannedProb->GetRV() >= 0.51)
@@ -83,85 +96,139 @@ bool RepairJob::WillSchedule()
         return false;
 }
 
+/**
+ * Returns the probablity of unplanned repair job.
+ */
 Distribution* RepairJob::GetUnplannedProb()
 {
     return _unplannedProb;
 }
 
+/**
+ * Returns the size of vecSteps.
+ */
 int RepairJob::GetStepVecSize()
 {
     return _vecSteps.size();
 }
 
+/**
+ * Sets the name of a repair job.
+ */
 void RepairJob::SetName(string name)
 {
     _name = name;
 }
 
+/**
+ * Returns the name of a repair job.
+ */
 string RepairJob::GetName()
 {
     return _name;
 }
 
+/**
+ * Sets the priority of a repair job.
+ */
 void RepairJob::SetPriority(int priority)
 {
     _priority = priority;
 }
 
+/**
+ * Returns the priority of a repair job.
+ */
 int RepairJob::GetPriority()
 {
     return _priority;
 }
 
+/**
+ * Sets the schedule type.
+ */
 void RepairJob::SetSchedType(string schedType)
 {
     _schedType = schedType;
 }
 
+/**
+ * Returns the schedule type of a repair job.
+ */
 string RepairJob::GetSchedType()
 {
-  //  cout << "TYPE: " << _schedType << endl;
+    /*   cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << endl;
+       cout << "*************#*#*#*#*#**#*##" << endl;
+      cout << "TYPE: " << _schedType << endl;*/
     return _schedType;
+
+    cout << endl;
+    cout << endl;
 }
 
+/**
+ * Sets indoor requirement of a repair job.
+ */
 void RepairJob::SetIndoorReq(char indoorReq)
 {
     _indoorReq = indoorReq;
 }
 
+/**
+ * Returns the indoor requirement of a repair job.
+ */
 char RepairJob::GetIndoorReq()
 {
     return _indoorReq;
 }
 
+/**
+ * Sets the calendar date.
+ */
 void RepairJob::SetCalendarDate(string calendarDate)
 {
     _calendarDate = calendarDate;
 }
 
+/**
+ * Returns the calendar date.
+ */
 string RepairJob::GetCalendarDate()
 {
     //return tuple
     return _calendarDate;
 }
 
+/**
+ * Sets the recurring amount of a repair job.
+ */
 void RepairJob::SetRecurringAmt(double recurringAmt)
 {
     _recurringAmt = new Constant(recurringAmt);
 
 
- 	//cout << "*****************************IAT RECURRING IS: ";
+    //cout << "*****************************IAT RECURRING IS: ";
   //     _recurringAmt->PrintDistribution();
   // 	cout << endl;
 
 }
 
-
+/**
+ * Returns the recurring amount of a repair job.
+ */
 Distribution* RepairJob::GetRecurringAmt()
 {
     return _recurringAmt;
 }
 
+/**
+ * Logic to set the probability of an unplanned repair job.
+ */
 void RepairJob::SetUnplannedProb(string unplannedProb)
 {
     istringstream unProb(unplannedProb);
@@ -237,12 +304,14 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
   //  cout << endl;
 }
 
-
+/**
+ * Adds a step to vecSteps of a repair job. 
+ */
 void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
 
-  //  cout << "adding step" << _vecSteps.size() << endl;
+    //  cout << "adding step" << _vecSteps.size() << endl;
     step->SetStepID(_vecSteps.size());
     /*int stepID;
     for (int i = 0; i < _vecSteps.size(); i++)
@@ -264,11 +333,17 @@ void RepairJob::AddStep(Step* step)
 //    }
 //}
 
+/**
+ * Sets a resource within the resource repair map that needs repair to a repair job.
+ */
 void RepairJob::AddResourceRepair(RepairJob* repairJob, string resourceName)
 {
     _resourceRepairMap[resourceName] = repairJob;
 }
 
+/**
+ * Iterates througth resourceRepairMap and prints resource repairs.
+ */
 void RepairJob::PrintResourceRepairs()
 {
     map<string, RepairJob*>::iterator iter = _resourceRepairMap.begin();
@@ -279,18 +354,10 @@ void RepairJob::PrintResourceRepairs()
         iter++;
     }
 }
-//
-//void RepairJob::GetNextStep()
-//{
-//    for (int i; i < _vecSteps.size(); i++)
-//    {
-//        if (i = _vecSteps.size() + 1 || )
-//        {
-//
-//        }
-//    }
-//}
 
+/**
+ * Returns the resource within the resource repair map.
+ */
 RepairJob* RepairJob::GetResourceRepair(string resourceName)
 {
     map<string, RepairJob*>::iterator it = _resourceRepairMap.find(resourceName);
@@ -299,9 +366,12 @@ RepairJob* RepairJob::GetResourceRepair(string resourceName)
     return it->second;
 }
 
+/**
+ * Returns the print job properties of a repair job
+ */
 void RepairJob::PrintJobProperties()
 {
- 
+
     cout << "   Repair Job Name: " << _name << endl;
     cout << "   Schedule Type: " << _schedType << endl;
     cout << "   Repair Job Priority: " << _priority << endl;
@@ -317,7 +387,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-//        _vecSteps[1]->PrintPools();
+        //        _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }

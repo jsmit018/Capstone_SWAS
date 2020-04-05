@@ -5,6 +5,9 @@
 #include <string>
 #include <sstream>
 
+/**
+ * Base class for parts, ther logic, thresholds, etc.
+ */
 class Parts
 {
 public:

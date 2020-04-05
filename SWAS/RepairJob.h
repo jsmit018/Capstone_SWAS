@@ -10,6 +10,9 @@
 
 class Step;
 
+/**
+ * Base class for RepairJobs that sets a repair jobs named, priorities, probabilities, etc. 
+ */
 class RepairJob {
 public:
 	//RepairJob(string name);
@@ -48,7 +51,7 @@ private:
 	char	_indoorReq;								// Y or N for indoor requirement of repair job
 	string	_calendarDate;							// Calendar-schedule type repair jobs (date: mmddyyyy)
 	//split into day, month, year
-	Distribution*	_recurringAmt;							// Number of months between Recurring-schedule type repair jobs
+	Distribution* _recurringAmt;							// Number of months between Recurring-schedule type repair jobs
 	Distribution* _unplannedProb;							// Distribution for probability of certain repair job after random iat
 	vector<Step*> _vecSteps;							// RepairJob has a vector of step objects
 	static map<string, RepairJob*> _resourceRepairMap;		//FOR EACH RESOURCE TYPE, MAKE REPAIR JOB

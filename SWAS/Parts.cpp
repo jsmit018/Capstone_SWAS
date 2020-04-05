@@ -1,5 +1,8 @@
 #include "Parts.h"
 
+/**
+ * Parts constructor that initializes the parts name to "none needed", parts count to zero, and parts threshold to zero.
+ */
 Parts::Parts()
 {
 	_partsName = "none needed";
@@ -7,6 +10,9 @@ Parts::Parts()
 	_orderThreshold = 0;
 }
 
+/**
+ * Sets the _initCount, _partsCount, _numNeeded, _partsName, _orderThreshold, and _leadTime equal to the mapParts according values. 
+ */
 void Parts::CopyMapParts(const Parts& mapParts)
 {
 	_initCount = mapParts._initCount;
@@ -17,21 +23,33 @@ void Parts::CopyMapParts(const Parts& mapParts)
 	_leadTime = mapParts._leadTime;
 }
 
+/**
+ * Sets the parts current count
+ */
 void Parts::SetPartsCount(int partsCount)
 {
 	_partsCount = partsCount;
 }
 
+/**
+ * Sets the number of parts needed
+ */
 void Parts::SetNumPartsNeeded(int numNeeded)
 {
 	_numNeeded = numNeeded;
 }
 
+/**
+ * Returns the number of parts needed
+ */
 int Parts::GetNumPartsNeeded()
 {
 	return _numNeeded;
 }
 
+/**
+ * Algorithm for acquiring the parts needed
+ */
 void Parts::AcquireParts(int numNeeded)
 {
 	//if there aren't enough resources for this step
@@ -50,6 +68,9 @@ void Parts::AcquireParts(int numNeeded)
 	}
 }
 
+/**
+ * Bool Function to check if the parts count is enough for the number of parts needed
+ */
 bool Parts::AreEnoughParts()
 {
 	if (_numNeeded > _partsCount)
@@ -62,42 +83,67 @@ bool Parts::AreEnoughParts()
 
 
 //send to Parts class
+/**
+ * Returns the part's current count
+ */
 int Parts::GetPartsCount()
 {
 	return _partsCount;
 }
+
+/**
+ * Sets the initial count of the parts
+ */
 void Parts::SetInitPartsCount(int partsCount)
 {
 	_initCount = partsCount;
 }
 
+/**
+ * Returns the initial count of the parts
+ */
 int Parts::GetInitPartsCount()
 {
 	return _initCount;
 }
 
 //send to Parts class
+/**
+ * Sets the parts name
+ */
 void Parts::SetPartsName(string partsName)
 {
 	_partsName = partsName;
 }
 
 //send to Parts class
+/**
+ * Returns the parts name
+ */
 string Parts::GetPartsName()
 {
 	return _partsName;
 }
 
+/**
+ * Sets the order threshold of the parts
+ */
 void Parts::SetThreshold(int orderThreshold)
 {
 	_orderThreshold = orderThreshold;
 }
 
+/**
+ * Returns the order threshold of the parts
+ */
 int Parts::GetThreshold()
 {
 	return _orderThreshold;
 }
 
+/**
+ * Sets the lead time of the parts
+ */
 void Parts::SetLeadTime(string leadTime)
 {
 	//the string being passed in is now split into two strings
@@ -177,11 +223,17 @@ void Parts::SetLeadTime(string leadTime)
 	_leadTime->PrintDistribution();
 }
 
+/**
+ * Returns the lead time of the parts
+ */
 Distribution* Parts::GetLeadTime()
 {
 	return _leadTime;
 }
 
+/**
+ * This function holds all the print properties for the parts
+ */
 void Parts::PrintPartsProperties()
 {
 	cout << "			Parts name: " << _partsName << endl;

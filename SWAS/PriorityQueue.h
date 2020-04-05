@@ -7,15 +7,17 @@
 
 using namespace std;
 
-/*
-Prioirty Queue - Aircraft Arrives with a Priority and is added the list accordingly
-Defined using a template so that can be used to hold anything.  Type supplied when object is instantiated.
-Template structure requires implementation to be provided in the header.
-*/
 template <class T>
+
+/**
+* Prioirty Queue - Aircraft Arrives with a Priority and is added to the list accordingly defined using a template so that it can be used to hold anything. Type supplied when object is instantiated. Template structure requires implementation to be provided in the header.
+*/
 class PriorityQueue
 {
 public:
+	/**
+	 * Priority Queue Constructor that initializes _head, _tail, _size, and _name to zero.
+	 */
 	PriorityQueue(string name)
 	{
 		_head = 0;
@@ -24,6 +26,9 @@ public:
 		_name = name;
 	}
 
+	/**
+	 *  Algorithm to add an entity to the queue
+	 */
 	void AddEntity(T* t, int priority)
 	{
 		Node* node = new Node(t, priority);
@@ -53,6 +58,9 @@ public:
 		//cout << SimObj::GetSimulationTime() << ", queue " << _name << ", AddEntity, Entity , queue size, " << _size << endl;
 	}
 
+	/**
+	 * Returns T
+	 */
 	T* GetEntity()
 	{
 		if (_head == 0) return 0;
@@ -68,12 +76,22 @@ public:
 		}
 	}
 
+	/**
+	 * Returns the entities position
+	 */
 	T* ViewEntity()
 	{
 		return(_head->t);
 	}
 
+	/**
+	 * If the queue is empty return size equals zero.
+	 */
 	bool IsEmpty() { return (_size == 0); }
+
+	/**
+	 * Returns the current  size of the queue
+	 */
 	int GetSize() { return _size; }
 private:
 	struct Node
