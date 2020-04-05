@@ -3,21 +3,32 @@
 #include "Parts.h"
 #include "InputInterface.h"
 
-
 /*SimExec::SimExec() : SimObj(){
 }*/
 
+/**
+* Calls the function RunSimulation()
+*/
 void PlayButton()
 {
 	SimExec::RunSimulation();
 }
 
+/**
+* Calls the function RunSimulation(Time month, Time day, int year)
+*/
 void PlayButton(Time month, Time day, int year)
 {
 	SimExec::RunSimulation(month, day, year);
 }
 
+/**
+* Struct for the simulation executive
+*/
 struct SimExec::Event {
+	/**
+	* Sets the variables to default values
+	*/
 	Event(EventAction* ea, Time timeMonth, Time timeDay, Time timeOfDay, int priority, int year, string eaName) {
 		_ea = ea;
 		_nextEvent = 0;
@@ -29,6 +40,9 @@ struct SimExec::Event {
 		_eventActionName = eaName;
 	}
 
+	/**
+	* Prints the event action name, when it will occur, and its priority
+	*/
 	void PrintEvent() {
 		cout << "_________________________________________________________________________________" << endl;
 		cout << "Event Action: " << _eventActionName << endl;
@@ -49,7 +63,13 @@ struct SimExec::Event {
 	int _priority;
 };
 
+/**
+* Struct for a conditional event
+*/
 struct SimExec::CondEvent {
+	/**
+	* Sets the variables to default values
+	*/
 	CondEvent(int priority, CondEventAction* cea) {
 		_priority = priority;
 		_cea = cea;
@@ -61,12 +81,21 @@ struct SimExec::CondEvent {
 	CondEvent* _nextCondEvent;
 };
 
+/**
+* Class for a conditional event set
+*/
 class SimExec::CondEventSet {
 public:
+	/**
+	* Sets the variable to 0
+	*/
 	CondEventSet() {
 		_condSet = 0;
 	}
 
+	/**
+	* Adds a new conditional event to the event set based on priority
+	*/
 	void AddConditionalEvent(int priority, CondEventAction* cea) {
 		CondEvent* c = new CondEvent(priority, cea);
 		if (_condSet == 0) {
@@ -91,6 +120,9 @@ public:
 		}
 	}
 
+	/**
+	* Executes a conditional event as long as there are resources and parts available, and returns true; else, returns false
+	*/
 	bool CheckConditionalEvents(Resource* resource, Parts* parts) {
 		CondEvent* curr = _condSet;
 		while (curr != 0) {
@@ -107,12 +139,21 @@ private:
 	CondEvent* _condSet;
 };
 
+/**
+* Class for the event set
+*/
 class SimExec::EventSet {
 public:
+	/**
+	* Default constructor for the event set
+	*/
 	EventSet() {
 
 	}
 
+	/**
+	* Initializes the event set based on the number of bins and days
+	*/
 	void InitEventSet(int numBins, int* days) {
 		cout << "Initializing Event Set" << endl;
 		cout << "Setting the initial number of events to 0" << endl;
@@ -134,12 +175,12 @@ public:
 		for (int i = 0; i < numBins + 1; ++i) {
 			if (_year % 4 == 0 && i == February) {
 				cout << "February is a leap year in " << _year << endl;
-				_eventSet[i] = new Event * [days[i] + 1];
+				_eventSet[i] = new Event *[days[i] + 1];
 			}
 			else if (i == 12)
-				_eventSet[i] = new Event * [1];
+				_eventSet[i] = new Event *[1];
 			else
-				_eventSet[i] = new Event * [days[i]];
+				_eventSet[i] = new Event *[days[i]];
 
 		}
 		cout << "Initializing the linked list of each Month & Day" << endl;
@@ -167,6 +208,9 @@ public:
 		}
 	}
 
+	/**
+	* Adds a calendar event to the event list
+	*/
 	void AddEventCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
 		cout << "***********************************************************************" << endl;
 		cout << "Adding Event to the Event List" << endl;
@@ -229,6 +273,9 @@ public:
 		cout << "***********************************************************************" << endl;
 	}
 
+	/**
+	* Adds a recurring event to the event list
+	*/
 	void AddEventRecurring(int priority, EventAction* ea, double distributionValue, int recurring, string eaName) {
 		cout << "***********************************************************************" << endl;
 		Time Month = 0.0;
@@ -296,6 +343,9 @@ public:
 		cout << "***********************************************************************" << endl;
 	}
 
+	/**
+	* Adds an event to the event list
+	*/
 	void AddEvent(int priority, EventAction* ea, double distributionValue, string eaName) {
 		cout << "***********************************************************************" << endl;
 		Time Month = 0.0;
@@ -363,26 +413,41 @@ public:
 		cout << "***********************************************************************" << endl;
 	}
 
+	/**
+	* Returns the time of day
+	*/
 	Time GetTimeOfDay() {
 		cout << "Returning time of day" << endl;
 		return _eventSet[_baseX][_baseY]->_timeOfDay;
 	}
 
+	/**
+	* Returns the month
+	*/
 	Time GetMonth() {
 		cout << "Returning Month" << endl;
 		return _eventSet[_baseX][_baseY]->_timeMonth;
 	}
 
+	/**
+	* Returns the day of the month
+	*/
 	Time GetDay() {
 		cout << "Returning Day of the Month" << endl;
 		return _eventSet[_baseX][_baseY]->_timeDay;
 	}
 
+	/**
+	* Returns the year
+	*/
 	int GetYear() {
 		cout << "Returning Year" << endl;
 		return _eventSet[_baseX][_baseY]->_year;
 	}
 
+	/**
+	* Converts a month into a string
+	*/
 	string ConvertMonth(Time month) {
 		cout << "Converting month into a string" << endl;
 		switch ((int)month) {
@@ -427,6 +492,9 @@ public:
 		}
 	}
 
+	/**
+	* Gets the event action of each event in the event list to execute
+	*/
 	EventAction* GetEventAction() {
 		cout << "Getting Event Action" << endl;
 		if (_numEvents > 0) {
@@ -450,11 +518,17 @@ public:
 		}
 	}
 
+	/**
+	* Checks to see if the number of events is greater than 0
+	*/
 	bool HasEvent() {
 		cout << "Checking to see if number of events is greater than 0" << endl;
 		return _numEvents > 0;
 	}
 
+	/**
+	* Prints the events based on month and year
+	*/
 	void PrintCalendar() {
 		for (int i = 0; i < _numBins; ++i) {
 			for (int j = 0; j < _endOfMonth[i] + 1; ++j) {
@@ -486,6 +560,9 @@ private:
 	Event*** _eventSet;
 	//
 	//	//Will add an if statement on December 31 to increment the year by 1.
+	/**
+	* Advances the month and updates the overflow bin
+	*/
 	void AdvanceMonth() {
 		cout << "Advancing Month, and updating overflow bin" << endl;
 		if (_baseX == December - 1 && _baseY == 30) {
@@ -541,6 +618,9 @@ private:
 		}
 	}
 
+	/**
+	* Advances the day
+	*/
 	void AdvanceDay() {
 		cout << "Advancing Day" << endl;
 		_baseY++;
@@ -553,6 +633,9 @@ SimulationTime SimExec::_simulationTime;
 InputReader SimExec::_inputReader;
 bool SimExec::_simulationFlag;
 
+/**
+* Sets the simulation time to default values
+*/
 void SimExec::InitializeSimulation(int numBins, int* days) {
 	cout << "Setting Simulation time to 0" << endl;
 	_simulationTime._timeOfDay = 0;
@@ -563,58 +646,91 @@ void SimExec::InitializeSimulation(int numBins, int* days) {
 	_eventSet.InitEventSet(numBins, days);
 }
 
+/**
+* Returns the simulation time
+*/
 SimulationTime SimExec::GetSimulationTime() {
 	cout << "Returning Simulation Time" << endl;
 	return _simulationTime;
 }
 
+/**
+* Returns the input reader
+*/
 InputReader SimExec::GetInputReader()
 {
 	return _inputReader;
 }
 
+/**
+* Sets the input reader
+*/
 void SimExec::SetInputReader(InputReader inputReader)
 {
 	_inputReader = inputReader;
 }
 
+/**
+* Schedules to add an event to the event set
+*/
 void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName) {
 	cout << "Scheduling Event" << endl;
 	_eventSet.AddEvent(priority, ea, distributionValue, eaName);
 }
 
+/**
+* Schedules to add a calendar event to the event set
+*/
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
 	cout << "Scheduling Calendar Event" << endl;
 	_eventSet.AddEventCalendar(Month, Day, timeOfDay, year, priority, ea, eaName);
 }
 
+/**
+* Schedules to add a recurring event to the event set
+*/
 void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring)
 {
 	cout << "Scheduling Recurring Event" << endl;
 	_eventSet.AddEventRecurring(priority, ea, distributionValue, recurring, eaName);
 }
 
+/**
+* Schedules to add a conditional event to the event set
+*/
 void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea)
 {
 	cout << "Scheduling Conditional Event";
 	_conditionalSet.AddConditionalEvent(priority, cea);
 }
 
+/**
+* Returns a converted month from the event set
+*/
 string SimExec::ConvertDate(Time month)
 {
 	return _eventSet.ConvertMonth(month);
 }
 
+/**
+* Checks the resources and parts of a conditional event while there is an event in the event set
+*/
 void SimExec::CheckConditionalEvents(Resource* resource, Parts* parts)
 {
 	while (_conditionalSet.CheckConditionalEvents(resource, parts));
 }
 
+/**
+* Prints the event set
+*/
 void SimExec::PrintEventSet()
 {
 	_eventSet.PrintCalendar();
 }
 
+/**
+* Executes events from the event set if the simulation flag is true and there is an event in the event set
+*/
 //void SimExec::RunSimulation() {
 int SimExec::RunSimulation() {
 	//cout << "Running Simulation" << endl;
@@ -654,6 +770,9 @@ int SimExec::RunSimulation() {
 	}
 }
 
+/**
+* Executes events from the event set if the simulation flag is true and there is an event in the event set
+*/
 //void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 int SimExec::RunSimulation(Time month, Time day, int year) {
 	//cout << "Running Simulation" << endl;
@@ -661,7 +780,7 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 	//while (_eventSet.HasEvent() && _simulationFlag == true) {
 	if (_eventSet.HasEvent() && _simulationFlag == true) {
 		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= 0
-			&& _simulationTime._year >= year ) {
+			&& _simulationTime._year >= year) {
 			FlipSimulationFlag();
 			return 3;
 			//break;
@@ -696,7 +815,9 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 		return 3;
 	}
 }
-
+/**
+* If the simulation flag is true, sets it to false; else, sets it to true
+*/
 void SimExec::FlipSimulationFlag()
 {
 	if (_simulationFlag == true)
@@ -705,11 +826,17 @@ void SimExec::FlipSimulationFlag()
 		_simulationFlag = true;
 }
 
+/**
+* Returns the simulation flag
+*/
 bool SimExec::GetSimulationFlag()
 {
 	return _simulationFlag;
 }
 
+/**
+* Calls the function FlipSimulationFlag()
+*/
 void StopSimulation()
 {
 	SimExec::FlipSimulationFlag();
