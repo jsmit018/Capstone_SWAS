@@ -1,7 +1,4 @@
 //Aircraft.h: Andrea Robey
-//This class is responsible for providing aircraft information to source.cpp when it's called to create new aircraft. 
-//It holds a linked list of repair jobs and steps
-//It's responsible for getting/setting type, footprint, id, source, & nextid of every aircraft
 
 #pragma once
 #include "SimObj.h"
@@ -19,6 +16,9 @@ using namespace std;
 
 class RepairJob;
 
+/**
+ * This class is responsible for providing aircraft information to source.cpp when it's called to create new aircraft. It holds a linked list of repair jobs and steps. It's responsible for getting/setting type, footprint, id, source, & nextid of every aircraft
+ */
 class Aircraft {
 public:
 	Aircraft();
@@ -39,9 +39,9 @@ public:
 	void AddMyRepairJob(string jobName, RepairJob* myJob);
 	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
-//	void SetRecurringIATs(vector<Distribution*> recurIatVec);
-//	void SetNextStep(Aircraft* currAir, RepairJob* currJob, int stepID);
-	//void SetNextID(int id);
+	void SetAircraftID(int id);
+	void ArriveAircraft();
+
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
 	RepairJob* GetMyRepairJobObj(string name); //used for searching 
@@ -79,7 +79,7 @@ private:
 	int _numCalEvents;
 	double	_length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	double	_wingspan;									//	Aircraft size y dimension
-	string	_repairJobName;				
+	string	_repairJobName;
 	vector<Distribution*> _recurIatVec;
 	//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
