@@ -64,8 +64,16 @@ void Step::CopyMapStep(const Step& mapStep)
 /////////EVENT ACTIONS AND METHODS//////////
 ////////////////////////////////////////////
 
+
+/**
+ * Event Action that waits until all resources for the repair step are aquired before starting service. 
+ */
 class Step::WaitForResourceEA : public CondEventAction {
 public:
+
+	/**
+	 * Event Action that pulls in information
+	 */
 	WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
 		_step = step;
 		_resource = resource;
@@ -74,6 +82,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Condition to detiermine if all resources have been acquired
+	 */
 	bool Condition(Resource* resource, Parts* parts) {
 		if (resource == _resource) {
 			if (_resource->GetResourceCount() > _amountNeeded)
@@ -85,6 +96,12 @@ public:
 			return false;
 	}
 
+	/**
+	 * Function that calls upon the start service event method.
+	 * Starts by checking if acquired resource vector has bay or spot.
+	 * Aircraft arrives, looks up repair jobs or get them, and looks at the master map to see what steps it has.
+	 * Determines what resources it needs, get the resources it needs at each step, execute step, and go to the next step.
+	 */
 	void Execute() {
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
@@ -99,8 +116,14 @@ private:
 
 };
 
+/**
+ * Class event action that to determine what parts are needed. 
+ */
 class Step::NeedPartsEA : public CondEventAction {
 public:
+	/**
+	 * Pulls in information to variables. 
+	 */
 	NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
 		_step = step;
 		_parts = parts;
@@ -109,6 +132,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Condition to determine which parts have been aquired. 
+ 	 */
 	bool Condition(Resource* resource, Parts* parts) {
 		if (parts == _parts) {
 			if (_parts->GetPartsCount() > _amountNeeded)
@@ -120,6 +146,12 @@ public:
 			return false;
 	}
 
+	/**
+	 * Function that calls upon the start service event method.
+	 * Starts by checking if acquired resource vector has bay or spot.
+	 * Aircraft arrives, looks up repair jobs or get them, and looks at the master map to see what steps it has.
+	 * Determines what resources it needs, get the resources it needs at each step, execute step, and go to the next step.
+	 */
 	void Execute() {
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
@@ -132,14 +164,26 @@ private:
 	vector<string> _acqResources;
 };
 
+/**
+ * Class event action that will place orders for parts. 
+ */
 class Step::PlaceOrderEA : public EventAction
 {
 public:
+
+	/**
+	 * Pulls in information to use in functions. 
+	 */
 	PlaceOrderEA(Step* step, Parts* parts) {
 		_parts = parts;
 		_step = step;
 	}
 
+	/**
+	 * Function that calls upon the place order event method.
+	 * Parts total has fallen below threshold and replacment order is needed to refill.
+	 * Schedules a order arrival event action. 
+	 */
 	void Execute() {
 		_step->PlaceOrderEM(_parts);
 	}
@@ -148,14 +192,27 @@ private:
 	Parts* _parts;
 };
 
+
+/**
+ * Class event action for order arrivals. 
+ */
 class Step::OrderArrivalEA : public EventAction
 {
 public:
+
+	/**
+	 * Pulls in information to use in functions. 
+	 */
 	OrderArrivalEA(Step* step, Parts* parts)
 	{
 		_parts = parts;
 		_step = step;
 	}
+
+	/**
+	 * Function that calls upon the order arrival event method.
+	 * Adds the new arrival of parts to the existing current count at time or arrival of parts.
+	 */
 	void Execute()
 	{
 		_step->OrderArrivalEM(_parts);
@@ -165,14 +222,27 @@ private:
 	Parts* _parts;
 };
 
+/**
+ * Class event action that calls the start service event method.  
+ */
 class Step::StartServiceEA : public EventAction {
 public:
+
+	/**
+	 * Pulls in information to use in functions. 
+	 */
 	StartServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources) {
 		_step = step;
 		_aircraft = aircraft;
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Function that calls upon the start service event method.
+	 * Starts by checking if acquired resource vector has bay or spot. 
+	 * Aircraft arrives, looks up repair jobs or get them, and looks at the master map to see what steps it has. 
+	 * Determines what resources it needs, get the resources it needs at each step, execute step, and go to the next step.
+	 */
 	void Execute() {
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
@@ -182,8 +252,15 @@ private:
 	vector<string> _acqResources;
 };
 
+/**
+ * Class event action that calls the done service event method.
+ */
 class Step::DoneServiceEA : public EventAction {
 public:
+
+	/**
+	 * Pulls in information to use in functions. 
+	 */
 	DoneServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources)
 	{
 		_step = step;
@@ -191,6 +268,12 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Function that calls upon the done service event method. 
+	 * Increment stepid, schedule next step in repair job is needed and keeps all resources needed for next step. 
+	 * Schedule release resource.
+	 * If repair job is complete, get next one, or depart if nothing is left. 
+	 */
 	void Execute()
 	{
 		_step->DoneServiceEM(_aircraft, _acqResources);
@@ -201,13 +284,23 @@ private:
 	vector<string> _acqResources;
 };
 
+/**
+ * Class event action that calls the add to queue event method. 
+ */
 class Step::AddQueueEA : public EventAction {
 public:
+	/**
+	 * Pulls in information to use in functions. 
+	 */
 	AddQueueEA(Step* step, Aircraft* aircraft) {
 		_step = step;
 		_aircraft = aircraft;
 	}
 
+	/**
+	 * Function that calls upon the add to queue event method. 
+	 * Adds aircraft entity to queue. 
+	 */
 	void Execute() {
 		_step->AddQueueEM(_aircraft);
 	}
@@ -217,14 +310,24 @@ private:
 	Aircraft* _aircraft;
 };
 
+/**
+ * Class event action that calls the acquire resource event method. 
+ */
 class Step::AcquireResourceEA : public EventAction {
 public:
+	/**
+	 * Pulls in information to use in functions. 
+	 */
 	AcquireResourceEA(Step* step, Resource* resource)
 	{
 		_step = step;
 		_resource = resource;
 	}
 
+	/**
+	 * Function that calls the acquire resource event method. 
+	 * Finds the resource in the map, and acquires the amount needed for repair step. 
+	 */
 	void Execute()
 	{
 		_step->AcquireResourceEM(_resource);
@@ -234,13 +337,23 @@ private:
 	Resource* _resource;
 };
 
+/**
+ * Class event action that calls the release resource event method.
+ */
 class Step::ReleaseResourceEA : public EventAction {
 public:
+	/**
+	 * Pulls in information to use in functions.
+	 */
 	ReleaseResourceEA(Step* step, Resource* resource) {
 		_step = step;
 		_resource = resource;
 	}
 
+	/**
+	 * Function that calls the acquire resource event method.
+	 * Finds the resource in the map, and releases the acquired resources back. 
+	 */
 	void Execute() {
 		_step->ReleaseResourceEM(_resource);
 	}
@@ -249,13 +362,25 @@ private:
 	Resource* _resource;
 };
 
+/**
+ * Class event action that calls the fail resource event method. 
+ */
 class Step::FailResourceEA : public EventAction {
 public:
+
+	/**
+	 * Pulls in information to use in function. 
+	 */
 	FailResourceEA(Step* step, Resource* resource) {
 		_step = step;
 		_resource = resource;
 	}
 
+	/**
+	 * Function that calls the fail resource event method. 
+	 * A resource has failed, and this schedules a time that the resource will be restored.
+	 * Schedules a restore resource event action. 
+	 */
 	void Execute() {
 		_step->FailResourceEM(_resource);
 	}
@@ -264,13 +389,24 @@ private:
 	Resource* _resource;
 };
 
+/**
+ * Class event action that calls the restore resource event method. 
+ */
 class Step::RestoreResourceEA : public EventAction {
 public:
+
+	/**
+	 * Pulls in information to use in function. 
+	 */
 	RestoreResourceEA(Step* step, Resource* resource) {
 		_step = step;
 		_resource = resource;
 	}
 
+	/**
+	 * Function that calls the restore resource event method.
+	 * Failed resource is repaired and conditional events are monitored and will be called again when a resource has failed. 
+	 */
 	void Execute() {
 		_step->RestoreResourceEM(_resource);
 	}
@@ -284,6 +420,7 @@ private:
 	// schedule an event that will act as "place order"   -> placeorderEA does placeOrderEM
 	// "place order" execution will schedule a "order arrived/ parts replenish event"	 placeOrderEM schedules partsArrivalEA
 	// "order arrived/ parts replenish event" execution will simply do _partsCount + Number ordered -> partsArrivalEA does partsArrivalEM
+
 
 void Step::PlaceOrderEM(Parts* parts)
 {
@@ -1132,7 +1269,12 @@ void Step::AcquireParts(Parts* parts)
 ////////////////////////////////////////////
 //////////////   PRINTERS   ////////////////
 ////////////////////////////////////////////
+ 
 
+
+/**
+ * Print function with display information for step.
+ */
 void Step::Print()
 {
 	cout << "		Step Name: " << _name << endl;
