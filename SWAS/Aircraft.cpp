@@ -66,7 +66,7 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			///* roll dice on unplanned probability to see if we're going to schedule it */
 			//if (iter->second->WillSchedule() == true)
 			//{
-			cout << _aircraftType << "	will have a Random Repair Job called: " << iter->second->GetName() << endl;
+		//	cout << _aircraftType << "	will have a Random Repair Job called: " << iter->second->GetName() << endl;
 
 			//make a copy of this repair job
 			RepairJob* currJob = new RepairJob();
@@ -75,6 +75,10 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			//give this copy to this new aircraft's myrepairjobs list
 	//		cout << "ABOUT TO ADD JOB " << currJob->GetName() << " TO" << this->GetAircraftType() << "MY LIST." << endl;
 			this->AddMyRepairJob(currJob->GetName(), currJob);
+
+			//add to map of only unplanned jobs
+			this->AddMyUnplannedJob(currJob->GetName(), currJob);
+
 			//_myRepairJobs.insert(pair<string, RepairJob*>(iter->second->GetName(), currJob));
 
 
@@ -99,8 +103,8 @@ void Aircraft::CopyMyJobList(string aircraftType)
 		//for all repair jobs with schedule type "recurring"
 		else if (iter->second->GetSchedType() == "Recurring") {
 
-			cout << endl;
-			cout << _aircraftType << "	has a Recurring Repair Job called: " << iter->second->GetName() << endl;
+		//	cout << endl;
+		//	cout << _aircraftType << "	has a Recurring Repair Job called: " << iter->second->GetName() << endl;
 
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
@@ -139,8 +143,8 @@ void Aircraft::CopyMyJobList(string aircraftType)
 		//for all repair jobs with schedule type "calendar"
 		else if (iter->second->GetSchedType() == "Calendar") {
 
-			cout << endl;
-			cout << _aircraftType << "	has a Calendar Repair Job called: " << iter->second->GetName() << endl;
+		//	cout << endl;
+		//	cout << _aircraftType << "	has a Calendar Repair Job called: " << iter->second->GetName() << endl;
 
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
@@ -168,11 +172,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			//	//------------
 			//	myJobIter++;
 			//}
-
 		}
 		iter++;
 	}
 }
+
 
 void Aircraft::AddRecurIAT(string repairJobName, Distribution* iatRecurring)
 {
@@ -238,6 +242,11 @@ void Aircraft::SetCalendarObj(string date)
 //{
 //	
 //}
+
+void Aircraft::InsertJobName(string jobName)
+{
+	_unplannedRjVec.push_back(jobName);
+}
 
 bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
 {
@@ -386,7 +395,11 @@ void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 void Aircraft::AddMyRepairJob(string jobName, RepairJob* myJob)
 {
 	_myRepairJobs.insert(pair<string, RepairJob*>(jobName, myJob));
+}
 
+void Aircraft::AddMyUnplannedJob(string jobName, RepairJob* myJob)
+{
+	_myUnplannedJobsMap.insert(pair<string, RepairJob*>(jobName, myJob));
 }
 
 RepairJob* Aircraft::GetRepairJobObj(string name)
@@ -395,6 +408,11 @@ RepairJob* Aircraft::GetRepairJobObj(string name)
 	if (it == _allRepairJobsMap.end())
 		return nullptr;
 	return it->second;
+}
+
+map<string, RepairJob*> Aircraft::GetUnplanJobMap()
+{
+	return _myUnplannedJobsMap;
 }
 
 RepairJob* Aircraft::GetMyRepairJobObj(string name)
@@ -436,6 +454,16 @@ map<string, RepairJob*>::iterator  Aircraft::GetMyRJMapEnd()
 	return _myRepairJobs.end();
 }
 
+map<string, RepairJob*>::iterator Aircraft::GetMyUnplannedMapBegin()
+{
+	return _myUnplannedJobsMap.begin();
+}
+
+map<string, RepairJob*>::iterator  Aircraft::GetMyUnplannedMapEnd()
+{
+	return _myUnplannedJobsMap.end();
+}
+
 map<string, Distribution*>::iterator Aircraft::GetRecurMapBegin()
 {
 	return _myRecurIATmap.begin();
@@ -446,6 +474,22 @@ map<string, Distribution*>::iterator  Aircraft::GetRecurMapEnd()
 	return _myRecurIATmap.end();
 }
 
+string Aircraft::GetRandomElement()
+{
+
+	random_device random_device;
+	mt19937 engine{ random_device() };
+	uniform_int_distribution<int> dist(0, GetUnplanVecSize() - 1);
+	string random_element = _unplannedRjVec[dist(engine)];
+
+	return random_element;
+}
+
+int Aircraft::GetUnplanVecSize()
+{
+	return _unplannedRjVec.size();
+}
+
 int Aircraft::GetAllRJMapSize()
 {
 	return _allRepairJobsMap.size();
@@ -454,6 +498,16 @@ int Aircraft::GetAllRJMapSize()
 int Aircraft::GetMyRJMapSize()
 {
 	return _myRepairJobs.size();
+}
+
+int Aircraft::GetMyUnplannedMapSize()
+{
+
+	cout << "MY UNPLANNED RJ MAP SIZE IS ";
+	cout << _myUnplannedJobsMap.size();
+	cout << endl;
+
+	return _myUnplannedJobsMap.size();
 }
 
 void Aircraft::SetAircraftIAT(string iatUnplanned)

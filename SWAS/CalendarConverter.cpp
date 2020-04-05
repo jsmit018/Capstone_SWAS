@@ -25,7 +25,7 @@ int* CalConverter::GetCalArray() {
 	_calArray = new int[_monthMap.size()];
 	while (iter != _monthMap.end()) {
 		_calArray[iter->first - 1] = iter->second;
-		cout << "Month: " << iter->first << " Days: " << iter->second << endl;
+	//	cout << "Month: " << iter->first << " Days: " << iter->second << endl;
 		iter++;
 		
 	}
