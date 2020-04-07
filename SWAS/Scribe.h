@@ -30,7 +30,7 @@ public:
     int count;
 
     aircraftNode* next;
-}
+};
 
 struct missionNode
 {
@@ -57,6 +57,8 @@ public:
 
     string type;
     int initialCount;
+    float lastchange;
+    int availability;
     float utilizationHours;
     float utilizationPercent;
     int requestNumber;
@@ -124,11 +126,12 @@ struct repairJobNode
 public:
     //constructors
     repairJobNode();
-    repairJobNode(string, string, float);
+    repairJobNode(string, int, string, float);
     repairJobNode(const repairJobNode&);
     ~repairJobNode();
 
     string aircraftType;
+    int aircraftID;
     string jobType;
     float timeStart;
     float timeEnd;
@@ -196,6 +199,7 @@ public:
     aircraftNode* aircraftHead;
     missionNode* missionHead;
     resourceNode* resourceHead;
+    failureNode* failureHead;
     resourceWaitNode* resourceWaitHead;
     serviceWaitNode* serviceWaitHead;
     repairJobNode* repairJobHead;
@@ -207,17 +211,19 @@ public:
     aircraftNode* aircraftRunner;
     missionNode* missionRunner;
     resourceNode* resourceRunner;
+    failureNode* failureRunner;
     resourceWaitNode* resourceWaitRunner;
     serviceWaitNode* serviceWaitRunner;
     repairJobNode* repairJobRunner;
     reworkNode* reworkRunner;
-    partRequestNode* partRequestRunner;
+    partRequestNode* requestsRunner;
     restockNode* restockRunner;
 
     //Tail Pointers
     aircraftNode* aircraftTail;
     missionNode* missionTail;
     resourceNode* resourceTail;
+    failureNode* failureTail;
     resourceWaitNode* resourceWaitTail;
     serviceWaitNode* serviceWaitTail;
     repairJobNode* repairJobTail;
@@ -233,6 +239,7 @@ class Scribe
 public:
 
     Scribe();
+    Scribe(int);
     Scribe(const Scribe&);
     ~Scribe();
 
@@ -241,7 +248,8 @@ public:
     void TallyAircraft(string);
     void RecordMission(string);
     void RecordResource(string, int);
-    void UpdateResourceUtilization(string, int);
+    void UpdateResourceUtilization(string, int, float);
+    void UpdateResourceUtilization();
     void UpdateResourceRequests(string, bool);
     void RecordFailure(string, string, float);
     void RecordResourceWait(string, int, string, float);
@@ -253,13 +261,30 @@ public:
     void RecordRework(string, string, float);
     void RecordPartRequest(string, int, bool);
     void RecordRestock(string, float);
+    void AdvanceRun();
+
+    void SetWarehousDims(string, string);
+    void SetRunTime(float);
+    void SetPlanned(int);
+
 
     //Output methods
     void Archive();
+
+    //Access Methods
+    runNode* GetStart();
 
 
 private:
     runNode* runStart;
     runNode* runEnd;
     runNode* runCurrent;
+
+    //Simulation data
+    //Seed
+
+    string warehouseL, warehouseW;
+    float runtime;
+    int planned, unplanned;
+    int runNumber;
 };

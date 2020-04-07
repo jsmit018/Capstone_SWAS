@@ -8,6 +8,7 @@
 #include "Distribution.h"
 #include "SinkTask.h"
 #include "Warehouse.h"
+#include "Scribe.h"
 #include <map>
 
 using namespace std;
