@@ -316,7 +316,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 	for (int i = 0; i < _acquiredResources.size(); i++)
 	{
 		if (_indoorReq == 'Y' || _indoorReq == 'y') {
-			if (_acquiredResources[i] == "bay") {
+			if (_acquiredResources[i] == "Small bay" || _acquiredResources[i] == "Medium bay" || _acquiredResources[i] == "Large bay") {
+			//if (_acquiredResources[i] == "bay") {
 				hasResource = true;
 				break;
 			}
