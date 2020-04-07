@@ -102,6 +102,8 @@ void InitializeAircraft()
 
 	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
+	//Setting the Initial System Seed I just picked 8 b/c of the team size
+	Distribution::SetSystemSeed(8);
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
 	inputReader.AddSelectedAircraft("Apache");
@@ -259,6 +261,7 @@ int main()
 	inputReader.ReadInputData();
 	//Step::PrintPools();
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
+	//*Note: Let tyler know this function name so he can add it to his unity logic
 	for (int i = 0; i < inputReader.GetNumRuns(); i++)
 	{
 		/*	
@@ -272,7 +275,7 @@ int main()
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		//while (SimExec::GetSimulationFlag())
-		SimExec::RunSimulation(0, 0, 2021);
+			//SimExec::RunSimulation(0, 0, 2021);
 
 	}
 

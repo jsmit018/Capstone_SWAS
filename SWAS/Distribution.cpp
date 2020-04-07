@@ -3,6 +3,7 @@
 Distribution::Distribution() {}
 
 string Distribution::_seedType = "null";
+int Distribution::_systemSeed = 0;
 
 void Distribution::PrintDistribution()
 {
@@ -10,15 +11,36 @@ void Distribution::PrintDistribution()
 
 std::default_random_engine Distribution::generator;
 
-//void Distribution::SetSystemSeed(int seed) {
-//	generator.seed(seed);
-
+void Distribution::SetSystemSeed(int seed) {
+	int sysSeed = IsSystemSeedTypeSameorDifferent(seed);
+	//^Functinon above updated system seed
 //TO DO: If statement for seed based on type
-
-//}
+	if (sysSeed == 0) {
+		cout << "Seed was the same" << endl;
+	}
+	else if (sysSeed == 1)
+		cout << "System Seed was different, system seed updated" << endl;
+}
 
 void Distribution::SetSystemSeedType(string seedType) {
 	_seedType = seedType;
+}
+
+//void Distribution::SetSystemSeed(int seed)
+//{
+//	_systemSeed = seed;
+//}
+
+int Distribution::IsSystemSeedTypeSameorDifferent(int seed)
+{
+	if (_systemSeed == seed) {
+		return 0;
+	}
+	else {
+		_systemSeed = seed;
+		generator.seed(_systemSeed);
+		return 1;
+	}
 }
 
 Exponential::Exponential(double mean) : Distribution()
