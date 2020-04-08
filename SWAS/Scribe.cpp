@@ -442,6 +442,11 @@ Scribe::Scribe()
 	runtime = 0;
 	planned = 0;
 	unplanned = 0;
+
+	SetWarehousDims(0, 0);
+	SetSeed(0);
+	totalRuntime = 0;
+	fileName = "";
 }
 
 Scribe::Scribe(int runs)
@@ -469,6 +474,10 @@ Scribe::Scribe(int runs)
 	runtime = 0;
 	planned = 0;
 	unplanned = 0;
+	SetWarehousDims(0, 0);
+	SetSeed(0);
+	totalRuntime = 0;
+	fileName = "";
 }
 
 Scribe::Scribe(const Scribe& node2)
@@ -482,6 +491,12 @@ Scribe::Scribe(const Scribe& node2)
 	runtime = node2.runtime;
 	planned = node2.planned;
 	unplanned = node2.unplanned;
+
+	warehouseL = node2.warehouseL;
+	warehouseW = node2.warehouseW;
+	seedVal = node2.seedVal;
+	totalRuntime = node2.totalRuntime;
+	fileName = node2.fileName;
 }
 
 Scribe::~Scribe()
@@ -915,6 +930,7 @@ void Scribe::SetRunTime(float runT)
 {
 	runtime = runT;
 	UpdateResourceUtilization();
+	totalRuntime += runT;
 }
 
 //call to set the number of planned repair jobs
@@ -923,31 +939,535 @@ void Scribe::SetPlanned(int known)
 	planned = known;
 }
 
+void Scribe::TallyUnplanned(int unplannedSet)
+{
+	unplanned += unplannedSet;
+}
+
+//Call to set the Seed Value for the warehouse setup and save file key
+void Scribe::SetSeed(double value)
+{
+	seedVal = value;
+}
+
+//Call to set the name of the save file
+void Scribe::SetSaveFile(string file)
+{
+	fileName = file;
+}
+
 //Record information in external file
 void Scribe::Archive()
 {
+	//out file stream variable
+	ofstream fileOut;
+	//temporary string for formatting
+	string tempStr = "";
+	//integer to count end of list pointers
+	int endCount;
+
+	//Begin Archive
+	fileOut.open(fileName);
 	//Simulation data
 		//Include Seed value for later analysis
+	fileOut << (to_string(seedVal) + "\n");
+
+	fileOut << "\n";
+	fileOut << "Number of Runs," + to_string(runNumber) + "\n";
+	fileOut << "Warehouse Length," + warehouseL + "\n";
+	fileOut << "Warehouse Width," + warehouseW + "\n";
+	fileOut << "Runtime Duration," + to_string(totalRuntime) + "\n";
+	fileOut << "Number of Planned Repair Jobs," + to_string(planned) + "\n";
+	fileOut << "Number of Unplanned Repair Jobs," + to_string(unplanned) + "\n";
+
+	fileOut << "\n";
 
 	//Aircraft data for each run
+	fileOut << "Aircraft\n";
+	
+		//Create run Headings
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+		
+		//Create field Headings
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Type,Number,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+		//Initialize aircraft search pointers
+	runCurrent = runStart;
+	for (int i = 0; i < runNumber; i++)
+	{
+		runCurrent->aircraftRunner = runCurrent->aircraftHead;
+		runCurrent = runCurrent->next;
+	}
+	
+	do
+	{
+		//re-initailize variables
+		endCount = 0;
+		runCurrent = runStart;
+		tempStr = "";
+		for (int i = 0; i < runNumber; i++)
+		{
+			//Check that pointer has data
+			if (runCurrent->aircraftRunner == nullptr)
+			{
+				//record blank
+				tempStr += ",,";
+				endCount++;
+			}
+			else
+			{
+				//record both type and count
+				tempStr += ((runCurrent->aircraftRunner->type) + "," + to_string(runCurrent->aircraftRunner->count) + ",");
+				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
+			}
+			//advance run
+			runCurrent = runCurrent->next;
+		}
+		//end line
+		tempStr += "\n";
+		//Record Line
+		fileOut << tempStr;
+		//check that all lists have ended
+	} while (endCount < runNumber);
+		//Above should result in a blank line separating above from missions below
 
 	//Mission data for each run
+	fileOut << "Missions\n";
+	tempStr = "";
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",");
+	}
+	tempStr += "\n";
+
+	fileOut << tempStr;
+
+		//Initialize Mission Search pointers
+	runCurrent = runStart;
+	for (int i = 0; i < runNumber; i++)
+	{
+		runCurrent->missionRunner = runCurrent->missionHead;
+		runCurrent = runCurrent->next;
+	}
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->missionRunner == nullptr)
+			{
+				tempStr += ",";
+				endCount++;
+			}
+			else
+			{
+				tempStr += (runCurrent->missionRunner->type + ",");
+				runCurrent->missionRunner = runCurrent->missionRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+	} while (endCount < runNumber);
 
 	//Resource data for each run
+	fileOut << "Resources\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		runCurrent->resourceRunner = runCurrent->resourceHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Resource,Initail Count,Utilization Hours,Utilization Percent,Number of Requests,Unsuccessful Requests,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->resourceRunner == nullptr)
+			{
+				tempStr += ",,,,,,";
+				endCount++;
+			}
+			else
+			{
+				tempStr += ((runCurrent->resourceRunner->type) + "," + to_string(runCurrent->resourceRunner->initialCount) + "," + to_string(runCurrent->resourceRunner->utilizationHours) + "," + to_string(runCurrent->resourceRunner->utilizationPercent) +
+					"," + to_string(runCurrent->resourceRunner->requestNumber) + "," + to_string(runCurrent->resourceRunner->unsuccessfulRequests) + ",");
+				runCurrent->resourceRunner = runCurrent->resourceRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Failure data for each run
+	fileOut << "Resource Failure\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,");
+		runCurrent->failureRunner = runCurrent->failureHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Resource,Failure,Downtime,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->failureRunner == nullptr)
+			{
+				tempStr += ",,,";
+				endCount++;
+			}
+			else
+			{
+				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + to_string(runCurrent->failureRunner->duration)+",");
+				runCurrent->failureRunner = runCurrent->failureRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Resource wait data for each run
+	fileOut << "Resource Waits\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		runCurrent->resourceWaitRunner = runCurrent->resourceWaitHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Aircraft Type,ID,Resource,Start,End,Time,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->resourceWaitRunner == nullptr)
+			{
+				tempStr += (",,,,,,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += ((runCurrent->resourceWaitRunner->aircraftType) + "," + to_string(runCurrent->resourceWaitRunner->aircraftID) + "," + (runCurrent->resourceWaitRunner->resourceType) + "," + to_string(runCurrent->resourceWaitRunner->timeStart) +
+					"," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," + to_string(runCurrent->resourceWaitRunner->duration) + ",");
+				runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Service wait data for each run
+	fileOut << "Aircraft Wait\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		runCurrent->serviceWaitRunner = runCurrent->serviceWaitHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("ID,Type,Location,Time Begin,Time End,Wait Time,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->serviceWaitRunner == nullptr)
+			{
+				tempStr += (",,,,,,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += (to_string(runCurrent->serviceWaitRunner->aircraftID) + "," + (runCurrent->serviceWaitRunner->aircraftType) + "," + (runCurrent->serviceWaitRunner->location) + "," +
+					to_string(runCurrent->serviceWaitRunner->timeStart) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," + to_string(runCurrent->serviceWaitRunner->duration) + ",");
+				runCurrent->serviceWaitRunner = runCurrent->serviceWaitRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Repair job data for each run
+	fileOut << "Repair Jobs\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		runCurrent->repairJobRunner = runCurrent->repairJobHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("ID,Type,Job,Start,Finish,Duration,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->repairJobRunner == nullptr)
+			{
+				tempStr += (",,,,,,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += (to_string(runCurrent->repairJobRunner->aircraftID) + "," + (runCurrent->repairJobRunner->aircraftType) + "," + (runCurrent->repairJobRunner->jobType) + "," +
+					to_string(runCurrent->repairJobRunner->timeStart) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," + to_string(runCurrent->repairJobRunner->duration) + ",");
+				runCurrent->repairJobRunner = runCurrent->repairJobRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Rework data for each run
+	fileOut << "Reworks\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,");
+		runCurrent->reworkRunner = runCurrent->reworkHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Aircraft or Resource Type,Rework Event,Duration,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->reworkRunner == nullptr)
+			{
+				tempStr += ",,,";
+				endCount++;
+			}
+			else
+			{
+				tempStr += ((runCurrent->reworkRunner->objectType) + "," + (runCurrent->reworkRunner->reworkEvent) + "," + to_string(runCurrent->reworkRunner->duration) + ",");
+				runCurrent->reworkRunner = runCurrent->reworkRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Part Request data for each run
+	fileOut << "Parts Requests\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,");
+		runCurrent->requestsRunner = runCurrent->requestsHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Part,Number Used,Times Requested,Unsuccessful Requests,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->requestsRunner == nullptr)
+			{
+				tempStr += (",,,,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += ((runCurrent->requestsRunner->partType) + "," + to_string(runCurrent->requestsRunner->numberUsed) + "," + to_string(runCurrent->requestsRunner->requestNumber) + ","
+					+ to_string(runCurrent->requestsRunner->unsuccessfulRequests) + ",");
+				runCurrent->requestsRunner = runCurrent->requestsRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
 
 	//Restock data for each run
+	fileOut << "Restocking\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,");
+		runCurrent->restockRunner = runCurrent->restockHead;
+		runCurrent = runCurrent->next;
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += "Part,TUA,";
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->restockRunner == nullptr)
+			{
+				tempStr += (",,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += ((runCurrent->restockRunner->partType) + "," + to_string(runCurrent->restockRunner->restockTime) + ",");
+				runCurrent->restockRunner = runCurrent->restockRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+
+	} while (endCount < runNumber);
+
+	cout << "Archived to: " + fileName;
+	system("pause");
 }
 
 runNode* Scribe::GetStart()

@@ -266,6 +266,9 @@ public:
     void SetWarehousDims(string, string);
     void SetRunTime(float);
     void SetPlanned(int);
+    void TallyUnplanned(int);
+    void SetSeed(double);
+    void SetSaveFile(string);
 
 
     //Output methods
@@ -280,11 +283,11 @@ private:
     runNode* runEnd;
     runNode* runCurrent;
 
-    //Simulation data
-    //Seed
-
     string warehouseL, warehouseW;
+    string fileName;
     float runtime;
     int planned, unplanned;
     int runNumber;
+    double seedVal;
+    float totalRuntime;
 };
