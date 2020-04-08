@@ -1,6 +1,7 @@
 //Scribe.cpp: Kevin Voyt
 
 #include "Scribe.h"
+#include "Distribution.h"
 
 aircraftNode::aircraftNode()
 {
@@ -928,6 +929,7 @@ void Scribe::Archive()
 {
 	//Simulation data
 		//Include Seed value for later analysis
+		//Distribution::GetSystemSeed();
 
 	//Aircraft data for each run
 

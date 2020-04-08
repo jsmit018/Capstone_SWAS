@@ -43,6 +43,11 @@ int Distribution::IsSystemSeedTypeSameorDifferent(int seed)
 	}
 }
 
+int Distribution::GetSystemSeed()
+{
+	return _systemSeed;
+}
+
 Exponential::Exponential(double mean) : Distribution()
 {
 	_mean = mean;

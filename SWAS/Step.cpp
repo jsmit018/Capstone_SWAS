@@ -289,6 +289,7 @@ void Step::PlaceOrderEM(Parts* parts)
 {
 	//Schedule Order Arrivals EA at now + lead time
 	cout << "Parts total has fallen below its identified threshold, placing an order" << endl;
+	outputRecorder->RecordPartRequest(parts->GetPartsName(), parts->GetPartsCount(), true);
 	SimExec::ScheduleEventAt(1, new OrderArrivalEA(this, parts), parts->GetLeadTime()->GetRV(), "OrderArrivalEA");
 }
 
@@ -301,6 +302,7 @@ void Step::OrderArrivalEM(Parts* parts)
 	newCount = iter->second->GetInitPartsCount();
 
 	parts->SetPartsCount(newCount);
+	outputRecorder->RecordRestock(parts->GetPartsName(), SimExec::GetSimulationTime()._timeOfDay);
 	SimExec::CheckConditionalEvents(0, parts);
 }
 
@@ -369,6 +371,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 			// WAITING
 //			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			outputRecorder->RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 		}
 
 		/*IF TARMAC HAS LIMITED SPOTS */

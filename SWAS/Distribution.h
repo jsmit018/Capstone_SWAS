@@ -14,6 +14,7 @@ public:
 	static void SetSystemSeedType(string seedType);
 	static void SetSystemSeed(int seed);
 	static int IsSystemSeedTypeSameorDifferent(int seed);
+	static int GetSystemSeed();
 	virtual void PrintDistribution() = 0;
 	virtual Distribution* CopyThis() = 0; 
 protected:
