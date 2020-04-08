@@ -146,6 +146,7 @@
     <ClCompile Include="Parts.cpp" />
     <ClCompile Include="RepairJob.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Scribe.cpp" />
     <ClCompile Include="SimExec.cpp" />
     <ClCompile Include="SimObj.cpp" />
     <ClCompile Include="SinkTask.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Parts.h" />
     <ClInclude Include="RepairJob.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scribe.h" />
     <ClInclude Include="SimExec.h" />
     <ClInclude Include="SimObj.h" />
     <ClInclude Include="SinkTask.h" />
