@@ -149,9 +149,13 @@ public:
     int aircraftID;
     string jobType;
     float timeStart;
-    string dateStart;
+    double dayStart;
+    double monthStart;
+    double yearStart;
     float timeEnd;
-    string dateEnd;
+    double dayEnd;
+    double monthEnd;
+    double yearEnd;
     float ellapse;
 
     repairJobNode* next;

@@ -273,9 +273,13 @@ repairJobNode::repairJobNode()
 	aircraftType = "";
 	jobType = "";
 	timeStart = 0;
-	dateStart = "";
+	dayStart = 0;
+	monthStart = 0;
+	yearStart = 0;
 	timeEnd = 0;
-	dateEnd = "";
+	dayEnd = 0;
+	monthEnd = 0;
+	yearEnd = 0;
 	ellapse = -1;
 
 	next = nullptr;
@@ -286,9 +290,13 @@ repairJobNode::repairJobNode(string aircraft,int id, string job, float time)
 	aircraftType = aircraft;
 	jobType = job;
 	timeStart = time;
-	dateStart = (to_string(SimExec::GetSimulationTime()._month) + "/" + to_string(SimExec::GetSimulationTime()._day) + "/" + to_string(SimExec::GetSimulationTime()._year));
+	dayStart = SimExec::GetSimulationTime()._day;
+	monthStart = SimExec::GetSimulationTime()._month;
+	yearStart = SimExec::GetSimulationTime()._year;
 	timeEnd = 0;
-	dateEnd = "";
+	dayEnd = 0;
+	monthEnd = 0;
+	yearEnd = 0;
 	ellapse = -1;
 
 	next = nullptr;
@@ -299,9 +307,13 @@ repairJobNode::repairJobNode(const repairJobNode& node2)
 	aircraftType = node2.aircraftType;
 	jobType = node2.jobType;
 	timeStart = node2.timeStart;
-	dateStart = node2.dateStart;
+	dayStart = node2.dayStart;
+	monthStart = node2.monthStart;
+	yearStart = node2.yearStart;
 	timeEnd = node2.timeEnd;
-	dateEnd = node2.dateEnd;
+	dayEnd = node2.dayEnd;
+	monthEnd = node2.monthEnd;
+	yearEnd = node2.yearEnd;
 	ellapse = node2.ellapse;
 	next = node2.next;
 }
@@ -990,7 +1002,64 @@ void Scribe::RecordRepairEnd(int id, string job, float end)
 				if (runCurrent->repairJobRunner->ellapse == -1)
 				{
 					runCurrent->repairJobRunner->timeEnd = end;
-					runCurrent->repairJobRunner->ellapse = (runCurrent->repairJobRunner->timeEnd - runCurrent->repairJobRunner->timeStart);
+					runCurrent->repairJobRunner->dayEnd = SimExec::GetSimulationTime()._day;
+					runCurrent->repairJobRunner->monthEnd = SimExec::GetSimulationTime()._month;
+					runCurrent->repairJobRunner->yearEnd = SimExec::GetSimulationTime()._year;
+					int startDate = (runCurrent->repairJobRunner->yearStart) * 365.25;
+					for (int i = 1; i < (runCurrent->repairJobRunner->monthStart); i++)
+					{
+						if (i == 4 || i == 6 || i == 9 || i == 11)
+						{
+							startDate += 30;
+						}
+						else if (i == 2)
+						{
+							if ((int(runCurrent->repairJobRunner->yearStart) % 4) == 0)
+							{
+								startDate += 29;
+							}
+							else
+							{
+								startDate += 28;
+							}
+						}
+						else
+						{
+							startDate += 30;
+						}
+					}
+
+					startDate += (runCurrent->repairJobRunner->dayStart);
+
+					int endDate = (runCurrent->repairJobRunner->yearEnd) * 365.25;
+					for (int i = 1; i < (runCurrent->repairJobRunner->monthEnd); i++)
+					{
+						if (i == 4 || i == 6 || i == 9 || i == 11)
+						{
+							endDate += 30;
+						}
+						else if (i == 2)
+						{
+							if ((int(runCurrent->repairJobRunner->yearEnd) % 4) == 0)
+							{
+								endDate += 29;
+							}
+							else
+							{
+								endDate += 28;
+							}
+						}
+						else
+						{
+							endDate += 30;
+						}
+					}
+					endDate += (runCurrent->repairJobRunner->dayEnd);
+
+					float startTime = (startDate * 24) - (24 - runCurrent->repairJobRunner->timeStart);
+					float endTime = (endDate * 24) - (24 - runCurrent->repairJobRunner->timeEnd);
+
+					runCurrent->repairJobRunner->ellapse = (endTime - startTime);
 				}
 			}
 		}
@@ -1326,7 +1395,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,,");
 		runCurrent->failureRunner = runCurrent->failureHead;
 		runCurrent = runCurrent->next;
 	}
@@ -1336,7 +1405,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Resource,Failure,Downtime,");
+		tempStr += ("Resource,Failure,Date,Downtime,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1351,12 +1420,12 @@ void Scribe::Archive()
 		{
 			if (runCurrent->failureRunner == nullptr)
 			{
-				tempStr += ",,,";
+				tempStr += ",,,,";
 				endCount++;
 			}
 			else
 			{
-				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + to_string(runCurrent->failureRunner->ellapse)+",");
+				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + (runCurrent->failureRunner->date) + "," + to_string(runCurrent->failureRunner->ellapse)+",");
 				runCurrent->failureRunner = runCurrent->failureRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1373,7 +1442,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
 		runCurrent->resourceWaitRunner = runCurrent->resourceWaitHead;
 		runCurrent = runCurrent->next;
 	}
@@ -1383,7 +1452,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Aircraft Type,ID,Resource,Start,End,Time,");
+		tempStr += ("Aircraft Type,ID,Resource,Date Start,Start,Date End,End,Time,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1398,13 +1467,15 @@ void Scribe::Archive()
 		{
 			if (runCurrent->resourceWaitRunner == nullptr)
 			{
-				tempStr += (",,,,,,");
+				tempStr += (",,,,,,,,");
 				endCount++;
 			}
 			else
 			{
-				tempStr += ((runCurrent->resourceWaitRunner->aircraftType) + "," + to_string(runCurrent->resourceWaitRunner->aircraftID) + "," + (runCurrent->resourceWaitRunner->resourceType) + "," + to_string(runCurrent->resourceWaitRunner->timeStart) +
-					"," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," + to_string(runCurrent->resourceWaitRunner->ellapse) + ",");
+				tempStr += ((runCurrent->resourceWaitRunner->aircraftType) + "," + to_string(runCurrent->resourceWaitRunner->aircraftID) + "," + (runCurrent->resourceWaitRunner->resourceType) + "," + 
+					to_string(runCurrent->resourceWaitRunner->monthStart) + "/" + to_string(runCurrent->resourceWaitRunner->dayStart) + "/"+ to_string(runCurrent->resourceWaitRunner->yearStart) + "," + to_string(runCurrent->resourceWaitRunner->timeStart) + "," +
+					to_string(runCurrent->resourceWaitRunner->monthEnd) + "/" + to_string(runCurrent->resourceWaitRunner->dayEnd) + "/"+ to_string(runCurrent->resourceWaitRunner->yearEnd) + "," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," +
+					to_string(runCurrent->resourceWaitRunner->ellapse) + ",");
 				runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1421,7 +1492,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
 		runCurrent->serviceWaitRunner = runCurrent->serviceWaitHead;
 		runCurrent = runCurrent->next;
 	}
@@ -1431,7 +1502,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("ID,Type,Location,Time Begin,Time End,Wait Time,");
+		tempStr += ("ID,Type,Location,Date Begin,Time Begin,Date End,Time End,Wait Time,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1446,13 +1517,15 @@ void Scribe::Archive()
 		{
 			if (runCurrent->serviceWaitRunner == nullptr)
 			{
-				tempStr += (",,,,,,");
+				tempStr += (",,,,,,,,");
 				endCount++;
 			}
 			else
 			{
 				tempStr += (to_string(runCurrent->serviceWaitRunner->aircraftID) + "," + (runCurrent->serviceWaitRunner->aircraftType) + "," + (runCurrent->serviceWaitRunner->location) + "," +
-					to_string(runCurrent->serviceWaitRunner->timeStart) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," + to_string(runCurrent->serviceWaitRunner->ellapse) + ",");
+					to_string(runCurrent->serviceWaitRunner->monthStart)+ "/"+to_string(runCurrent->serviceWaitRunner->dayStart)+"/"+to_string(runCurrent->serviceWaitRunner->yearStart) + "," + to_string(runCurrent->serviceWaitRunner->timeStart) + "," +
+					to_string(runCurrent->serviceWaitRunner->monthEnd)+ "/" + to_string(runCurrent->serviceWaitRunner->dayEnd) + "/" + to_string(runCurrent->serviceWaitRunner->yearEnd) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," + 
+					to_string(runCurrent->serviceWaitRunner->ellapse) + ",");
 				runCurrent->serviceWaitRunner = runCurrent->serviceWaitRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1469,7 +1542,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
 		runCurrent->repairJobRunner = runCurrent->repairJobHead;
 		runCurrent = runCurrent->next;
 	}
@@ -1479,7 +1552,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("ID,Type,Job,Start,Finish,Duration,");
+		tempStr += ("ID,Type,Job,Date Start,Start,Date Finish,Finish,Duration,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1494,13 +1567,15 @@ void Scribe::Archive()
 		{
 			if (runCurrent->repairJobRunner == nullptr)
 			{
-				tempStr += (",,,,,,");
+				tempStr += (",,,,,,,,");
 				endCount++;
 			}
 			else
 			{
 				tempStr += (to_string(runCurrent->repairJobRunner->aircraftID) + "," + (runCurrent->repairJobRunner->aircraftType) + "," + (runCurrent->repairJobRunner->jobType) + "," +
-					to_string(runCurrent->repairJobRunner->timeStart) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," + to_string(runCurrent->repairJobRunner->ellapse) + ",");
+					to_string(runCurrent->repairJobRunner->monthStart) + "/" + to_string(runCurrent->repairJobRunner->dayStart) + "/" + to_string(runCurrent->repairJobRunner->yearStart) + "," + to_string(runCurrent->repairJobRunner->timeStart) + "," +
+					to_string(runCurrent->repairJobRunner->monthEnd) + "/" + to_string(runCurrent->repairJobRunner->dayEnd) + "/" + to_string(runCurrent->repairJobRunner->yearEnd) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," +
+					to_string(runCurrent->repairJobRunner->ellapse) + ",");
 				runCurrent->repairJobRunner = runCurrent->repairJobRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1517,7 +1592,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,,");
 		runCurrent->reworkRunner = runCurrent->reworkHead;
 		runCurrent = runCurrent->next;
 	}
@@ -1527,7 +1602,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Aircraft or Resource Type,Rework Event,Duration,");
+		tempStr += ("Aircraft or Resource Type,Rework Event,Date,Duration,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1542,12 +1617,12 @@ void Scribe::Archive()
 		{
 			if (runCurrent->reworkRunner == nullptr)
 			{
-				tempStr += ",,,";
+				tempStr += ",,,,";
 				endCount++;
 			}
 			else
 			{
-				tempStr += ((runCurrent->reworkRunner->objectType) + "," + (runCurrent->reworkRunner->reworkEvent) + "," + to_string(runCurrent->reworkRunner->ellapse) + ",");
+				tempStr += ((runCurrent->reworkRunner->objectType) + "," + (runCurrent->reworkRunner->reworkEvent) + "," + (runCurrent->reworkRunner->date) + "," + to_string(runCurrent->reworkRunner->ellapse) + ",");
 				runCurrent->reworkRunner = runCurrent->reworkRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1612,7 +1687,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,");
 		runCurrent->restockRunner = runCurrent->restockHead;
 		runCurrent = runCurrent->next;
 	}
@@ -1622,7 +1697,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += "Part,TUA,";
+		tempStr += "Part,Date Ordered,TUA,";
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1637,12 +1712,12 @@ void Scribe::Archive()
 		{
 			if (runCurrent->restockRunner == nullptr)
 			{
-				tempStr += (",,");
+				tempStr += (",,,");
 				endCount++;
 			}
 			else
 			{
-				tempStr += ((runCurrent->restockRunner->partType) + "," + to_string(runCurrent->restockRunner->restockTime) + ",");
+				tempStr += ((runCurrent->restockRunner->partType) + "," + (runCurrent->restockRunner->date) + "," + to_string(runCurrent->restockRunner->restockTime) + ",");
 				runCurrent->restockRunner = runCurrent->restockRunner->next;
 			}
 			runCurrent = runCurrent->next;
