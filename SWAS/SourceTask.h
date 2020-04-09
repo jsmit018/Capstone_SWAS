@@ -75,5 +75,5 @@ private:
 	void ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calobj);
 	//void ScheduleNextRecurringAircraftEM();
 	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob);
-	Scribe* outputRecorder = new Scribe();
+	//Scribe* outputRecorder = new Scribe();
 };

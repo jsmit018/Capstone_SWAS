@@ -14,5 +14,5 @@ public:
 private:
 	string _name;
 	int _terminatedAircraft;
-	Scribe* outputRecorder = new Scribe();
+	//Scribe* outputRecorder = new Scribe();
 };

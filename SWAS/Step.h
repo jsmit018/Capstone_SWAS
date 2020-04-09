@@ -89,7 +89,7 @@ private:
 	map<string, Parts*> _reqPartsMap;		//map of required parts
 	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
-	Scribe* outputRecorder = new Scribe();
+	//Scribe* outputRecorder = new Scribe();
 
 	bool haveAllResources();	//check for whether acquired resources can be released
 	bool ResourceInReqResource(string resource)

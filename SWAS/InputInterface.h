@@ -40,7 +40,7 @@ private:
 	GUISelectedAircraft* _GUIListHead;
 	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere
-	Scribe* outputRecorder = new Scribe();
+	//Scribe* outputRecorder = new Scribe();
 
 	//Trial CalObjs
 

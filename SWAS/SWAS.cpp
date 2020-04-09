@@ -13,27 +13,27 @@
 
 using namespace std;
 
-Scribe* outputReader;
+//Scribe* outputReader;
 
+//Scribe is now static we don't need object refference
+//void InitializeScribe() {
+//	outputReader = new Scribe();
+//}
 
-void InitializeScribe() {
-	outputReader = new Scribe();
-}
-
-Scribe* GetScribe() {
-	return outputReader;
-}
+//Scribe* GetScribe() {
+//	return outputReader;
+//}
 
 void ScribeSetDimension(double length, double width) {
-	outputReader->SetWarehousDims(length, width);
+	Scribe::SetWarehousDims(length, width);
 }
 
 void ScribeAdvanceRun() {
-	outputReader->AdvanceRun();
+	Scribe::AdvanceRun();
 }
 
 void ScribeSetTerminationTime(double termTime) {
-	outputReader->SetRunTime(termTime);
+	Scribe::SetRunTime(termTime);
 }
 ///////////////////////////////////////////////////
 ///	Temporary for testing linked list searching ///
@@ -296,7 +296,6 @@ int main()
 		cout << endl;
 		cout << "RUN NUMBER " << i + 1 << endl;
 		*/
-		InitializeScribe();
 		InitializeAircraft();
 		//InitalizeAircraft(GetScribe());
 

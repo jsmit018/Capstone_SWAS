@@ -522,7 +522,7 @@ Scribe::Scribe()
 	planned = 0;
 	unplanned = 0;
 
-	SetWarehousDims("0", "0");
+	SetWarehousDims(0.0, 0.0);
 	SetSeed(0);
 	totalRuntime = 0;
 	fileName = "";
@@ -553,7 +553,7 @@ Scribe::Scribe(int runs)
 	runtime = 0;
 	planned = 0;
 	unplanned = 0;
-	SetWarehousDims("0", "0");
+	SetWarehousDims(0.0, 0.0);
 	SetSeed(0);
 	totalRuntime = 0;
 	fileName = "";

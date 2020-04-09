@@ -410,7 +410,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
 					numPlanned++;
 				}
-				outputRecorder->SetPlanned(numPlanned);
+				Scribe::SetPlanned(numPlanned);
 			}
 			///////Unplanned////////
 
@@ -761,7 +761,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
 
-					outputRecorder->RecordResource(resName, resCount);
+					Scribe::RecordResource(resName, resCount);
 
 					Step::AddToResPool(res, res->GetResourceName());
 
