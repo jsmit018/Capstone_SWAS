@@ -12,12 +12,16 @@ public:
 	Distribution();
 	virtual double GetRV() = 0;
 	static void SetSystemSeedType(string seedType);
+	static void SetSystemSeed(int seed);
+	static int IsSystemSeedTypeSameorDifferent(int seed);
+	static int GetSystemSeed();
 	virtual void PrintDistribution() = 0;
 	virtual Distribution* CopyThis() = 0; 
 protected:
 	static std::default_random_engine generator;
 private:
 	static string _seedType;
+	static int _systemSeed;
 };
 
 class Exponential : public Distribution

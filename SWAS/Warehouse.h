@@ -7,6 +7,7 @@ class Warehouse
 public:
 	Warehouse(double length, double width);
 	static void SetMasterMaps(InputReader inputReader);
+	static void SetScribe(Scribe* scribe);
 	double GetLength();
 	void UpdateListOfObjects(string objectName);
 	void SetLength(double hangarLength);
@@ -19,5 +20,6 @@ private:
 	double _hangarWidth;
 	int _index;
 	static InputReader _inputReader;
+	static Scribe* _scribe;
 	string _listOfObjects[];
 };

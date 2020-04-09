@@ -8,10 +8,33 @@
 #include "Distribution.h"
 #include "SinkTask.h"
 #include "Warehouse.h"
+#include "Scribe.h"
 #include <map>
 
 using namespace std;
 
+//Scribe* outputReader;
+
+//Scribe is now static we don't need object refference
+//void InitializeScribe() {
+//	outputReader = new Scribe();
+//}
+
+//Scribe* GetScribe() {
+//	return outputReader;
+//}
+
+void ScribeSetDimension(double length, double width) {
+	Scribe::SetWarehousDims(length, width);
+}
+
+void ScribeAdvanceRun() {
+	Scribe::AdvanceRun();
+}
+
+void ScribeSetTerminationTime(double termTime) {
+	Scribe::SetRunTime(termTime);
+}
 ///////////////////////////////////////////////////
 ///	Temporary for testing linked list searching ///
 ///			until GUI LL is available			///
@@ -102,6 +125,8 @@ void InitializeAircraft()
 
 	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
+	//Setting the Initial System Seed I just picked 8 b/c of the team size
+	Distribution::SetSystemSeed(8);
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
 	inputReader.AddSelectedAircraft("Apache");
@@ -259,20 +284,26 @@ int main()
 	inputReader.ReadInputData();
 	//Step::PrintPools();
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
+	//*Note: Let tyler know this function name so he can add it to his unity logic
 	for (int i = 0; i < inputReader.GetNumRuns(); i++)
 	{
+
+		if (i > 0)
+			ScribeAdvanceRun();
 		/*	
 		cout << endl;
 		cout << endl;
 		cout << endl;
 		cout << "RUN NUMBER " << i + 1 << endl;
 		*/
-	
 		InitializeAircraft();
+		//InitalizeAircraft(GetScribe());
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		//while (SimExec::GetSimulationFlag())
-		SimExec::RunSimulation(0, 0, 2021);
+			//SimExec::RunSimulation(0, 0, 2021);
+
+		//ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
 
 	}
 

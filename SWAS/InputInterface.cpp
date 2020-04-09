@@ -326,6 +326,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				string schedCal;
 				double schedRecur;
 				char indoorReq;
+				int numPlanned = 0;
 
 				getline(dataFile, line);
 				vector <string> row;
@@ -407,7 +408,9 @@ void InputReader::ReadInputData() //initialization for getting data
 
 
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
+					numPlanned++;
 				}
+				Scribe::SetPlanned(numPlanned);
 			}
 			///////Unplanned////////
 
@@ -757,6 +760,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					res->SetResourceCount(resCount);
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
+
+					Scribe::RecordResource(resName, resCount);
 
 					Step::AddToResPool(res, res->GetResourceName());
 
