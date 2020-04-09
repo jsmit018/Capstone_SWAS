@@ -1,6 +1,7 @@
 //Scribe.cpp: Kevin Voyt
 
 #include "Scribe.h"
+#include "Distribution.h"
 
 aircraftNode::aircraftNode()
 {
@@ -919,10 +920,11 @@ void Scribe::AdvanceRun()
 }
 
 //call to set warehouse dimensions
-void Scribe::SetWarehousDims(string length, string width)
+//void Scribe::SetWarehousDims(string length, string width)
+void Scribe::SetWarehousDims(double length, double width)
 {
-	warehouseL = length;
-	warehouseW = width;
+	warehouseL = to_string(length);
+	warehouseW = to_string(width);
 }
 
 //call to set runtime at end of run
@@ -970,6 +972,7 @@ void Scribe::Archive()
 	fileOut.open(fileName);
 	//Simulation data
 		//Include Seed value for later analysis
+	seedVal = Distribution::GetSystemSeed();
 	fileOut << (to_string(seedVal) + "\n");
 
 	fileOut << "\n";
