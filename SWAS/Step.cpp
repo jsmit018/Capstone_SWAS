@@ -31,6 +31,9 @@ void Step::CopyMapStep(const Step& mapStep)
 	_reqParts = mapStep._reqParts;
 	_returnStep = mapStep._returnStep;
 
+
+	
+
 	//iterate through vectors/nonstatic maps to use resource and parts and aircraft object copy constructors
 
 	//iterating through old required resource map, inserting its first and second into the new required resource map
@@ -365,7 +368,10 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 		// if inside step
 		if (_indoorReq == 'Y' || _indoorReq == 'y')
 		{
-			map<string, Resource*>::iterator it = _resourcePool.find("bay");
+			//TODO need to check for specific bay size
+			string bayReq = aircraft->GetBaySizeReq();
+			//map<string, Resource*>::iterator it = _resourcePool.find("bay");
+			map<string, Resource*>::iterator it = _resourcePool.find(bayReq);
 			if (it->second->GetResourceCount() > 0)
 			{
 				cout << "Getting a Bay" << endl;
@@ -834,6 +840,11 @@ void Step::SetRJPriority(int RJpriority)
 void Step::SetStepIndoorReq(char indoorReq)
 {
 	_indoorReq = indoorReq;
+}
+
+void Step::SetStepBayReq(char baySizeReq)
+{
+	_baySizeReq = baySizeReq;
 }
 
 void Step::SetInspecFailProb(string failureProb)
