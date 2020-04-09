@@ -905,7 +905,8 @@ void Scribe::AdvanceRun()
 }
 
 //call to set warehouse dimensions
-void Scribe::SetWarehousDims(string length, string width)
+//void Scribe::SetWarehousDims(string length, string width)
+void Scribe::SetWarehousDims(double length, double width)
 {
 	warehouseL = length;
 	warehouseW = width;

@@ -66,12 +66,13 @@ void Step::CopyMapStep(const Step& mapStep)
 
 class Step::WaitForResourceEA : public CondEventAction {
 public:
-	WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+	WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources, Scribe* outputRecorder) {
 		_step = step;
 		_resource = resource;
 		_aircraft = aircraft;
 		_amountNeeded = amountNeeded;
 		_acqResources = acqResources;
+		_outputRecorder = outputRecorder;
 	}
 
 	bool Condition(Resource* resource, Parts* parts) {
@@ -86,6 +87,7 @@ public:
 	}
 
 	void Execute() {
+		_outputRecorder->RecordResourceWaitEnd(_aircraft->GetAircraftID(), _resource->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
 
@@ -96,6 +98,7 @@ private:
 	int _amountNeeded;
 	string _funcName;
 	vector<string> _acqResources;
+	Scribe* _outputRecorder;
 
 };
 
@@ -311,6 +314,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 	cout << "Step " << this->GetID() << " of " << this->GetMyRJName() << " started on "
 		<< aircraft->GetAircraftType() << " of ID " << aircraft->GetAircraftID() << endl;
 
+	outputRecorder->RecordRepairJob(aircraft->GetAircraftType(), aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+	outputRecorder->RecordServiceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
 
 	//check if acquired resource vector has bay or spot
 	bool hasResource = false;
@@ -370,7 +375,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				cout << "we have to wait for a bay \n";
 			// WAITING
 //			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources,outputRecorder));
 			outputRecorder->RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 		}
 
@@ -432,7 +437,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
 //			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources, outputRecorder));
 			iter++;
 		}
 
@@ -500,13 +505,14 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
 			cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources, outputRecorder));
 
 			//TO DO:
 			//if inspection results in failure = true
 			if (IsInpectionFail(_inspecFailProb) == true)
 			{
 				//IS THIS RIGHT		
+				outputRecorder->RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 				cout << "Inspection failed, Rescheduling appropriate maintenance." << endl;
 				SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 				//reschedule step of id = to return step id and all following steps
@@ -562,6 +568,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	{
 		//schedule next step
 		cout << "Current Maintenance step has finished, scheduling the next maintenance step." << endl;
+		outputRecorder->RecordServiceWaitEnd(aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
@@ -590,6 +597,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		if (aircraft->GetNextRepairJob(_myRJ) == NULL)
 		{
 			//this aircraft is done, so it will depart (according to the setnext task in SWAS)
+			outputRecorder->RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			return;
 		}
 

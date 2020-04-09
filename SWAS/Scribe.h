@@ -263,7 +263,8 @@ public:
     void RecordRestock(string, float);
     void AdvanceRun();
 
-    void SetWarehousDims(string, string);
+   // void SetWarehousDims(string, string);
+	void SetWarehousDims(double, double);
     void SetRunTime(float);
     void SetPlanned(int);
 
@@ -283,7 +284,8 @@ private:
     //Simulation data
     //Seed
 
-    string warehouseL, warehouseW;
+    //string warehouseL, warehouseW;
+	double warehouseL, warehouseW;
     float runtime;
     int planned, unplanned;
     int runNumber;

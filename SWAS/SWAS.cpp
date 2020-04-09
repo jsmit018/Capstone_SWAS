@@ -13,6 +13,28 @@
 
 using namespace std;
 
+Scribe* outputReader;
+
+
+void InitializeScribe() {
+	outputReader = new Scribe();
+}
+
+Scribe* GetScribe() {
+	return outputReader;
+}
+
+void ScribeSetDimension(double length, double width) {
+	outputReader->SetWarehousDims(length, width);
+}
+
+void ScribeAdvanceRun() {
+	outputReader->AdvanceRun();
+}
+
+void ScribeSetTerminationTime(double termTime) {
+	outputReader->SetRunTime(termTime);
+}
 ///////////////////////////////////////////////////
 ///	Temporary for testing linked list searching ///
 ///			until GUI LL is available			///
@@ -265,18 +287,24 @@ int main()
 	//*Note: Let tyler know this function name so he can add it to his unity logic
 	for (int i = 0; i < inputReader.GetNumRuns(); i++)
 	{
+
+		if (i > 0)
+			ScribeAdvanceRun();
 		/*	
 		cout << endl;
 		cout << endl;
 		cout << endl;
 		cout << "RUN NUMBER " << i + 1 << endl;
 		*/
-	
+		InitializeScribe();
 		InitializeAircraft();
+		//InitalizeAircraft(GetScribe());
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		//while (SimExec::GetSimulationFlag())
 			//SimExec::RunSimulation(0, 0, 2021);
+
+		//ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
 
 	}
 
