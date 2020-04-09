@@ -23,6 +23,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	//cout << "MY UNPLANNED IAT " << _aircraftType << endl; 
 	//mapAircraft._iatUnplanned->PrintDistribution();
 	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis();
+	_myUnplannedJobsMap = mapAircraft._myUnplannedJobsMap;
 
 
 	//Initialize CalendarObj
@@ -480,6 +481,7 @@ string Aircraft::GetRandomElement()
 	random_device random_device;
 	mt19937 engine{ random_device() };
 	uniform_int_distribution<int> dist(0, GetUnplanVecSize() - 1);
+	//uniform_int_distribution<int> dist(0, GetUnplanVecSize());
 	string random_element = _unplannedRjVec[dist(engine)];
 
 	return random_element;

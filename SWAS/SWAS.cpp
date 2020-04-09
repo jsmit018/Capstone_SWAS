@@ -127,7 +127,7 @@ void InitializeAircraft()
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
 	Distribution::SetSystemSeed(8);
-	inputReader.AddSelectedAircraft("F-35");
+//	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
 	inputReader.AddSelectedAircraft("Apache");
 
@@ -303,7 +303,8 @@ int main()
 		//while (SimExec::GetSimulationFlag())
 			//SimExec::RunSimulation(0, 0, 2021);
 
-		//ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
+		//For Kevin, this causes an infinite loop
+		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
 
 	}
 
