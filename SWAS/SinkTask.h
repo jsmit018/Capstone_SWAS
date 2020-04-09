@@ -2,6 +2,7 @@
 #include "Task.h"
 //#include "SimObj.h"
 #include "SimExec.h"
+#include "Scribe.h"
 
 class SinkBlock : public Task {
 public:
@@ -13,4 +14,5 @@ public:
 private:
 	string _name;
 	int _terminatedAircraft;
+	Scribe* outputRecorder = new Scribe();
 };

@@ -370,6 +370,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 				cout << "Getting a Bay" << endl;
 				// call decrement function, push it to acquired vector 
 				_acquiredResources.push_back(it->first);
+
+				outputRecorder->UpdateResourceRequests(it->second->GetResourceName(), true);
+				outputRecorder->UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
 			}
 			else
 				cout << "we have to wait for a bay \n";
@@ -432,6 +435,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 
 				//store in acquired resource vector
 				_acquiredResources.push_back(it->first);
+
+				outputRecorder->UpdateResourceRequests(it->second->GetResourceName(), false);
+				outputRecorder->RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 			}
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
@@ -439,6 +445,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 //			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources, outputRecorder));
 			iter++;
+			outputRecorder->UpdateResourceRequests(it->second->GetResourceName(), false);
+			outputRecorder->RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 		}
 
 		map<string, Parts*>::const_iterator iter2 = _reqPartsMap.begin();
@@ -500,12 +508,16 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 
 				//store in acquired resource vector
 				_acquiredResources.push_back(it->first);
+				outputRecorder->UpdateResourceRequests(it->second->GetResourceName(), true);
+				outputRecorder->UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
 			}
 			else
 				cout << " we have to wait for a/an " << it->first << endl;
 			//INSERT WAITING LOGIC
 			cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
 			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources, outputRecorder));
+			outputRecorder->UpdateResourceRequests(it->second->GetResourceName(), false);
+			outputRecorder->RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 
 			//TO DO:
 			//if inspection results in failure = true
@@ -628,6 +640,9 @@ void Step::AcquireResourceEM(Resource* resource)
 
 	newCount = iter->second->GetResourceCount() - iter->second->GetNumResNeeded();
 	resource->SetResourceCount(newCount);
+
+	outputRecorder->UpdateResourceUtilization(resource->GetResourceName(), resource->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
+
 }
 
 void Step::ReleaseResourceEM(Resource* resource)
@@ -639,6 +654,9 @@ void Step::ReleaseResourceEM(Resource* resource)
 
 	resource->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
+
+	int negativeCount = 0 - resource->GetResourceCount();  //Used to increment utilization for scribe
+	outputRecorder->UpdateResourceUtilization(resource->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 
 	/////////******For Andrea is this where we want to put this? I feel it may be best!
 	SimExec::CheckConditionalEvents(resource, 0);
@@ -660,6 +678,7 @@ void Step::FailResourceEM(Resource* resource)
 	//This Event action should actually be scheduling a restore resource instead of a fail one.
 	cout << "Resource has failed, scheduling a restore resource" << endl;
 	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
+	outputRecorder->RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 }
 
 void Step::RestoreResourceEM(Resource* resource)

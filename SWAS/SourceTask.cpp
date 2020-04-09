@@ -223,6 +223,8 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 		//Depart(_aircraft->New());
 		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
 	_numberGenerated++;
+	outputRecorder->RecordAircraft(_aircraft->GetAircraftType());
+
 	//}
 }
 
@@ -283,6 +285,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		//repairJob->GetFirstStep()->ScheduleFirstStep(repairJob->GetFirstStep(), newAircraft);
 		//Depart(_aircraft->New());
 		_numberGenerated++;
+		outputRecorder->RecordAircraft(_aircraft->GetAircraftType());
 	}
 }
 
@@ -319,6 +322,7 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 		//cout << "Departing new Aircraft" << endl;
 		//Depart(_aircraft->New());
 		_numberGenerated++;
+		outputRecorder->RecordAircraft(_aircraft->GetAircraftType());
 	}
 }
 
