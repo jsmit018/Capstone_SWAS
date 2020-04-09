@@ -229,6 +229,8 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					newAir->SetAircraftFootprint(airLength, airWingspan);
 
+					newAir->SetBaySizeReq(row[4]);
+
 					_masterMap.insert(pair<string, Aircraft*>(airType, newAir));
 					//for (map<string, Aircraft*>::const_iterator it = _masterMap.begin(); it != _masterMap.end(); ++it)
 					//{
@@ -290,7 +292,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (iter == _masterMap.end()) {
 						printf("end of map \n");
 						cout << "unplanned type: " << unplannedType << endl;
-
 					}
 
 					iter->second->SetAircraftIAT(unplannedIAT);
@@ -382,15 +383,19 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					else if (schedType == "Recurring") {
+						
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
 						//						cout << "recur: " << schedRecur << endl;
 						newJob->SetRecurringAmt(schedRecur);
 
-						map<string, Aircraft*>::const_iterator iter = _masterMap.begin();
-						while (iter != _masterMap.end())
+					//	cout << "THE AIRCRAFT THAT HAS A RECURRING JOB OF " << schedRecur << " IS " << plannedType << endl;
+
+						map<string, Aircraft*>::const_iterator iter = _masterMap.find(plannedType);
+						if (iter != _masterMap.end())
 						{
 							iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
+
 							iter++;
 						}
 
@@ -662,16 +667,9 @@ void InputReader::ReadInputData() //initialization for getting data
 								// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-								//						cout << " about to add a step \n" << endl;
-
-								/*						cout << row[0] << " " << row[1] << " " << row[2] << " " <<
-															row[3] << " " << row[4] << " " << row[5] << " " <<
-															row[6] << " " << row[7] << " " << row[8] << " " << endl;
-									*/					it->second->AddStep(newStep);
-
-									//					newStep->Print();
-									//					cout << "-----------------------------------------------------------------\n";
+								it->second->AddStep(newStep);
 							}
+
 							it++;
 						}
 
