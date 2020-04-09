@@ -9,9 +9,11 @@
 #pragma once
 #include<string>
 #include<sstream>
+#include<cmath>
 #include<cstdlib>
 #include<iostream>
 #include<fstream>
+#include "SimExec.h"
 
 using namespace std;
 
@@ -78,7 +80,8 @@ public:
 
     string resourceType;
     string failureType;
-    float duration;
+    string date;
+    float ellapse;
 
     failureNode* next;
 };
@@ -96,8 +99,14 @@ public:
     int aircraftID;
     string resourceType;
     float timeStart;
+    double dayStart;
+    double monthStart;
+    double yearStart;
     float timeEnd;
-    float duration;
+    double dayEnd;
+    double monthEnd;
+    double yearEnd;
+    float ellapse;
 
     resourceWaitNode* next;
 };
@@ -115,8 +124,14 @@ public:
     int aircraftID;
     string location;
     float timeStart;
+    double dayStart;
+    double monthStart;
+    double yearStart;
     float timeEnd;
-    float duration;
+    double dayEnd;
+    double monthEnd;
+    double yearEnd;
+    float ellapse;
 
     serviceWaitNode* next;
 };
@@ -134,8 +149,10 @@ public:
     int aircraftID;
     string jobType;
     float timeStart;
+    string dateStart;
     float timeEnd;
-    float duration;
+    string dateEnd;
+    float ellapse;
 
     repairJobNode* next;
 };
@@ -151,7 +168,8 @@ public:
 
     string objectType;
     string reworkEvent;
-    float duration;
+    string date;
+    float ellapse;
 
     reworkNode* next;
 };
@@ -183,11 +201,12 @@ public:
 
     string partType;
     float restockTime;
+    string date;
 
     restockNode* next;
 };
 
-//Spine node
+//Node for a single simulation run with pointers to lists of aircraft, missions, resources, failures, resourcewaits, servicewaits, repairjobs, reworks, part requests and restocks
 struct runNode
 {
 public:
@@ -244,50 +263,52 @@ public:
     ~Scribe();
 
     //Record methods
-    void RecordAircraft(string);
-    void TallyAircraft(string);
-    void RecordMission(string);
-    void RecordResource(string, int);
-    void UpdateResourceUtilization(string, int, float);
-    void UpdateResourceUtilization();
-    void UpdateResourceRequests(string, bool);
-    void RecordFailure(string, string, float);
-    void RecordResourceWait(string, int, string, float);
-    void RecordResourceWaitEnd(int, string, float);
-    void RecordServiceWait(string, int, string, float);
-    void RecordServiceWaitEnd(int, string, float);
-    void RecordRepairJob(string, int, string, float);
-    void RecordRepairEnd(int, string, float);
-    void RecordRework(string, string, float);
-    void RecordPartRequest(string, int, bool);
-    void RecordRestock(string, float);
-    void AdvanceRun();
+    static void RecordAircraft(string);
+    static void TallyAircraft(string);
+    static void RecordMission(string);
+    static void RecordResource(string, int);
+    static void UpdateResourceUtilization(string, int, float);
+    static void UpdateResourceUtilization();
+    static void UpdateResourceRequests(string, bool);
+    static void RecordFailure(string, string, float);
+    static void RecordResourceWait(string, int, string, float);
+    static void RecordResourceWaitEnd(int, string, float);
+    static void RecordServiceWait(string, int, string, float);
+    static void RecordServiceWaitEnd(int, string, float);
+    static void RecordRepairJob(string, int, string, float);
+    static void RecordRepairEnd(int, string, float);
+    static void RecordRework(string, string, float);
+    static void RecordPartRequest(string, int, bool);
+    static void RecordRestock(string, float);
+    static void AdvanceRun();
 
-    void SetWarehousDims(string, string);
-    void SetRunTime(float);
-    void SetPlanned(int);
-    void TallyUnplanned(int);
-    void SetSeed(double);
-    void SetSaveFile(string);
+    static void SetWarehousDims(string, string);
+    static void SetRunTime(float);
+    static void SetPlanned(int);
+    static void TallyUnplanned(int);
+    static void SetSeed(double);
+    static void SetSaveFile(string);
 
 
     //Output methods
-    void Archive();
+    static void Archive();
 
     //Access Methods
-    runNode* GetStart();
+    static runNode* GetStart();
 
 
 private:
-    runNode* runStart;
-    runNode* runEnd;
-    runNode* runCurrent;
+    static runNode* runStart;
+    static runNode* runEnd;
+    static runNode* runCurrent;
 
-    string warehouseL, warehouseW;
-    string fileName;
-    float runtime;
-    int planned, unplanned;
-    int runNumber;
-    double seedVal;
-    float totalRuntime;
+    static string warehouseL;
+    static string warehouseW;
+    static string fileName;
+    static float runtime;
+    static int planned;
+    static int unplanned;
+    static int runNumber;
+    static double seedVal;
+    static float totalRuntime;
 };
