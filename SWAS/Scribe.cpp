@@ -1357,7 +1357,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Resource,Initail Count,Utilization Hours,Utilization Percent,Number of Requests,Unsuccessful Requests,");
+		tempStr += ("Resource,Initial Count,Utilization Hours,Utilization Percent,Number of Requests,Unsuccessful Requests,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
