@@ -732,6 +732,7 @@ void Scribe::UpdateResourceUtilization()
 	{
 		runCurrent->resourceRunner->utilizationHours += (runCurrent->resourceRunner->initialCount - runCurrent->resourceRunner->availability) * (runtime - runCurrent->resourceRunner->lastchange);
 		runCurrent->resourceRunner->utilizationPercent = (runCurrent->resourceRunner->utilizationHours) / (runCurrent->resourceRunner->initialCount * runtime) * 100;
+		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 	} while (runCurrent->resourceRunner != nullptr);
 	
 }
