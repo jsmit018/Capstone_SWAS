@@ -608,12 +608,12 @@ void Scribe::RecordAircraft(string aircraft)
 				//advance runner
 				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 			}
-		} while (runCurrent->aircraftRunner != nullptr);
+		} while ((runCurrent->aircraftRunner != nullptr) && (exists != true));
 		
 		//exists being false means no match found
 		if (!exists)
 		{
-			runCurrent->aircraftTail = new aircraftNode(aircraft);
+			runCurrent->aircraftTail->next = new aircraftNode(aircraft);
 			runCurrent->aircraftTail = runCurrent->aircraftTail->next;
 		}
 	}
@@ -629,11 +629,11 @@ void Scribe::TallyAircraft(string aircraft)
 		if (runCurrent->aircraftRunner->type == aircraft)
 		{
 			runCurrent->aircraftRunner->count++;
+
 		}
-		else
-		{
-			runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
-		}
+
+		runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
+
 	} while (runCurrent->aircraftRunner != nullptr);
 	
 }
@@ -661,7 +661,7 @@ void Scribe::RecordMission(string mission)
 			{
 				runCurrent->missionRunner = runCurrent->missionRunner->next;
 			}
-		} while (runCurrent->missionRunner != nullptr);
+		} while ((runCurrent->missionRunner != nullptr) && (exists != true));
 		
 
 		if (!exists)
@@ -749,15 +749,10 @@ void Scribe::UpdateResourceRequests(string resource, bool successful)
 			{
 				runCurrent->resourceRunner->requestNumber++;
 			}
-			else
-			{
-				runCurrent->resourceRunner->unsuccessfulRequests++;
-			}
 		}
-		else
-		{
-			runCurrent->resourceRunner = runCurrent->resourceRunner->next;
-		}
+		
+		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
+		
 	} while (runCurrent->resourceRunner != nullptr);
 }
 
@@ -1165,6 +1160,7 @@ void Scribe::AdvanceRun()
 	//check for additional runs
 	if (runCurrent->next != nullptr)
 	{
+		//Advance to next run
 		runCurrent = runCurrent->next;
 	}
 	// No further runs
@@ -1195,6 +1191,56 @@ void Scribe::SetPlanned(int known)
 	planned = known;
 }
 
+/*Call to change the number of runs in the simulation
+  This is meant as an alternative to Scribe(int runs)
+*/
+void Scribe::SetRuns(int runs)
+{
+	//Logic checks
+	if (runs < 0)
+	{
+		cout << "Cannot record negative runs.  Setting back to previous value.";
+		runs = runNumber;
+	}
+	else if (runs == 0)
+	{
+		cout << "Please use a minimum of onr run. Setting back to previous value.";
+		runs = runNumber;
+	}
+	//Expand run list
+	if (runs > runNumber)
+	{
+		//Set i to the current run number and expand list until i equals new runs
+		for (int i = runNumber; i < runs; i++)
+		{
+			runEnd->next = new runNode();
+			runEnd = runEnd->next;
+		}
+
+	}
+	//Shrink run list
+	else if (runs < runNumber)
+	{
+		runNode* temp;
+		runEnd = runStart;
+		//starting from beginning, adavnce through runs until run end reaches the runs run
+		for (int i = 1; i < runs; i++)
+		{
+			runEnd = runEnd->next;
+		}
+
+		runCurrent = runEnd->next;
+
+		while (runCurrent != nullptr)
+		{
+			temp = runCurrent;
+			runCurrent = runCurrent->next;
+			delete temp;
+		}
+
+	}
+}
+
 void Scribe::TallyUnplanned(int unplannedSet)
 {
 	unplanned += unplannedSet;
@@ -1212,7 +1258,7 @@ void Scribe::SetSaveFile(string file)
 	fileName = file;
 }
 
-//Record information in external file
+//Record information in external file - Called automatically during AdvanceRun()
 void Scribe::Archive()
 {
 	//out file stream variable
