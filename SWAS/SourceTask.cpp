@@ -286,7 +286,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		//Depart(_aircraft->New());
 		_numberGenerated++;
 		//****Issue with scribe call
-		//Scribe::RecordAircraft(_aircraft->GetAircraftType());
+		Scribe::RecordAircraft(_aircraft->GetAircraftType());
 	}
 }
 

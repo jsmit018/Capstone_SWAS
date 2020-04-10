@@ -181,7 +181,7 @@ public:
 
 	void Execute() {
 		_step->StartServiceEM(_aircraft, _acqResources);
-	}
+		}
 private:
 	Step* _step;
 	Aircraft* _aircraft;
@@ -415,7 +415,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 	// number of bays initialized with simulation initialization from GUI, where are they stored (aka how does Step
 	// get access to this information), how do I check if a bay is available -- determined by integration 
 
-	if (_name == "process")
+	if (_type == "process" || _type == "Process")
 	{
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources listed in required map
@@ -488,7 +488,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> _acquiredResources)
 		SimExec::ScheduleEventAt(1, doneEA, this->_servTime->GetRV(), "DoneServiceEA");
 	}
 
-	else if (_name == "inspection")
+	else if (_type == "inspection" || _type == "Inspection")
 	{
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources listed in required map

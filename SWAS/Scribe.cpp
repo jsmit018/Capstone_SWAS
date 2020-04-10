@@ -609,7 +609,7 @@ void Scribe::RecordAircraft(string aircraft)
 				//advance runner
 				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 			}
-		} while (runCurrent->aircraftRunner != nullptr);
+		} while (runCurrent->aircraftRunner != nullptr && exists != true);
 		
 		//exists being false means no match found
 		if (!exists)

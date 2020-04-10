@@ -24,7 +24,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	//cout << "MY UNPLANNED IAT " << _aircraftType << endl; 
 	//mapAircraft._iatUnplanned->PrintDistribution();
 	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis();
-	_myUnplannedJobsMap = mapAircraft._myUnplannedJobsMap;
+	//_myUnplannedJobsMap = mapAircraft._myUnplannedJobsMap;
 	
 	//Initialize CalendarObj
 	_myCalObj = new CalendarObj();
@@ -40,7 +40,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 		recurIter++;
 	}
 
-
+	CopyMyJobList(_aircraftType);
 	//cout << endl;
 	//cout << endl;
 	//cout << _aircraftType << " BAYSIZE REQ " << _baySizeReq << endl;

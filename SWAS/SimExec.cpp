@@ -365,22 +365,34 @@ public:
 
 	Time GetTimeOfDay() {
 		//	cout << "Returning time of day" << endl;
-		return _eventSet[_baseX][_baseY]->_timeOfDay;
+		if (_eventSet[_baseX][_baseY]->_timeOfDay == NULL)
+			return 0;
+		else
+			return _eventSet[_baseX][_baseY]->_timeOfDay;
 	}
 
 	Time GetMonth() {
 		//	cout << "Returning Month" << endl;
-		return _eventSet[_baseX][_baseY]->_timeMonth;
+		if (_eventSet[_baseX][_baseY]->_timeMonth == NULL)
+			return 0;
+		else
+			return _eventSet[_baseX][_baseY]->_timeMonth;
 	}
 
 	Time GetDay() {
 		//	cout << "Returning Day of the Month" << endl;
-		return _eventSet[_baseX][_baseY]->_timeDay;
+		if (_eventSet[_baseX][_baseY]->_timeDay == NULL)
+			return 0;
+		else
+			return _eventSet[_baseX][_baseY]->_timeDay;
 	}
 
 	int GetYear() {
 		//	cout << "Returning Year" << endl;
-		return _eventSet[_baseX][_baseY]->_year;
+		if (_eventSet[_baseX][_baseY]->_year == NULL)
+			return 0;
+		else
+			return _eventSet[_baseX][_baseY]->_year;
 	}
 
 	string ConvertMonth(Time month) {
@@ -433,9 +445,18 @@ public:
 			while (_eventSet[_baseX][_baseY] == 0) {
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
+					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
+					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
 				}
-				else
+				else {
 					AdvanceDay();
+					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
+					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
+				}
 			}
 			Event* next = _eventSet[_baseX][_baseY];
 		/*	if (GetTimeOfDay() >= 10)
@@ -444,6 +465,34 @@ public:
 				cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at 0" << GetTimeOfDay() << "00 in " << GetYear() << endl;*/
 			//cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
 			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
+			if (_eventSet[_baseX][_baseY] == 0)
+			{
+				if (_baseY == _endOfMonth[_baseX]) {
+					AdvanceMonth();
+					while (_eventSet[_baseX][_baseY] != 0) {
+						if (_baseY == _endOfMonth[_baseX])
+							AdvanceMonth();
+						else
+							AdvanceDay();
+					}
+					_simulationTime._timeOfDay = next->_timeDay;
+					_simulationTime._month = next->_timeMonth;
+					_simulationTime._day = next->_timeDay;
+					_simulationTime._year = next->_year;
+				}
+				else {
+					while (_eventSet[_baseX][_baseY] == 0) {
+						if (_baseY == _endOfMonth[_baseX])
+							AdvanceMonth();
+						else
+							AdvanceDay();
+					}
+					_simulationTime._timeOfDay = next->_timeDay;
+					_simulationTime._month = next->_timeMonth;
+					_simulationTime._day = next->_timeDay;
+					_simulationTime._year = next->_year;
+				}
+			}
 			EventAction* ea = next->_ea;
 			delete next;
 			_numEvents--;
@@ -546,7 +595,7 @@ private:
 	}
 
 	void AdvanceDay() {
-		cout << "Advancing Day" << endl;
+		//cout << "Advancing Day" << endl;
 		_baseY++;
 	}
 };
