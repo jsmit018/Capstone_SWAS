@@ -1222,6 +1222,7 @@ void Scribe::SetRuns(int runs)
 	else if (runs < runNumber)
 	{
 		runNode* temp;
+		runNode* temp2;
 		runEnd = runStart;
 		//starting from beginning, adavnce through runs until run end reaches the runs run
 		for (int i = 1; i < runs; i++)
@@ -1229,15 +1230,14 @@ void Scribe::SetRuns(int runs)
 			runEnd = runEnd->next;
 		}
 
-		runCurrent = runEnd->next;
+		temp2 = runEnd->next;
 
 		while (runCurrent != nullptr)
 		{
-			temp = runCurrent;
-			runCurrent = runCurrent->next;
+			temp = temp2;
+			temp2 = temp2->next;
 			delete temp;
 		}
-
 	}
 }
 
