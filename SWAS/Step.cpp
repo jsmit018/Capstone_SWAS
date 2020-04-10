@@ -572,7 +572,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 	}
 	//else if repair job is done, get the next one
-	else if (nextId = aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
+	else if (nextId == aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{
 		//if no more jobs, we're done
 		if (aircraft->GetNextRepairJob(_myRJ) == NULL)
