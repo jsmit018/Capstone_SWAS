@@ -290,6 +290,7 @@ public:
 	static void SetWarehousDims(double, double);
     static void SetRunTime(float);
     static void SetPlanned(int);
+    static void SetRuns(int);
     static void TallyUnplanned(int);
     static void SetSeed(double);
     static void SetSaveFile(string);
