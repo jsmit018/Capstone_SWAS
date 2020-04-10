@@ -2,10 +2,12 @@
 #include "SimObj.h"
 #include "Distribution.h"
 #include "CalendarConverter.h"
+//#include "SinkTask.h"
 //#include "InputInterface.h"
 #include <iostream>
 
 class InputReader;
+class SinkBlock;
 
 using namespace std;
 
@@ -30,6 +32,8 @@ public:
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName);
 	static void ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring = 1);
 	static void ScheduleConditionalEvent(int priority, CondEventAction* cea);
+	static void SetSystemSink(SinkBlock* sinkBlock);
+	static SinkBlock* GetSystemSink();
 	static string ConvertDate(Time month);
 	static void CheckConditionalEvents(Resource* resource = 0, Parts* parts = 0);
 	static void PrintEventSet();
@@ -50,6 +54,7 @@ private:
 	static EventSet _eventSet;
 	static CondEventSet _conditionalSet;
 	static InputReader _inputReader;
+	static SinkBlock* _systemSink;
 	enum months {
 		January, February, March, April, May, June, July,
 		August, September, October, Novemember, December

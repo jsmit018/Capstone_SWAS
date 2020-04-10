@@ -339,7 +339,10 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	//variable for tracking priorities
 	int highPriority = INT_MAX;
 	//get its priority
-	int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
+	//int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
+	//int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
+	//this->getrepairjobobj(rjname)->getstep(1)->getrjpriority()
+	int myPriority = this->GetMyRepairJobObj(rjName)->GetStep(1)->GetRJPriority();
 
 	//iterate through the map
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();

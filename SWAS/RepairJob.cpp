@@ -108,6 +108,8 @@ void RepairJob::SetPriority(int priority)
 
 int RepairJob::GetPriority()
 {
+	//cout << _priority << endl;
+	//system("PAUSE");
     return _priority;
 }
 

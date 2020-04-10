@@ -614,7 +614,7 @@ void Scribe::RecordAircraft(string aircraft)
 		//exists being false means no match found
 		if (!exists)
 		{
-			runCurrent->aircraftTail = new aircraftNode(aircraft);
+			runCurrent->aircraftTail->next = new aircraftNode(aircraft);
 			runCurrent->aircraftTail = runCurrent->aircraftTail->next;
 		}
 	}
@@ -631,10 +631,10 @@ void Scribe::TallyAircraft(string aircraft)
 		{
 			runCurrent->aircraftRunner->count++;
 		}
-		else
-		{
+		/*else
+		{*/
 			runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
-		}
+		//}
 	} while (runCurrent->aircraftRunner != nullptr);
 	
 }
@@ -755,10 +755,10 @@ void Scribe::UpdateResourceRequests(string resource, bool successful)
 				runCurrent->resourceRunner->unsuccessfulRequests++;
 			}
 		}
-		else
-		{
+		/*else
+		{*/
 			runCurrent->resourceRunner = runCurrent->resourceRunner->next;
-		}
+		//}
 	} while (runCurrent->resourceRunner != nullptr);
 }
 

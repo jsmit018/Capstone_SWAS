@@ -2,7 +2,9 @@
 #include "Resource.h"
 #include "Parts.h"
 #include "InputInterface.h"
+#include "SinkTask.h"
 
+SinkBlock* SimExec::_systemSink = new SinkBlock("System Sink");
 
 /*SimExec::SimExec() : SimObj(){
 }*/
@@ -72,7 +74,7 @@ public:
 		if (_condSet == 0) {
 			_condSet = c;
 		}
-		else if (_condSet->_priority > c->_priority) {
+		else if (_condSet->_priority < c->_priority) {
 			c->_nextCondEvent = _condSet;
 			_condSet = c;
 		}
@@ -81,8 +83,8 @@ public:
 			while ((curr != 0) ? (c->_priority <= curr->_priority) : false) {
 				curr = curr->_nextCondEvent;
 			}
-			if (curr->_nextCondEvent == 0) {
-				curr->_nextCondEvent = c;
+			if (curr == 0) {
+				curr = c;
 			}
 			else {
 				c->_nextCondEvent = curr->_nextCondEvent;
@@ -365,33 +367,33 @@ public:
 
 	Time GetTimeOfDay() {
 		//	cout << "Returning time of day" << endl;
-		if (_eventSet[_baseX][_baseY]->_timeOfDay == NULL)
+		/*if (_eventSet[_baseX][_baseY]->_timeOfDay == NULL)
 			return 0;
-		else
+		else*/
 			return _eventSet[_baseX][_baseY]->_timeOfDay;
 	}
 
 	Time GetMonth() {
 		//	cout << "Returning Month" << endl;
-		if (_eventSet[_baseX][_baseY]->_timeMonth == NULL)
+		/*if (_eventSet[_baseX][_baseY]->_timeMonth == NULL)
 			return 0;
-		else
+		else*/
 			return _eventSet[_baseX][_baseY]->_timeMonth;
 	}
 
 	Time GetDay() {
 		//	cout << "Returning Day of the Month" << endl;
-		if (_eventSet[_baseX][_baseY]->_timeDay == NULL)
-			return 0;
-		else
+		/*if (_eventSet[_baseX][_baseY]->_timeDay == NULL)
+			return 0;*/
+	/*	else*/
 			return _eventSet[_baseX][_baseY]->_timeDay;
 	}
 
 	int GetYear() {
 		//	cout << "Returning Year" << endl;
-		if (_eventSet[_baseX][_baseY]->_year == NULL)
+		/*i*//*f (_eventSet[_baseX][_baseY]->_year == NULL)
 			return 0;
-		else
+		else*/
 			return _eventSet[_baseX][_baseY]->_year;
 	}
 
@@ -606,6 +608,7 @@ SimulationTime SimExec::_simulationTime;
 InputReader SimExec::_inputReader;
 bool SimExec::_simulationFlag;
 
+
 void SimExec::InitializeSimulation(int numBins, int* days) {
 //	cout << "Setting Simulation time to 0" << endl;
 	_simulationTime._timeOfDay = 0;
@@ -651,6 +654,16 @@ void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea)
 {
 //	cout << "Scheduling Conditional Event";
 	_conditionalSet.AddConditionalEvent(priority, cea);
+}
+
+void SimExec::SetSystemSink(SinkBlock* sinkBlock)
+{
+	_systemSink = sinkBlock;
+}
+
+SinkBlock* SimExec::GetSystemSink()
+{
+	return _systemSink;
 }
 
 string SimExec::ConvertDate(Time month)

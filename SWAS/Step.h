@@ -51,6 +51,7 @@ public:
 	int GetNumberInQueue();
 	int GetRJPriority();
 	int GetRJIndoorReq();
+	int GetStepID();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();

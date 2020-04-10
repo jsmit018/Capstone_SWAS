@@ -23,6 +23,6 @@ void SinkBlock::Execute(Aircraft* aircraft) {
    cout << "Aircraft, " << aircraft->GetAircraftType() << " number " << aircraft->GetAircraftID() << "has finished tour of maintenance, departing" << endl;
    _terminatedAircraft++; 
    Scribe::TallyAircraft(aircraft->GetAircraftType());
-   delete aircraft;
+   //delete aircraft;
 }
 
