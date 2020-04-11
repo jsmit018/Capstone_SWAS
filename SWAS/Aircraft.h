@@ -63,6 +63,7 @@ public:
 	//char GetRecurFlag();
 	map<string, RepairJob*> GetUnplanJobMap();
 	map<string, Distribution*> GetRecurIatMap();
+	map<string, RepairJob*> GetMyJobsMap();
 	RepairJob* GetNextRepairJob(string rjName);
 	//vector<Distribution*> GetRecurringIATs();
 	Step* GetNextStep();

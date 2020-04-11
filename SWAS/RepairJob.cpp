@@ -317,7 +317,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-        _vecSteps[1]->PrintPools();
+        //_vecSteps[1]->PrintPools();
     }
     cout << endl;
 }

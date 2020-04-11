@@ -16,7 +16,7 @@ public:
 	static int IsSystemSeedTypeSameorDifferent(int seed);
 	static int GetSystemSeed();
 	virtual void PrintDistribution() = 0;
-	virtual Distribution* CopyThis() = 0; 
+	virtual Distribution* CopyThis() = 0;
 protected:
 	static std::default_random_engine generator;
 private:
@@ -32,7 +32,7 @@ public:
 	double GetMean();
 	std::exponential_distribution<double>* GetDistr();
 	void PrintDistribution();
-//	void Copy(Distribution& dis);
+	//	void Copy(Distribution& dis);
 	Distribution* CopyThis();
 private:
 	std::exponential_distribution<double>* _distr;
@@ -96,7 +96,7 @@ public:
 	std::poisson_distribution<int>* GetDistr();
 	double GetMean();
 	void PrintDistribution();
-//	void Copy(Distribution& dis);
+	//	void Copy(Distribution& dis);
 private:
 	std::poisson_distribution<int>* _distr;
 	double _mean;
@@ -110,7 +110,7 @@ public:
 	double GetMean();
 	Distribution* CopyThis();
 	void PrintDistribution();
-//	void Copy(Distribution& dis);
+	//	void Copy(Distribution& dis);
 private:
 	double _mean;
 };
@@ -124,7 +124,7 @@ public:
 	double GetShape();
 	Distribution* CopyThis();
 	void PrintDistribution();
-//	void Copy(Distribution& dis);
+	//	void Copy(Distribution& dis);
 private:
 	std::weibull_distribution<double>* _distr;
 	double _scale;

@@ -244,7 +244,7 @@ serviceWaitNode::serviceWaitNode(string aircraft, int ID, string spot, float tim
 	aircraftID = ID;
 	location = spot;
 	timeStart = time;
-	
+
 	timeEnd = 0;
 	ellapse = -1;
 
@@ -257,9 +257,9 @@ serviceWaitNode::serviceWaitNode(const serviceWaitNode& node2)
 	aircraftID = node2.aircraftID;
 	location = node2.location;
 	timeStart = node2.timeStart;
-	
+
 	timeEnd = node2.timeEnd;
-	
+
 	ellapse = node2.ellapse;
 	next = node2.next;
 }
@@ -286,7 +286,7 @@ repairJobNode::repairJobNode()
 	next = nullptr;
 }
 
-repairJobNode::repairJobNode(string aircraft,int id, string job, float time)
+repairJobNode::repairJobNode(string aircraft, int id, string job, float time)
 {
 	aircraftType = aircraft;
 	jobType = job;
@@ -610,7 +610,7 @@ void Scribe::RecordAircraft(string aircraft)
 				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 			}
 		} while (runCurrent->aircraftRunner != nullptr && exists != true);
-		
+
 		//exists being false means no match found
 		if (!exists)
 		{
@@ -633,10 +633,10 @@ void Scribe::TallyAircraft(string aircraft)
 		}
 		/*else
 		{*/
-			runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
+		runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 		//}
 	} while (runCurrent->aircraftRunner != nullptr);
-	
+
 }
 
 //Create node containing a mission type
@@ -663,7 +663,7 @@ void Scribe::RecordMission(string mission)
 				runCurrent->missionRunner = runCurrent->missionRunner->next;
 			}
 		} while (runCurrent->missionRunner != nullptr && (exists != true));
-		
+
 
 		if (!exists)
 		{
@@ -708,7 +708,7 @@ void Scribe::RecordResource(string resource, int count)
 //Update the utilization values for a specific resource
 void Scribe::UpdateResourceUtilization(string resource, int usage, float currentTime)
 {
-	
+
 	runCurrent->resourceRunner = runCurrent->resourceHead;
 	do
 	{
@@ -721,8 +721,8 @@ void Scribe::UpdateResourceUtilization(string resource, int usage, float current
 		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 
 	} while (runCurrent->resourceRunner != nullptr);
-	
-	
+
+
 }
 
 //Update utilization values at end of run - called automatically in SetRunTime() 
@@ -735,7 +735,7 @@ void Scribe::UpdateResourceUtilization()
 		runCurrent->resourceRunner->utilizationPercent = (runCurrent->resourceRunner->utilizationHours) / (runCurrent->resourceRunner->initialCount * runtime) * 100;
 		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 	} while (runCurrent->resourceRunner != nullptr);
-	
+
 }
 
 //update the requests for a specific resource
@@ -757,7 +757,7 @@ void Scribe::UpdateResourceRequests(string resource, bool successful)
 		}
 		/*else
 		{*/
-			runCurrent->resourceRunner = runCurrent->resourceRunner->next;
+		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 		//}
 	} while (runCurrent->resourceRunner != nullptr);
 }
@@ -813,21 +813,21 @@ void Scribe::RecordResourceWaitEnd(int id, string resource, float end)
 					runCurrent->resourceWaitRunner->dayEnd = SimExec::GetSimulationTime()._day;
 					runCurrent->resourceWaitRunner->monthEnd = SimExec::GetSimulationTime()._month;
 					runCurrent->resourceWaitRunner->yearEnd = SimExec::GetSimulationTime()._year;
-					
+
 					//Convert Start Date into days
 						//Year indicates full years with every fourth year being a leap year with one extra day
 					int startDate = (runCurrent->resourceWaitRunner->yearStart) * 365.25;
 
-						//Add full months
+					//Add full months
 					for (int i = 1; i < (runCurrent->resourceWaitRunner->monthStart); i++)
 					{
-						if (i == 4 || i == 6 || i == 9 ||i == 11)
+						if (i == 4 || i == 6 || i == 9 || i == 11)
 						{
 							startDate += 30;
 						}
 						else if (i == 2)
 						{
-							if ((int(runCurrent->resourceWaitRunner->yearStart) % 4 )== 0)
+							if ((int(runCurrent->resourceWaitRunner->yearStart) % 4) == 0)
 							{
 								startDate += 29;
 							}
@@ -854,7 +854,7 @@ void Scribe::RecordResourceWaitEnd(int id, string resource, float end)
 						}
 						else if (i == 2)
 						{
-							if ((int(runCurrent->resourceWaitRunner->yearEnd) % 4 )== 0)
+							if ((int(runCurrent->resourceWaitRunner->yearEnd) % 4) == 0)
 							{
 								endDate += 29;
 							}
@@ -878,7 +878,7 @@ void Scribe::RecordResourceWaitEnd(int id, string resource, float end)
 				}
 			}
 		}
-		
+
 		runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
 
 	} while (runCurrent->resourceWaitRunner != nullptr);
@@ -1293,16 +1293,16 @@ void Scribe::Archive()
 
 	//Aircraft data for each run
 	fileOut << "Aircraft\n";
-	
-		//Create run Headings
+
+	//Create run Headings
 	for (int i = 0; i < runNumber; i++)
 	{
 		tempStr += ("Run " + to_string(i + 1) + ",,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
-		
-		//Create field Headings
+
+	//Create field Headings
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
@@ -1311,14 +1311,14 @@ void Scribe::Archive()
 	tempStr += "\n";
 	fileOut << tempStr;
 
-		//Initialize aircraft search pointers
+	//Initialize aircraft search pointers
 	runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->aircraftRunner = runCurrent->aircraftHead;
 		runCurrent = runCurrent->next;
 	}
-	
+
 	do
 	{
 		//re-initailize variables
@@ -1349,9 +1349,9 @@ void Scribe::Archive()
 		fileOut << tempStr;
 		//check that all lists have ended
 	} while (endCount < runNumber);
-		//Above should result in a blank line separating above from missions below
+	//Above should result in a blank line separating above from missions below
 
-	//Mission data for each run
+//Mission data for each run
 	fileOut << "Missions\n";
 	tempStr = "";
 
@@ -1363,7 +1363,7 @@ void Scribe::Archive()
 
 	fileOut << tempStr;
 
-		//Initialize Mission Search pointers
+	//Initialize Mission Search pointers
 	runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
@@ -1479,7 +1479,7 @@ void Scribe::Archive()
 			}
 			else
 			{
-				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + (runCurrent->failureRunner->date) + "," + to_string(runCurrent->failureRunner->ellapse)+",");
+				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + (runCurrent->failureRunner->date) + "," + to_string(runCurrent->failureRunner->ellapse) + ",");
 				runCurrent->failureRunner = runCurrent->failureRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1526,9 +1526,9 @@ void Scribe::Archive()
 			}
 			else
 			{
-				tempStr += ((runCurrent->resourceWaitRunner->aircraftType) + "," + to_string(runCurrent->resourceWaitRunner->aircraftID) + "," + (runCurrent->resourceWaitRunner->resourceType) + "," + 
-					to_string(runCurrent->resourceWaitRunner->monthStart) + "/" + to_string(runCurrent->resourceWaitRunner->dayStart) + "/"+ to_string(runCurrent->resourceWaitRunner->yearStart) + "," + to_string(runCurrent->resourceWaitRunner->timeStart) + "," +
-					to_string(runCurrent->resourceWaitRunner->monthEnd) + "/" + to_string(runCurrent->resourceWaitRunner->dayEnd) + "/"+ to_string(runCurrent->resourceWaitRunner->yearEnd) + "," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," +
+				tempStr += ((runCurrent->resourceWaitRunner->aircraftType) + "," + to_string(runCurrent->resourceWaitRunner->aircraftID) + "," + (runCurrent->resourceWaitRunner->resourceType) + "," +
+					to_string(runCurrent->resourceWaitRunner->monthStart) + "/" + to_string(runCurrent->resourceWaitRunner->dayStart) + "/" + to_string(runCurrent->resourceWaitRunner->yearStart) + "," + to_string(runCurrent->resourceWaitRunner->timeStart) + "," +
+					to_string(runCurrent->resourceWaitRunner->monthEnd) + "/" + to_string(runCurrent->resourceWaitRunner->dayEnd) + "/" + to_string(runCurrent->resourceWaitRunner->yearEnd) + "," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," +
 					to_string(runCurrent->resourceWaitRunner->ellapse) + ",");
 				runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
 			}
@@ -1577,8 +1577,8 @@ void Scribe::Archive()
 			else
 			{
 				tempStr += (to_string(runCurrent->serviceWaitRunner->aircraftID) + "," + (runCurrent->serviceWaitRunner->aircraftType) + "," + (runCurrent->serviceWaitRunner->location) + "," +
-					to_string(runCurrent->serviceWaitRunner->monthStart)+ "/"+to_string(runCurrent->serviceWaitRunner->dayStart)+"/"+to_string(runCurrent->serviceWaitRunner->yearStart) + "," + to_string(runCurrent->serviceWaitRunner->timeStart) + "," +
-					to_string(runCurrent->serviceWaitRunner->monthEnd)+ "/" + to_string(runCurrent->serviceWaitRunner->dayEnd) + "/" + to_string(runCurrent->serviceWaitRunner->yearEnd) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," + 
+					to_string(runCurrent->serviceWaitRunner->monthStart) + "/" + to_string(runCurrent->serviceWaitRunner->dayStart) + "/" + to_string(runCurrent->serviceWaitRunner->yearStart) + "," + to_string(runCurrent->serviceWaitRunner->timeStart) + "," +
+					to_string(runCurrent->serviceWaitRunner->monthEnd) + "/" + to_string(runCurrent->serviceWaitRunner->dayEnd) + "/" + to_string(runCurrent->serviceWaitRunner->yearEnd) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," +
 					to_string(runCurrent->serviceWaitRunner->ellapse) + ",");
 				runCurrent->serviceWaitRunner = runCurrent->serviceWaitRunner->next;
 			}

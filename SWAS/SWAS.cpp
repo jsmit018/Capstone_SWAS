@@ -116,11 +116,11 @@ InputReader inputReader;
 
 void InitializeAircraft()
 {
-//	InputReader inputReader;
+	//	InputReader inputReader;
 
-	/*Populates master map*/
-//	inputReader.ReadInputData();
-	//inputReader.PrintEverything();
+		/*Populates master map*/
+	//	inputReader.ReadInputData();
+	inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);
@@ -153,7 +153,7 @@ void InitializeAircraft()
 			int count = 1;
 			//____________
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
-	//		cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
+			//		cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
 
 			firstAircraft->CopyMyJobList(iter->first);
 
@@ -281,7 +281,7 @@ void InitializeAircraft()
 
 
 
-int main() 
+int main()
 {
 	inputReader.ReadInputData();
 	//Step::PrintPools();
@@ -292,7 +292,7 @@ int main()
 
 		if (i > 0)
 			ScribeAdvanceRun();
-		/*	
+		/*
 		cout << endl;
 		cout << endl;
 		cout << endl;
@@ -302,8 +302,8 @@ int main()
 		//InitalizeAircraft(GetScribe());
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
-		/*while (SimExec::GetSimulationFlag())
-			SimExec::RunSimulation(0, 0, 2021);*/
+		while (SimExec::GetSimulationFlag())
+			SimExec::RunSimulation(0, 0, 2021);
 
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);

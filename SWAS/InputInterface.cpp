@@ -105,7 +105,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					dataFile >> numRuns >> c >> seedType;
 
 					SetNumRuns(numRuns);
-					
+
 					//removed 10 commas from string
 					seedType = seedType.erase(seedType.length() - 10);
 
@@ -383,13 +383,13 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					else if (schedType == "Recurring") {
-						
+
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
 						//						cout << "recur: " << schedRecur << endl;
 						newJob->SetRecurringAmt(schedRecur);
 
-					//	cout << "THE AIRCRAFT THAT HAS A RECURRING JOB OF " << schedRecur << " IS " << plannedType << endl;
+						//	cout << "THE AIRCRAFT THAT HAS A RECURRING JOB OF " << schedRecur << " IS " << plannedType << endl;
 
 						map<string, Aircraft*>::const_iterator iter = _masterMap.find(plannedType);
 						if (iter != _masterMap.end())
@@ -971,7 +971,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetInitPartsCount(count);
 								it->second->SetThreshold(threshold);
 								it->second->SetLeadTime(row[3]);
-														//it->second->PrintPartsProperties();
+								//it->second->PrintPartsProperties();
 
 							}
 
