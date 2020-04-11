@@ -2,7 +2,9 @@
 #include "Resource.h"
 #include "Parts.h"
 #include "InputInterface.h"
+#include "SinkTask.h"
 
+SinkBlock* SimExec::_systemSink = new SinkBlock("System Sink");
 
 /*SimExec::SimExec() : SimObj(){
 }*/
@@ -72,7 +74,7 @@ public:
 		if (_condSet == 0) {
 			_condSet = c;
 		}
-		else if (_condSet->_priority > c->_priority) {
+		else if (_condSet->_priority < c->_priority) {
 			c->_nextCondEvent = _condSet;
 			_condSet = c;
 		}
@@ -81,8 +83,8 @@ public:
 			while ((curr != 0) ? (c->_priority <= curr->_priority) : false) {
 				curr = curr->_nextCondEvent;
 			}
-			if (curr->_nextCondEvent == 0) {
-				curr->_nextCondEvent = c;
+			if (curr == 0) {
+				curr = c;
 			}
 			else {
 				c->_nextCondEvent = curr->_nextCondEvent;
@@ -365,22 +367,34 @@ public:
 
 	Time GetTimeOfDay() {
 		//	cout << "Returning time of day" << endl;
-		return _eventSet[_baseX][_baseY]->_timeOfDay;
+		/*if (_eventSet[_baseX][_baseY]->_timeOfDay == NULL)
+			return 0;
+		else*/
+			return _eventSet[_baseX][_baseY]->_timeOfDay;
 	}
 
 	Time GetMonth() {
 		//	cout << "Returning Month" << endl;
-		return _eventSet[_baseX][_baseY]->_timeMonth;
+		/*if (_eventSet[_baseX][_baseY]->_timeMonth == NULL)
+			return 0;
+		else*/
+			return _eventSet[_baseX][_baseY]->_timeMonth;
 	}
 
 	Time GetDay() {
 		//	cout << "Returning Day of the Month" << endl;
-		return _eventSet[_baseX][_baseY]->_timeDay;
+		/*if (_eventSet[_baseX][_baseY]->_timeDay == NULL)
+			return 0;*/
+	/*	else*/
+			return _eventSet[_baseX][_baseY]->_timeDay;
 	}
 
 	int GetYear() {
 		//	cout << "Returning Year" << endl;
-		return _eventSet[_baseX][_baseY]->_year;
+		/*i*//*f (_eventSet[_baseX][_baseY]->_year == NULL)
+			return 0;
+		else*/
+			return _eventSet[_baseX][_baseY]->_year;
 	}
 
 	string ConvertMonth(Time month) {
@@ -433,9 +447,18 @@ public:
 			while (_eventSet[_baseX][_baseY] == 0) {
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
+					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
+					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
+					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
 				}
-				else
+				else {
 					AdvanceDay();
+					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
+					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
+					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
+				}
 			}
 			Event* next = _eventSet[_baseX][_baseY];
 		/*	if (GetTimeOfDay() >= 10)
@@ -444,6 +467,34 @@ public:
 				cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at 0" << GetTimeOfDay() << "00 in " << GetYear() << endl;*/
 			//cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
 			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
+			if (_eventSet[_baseX][_baseY] == 0)
+			{
+				if (_baseY == _endOfMonth[_baseX]) {
+					AdvanceMonth();
+					while (_eventSet[_baseX][_baseY] == 0) {
+						if (_baseY == _endOfMonth[_baseX])
+							AdvanceMonth();
+						else
+							AdvanceDay();
+					}
+					_simulationTime._timeOfDay = next->_timeOfDay;
+					_simulationTime._month = next->_timeMonth;
+					_simulationTime._day = next->_timeDay;
+					_simulationTime._year = next->_year;
+				}
+				else {
+					while (_eventSet[_baseX][_baseY] == 0) {
+						if (_baseY == _endOfMonth[_baseX])
+							AdvanceMonth();
+						else
+							AdvanceDay();
+					}
+					_simulationTime._timeOfDay = next->_timeOfDay;
+					_simulationTime._month = next->_timeMonth;
+					_simulationTime._day = next->_timeDay;
+					_simulationTime._year = next->_year;
+				}
+			}
 			EventAction* ea = next->_ea;
 			delete next;
 			_numEvents--;
@@ -546,7 +597,7 @@ private:
 	}
 
 	void AdvanceDay() {
-		cout << "Advancing Day" << endl;
+		//cout << "Advancing Day" << endl;
 		_baseY++;
 	}
 };
@@ -556,6 +607,7 @@ SimExec::CondEventSet SimExec::_conditionalSet;
 SimulationTime SimExec::_simulationTime;
 InputReader SimExec::_inputReader;
 bool SimExec::_simulationFlag;
+
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
 //	cout << "Setting Simulation time to 0" << endl;
@@ -602,6 +654,16 @@ void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea)
 {
 //	cout << "Scheduling Conditional Event";
 	_conditionalSet.AddConditionalEvent(priority, cea);
+}
+
+void SimExec::SetSystemSink(SinkBlock* sinkBlock)
+{
+	_systemSink = sinkBlock;
+}
+
+SinkBlock* SimExec::GetSystemSink()
+{
+	return _systemSink;
 }
 
 string SimExec::ConvertDate(Time month)

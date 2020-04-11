@@ -27,6 +27,7 @@ public:
 	void SetReqParts(string reqParts);
 	void SetReturnStep(/*int stepId*/ int returnStep);
 	void SetStepIndoorReq(char indoorReq);
+	void SetStepBayReq(char baySizeReq);
 	void SetStepID(int stepID);
 	void SetRJPriority(int RJpriority);
 	void SetMyRJName(string myRJ);
@@ -50,6 +51,7 @@ public:
 	int GetNumberInQueue();
 	int GetRJPriority();
 	int GetRJIndoorReq();
+	int GetStepID();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
@@ -73,7 +75,8 @@ private:
 	Distribution* _serviceTime;
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
-	char _indoorReq; /// this is not populated right now
+	char _indoorReq;
+	string _baySizeReq;
 	int _RJpriority;
 	int _stepID;
 	int _numInQueue;

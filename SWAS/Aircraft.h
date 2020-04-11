@@ -42,6 +42,8 @@ public:
 	void SetCalendarObj(string date);
 	void SetNumCalEvents(int numCalEvents);
 	void SetAircraftID(int id);
+	void SetBaySizeReq(string baySizeReq);
+	//void SetRecurFlag(char flag);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
 	RepairJob* GetMyRepairJobObj(string name); //used for searching 
@@ -57,6 +59,8 @@ public:
 	int GetMyUnplannedMapSize();
 	int GetUnplanVecSize();
 	string GetRandomElement();
+	string GetBaySizeReq();
+	//char GetRecurFlag();
 	map<string, RepairJob*> GetUnplanJobMap();
 	map<string, Distribution*> GetRecurIatMap();
 	RepairJob* GetNextRepairJob(string rjName);
@@ -79,6 +83,7 @@ public:
 	bool IsMapEnd(map<string, RepairJob*>::const_iterator iter);
 	bool AreMoreJobs();
 	bool AreMoreSteps();
+	//bool HasRecurJob();
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
@@ -88,7 +93,9 @@ private:
 	int _numCalEvents;
 	double	_length;									//	Aircraft size x dimension  ***make a tuple or struct later
 	double	_wingspan;									//	Aircraft size y dimension
+	string _baySizeReq;
 	string	_repairJobName;
+	//char _recurFlag = 'N';
 	vector<Distribution*> _recurIatVec;
 	//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 

@@ -108,6 +108,8 @@ void RepairJob::SetPriority(int priority)
 
 int RepairJob::GetPriority()
 {
+	//cout << _priority << endl;
+	//system("PAUSE");
     return _priority;
 }
 
@@ -158,15 +160,16 @@ void RepairJob::SetRecurringAmt(double recurringAmt)
     _recurringAmt = new Constant(recurringAmt);
 
 
-    //cout << "*****************************IAT RECURRING IS: ";
-  //     _recurringAmt->PrintDistribution();
-  // 	cout << endl;
+ /*  cout << "*****************************IAT RECURRING IS: ";
+       _recurringAmt->PrintDistribution();
+  	cout << endl;*/
 
 }
 
 
 Distribution* RepairJob::GetRecurringAmt()
 {
+ //  _recurringAmt->PrintDistribution();
     return _recurringAmt;
 }
 
@@ -314,7 +317,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-        //        _vecSteps[1]->PrintPools();
+        _vecSteps[1]->PrintPools();
     }
     cout << endl;
 }
