@@ -308,7 +308,7 @@ public:
 		_numEvents++;
 	//	cout << "Number of Events increased to " << _numEvents << endl;
 	//	cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, GetSimulationTime()._timeOfDay);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
@@ -494,6 +494,12 @@ public:
 					_simulationTime._day = next->_timeDay;
 					_simulationTime._year = next->_year;
 				}
+			}
+			else {
+				_simulationTime._timeOfDay = next->_timeOfDay;
+				_simulationTime._month = next->_timeMonth;
+				_simulationTime._day = next->_timeDay;
+				_simulationTime._year = next->_year;
 			}
 			EventAction* ea = next->_ea;
 			delete next;
@@ -697,6 +703,7 @@ int SimExec::RunSimulation() {
 			FlipSimulationFlag();
 			return 3;
 		}
+		cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << endl;
 		ea->Execute();
 		delete ea;
 		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
@@ -733,15 +740,16 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 			//break;
 		}
 		else {
-			_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
-			_simulationTime._month = _eventSet.GetMonth();
-			_simulationTime._day = _eventSet.GetDay();
-			_simulationTime._year = _eventSet.GetYear();
+			//_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
+			//_simulationTime._month = _eventSet.GetMonth();
+			//_simulationTime._day = _eventSet.GetDay();
+			//_simulationTime._year = _eventSet.GetYear();
 			EventAction* ea = _eventSet.GetEventAction();
 			if (ea == 0) {
 				FlipSimulationFlag();
 				return 3;
 			}
+			cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << " " << GetSimulationTime()._timeOfDay << endl;
 			ea->Execute();
 			delete ea;
 			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day

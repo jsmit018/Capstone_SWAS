@@ -218,8 +218,9 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 		//Not doing this anymore!
 		//cout << "Scheduling Random aircraft arrival" << endl;
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
+	Aircraft* newAircraft = _aircraft->New();
 	cout << "Scheduling Calendar Aircraft to Arrive" << endl;;
-	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), _aircraft, calObj);
+	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
 		//Depart(_aircraft->New());
 		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
 	_numberGenerated++;
@@ -315,6 +316,18 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 		cout << "Scheduling next Recurring Aircraft Arrival: " << repairJob->GetName() << endl;
 		SimExec::ScheduleEventAtRecurring(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, recurringIAT, repairJob), recurringIAT->GetRV(), "ScheduleNextRecurringAircraftEA");
 		Aircraft* newAircraft = _aircraft->New();
+
+		cout << endl;
+		cout << newAircraft->GetAircraftType() << endl;
+		cout << newAircraft->GetMyRJMapSize() << endl;
+
+		map<string, RepairJob*>::const_iterator testit = newAircraft->GetMyRJMapBegin();
+
+		while (testit != newAircraft->GetMyRJMapEnd()) {
+			cout << testit->second->GetName() << endl;
+			testit++;
+		}
+		cout << endl;
 		//newAircraft->GetMyRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep()->ScheduleFirstStep(newAircraft->GetRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep(), newAircraft);
 		repairJob->GetFirstStep()->ScheduleFirstRecurringStep(repairJob->GetFirstStep(), newAircraft);
 		//No longer doing this!

@@ -405,6 +405,18 @@ int Aircraft::GetNextAircraftID()
 Aircraft* Aircraft::New()
 {
 	Aircraft* newAircraft = new Aircraft(*this);
+
+	/*cout << endl;
+	cout << newAircraft->GetAircraftType() << endl;
+	cout << newAircraft->GetMyRJMapSize() << endl;
+
+	map<string, RepairJob*>::const_iterator testit = newAircraft->GetMyRJMapBegin();
+
+	while (testit != newAircraft->GetMyRJMapEnd()) {
+		cout << testit->second->GetName() << endl;
+		testit++;
+	}
+	cout << endl;*/
 	return newAircraft; // add appropriate parameters
 	//return new Aircraft();
 }
