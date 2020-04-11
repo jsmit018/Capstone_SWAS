@@ -631,12 +631,13 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	//else if repair job is done, get the next one
 	else if (nextId > aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{
+		Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 		//if no more jobs, we're done
 		//cout << _myRJ << endl;
 		if (aircraft->GetNextRepairJob(_myRJ) == NULL)
 		{
 			//this aircraft is done, so it will depart (according to the setnext task in SWAS)
-			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+			//Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			this->SetNextTask(SimExec::GetSystemSink());
 			Depart(aircraft);
 			return;
@@ -651,6 +652,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			}
 			nextId = aircraft->GetNextRepairJob(_myRJ)->GetFirstStep()->GetStepID();
 			SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextId), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+			//Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 		}
 	}
 
