@@ -287,7 +287,7 @@ public:
     static void AdvanceRun();
 
     //static void SetWarehousDims(string, string);
-	static void SetWarehousDims(double, double);
+    static void SetWarehousDims(double, double);
     static void SetRunTime(float);
     static void SetPlanned(int);
     static void SetRuns(int);

@@ -203,10 +203,10 @@ double Triangular::GetRV()
 	return x;
 }
 
-Distribution * Triangular::CopyThis()
+Distribution* Triangular::CopyThis()
 {
-	Triangular* newptr = new Triangular(_min,_expected, _max);
-	return newptr; 
+	Triangular* newptr = new Triangular(_min, _expected, _max);
+	return newptr;
 }
 
 //void Triangular::Copy(Distribution& dis)
@@ -277,7 +277,7 @@ Poisson::Poisson(double mean)
 
 std::poisson_distribution<int>* Poisson::GetDistr()
 {
-	return _distr; 
+	return _distr;
 }
 
 //double Poisson::GetMean()
