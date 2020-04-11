@@ -447,14 +447,14 @@ public:
 			while (_eventSet[_baseX][_baseY] == 0) {
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
-					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
 					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
 					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
 					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
 				}
 				else {
 					AdvanceDay();
-					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeDay;
+					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
 					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
 					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
 					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
@@ -471,13 +471,13 @@ public:
 			{
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
-					while (_eventSet[_baseX][_baseY] != 0) {
+					while (_eventSet[_baseX][_baseY] == 0) {
 						if (_baseY == _endOfMonth[_baseX])
 							AdvanceMonth();
 						else
 							AdvanceDay();
 					}
-					_simulationTime._timeOfDay = next->_timeDay;
+					_simulationTime._timeOfDay = next->_timeOfDay;
 					_simulationTime._month = next->_timeMonth;
 					_simulationTime._day = next->_timeDay;
 					_simulationTime._year = next->_year;
@@ -489,7 +489,7 @@ public:
 						else
 							AdvanceDay();
 					}
-					_simulationTime._timeOfDay = next->_timeDay;
+					_simulationTime._timeOfDay = next->_timeOfDay;
 					_simulationTime._month = next->_timeMonth;
 					_simulationTime._day = next->_timeDay;
 					_simulationTime._year = next->_year;

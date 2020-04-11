@@ -302,8 +302,8 @@ int main()
 		//InitalizeAircraft(GetScribe());
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
-		/*while (SimExec::GetSimulationFlag())
-			SimExec::RunSimulation(0, 0, 2021);*/
+		//while (SimExec::GetSimulationFlag())
+		//	SimExec::RunSimulation(0, 0, 2021);
 
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
