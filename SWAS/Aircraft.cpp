@@ -348,6 +348,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
+		cout << iter->second->GetName() << endl;
 		//if next repairjob has lower priority (higher number)
 		if (iter->second->GetPriority() > myPriority)
 		{
@@ -364,6 +365,8 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 
 		iter++;
 	}
+	
+	//cout << nextJob->GetName() << endl;
 
 	return nextJob; //set this??
 

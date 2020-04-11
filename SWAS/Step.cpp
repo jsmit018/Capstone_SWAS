@@ -643,6 +643,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		}
 		else {
 			//next id is the next repairjob's first step
+			map<string, RepairJob*>::const_iterator testit = aircraft->GetMyRJMapBegin();
+
+			while (testit != aircraft->GetMyRJMapEnd()) {
+				cout << testit->second->GetName() << endl;
+				testit++;
+			}
 			nextId = aircraft->GetNextRepairJob(_myRJ)->GetFirstStep()->GetStepID();
 			SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextId), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 		}
