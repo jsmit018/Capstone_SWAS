@@ -221,7 +221,8 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 		//Not doing this anymore!
 		//cout << "Scheduling Random aircraft arrival" << endl;
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");
-	cout << "Scheduling Calendar Aircraft to Arrive" << endl;;
+	cout << "Scheduling Calendar Aircraft to Arrive" << endl;
+	//Aircraft* newAircraft = _aircraft->New();
 	//repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), _aircraft, calObj);
 	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
 	//Depart(_aircraft->New());
