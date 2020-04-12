@@ -254,27 +254,35 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		map<string, RepairJob*>::const_iterator iter = newAircraft->GetMyUnplannedMapBegin();
 		while (iter != newAircraft->GetMyUnplannedMapEnd())
 		{
+
+			if ((iter->second->WillSchedule() == false))
+			{
+				iter++;
+
+				continue;
+			}
+
 			////TESTING
 			//////////////////////////////////
-
 			/*Roll the dice*/
-			if (iter->second->WillSchedule() == true)
+			else if (iter->second->WillSchedule() == true)
 			{
 				cout << "************* " << newAircraft->GetAircraftType() << " WILL SCHEDULE " << iter->first << endl;
-
+				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
 				cout << "*********** ADDING " << iter->first << " IT TO THE MAP " << endl;
 
 			}
 
 			//get first element of map so we know which one has lowest priority
-			string job = _jobPriority.begin()->second;
 			//cout << "************JOB IS " << job << endl;
 
 			cout << "MY MAP IS SIZE " << newAircraft->GetMyRJMapSize() << endl;
+			
+			//job is the job with highest priority
+			string job = _jobPriority.begin()->second;
 
-
-			//map<string, RepairJob*>::const_iterator testIt = newAircraft->GetMyJobsMap().find(job);
+			//schedule that job
 			if (iter->first == job)
 			{
 				cout << "************TEST " << iter->first << endl;
@@ -282,20 +290,12 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 				/*If yes, schedule it*/
 				//cout << "*********FIRST STEP IS " << testIt->second->GetFirstStep()->GetName();
 				iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), newAircraft);
+				jobCounter++;
+
 			}
-			jobCounter++;
-
-			/////////////////////////////////
-
-			///*Roll the dice*/
-			//if (iter->second->WillSchedule() == true)
-			//{
-			//	/*If yes, schedule it*/
-			//	iter->second->GetFirstStep()->ScheduleFirstStep(iter->second->GetFirstStep(), newAircraft);
-			//	jobCounter++;
-			//}
 
 			iter++;
+
 		}
 
 		/*If no jobs are scheduled, must choose one randomly*/
