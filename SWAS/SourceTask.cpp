@@ -248,6 +248,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		//_aircraft->New()->CopyMyJobList(_aircraft->GetAircraftType());
 
 		int jobCounter = 0;
+		string job;
 
 		/*For all unplanned repair jobs*/
 		map<string, RepairJob*>::const_iterator iter = newAircraft->GetMyUnplannedMapBegin();
@@ -263,11 +264,12 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
 				cout << "*********** ADDING " << iter->first << " IT TO THE MAP " << endl;
+				job = _jobPriority.begin()->second;
 
 			}
 
 			//get first element of map so we know which one has lowest priority
-			string job = _jobPriority.begin()->second;
+			//string job = _jobPriority.begin()->second;
 			//cout << "************JOB IS " << job << endl;
 
 			cout << "MY MAP IS SIZE " << newAircraft->GetMyRJMapSize() << endl;
