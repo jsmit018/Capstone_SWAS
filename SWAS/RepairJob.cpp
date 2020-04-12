@@ -128,10 +128,10 @@ string RepairJob::GetSchedType()
        cout << endl;
        cout << "*************#*#*#*#*#**#*##" << endl;
       cout << "TYPE: " << _schedType << endl;*/
+    cout << "*************IN SCHED TYPE: " << _schedType << endl;
     return _schedType;
 
-    cout << endl;
-    cout << endl;
+  
 }
 
 void RepairJob::SetIndoorReq(char indoorReq)
