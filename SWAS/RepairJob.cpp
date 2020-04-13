@@ -23,6 +23,7 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
 
+   // cout << "$$$$$$$$ SCHED TYPE: " << _name << " " << _schedType << endl;
 
     // to ensure that the copies are actual copies and 
     //that the same pointers is not being shared by different repair jobs:
@@ -101,19 +102,31 @@ string RepairJob::GetName()
     return _name;
 }
 
-void RepairJob::SetPriority(int priority)
-{
-    _priority = priority;
-}
+//void RepairJob::SetPriority(int priority)
+//{
+//    _priority = this->GetStep(1)->GetRJPriority();
+//    cout << endl;
+//    cout << endl;
+//    cout << "&%&%&%&%&%&%& SETTER PRIORITY " << _priority << endl;
+//
+//    //_priority = priority;
+//}
 
 int RepairJob::GetPriority()
 {
+    _priority = this->GetStep(1)->GetRJPriority();
+    cout << endl;
+    cout << endl;
+  //  cout << "&%&%&%&%&%&%& GETTER PRIORITY " << _priority << endl;
+    //system("PAUSE");
     return _priority;
 }
 
 void RepairJob::SetSchedType(string schedType)
 {
     _schedType = schedType;
+   // cout << " ++++++++++++++++++IN SET SCHED TYPE PRIORITY IS " << _priority << endl;
+   // cout << " ++++++++++++++++++IN SET SCHED TYPE TYPE IS " << _schedType << endl;
 }
 
 string RepairJob::GetSchedType()
@@ -126,10 +139,12 @@ string RepairJob::GetSchedType()
        cout << endl;
        cout << "*************#*#*#*#*#**#*##" << endl;
       cout << "TYPE: " << _schedType << endl;*/
+   // cout << "********" << _name << " " << _priority << endl;
+
+    //cout << "*************IN GET SCHED TYPE: " << _name << " " << _schedType << endl;
     return _schedType;
 
-    cout << endl;
-    cout << endl;
+  
 }
 
 void RepairJob::SetIndoorReq(char indoorReq)
@@ -158,15 +173,16 @@ void RepairJob::SetRecurringAmt(double recurringAmt)
     _recurringAmt = new Constant(recurringAmt);
 
 
-    //cout << "*****************************IAT RECURRING IS: ";
-  //     _recurringAmt->PrintDistribution();
-  // 	cout << endl;
+ /*  cout << "*****************************IAT RECURRING IS: ";
+       _recurringAmt->PrintDistribution();
+  	cout << endl;*/
 
 }
 
 
 Distribution* RepairJob::GetRecurringAmt()
 {
+ //  _recurringAmt->PrintDistribution();
     return _recurringAmt;
 }
 
@@ -314,7 +330,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-        //        _vecSteps[1]->PrintPools();
+        //_vecSteps[1]->PrintPools();
     }
     cout << endl;
 }

@@ -23,6 +23,7 @@
     //calls output functions to print values [ ]
 
 InputReader Warehouse::_inputReader;
+Scribe* Warehouse::_scribe = new Scribe();
 
 Warehouse::Warehouse(double length, double width) {
     _hangarLength = length;
@@ -33,6 +34,11 @@ Warehouse::Warehouse(double length, double width) {
 void Warehouse::SetMasterMaps(InputReader inputReader)
 {
 	_inputReader = inputReader;
+}
+
+void Warehouse::SetScribe(Scribe* scribe)
+{
+	_scribe = scribe;
 }
 
 double Warehouse::GetLength()

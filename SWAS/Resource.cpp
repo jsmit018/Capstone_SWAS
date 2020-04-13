@@ -198,7 +198,7 @@ void Resource::SetFailureDistr(string failureDistr)
 	}
 
 	//Determines correct distribution and prints
-	_failureDist->PrintDistribution();
+	//_failureDist->PrintDistribution();
 
 }
 

@@ -13,6 +13,28 @@
 
 using namespace std;
 
+//Scribe* outputReader;
+
+//Scribe is now static we don't need object refference
+//void InitializeScribe() {
+//	outputReader = new Scribe();
+//}
+
+//Scribe* GetScribe() {
+//	return outputReader;
+//}
+
+void ScribeSetDimension(double length, double width) {
+	Scribe::SetWarehousDims(length, width);
+}
+
+void ScribeAdvanceRun() {
+	Scribe::AdvanceRun();
+}
+
+void ScribeSetTerminationTime(double termTime) {
+	Scribe::SetRunTime(termTime);
+}
 ///////////////////////////////////////////////////
 ///	Temporary for testing linked list searching ///
 ///			until GUI LL is available			///
@@ -88,26 +110,30 @@ using namespace std;
 				//**in whatever youre calling your arrival EM, it still schedules next unplanned event in the unplanned iat
 				//**now it needs to call the function schedulefirststep() -- i've modified it to handle the logic for "am i the random job being scheduled"
 
-
+//had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
+InputReader inputReader;
 
 
 void InitializeAircraft()
 {
-	InputReader inputReader;
+	//	InputReader inputReader;
 
-	//populate master map
-	inputReader.ReadInputData();
-	//inputReader.PrintEverything();
+		/*Populates master map*/
+	//	inputReader.ReadInputData();
+	inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
+	//Setting the Initial System Seed I just picked 8 b/c of the team size
+	Distribution::SetSystemSeed(8);
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
 	inputReader.AddSelectedAircraft("Apache");
 
-	//Name this sink block whatever you want -- Check comment in the loop as to why this was moved
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
+
+	SimExec::SetSystemSink(depart);
 
 	cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
 
@@ -127,7 +153,7 @@ void InitializeAircraft()
 			int count = 1;
 			//____________
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
-			cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
+			//		cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
 
 			firstAircraft->CopyMyJobList(iter->first);
 
@@ -139,9 +165,9 @@ void InitializeAircraft()
 				{
 					////// calendarsourceblock schedules calendar arrival at date 
 					//(sourceblock schedules arrival, arrival happens once)
-					cout << endl;
-					cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
-					cout << endl;
+					//cout << endl;
+					//cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
+					//cout << endl;
 					SourceBlock* calArrival = new SourceBlock(
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
@@ -154,12 +180,11 @@ void InitializeAircraft()
 				{
 					////// recurringsourceblock schedules first arrival at recur iat 
 					//(sourceblock schedules arrival, arrival schedules next arrival)
-					cout << endl;
+				/*	cout << endl;
 					cout << "Scheduling recurring arrival for " << firstAircraft->GetAircraftType() << endl;
-					cout << endl;
+					cout << endl;*/
 					SourceBlock* recurArrival = new SourceBlock(
 						firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
-																						//as we discussed previously, the map was set up as <string, Distribution*>. see the recurring 
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Recurring Arrival",
@@ -171,7 +196,7 @@ void InitializeAircraft()
 					////// unplannedsourceblock schedules first arrival at unpl iat  
 					//(sourceblock schedules arrival, arrival schedules next arrival)
 					cout << endl;
-					//cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
 					SourceBlock* unplanArrival = new SourceBlock(
@@ -256,12 +281,34 @@ void InitializeAircraft()
 
 
 
-int main() {
+int main()
+{
+	inputReader.ReadInputData();
+	//Step::PrintPools();
+	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
+	//*Note: Let tyler know this function name so he can add it to his unity logic
+	for (int i = 0; i < inputReader.GetNumRuns(); i++)
+	{
 
-	InitializeAircraft();
-	///Included for simulation testing purposes -> will be moved during GUI integration
-	//while (SimExec::GetSimulationFlag())
-	//	SimExec::RunSimulation(0, 0, 2021);
+		if (i > 0)
+			ScribeAdvanceRun();
+		/*
+		cout << endl;
+		cout << endl;
+		cout << endl;
+		cout << "RUN NUMBER " << i + 1 << endl;
+		*/
+		InitializeAircraft();
+		//InitalizeAircraft(GetScribe());
+
+		///Included for simulation testing purposes -> will be moved during GUI integration
+		while (SimExec::GetSimulationFlag())
+		SimExec::RunSimulation(0, 0, 2021);
+
+		//For Kevin, this causes an infinite loop
+		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
+
+	}
 
 	return 0;
 }

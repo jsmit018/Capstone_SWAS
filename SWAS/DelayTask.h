@@ -11,7 +11,7 @@ public:
 	string GetName();
 	void SetName(string name);
 	void Execute(Aircraft* aircraft);
-	
+
 
 private:
 	Distribution* _delayTime;
