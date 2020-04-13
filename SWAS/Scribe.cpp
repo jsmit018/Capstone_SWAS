@@ -186,8 +186,8 @@ resourceWaitNode::resourceWaitNode(string aircraft, int ID, string resource, flo
 	aircraftID = ID;
 	resourceType = resource;
 	timeStart = time;
-	dayStart = SimExec::GetSimulationTime()._day;
-	monthStart = SimExec::GetSimulationTime()._month;
+	dayStart = SimExec::GetSimulationTime()._day + 1;
+	monthStart = SimExec::GetSimulationTime()._month + 1;
 	yearStart = SimExec::GetSimulationTime()._year;
 	timeEnd = 0;
 	dayEnd = 0;
