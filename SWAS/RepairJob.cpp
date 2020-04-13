@@ -23,6 +23,9 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
 
+    //cout << ".....IN RJ NEXT INDOOR REQ IS " << _indoorReq << endl;
+
+
    // cout << "$$$$$$$$ SCHED TYPE: " << _name << " " << _schedType << endl;
 
     // to ensure that the copies are actual copies and 
@@ -95,6 +98,9 @@ Distribution* RepairJob::GetUnplannedProb()
 
 int RepairJob::GetStepVecSize()
 {
+  //  cout << " xxxxxx IN GET STEP VEC SIZE " <<
+   //     this->GetName() << " STEP VEC SIZE IS " <<
+    //    _vecSteps.size() << endl;
     return _vecSteps.size();
 }
 
@@ -121,8 +127,8 @@ string RepairJob::GetName()
 int RepairJob::GetPriority()
 {
     _priority = this->GetStep(1)->GetRJPriority();
-    cout << endl;
-    cout << endl;
+   // cout << endl;
+    //cout << endl;
   //  cout << "&%&%&%&%&%&%& GETTER PRIORITY " << _priority << endl;
     //system("PAUSE");
     return _priority;
@@ -160,6 +166,7 @@ void RepairJob::SetIndoorReq(char indoorReq)
 
 char RepairJob::GetIndoorReq()
 {
+   // cout << "INDOOR REQ IS " << _indoorReq << endl;
     return _indoorReq;
 }
 
