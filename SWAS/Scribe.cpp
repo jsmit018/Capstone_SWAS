@@ -142,7 +142,7 @@ failureNode::failureNode(string resource, string failure, float time)
 	resourceType = resource;
 	failureType = failure;
 	ellapse = time;
-	date = (to_string(SimExec::GetSimulationTime()._month) + "/" + to_string(SimExec::GetSimulationTime()._day) + "/" + to_string(SimExec::GetSimulationTime()._year));
+	date = (to_string(SimExec::GetSimulationTime()._month + 1) + "/" + to_string(SimExec::GetSimulationTime()._day + 1) + "/" + to_string(SimExec::GetSimulationTime()._year));
 
 	next = nullptr;
 }
@@ -290,8 +290,8 @@ repairJobNode::repairJobNode(string aircraft,int id, string job, float time)
 	aircraftType = aircraft;
 	jobType = job;
 	timeStart = time;
-	dayStart = SimExec::GetSimulationTime()._day;
-	monthStart = SimExec::GetSimulationTime()._month;
+	dayStart = SimExec::GetSimulationTime()._day + 1;
+	monthStart = SimExec::GetSimulationTime()._month + 1;
 	yearStart = SimExec::GetSimulationTime()._year;
 	timeEnd = 0;
 	dayEnd = 0;
@@ -337,7 +337,7 @@ reworkNode::reworkNode(string object, string rework, float time)
 	objectType = object;
 	reworkEvent = rework;
 	ellapse = time;
-	date = (to_string(SimExec::GetSimulationTime()._month) + "/" + to_string(SimExec::GetSimulationTime()._day) + "/" + to_string(SimExec::GetSimulationTime()._year));
+	date = (to_string(SimExec::GetSimulationTime()._month + 1) + "/" + to_string(SimExec::GetSimulationTime()._day + 1) + "/" + to_string(SimExec::GetSimulationTime()._year));
 
 	next = nullptr;
 }
@@ -403,7 +403,7 @@ restockNode::restockNode(string part, float time)
 {
 	partType = part;
 	restockTime = time;
-	date = (to_string(SimExec::GetSimulationTime()._month) + "/" + to_string(SimExec::GetSimulationTime()._day) + "/" + to_string(SimExec::GetSimulationTime()._year));
+	date = (to_string(SimExec::GetSimulationTime()._month + 1) + "/" + to_string(SimExec::GetSimulationTime()._day + 1) + "/" + to_string(SimExec::GetSimulationTime()._year));
 
 	next = nullptr;
 }
