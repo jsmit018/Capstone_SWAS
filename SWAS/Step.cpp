@@ -662,14 +662,14 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				testit++;
 			}
 			//nextId = aircraft->GetNextRepairJob(_myRJ)->GetFirstStep()->GetStepID();
-			cout << "----------------------THE AIRCRAFT IS " << aircraft->GetAircraftType() << endl;
+			cout << "----------------------THE AIRCRAFT IS " << aircraft->GetAircraftID()<< " " << aircraft->GetAircraftType() << endl;
 			nextId = aircraft->GetNextRepairJob(_myRJ)->GetStep(1)->GetStepID();
 			cout << " --------THE JOB AND STEP ID ARE " << aircraft->GetNextRepairJob(_myRJ)->GetName()
 				<<" " << aircraft->GetNextRepairJob(_myRJ)->GetStep(1)->GetStepID() << endl;
 		//	cout << aircraft->GetAircraftID()<<" ------NEXT STEP IS " << aircraft->GetNextRepairJob(_myRJ)->GetName() << endl;
 		//	cout << " &&&NEW JOB: " << aircraft->GetNextRepairJob(_myRJ)->GetName() << endl;
 			SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextId), aircraft, _acquiredResources), 0.0, "StartServiceEA");
-			//cout << " ------TEST " << endl;
+			cout << " ------TEST " << endl;
 
 			
 			//Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
