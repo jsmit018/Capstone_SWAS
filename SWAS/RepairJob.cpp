@@ -33,12 +33,16 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     // for number of steps in mapRj._vecSteps
     for (int i = 0; i < mapRj._vecSteps.size(); i++)
     {
+
         //new step object is created
         Step* newStep = new Step(mapRj._vecSteps[i]->GetServiceTime(), mapRj._vecSteps[i]->GetName());
         //for each index of the old vector, copy the old step object (which catalyzes the sequence of copying objects within step
         newStep->CopyMapStep(*mapRj._vecSteps[i]);
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
+
+        cout << "JOB IS " << newStep->GetMyRJName() << endl;
+        cout << "STEP ID IS " << newStep->GetStepID() << endl;
         //  cout << endl;
           //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
         //  cout << endl;
@@ -60,7 +64,9 @@ Step* RepairJob::GetStep(int stepID)
     }
 
     //setting stepID 
-     //  cout << "ID IS      " << stepID << endl;
+   // cout << "-----JOB TYPE " << this->GetName() << endl;
+   // cout << "ID IS      " << stepID << endl;
+
     return _vecSteps[stepID - 1];
 
 }
