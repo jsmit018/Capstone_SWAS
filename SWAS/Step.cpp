@@ -614,7 +614,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		for (int i = 0; i < acquiredResources.size(); i++)
 		{
 			//if resource name is found in acquired vector
-			if (_nextStep->ResourceInReqResource(acquiredResources[i]))
+			if (aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextId)->ResourceInReqResource(acquiredResources[i]))
 				//go to next resource
 				continue;
 
