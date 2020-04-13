@@ -120,7 +120,7 @@ void InitializeAircraft()
 
 		/*Populates master map*/
 	//	inputReader.ReadInputData();
-	inputReader.PrintEverything();
+	//inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);

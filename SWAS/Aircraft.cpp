@@ -354,7 +354,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
-	//	cout << "---MEEP" << this->GetAircraftID() << endl;
+	//	cout << "---HERE" << this->GetAircraftID() << endl;
 
 		//this is where apache is getting stuck
 	//	cout << "----" << iter->second->GetPriority() << endl;
@@ -364,7 +364,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		//this should be the highest, so we shouldn't need this if
 		if (iter->second->GetPriority() > myPriority)
 		{
-			//cout << "---MEEP2" << this->GetAircraftID() << endl;
+			//cout << "---HERE2" << this->GetAircraftID() << endl;
 			//if next repairjob has higher priority (lower number) than current high priority
 			if (iter->second->GetPriority() <= highPriority)
 			{
@@ -382,7 +382,8 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		iter++;
 	}
 
-//	cout << nextJob->GetName() << endl;
+//	cout << "-=-=-=-=-=-=-=-JOB " << nextJob->GetName() << endl;
+//	cout << "STEP ID " << nextJob->GetStep(1)->GetStepID();
 
 
 	//cout << this->GetAircraftID()<<"$$$$$$$$NEXT JOB'S PRIORITY AND TYPE ARE " << nextJob->GetPriority() 
