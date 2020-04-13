@@ -55,7 +55,7 @@ public:
 
 	void Execute() {
 		_source->ScheduleNextUnplannedAircraftEM(_repairJob);
-		cout << "********IN NEXT UNPLANNED EA. REPAIR JOB IS" << _repairJob->GetName() << endl;
+		//cout << "********IN NEXT UNPLANNED EA. REPAIR JOB IS" << _repairJob->GetName() << endl;
 	}
 
 private:
@@ -267,10 +267,10 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			/*Roll the dice*/
 			else if (iter->second->WillSchedule() == true)
 			{
-				cout << "************* " << newAircraft->GetAircraftType() << " WILL SCHEDULE " << iter->first << endl;
+				//cout << "************* " << newAircraft->GetAircraftType() << " WILL SCHEDULE " << iter->first << endl;
 				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
-				cout << "*********** ADDING " << iter->first << " IT TO THE MAP " << endl;
+				//cout << "*********** ADDING " << iter->first << " IT TO THE MAP " << endl;
 
 			}
 
@@ -285,7 +285,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			//schedule that job
 			if (iter->first == job)
 			{
-				cout << "************TEST " << iter->first << endl;
+				//cout << "************TEST " << iter->first << endl;
 
 				/*If yes, schedule it*/
 				//cout << "*********FIRST STEP IS " << testIt->second->GetFirstStep()->GetName();

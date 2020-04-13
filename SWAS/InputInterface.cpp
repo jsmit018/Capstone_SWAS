@@ -375,7 +375,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					schedType = row[2];
 					//					cout << "sched type: " << schedType << endl;
 					newJob->SetSchedType(schedType);
-
+			
 					if (schedType == "Calendar") {
 						schedCal = row[3];
 						//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
@@ -618,6 +618,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//istringstream ssSteps(row[1]);
 					//ssSteps >> jobPriority;
 					newStep->SetRJPriority(jobPriority);
+					//cout << "&%&%&%&%&%&%& PRIORITY " << jobPriority << endl;
 
 					//compare jobname to insert priority to correct map location
 
