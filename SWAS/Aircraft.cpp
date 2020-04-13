@@ -343,21 +343,37 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	//int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
 	//this->getrepairjobobj(rjname)->getstep(1)->getrjpriority()
 	int myPriority = this->GetMyRepairJobObj(rjName)->GetStep(1)->GetRJPriority();
+	//cout << this->GetAircraftID() << " " << this->GetAircraftType() <<" ++++++++++++++++++AIRCRAFT " << this->GetMyRepairJobObj(rjName)->GetName() << " PRIORITY IS " 
+	//	<< this->GetMyRepairJobObj(rjName)->GetPriority() << " TYPE IS " << this->GetMyRepairJobObj(rjName)->GetSchedType() << endl;
 
+
+	///TODO CHECK THIS LOGIC - want to get the NEXT highest priority
 	//iterate through the map
+	
+
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
+	//	cout << "---MEEP" << this->GetAircraftID() << endl;
+
+		//this is where apache is getting stuck
+	//	cout << "----" << iter->second->GetPriority() << endl;
+
 		//cout << iter->second->GetName() << endl;
 		//if next repairjob has lower priority (higher number)
+		//this should be the highest, so we shouldn't need this if
 		if (iter->second->GetPriority() > myPriority)
 		{
+			//cout << "---MEEP2" << this->GetAircraftID() << endl;
 			//if next repairjob has higher priority (lower number) than current high priority
-			if (iter->second->GetPriority() < highPriority)
+			if (iter->second->GetPriority() <= highPriority)
 			{
+			//	cout << this->GetAircraftID() <<" HIGH PRIORITY JOB IS " << iter->first << " IT HAS PRIORITY OF "
+			//		<< iter->second->GetPriority() << " AND IS OF TYPE " << iter->second->GetSchedType()
+			//		<< endl;;
 				//this priority becomes the highest priority 
 				highPriority = iter->second->GetPriority();
-
+			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
 				nextJob = iter->second;
 			}
@@ -366,9 +382,14 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		iter++;
 	}
 
-	//cout << nextJob->GetName() << endl;
+//	cout << nextJob->GetName() << endl;
+
+
+	//cout << this->GetAircraftID()<<"$$$$$$$$NEXT JOB'S PRIORITY AND TYPE ARE " << nextJob->GetPriority() 
+	//	<< " " << nextJob->GetSchedType() << endl;
 
 	return nextJob; //set this??
+
 
 }
 
