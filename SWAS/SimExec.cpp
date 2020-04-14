@@ -466,7 +466,16 @@ public:
 				else
 					cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at 0" << GetTimeOfDay() << "00 in " << GetYear() << endl;*/
 					//cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
-			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
+			/*if (_eventSet[_baseX][_baseY]->_nextEvent == NULL) {
+				while (_eventSet[_baseX][_baseY] == NULL) {
+					if (_baseY == _endOfMonth[_baseX])
+						AdvanceMonth();
+					else
+						AdvanceDay();
+				}
+			}
+			else*/
+				_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
 			if (_eventSet[_baseX][_baseY] == 0)
 			{
 				if (_baseY == _endOfMonth[_baseX]) {
@@ -549,7 +558,7 @@ private:
 	//	//Will add an if statement on December 31 to increment the year by 1.
 	void AdvanceMonth() {
 		//	cout << "Advancing Month, and updating overflow bin" << endl;
-		if (_baseX == December - 1 && _baseY == 30) {
+		if (_baseX == 12 - 1 && _baseY == 30) {
 			_eventSet[_baseX][_baseY] = 0;
 			_year++;
 			_baseX = 0;
