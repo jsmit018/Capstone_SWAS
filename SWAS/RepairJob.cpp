@@ -98,10 +98,10 @@ Distribution* RepairJob::GetUnplannedProb()
 
 int RepairJob::GetStepVecSize()
 {
-  /*  cout << " xxxxxx IN GET STEP VEC SIZE " <<
+ /*   cout << " xxxxxx IN GET STEP VEC SIZE " <<
         this->GetName() << " STEP VEC SIZE IS " <<
-        _vecSteps.size() << endl;*/
-    return _vecSteps.size();
+        _vecSteps.size() << endl;
+ */   return _vecSteps.size();
 }
 
 void RepairJob::SetName(string name)

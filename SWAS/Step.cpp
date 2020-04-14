@@ -613,12 +613,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 //	cout << " _________________________________________________________________________" << aircraft->GetAircraftID() << "JOB IS " << _myRJ << endl;
 //	cout << endl;
 //	cout << endl;
-
+	cout << aircraft->GetAircraftType() << " " << aircraft->GetAircraftID() << " ----------NUMBER OF JOBS " << aircraft->GetMyRJMapSize() << endl;
 	_acquiredResources = acquiredResources;
-//	cout << "nnnnnnn aircraft name " << aircraft->GetAircraftType() << endl;
-//	cout << "nnnnnnn job name " << aircraft->GetMyRepairJobObj(_myRJ)->GetName() << endl;
+	cout << "nnnnnnn aircraft name " << aircraft->GetAircraftType() << endl;
+	cout << "nnnnnnn job name " << aircraft->GetMyRepairJobObj(_myRJ)->GetName() << endl;
 //	cout << "/...............................STEP ID IS " << _stepID << endl;
-//		cout << "CURR VEC SIZE IS " << aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize() << endl;
+		cout << "CURR VEC SIZE IS " << aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize() << endl;
 
 //////////
 
@@ -663,8 +663,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	//else if the current step is the last step
 	else if (_stepID == aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{
-		//if i have no more jobs
-		if (aircraft->GetNextRepairJob(_myRJ) == NULL)
+		//if i have no more jobs after this one
+		if (aircraft->GetMyRJMapSize() == 1/*aircraft->GetNextRepairJob(_myRJ) == NULL*/)
 		{	
 			cout << aircraft->GetAircraftID() << " -------NO MORE JOBS " << endl;
 
@@ -688,7 +688,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			Depart(aircraft);
 		}
 		//else if i have more jobs
-		else
+		else /*if (aircraft->GetMyRJMapSize() != 0)*/
 		{
 			//cout << ".....CURR JOB IS" << _myRJ << "--NEXT JOB IS ";
 
@@ -751,7 +751,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			SetMyRJName(aircraft->GetNextRepairJob(_myRJ)->GetName());
 			//cout << "  new job " << _myRJ << endl;
  			aircraft->DeleteJob(oldJob);
-			//cout << "---------------------- NUMBER AFTER " << aircraft->GetMyRJMapSize() << endl;
+			cout << aircraft->GetAircraftID() <<"---------------------- NUMBER AFTER " << aircraft->GetMyRJMapSize() << endl;
 
 			//Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 
