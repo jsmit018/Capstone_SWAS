@@ -51,17 +51,19 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 		//int remainder = 0;
 		if (baseX + ceil(distributionValue) > 11) {
 			baseX = ((baseX + (int)distributionValue) % 12);
-			if (baseY > endOfMonth[baseX])
-				baseY = 0;
+			if (baseY > endOfMonth[baseX]) {
+				int rem = baseY % endOfMonth[baseX];
+				baseY = 0 + rem;
+			}
 			Month = baseX;
 			Day = baseY;
-			timeOfDay = simTime;
+			timeOfDay = sTime;
 		}
 		else {
 			baseX += (int)distributionValue;
 			Month = baseX;
 			Day = baseY;
-			timeOfDay = simTime;
+			timeOfDay = sTime;
 		}
 	}
 	else {
