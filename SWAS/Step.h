@@ -123,8 +123,8 @@ private:
 	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void AcquireResourceEM(Resource* resource);
-	void ReleaseResourceEM(Resource* resource);
+	void AcquireResourceEM(Resource* resource, int numNeeded);
+	void ReleaseResourceEM(Resource* resource, int numRelease);
 	void FailResourceEM(Resource* resource);
 	void RestoreResourceEM(Resource* resource);
 

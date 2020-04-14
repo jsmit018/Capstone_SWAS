@@ -230,15 +230,17 @@ public:
 	{
 		_step = step;
 		_resource = resource;
+		_numNeeded = 0;
 	}
 
 	void Execute()
 	{
-		_step->AcquireResourceEM(_resource);
+		_step->AcquireResourceEM(_resource, _numNeeded);
 	}
 private:
 	Step* _step;
 	Resource* _resource;
+	int _numNeeded;
 };
 
 class Step::ReleaseResourceEA : public EventAction {
@@ -246,14 +248,16 @@ public:
 	ReleaseResourceEA(Step* step, Resource* resource) {
 		_step = step;
 		_resource = resource;
+		_numRelease = 0;
 	}
 
 	void Execute() {
-		_step->ReleaseResourceEM(_resource);
+		_step->ReleaseResourceEM(_resource, _numRelease);
 	}
 private:
 	Step* _step;
 	Resource* _resource;
+	int _numRelease;
 };
 
 class Step::FailResourceEA : public EventAction {
@@ -379,7 +383,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				cout << "Getting a Bay" << endl;
 				// call decrement function, push it to acquired vector 
 				_acquiredResources.push_back(it->first);
-				AcquireResourceEM(it->second);
+				AcquireResourceEM(it->second, 1);
 				cout << "---------------BAY SIZE ACQUIRED IS " << it->first << endl;
 				Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
 				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
@@ -444,7 +448,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				/*int newCount;
 				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
 				it->second->SetResourceCount(newCount);*/
-				AcquireResourceEM(iter->second);
+				AcquireResourceEM(iter->second, iter->second->GetNumResNeeded());
 				//store in acquired resource vector
 				_acquiredResources.push_back(iter->first);
 				cout << "----------ACQUIRED  " << iter->first << endl;
@@ -542,7 +546,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				/*int newCount;
 				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
 				it->second->SetResourceCount(newCount);*/
-				AcquireResourceEM(it->second);
+				AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
 
 				//store in acquired resource vector
 				_acquiredResources.push_back(it->first);
@@ -653,7 +657,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				{
 					cout << "Releasing " << _acquiredResources[i] << endl;
 					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
-					ReleaseResourceEM(iter->second);
+					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
 					//empty appropriate acquired vector index
 					cout << "-------size of acquired list " << _acquiredResources.size() << endl;
 					_acquiredResources.erase(_acquiredResources.begin() + i);
@@ -680,7 +684,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			{
 				cout << "Releasing " << iter->first << endl;
 				//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
-				ReleaseResourceEM(iter->second);
+				ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
 				//empty appropriate acquired vector index
 				for (int i = 0; i < _acquiredResources.size(); i++)
 				{
@@ -722,7 +726,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					{
 						cout << "Releasing " << iter->first << endl;
 						//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
-						ReleaseResourceEM(iter->second);
+						ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
 					}
 					//empty appropriate acquired vector index
 					for (int i = 0; i < _acquiredResources.size(); i++)
@@ -741,7 +745,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				{
 					cout << "Releasing " << iter->first << endl;
 					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
-					ReleaseResourceEM(iter->second);
+					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
 
 					//empty appropriate acquired vector index
 					_acquiredResources.clear();
@@ -880,31 +884,35 @@ void Step::AddQueueEM(Aircraft* aircraft)
 	//InitialArrivalBayCheck();
 }
 
-void Step::AcquireResourceEM(Resource* resource)
+void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 {
 	int newCount;
 
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
-	map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
+	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
 
-	newCount = iter->second->GetResourceCount() - numIt->second->GetNumResNeeded();
+	newCount = iter->second->GetResourceCount() - numNeeded;
 	resource->SetResourceCount(newCount);
 	iter->second->SetResourceCount(newCount);
-	numIt->second->SetResourceCount(newCount);
+	//numIt->second->SetResourceCount(newCount);
 
 
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), resource->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
 
 }
 
-void Step::ReleaseResourceEM(Resource* resource)
+void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 {
 	int newCount;
 
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
-	newCount = iter->second->GetResourceCount() + iter->second->GetNumResNeeded();
+	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
+
+	newCount = iter->second->GetResourceCount() + numRelease;
 
 	resource->SetResourceCount(newCount);
+	iter->second->SetResourceCount(newCount);
+	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
 
 	int negativeCount = 0 - resource->GetResourceCount();  //Used to increment utilization for scribe
@@ -1030,7 +1038,7 @@ void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 
 void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj)
 {
-	for (int i = 0; i < calobj->GetNumEvents(); ++i) {
+	for (int i = 0; i < 1; ++i) {
 		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
 	}
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;

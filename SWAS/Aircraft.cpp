@@ -378,7 +378,8 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 
 		else if (iter->second->GetSchedType() != GetMyRepairJobObj(rjName)->GetSchedType())
 		{
-			iter = _myRepairJobs.erase(iter);
+			_myRepairJobs.erase(iter);
+			iter = _myRepairJobs.begin();
 		}
 		else
 		{
