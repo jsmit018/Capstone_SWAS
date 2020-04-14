@@ -885,9 +885,13 @@ void Step::AcquireResourceEM(Resource* resource)
 	int newCount;
 
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+	map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
 
-	newCount = iter->second->GetResourceCount() - iter->second->GetNumResNeeded();
+	newCount = iter->second->GetResourceCount() - numIt->second->GetNumResNeeded();
 	resource->SetResourceCount(newCount);
+	iter->second->SetResourceCount(newCount);
+	numIt->second->SetResourceCount(newCount);
+
 
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), resource->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
 
