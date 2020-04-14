@@ -157,7 +157,7 @@ SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, string aircra
 		SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, it->second, newptr),
 			it->second->GetRV(), "ScheduleNextRecurringAircraftEA");
 		it++;
-		delete newptr;
+		//delete newptr;
 	}
 }
 
@@ -238,8 +238,7 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 			it = newAircraft->GetMyRJMapBegin();
 		}
 		else
-
-		it++;
+			it++;
 	}
 
 	cout << "Scheduling Calendar Aircraft to Arrive" << endl;
@@ -400,8 +399,44 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 		map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
 		while (it != newAircraft->GetMyRJMapEnd())
 		{
-			cout << "JOB IS " << it->first << endl;
-			it++;
+			//cout << "JOB IS " << it->first << endl;
+			if (it->second->GetSchedType() == "Recurring") {
+				RepairJob* currJob = new RepairJob();
+				currJob->CopyRepairJob(*it->second);
+				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+
+				cout << "..................ADDED Recur " << it->second->GetName() << endl;
+				it++;
+			}
+			else if (it->second->GetSchedType() != "Recurring")
+			{
+				newAircraft->DeleteJob(it->first);
+				it = newAircraft->GetMyRJMapBegin();
+			}
+			else
+				it++;
+			//it++;
+		}
+
+		while (it != newAircraft->GetMyRJMapEnd())
+		{
+			if (it->second->GetSchedType() == "Calendar")
+			{
+				RepairJob* currJob = new RepairJob();
+				currJob->CopyRepairJob(*it->second);
+				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+
+				cout << "..................ADDED CAL " << it->second->GetName() << endl;
+				it++;
+			}
+
+			else if (it->second->GetSchedType() != "Calendar")
+			{
+				newAircraft->DeleteJob(it->first);
+				it = newAircraft->GetMyRJMapBegin();
+			}
+			else
+				it++;
 		}
 
 
