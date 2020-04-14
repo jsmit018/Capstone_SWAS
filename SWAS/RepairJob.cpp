@@ -44,8 +44,8 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
 
-        cout << "JOB IS " << newStep->GetMyRJName() << endl;
-        cout << "STEP ID IS " << newStep->GetStepID() << endl;
+     //   cout << "JOB IS " << newStep->GetMyRJName() << endl;
+      //  cout << "STEP ID IS " << newStep->GetStepID() << endl;
         //  cout << endl;
           //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
         //  cout << endl;
@@ -98,9 +98,9 @@ Distribution* RepairJob::GetUnplannedProb()
 
 int RepairJob::GetStepVecSize()
 {
-  //  cout << " xxxxxx IN GET STEP VEC SIZE " <<
-   //     this->GetName() << " STEP VEC SIZE IS " <<
-    //    _vecSteps.size() << endl;
+    cout << " xxxxxx IN GET STEP VEC SIZE " <<
+        this->GetName() << " STEP VEC SIZE IS " <<
+        _vecSteps.size() << endl;
     return _vecSteps.size();
 }
 
