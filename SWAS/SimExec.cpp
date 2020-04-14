@@ -241,7 +241,7 @@ public:
 		_numEvents++;
 	//	cout << "Number of Events increased to " << _numEvents << endl;
 	//	cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, recurring, _simulationTime._timeOfDay);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, _simulationTime._timeOfDay, recurring);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
@@ -550,11 +550,13 @@ private:
 	void AdvanceMonth() {
 	//	cout << "Advancing Month, and updating overflow bin" << endl;
 		if (_baseX == December - 1 && _baseY == 30) {
+			_eventSet[_baseX][_baseY] = 0;
 			_year++;
 			_baseX = 0;
 			_baseY = 0;
 		}
 		else {
+			_eventSet[_baseX][_baseY] = 0;
 			_baseX++;
 			_baseY = 0;
 		}

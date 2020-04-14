@@ -361,8 +361,8 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		//cout << iter->second->GetName() << endl;
 		//if next repairjob has lower priority (higher number)
 		//this should be the highest, so we shouldn't need this if
-		if (iter->second->GetPriority() > myPriority)
-		{
+		/*if (iter->second->GetPriority() > myPriority)
+		{*/
 			//cout << "---HERE2" << this->GetAircraftID() << endl;
 			//if next repairjob has higher priority (lower number) than current high priority
 			if (iter->second->GetPriority() <= highPriority)
@@ -375,8 +375,13 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
 				nextJob = iter->second;
+
+				//iter->second->SetPriority(INT_MAX); // This would ensure that no job would ever get repeated
+				//or
+				//This could remove the logic of the function and we just get the beginning of the map for each call 
+				//_myRepairJobs.erase(iter);
 			}
-		}
+		/*}*/
 
 		iter++;
 	}

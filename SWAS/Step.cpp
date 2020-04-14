@@ -638,15 +638,16 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					cout << "Releasing " << acquiredResources[i] << endl;
 					SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 					//empty appropriate acquired vector index
-					cout << "-------size of acquired list " << _acquiredResources.size() << endl;
-					_acquiredResources.erase(acquiredResources.begin() + i);
+					cout << "-------size of acquired list " << acquiredResources.size() << endl;
+					acquiredResources.erase(acquiredResources.begin() + i);
 				}
 			}
+			iter++;
 		}
 		//schedule the next step
 		cout << this->GetMyRJName() << "'s step " << _stepID <<" has finished, scheduling the next maintenance step." << endl;
 		Scribe::RecordServiceWaitEnd(aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
-		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, acquiredResources), 0.0, "StartServiceEA");
 
 	}
 	//else if the current step is the last step
@@ -707,8 +708,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//empty appropriate acquired vector index
 					for (int i = 0; i < acquiredResources.size(); i++)
 					{
-						if (_acquiredResources[i] != "S Bay" || _acquiredResources[i] != "M Bay" || _acquiredResources[i] != "L Bay")
-							_acquiredResources.erase(acquiredResources.begin() + i);
+						if (acquiredResources[i] != "S Bay" || acquiredResources[i] != "M Bay" || acquiredResources[i] != "L Bay")
+							acquiredResources.erase(acquiredResources.begin() + i);
 					}
 
 				}
@@ -728,7 +729,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			}
 
 			//schedule first step of new job
-			SimExec::ScheduleEventAt(aircraft->GetNextRepairJob(_myRJ)->GetPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextID), aircraft, _acquiredResources), 0.0, "StartServiceEA");
+			SimExec::ScheduleEventAt(aircraft->GetNextRepairJob(_myRJ)->GetPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextID), aircraft, acquiredResources), 0.0, "StartServiceEA");
 
 			//Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 
