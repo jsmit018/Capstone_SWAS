@@ -319,6 +319,10 @@ void Step::OrderArrivalEM(Parts* parts)
 
 void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 {
+	cout << "am  i here \n";
+	cout << aircraft->GetNextAircraftID() << endl;
+
+	cout << endl << " after blah blah \n";
 	_acquiredResources = acquiredResources;
 	cout << "Step " << this->GetStepID() << " of " << this->GetMyRJName() << " started on "
 		<< aircraft->GetAircraftType() << " of ID " << aircraft->GetAircraftID() << endl;
@@ -516,7 +520,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		}
 		//}
 
-		cout << "Aircraft has finished a maintenance step, scheduling a DoneService" << endl;
+		cout << "Aircraft " << aircraft->GetAircraftID() << " has finished a maintenance step, scheduling a DoneService" << endl;
 		cout << "++++++++ acquired resource vector size " << _acquiredResources.size() << endl;
 		DoneServiceEA* doneEA = new DoneServiceEA(this, aircraft, _acquiredResources);
 		SimExec::ScheduleEventAt(1, doneEA, this->_servTime->GetRV(), "DoneServiceEA");
@@ -623,6 +627,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 //	cout << " _________________________________________________________________________" << aircraft->GetAircraftID() << "JOB IS " << _myRJ << endl;
 //	cout << endl;
 //	cout << endl;
+	cout << "let me check \n";
 	cout << aircraft->GetAircraftType() << " " << aircraft->GetAircraftID() << " ----------NUMBER OF JOBS " << aircraft->GetMyRJMapSize() << endl;
 	_acquiredResources = acquiredResources;
 	cout << "nnnnnnn aircraft name " << aircraft->GetAircraftType() << endl;
@@ -893,7 +898,7 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 
 	newCount = iter->second->GetResourceCount() - numNeeded;
 	resource->SetResourceCount(newCount);
-	iter->second->SetResourceCount(newCount);
+	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 
 
@@ -911,7 +916,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 	resource->SetResourceCount(newCount);
-	iter->second->SetResourceCount(newCount);
+	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
 
