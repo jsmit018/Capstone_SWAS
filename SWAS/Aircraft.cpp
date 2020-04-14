@@ -358,6 +358,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
+		deleteIt = "";
 			//if job is not my current job and is of the same type
 			//if next repairjob has higher priority (lower number) than current high priority
 		if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
@@ -379,10 +380,14 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		else if (iter->second->GetSchedType() != GetMyRepairJobObj(rjName)->GetSchedType())
 		{
 			deleteIt = iter->first;
+			_myRepairJobs.erase(deleteIt);
 		}
-		_myRepairJobs.erase(deleteIt);
+		//_myRepairJobs.erase(deleteIt);
 			
-		iter++;
+		if (deleteIt == "")
+			iter++;
+		else
+			iter = _myRepairJobs.begin();
 	}
 	//cout << "------------------------------------ ID " 
 	//	<< this->GetAircraftID() << " " 
