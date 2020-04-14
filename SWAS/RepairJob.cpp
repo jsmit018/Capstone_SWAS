@@ -23,6 +23,9 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
 
+    //cout << ".....IN RJ NEXT INDOOR REQ IS " << _indoorReq << endl;
+
+
    // cout << "$$$$$$$$ SCHED TYPE: " << _name << " " << _schedType << endl;
 
     // to ensure that the copies are actual copies and 
@@ -33,12 +36,16 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     // for number of steps in mapRj._vecSteps
     for (int i = 0; i < mapRj._vecSteps.size(); i++)
     {
+
         //new step object is created
         Step* newStep = new Step(mapRj._vecSteps[i]->GetServiceTime(), mapRj._vecSteps[i]->GetName());
         //for each index of the old vector, copy the old step object (which catalyzes the sequence of copying objects within step
         newStep->CopyMapStep(*mapRj._vecSteps[i]);
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
+
+        cout << "JOB IS " << newStep->GetMyRJName() << endl;
+        cout << "STEP ID IS " << newStep->GetStepID() << endl;
         //  cout << endl;
           //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
         //  cout << endl;
@@ -60,7 +67,9 @@ Step* RepairJob::GetStep(int stepID)
     }
 
     //setting stepID 
-     //  cout << "ID IS      " << stepID << endl;
+   // cout << "-----JOB TYPE " << this->GetName() << endl;
+   // cout << "ID IS      " << stepID << endl;
+
     return _vecSteps[stepID - 1];
 
 }
@@ -89,6 +98,9 @@ Distribution* RepairJob::GetUnplannedProb()
 
 int RepairJob::GetStepVecSize()
 {
+  //  cout << " xxxxxx IN GET STEP VEC SIZE " <<
+   //     this->GetName() << " STEP VEC SIZE IS " <<
+    //    _vecSteps.size() << endl;
     return _vecSteps.size();
 }
 
@@ -115,8 +127,8 @@ string RepairJob::GetName()
 int RepairJob::GetPriority()
 {
     _priority = this->GetStep(1)->GetRJPriority();
-    cout << endl;
-    cout << endl;
+   // cout << endl;
+    //cout << endl;
   //  cout << "&%&%&%&%&%&%& GETTER PRIORITY " << _priority << endl;
     //system("PAUSE");
     return _priority;
@@ -154,6 +166,7 @@ void RepairJob::SetIndoorReq(char indoorReq)
 
 char RepairJob::GetIndoorReq()
 {
+   // cout << "INDOOR REQ IS " << _indoorReq << endl;
     return _indoorReq;
 }
 

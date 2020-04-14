@@ -120,7 +120,7 @@ void InitializeAircraft()
 
 		/*Populates master map*/
 	//	inputReader.ReadInputData();
-	inputReader.PrintEverything();
+	//inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);
@@ -303,7 +303,7 @@ int main()
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		while (SimExec::GetSimulationFlag())
-		SimExec::RunSimulation(0, 0, 2021);
+			SimExec::RunSimulation(0, 0, 2021);
 
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);

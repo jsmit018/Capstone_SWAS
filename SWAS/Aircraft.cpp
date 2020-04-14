@@ -335,7 +335,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	//receives current repair job name
 
 	//get the object of that repair job
-	RepairJob* nextJob = this->GetRepairJobObj(rjName);
+	RepairJob* nextJob = this->GetMyRepairJobObj(rjName);
 	//variable for tracking priorities
 	int highPriority = INT_MAX;
 	//get its priority
@@ -346,7 +346,6 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	//cout << this->GetAircraftID() << " " << this->GetAircraftType() <<" ++++++++++++++++++AIRCRAFT " << this->GetMyRepairJobObj(rjName)->GetName() << " PRIORITY IS " 
 	//	<< this->GetMyRepairJobObj(rjName)->GetPriority() << " TYPE IS " << this->GetMyRepairJobObj(rjName)->GetSchedType() << endl;
 
-
 	///TODO CHECK THIS LOGIC - want to get the NEXT highest priority
 	//iterate through the map
 	
@@ -354,7 +353,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
-	//	cout << "---MEEP" << this->GetAircraftID() << endl;
+	//	cout << "---HERE" << this->GetAircraftID() << endl;
 
 		//this is where apache is getting stuck
 	//	cout << "----" << iter->second->GetPriority() << endl;
@@ -364,7 +363,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		//this should be the highest, so we shouldn't need this if
 		if (iter->second->GetPriority() > myPriority)
 		{
-			//cout << "---MEEP2" << this->GetAircraftID() << endl;
+			//cout << "---HERE2" << this->GetAircraftID() << endl;
 			//if next repairjob has higher priority (lower number) than current high priority
 			if (iter->second->GetPriority() <= highPriority)
 			{
@@ -382,11 +381,15 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		iter++;
 	}
 
-//	cout << nextJob->GetName() << endl;
+//	cout << "-=-=-=-=-=-=-=-JOB " << nextJob->GetName() << endl;
+//	cout << "STEP ID " << nextJob->GetStep(1)->GetStepID();
 
 
 	//cout << this->GetAircraftID()<<"$$$$$$$$NEXT JOB'S PRIORITY AND TYPE ARE " << nextJob->GetPriority() 
 	//	<< " " << nextJob->GetSchedType() << endl;
+	
+	//cout << ".....IN NEXT JOB INDOOR REQ IS " << nextJob->GetIndoorReq() << endl;
+
 
 	return nextJob; //set this??
 
@@ -484,6 +487,7 @@ void Aircraft::AddMyUnplannedJob(string jobName, RepairJob* myJob)
 
 RepairJob* Aircraft::GetRepairJobObj(string name)
 {
+
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.find(name);
 	if (it == _allRepairJobsMap.end())
 		return nullptr;
@@ -497,9 +501,14 @@ map<string, RepairJob*> Aircraft::GetUnplanJobMap()
 
 RepairJob* Aircraft::GetMyRepairJobObj(string name)
 {
+//	cout << " ----- IN GET REPAIR JOB " << endl;
+//	cout << "Job name is " << name << endl;
+
 	map<string, RepairJob*>::iterator it = _myRepairJobs.find(name);
 	if (it == _myRepairJobs.end())
 		return nullptr;
+//	cout << "FoUND JOB " << it->first << endl;
+//	cout << "STEPS SIZE " << it->second->GetStepVecSize() << endl;
 	return it->second;
 }
 
@@ -583,9 +592,9 @@ int Aircraft::GetMyRJMapSize()
 int Aircraft::GetMyUnplannedMapSize()
 {
 
-	cout << "MY UNPLANNED RJ MAP SIZE IS ";
-	cout << _myUnplannedJobsMap.size();
-	cout << endl;
+	//cout << "MY UNPLANNED RJ MAP SIZE IS ";
+	//cout << _myUnplannedJobsMap.size();
+	//cout << endl;
 
 	return _myUnplannedJobsMap.size();
 }
@@ -692,9 +701,9 @@ void Aircraft::PrintProperties()
 		iter->second->PrintDistribution();
 		iter++;
 	}
-	cout << endl;
+	//cout << endl;
 	//cout << "Repair Jobs:" << endl;
-	cout << endl;
+	//cout << endl;
 
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.begin();
 	//cout << "After creating the iterator to the map " << std::endl; 
@@ -724,12 +733,12 @@ void Aircraft::PrintMyProperties()
 	{
 		cout << "		";
 		iter->second->GetRecurringAmt()->PrintDistribution();
-		cout << endl;
+		//cout << endl;
 		iter++;
 	}
-	cout << endl;
+	//cout << endl;
 	//cout << "Repair Jobs:" << endl;
-	cout << endl;
+	//cout << endl;
 
 	cout << "MY JOB LIST SIZE IS " << _myRepairJobs.size() << endl;
 	map<string, RepairJob*>::iterator it = _myRepairJobs.begin();
