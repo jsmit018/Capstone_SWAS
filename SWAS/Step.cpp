@@ -433,15 +433,16 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					break;
 			}
 
-			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+			cout << "------------- RESOUrCe POOl NUM NEEDED " << iter->second->GetNumResNeeded() << endl;
 
+			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
 			//otherwise if not acquired yet
 			//if resource count is greater than number needed
-			if (it->second->GetResourceCount() >= it->second->GetNumResNeeded())
+			if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
 			{
 				//decrement appropriately
 				int newCount;
-				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
+				newCount = it->second->GetResourceCount() - iter->second->GetNumResNeeded();
 				it->second->SetResourceCount(newCount);
 
 				//store in acquired resource vector
