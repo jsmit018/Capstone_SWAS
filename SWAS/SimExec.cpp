@@ -657,7 +657,7 @@ void SimExec::SetInputReader(InputReader inputReader)
 
 void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName) {
 	//	cout << "Scheduling Event" << endl;
-	_eventSet.AddEvent(priority, ea, distributionValue, eaName);
+	_eventSet.AddEvent(priority, ea, GetSimulationTime()._timeOfDay + distributionValue, eaName);
 }
 
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
