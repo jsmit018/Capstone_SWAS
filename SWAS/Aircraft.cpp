@@ -358,7 +358,6 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
-		deleteIt = "";
 			//if job is not my current job and is of the same type
 			//if next repairjob has higher priority (lower number) than current high priority
 		if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
@@ -373,22 +372,21 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
 			nextJob = iter->second;
-		}
 
-		//i know this is wrong but cant think hard enough rn to figure out where to put it. cant delete the element before iter++ 
+			iter++;
+		}
 
 		else if (iter->second->GetSchedType() != GetMyRepairJobObj(rjName)->GetSchedType())
 		{
-			deleteIt = iter->first;
-			_myRepairJobs.erase(deleteIt);
+			iter = _myRepairJobs.erase(iter);
 		}
-		//_myRepairJobs.erase(deleteIt);
-			
-		if (deleteIt == "")
-			iter++;
 		else
-			iter = _myRepairJobs.begin();
+		{
+			iter++;
+		}
+			
 	}
+
 	//cout << "------------------------------------ ID " 
 	//	<< this->GetAircraftID() << " " 
 	//	<< this->GetAircraftType() << "CURRENT JOB " 
@@ -447,24 +445,29 @@ int Aircraft::GetNextAircraftID()
 	return _nextID;
 }
 
+void Aircraft::ClearMyMap()
+{
+	_myRepairJobs.clear();
+}
+
 Aircraft* Aircraft::New()
 {
 	Aircraft* newAircraft = new Aircraft(*this);
 	//cout << "IN NEW AIRCRAFT " << newAircraft->GetAircraftType() << " HAS THIS MANY JOBS: " << newAircraft->GetMyRJMapSize() << endl;
-	map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
+	//map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
 
-	cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
-	while (it != newAircraft->GetMyRJMapEnd())
-	{
-		RepairJob* currJob = new RepairJob();
-		currJob->CopyRepairJob(*it->second);
-		this->AddMyRepairJob(currJob->GetName(), currJob);
+	//cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
+	//while (it != newAircraft->GetMyRJMapEnd())
+	//{
+	//	RepairJob* currJob = new RepairJob();
+	//	currJob->CopyRepairJob(*it->second);
+	//	this->AddMyRepairJob(currJob->GetName(), currJob);
 
-		_myRepairJobs.insert(pair<string, RepairJob*>(it->second->GetName(), it->second));
+	//	_myRepairJobs.insert(pair<string, RepairJob*>(it->second->GetName(), it->second));
 
-		cout << "..................ADDED " << it->first << endl;
-		it++;
-	}
+	//	cout << "..................ADDED " << it->first << endl;
+	//	it++;
+	//}
 
 	return newAircraft; // add appropriate parameters
 	//return new Aircraft();
