@@ -25,6 +25,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	//mapAircraft._iatUnplanned->PrintDistribution();
 	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis();
 	//_myUnplannedJobsMap = mapAircraft._myUnplannedJobsMap;
+	
 
 	//Initialize CalendarObj
 	_myCalObj = new CalendarObj();
@@ -41,6 +42,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	}
 
 	CopyMyJobList(_aircraftType);
+	//_myRepairJobs = mapAircraft._myRepairJobs;
 	//cout << endl;
 	//cout << endl;
 	//cout << _aircraftType << " BAYSIZE REQ " << _baySizeReq << endl;
@@ -108,7 +110,7 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			currJob->CopyRepairJob(*iter->second);
 
 			//give this copy to this new aircraft's myrepairjobs list
-	//		cout << "ABOUT TO ADD JOB " << currJob->GetName() << " TO" << this->GetAircraftType() << "MY LIST." << endl;
+	//		cout << "ABOUT TO ADD JOB " << currJob->GetName() <<  TO" << this->GetAircraftType() << "MY LIST." << endl;
 			this->AddMyRepairJob(currJob->GetName(), currJob);
 
 			//add to map of only unplanned jobs
@@ -382,6 +384,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
 				nextJob = iter->second;
+				//return nextJob;
 			}
 		//}
 			
