@@ -353,37 +353,34 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	//iterate through the map
 	
 
+	string deleteIt;
+
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
-
-	//	cout << "---HERE" << this->GetAircraftID() << endl;
-
-		//this is where apache is getting stuck
-	//	cout << "----" << iter->second->GetPriority() << endl;
-
-		//cout << iter->second->GetName() << endl;
-		//if next repairjob has lower priority (higher number)
-		//this should be the highest, so we shouldn't need this if
-		//if (iter->second->GetPriority() > myPriority)
-		//{
-			//cout << "---HERE2" << this->GetAircraftID() << endl;
 			//if job is not my current job and is of the same type
 			//if next repairjob has higher priority (lower number) than current high priority
-			if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
-				&& iter->second->GetSchedType() == GetMyRepairJobObj(rjName)->GetSchedType()
-				&& iter->second->GetPriority() <= highPriority)
-			{
+		if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
+			&& iter->second->GetSchedType() == GetMyRepairJobObj(rjName)->GetSchedType()
+			&& iter->second->GetPriority() <= highPriority)
+		{
 			//	cout << this->GetAircraftID() <<" HIGH PRIORITY JOB IS " << iter->first << " IT HAS PRIORITY OF "
 			//		<< iter->second->GetPriority() << " AND IS OF TYPE " << iter->second->GetSchedType()
 			//		<< endl;;
 				//this priority becomes the highest priority 
-				highPriority = iter->second->GetPriority();
+			highPriority = iter->second->GetPriority();
 			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
-				nextJob = iter->second;
-			}
-		//}
+			nextJob = iter->second;
+		}
+
+		//i know this is wrong but cant think hard enough rn to figure out where to put it. cant delete the element before iter++ 
+
+		else if (iter->second->GetSchedType() != GetMyRepairJobObj(rjName)->GetSchedType())
+		{
+			deleteIt = iter->first;
+		}
+		_myRepairJobs.erase(deleteIt);
 			
 		iter++;
 	}
@@ -449,12 +446,20 @@ Aircraft* Aircraft::New()
 {
 	Aircraft* newAircraft = new Aircraft(*this);
 	//cout << "IN NEW AIRCRAFT " << newAircraft->GetAircraftType() << " HAS THIS MANY JOBS: " << newAircraft->GetMyRJMapSize() << endl;
-	//map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
-	//while (it != newAircraft->GetMyRJMapEnd())
-	//{
-	//	cout << "JOB IS " << it->first << endl;
-	//	it++;
-	//}
+	map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
+
+	cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
+	while (it != newAircraft->GetMyRJMapEnd())
+	{
+		RepairJob* currJob = new RepairJob();
+		currJob->CopyRepairJob(*it->second);
+		this->AddMyRepairJob(currJob->GetName(), currJob);
+
+		_myRepairJobs.insert(pair<string, RepairJob*>(it->second->GetName(), it->second));
+
+		cout << "..................ADDED " << it->first << endl;
+		it++;
+	}
 
 	return newAircraft; // add appropriate parameters
 	//return new Aircraft();
