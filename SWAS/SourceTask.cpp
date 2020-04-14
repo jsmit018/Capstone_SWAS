@@ -271,19 +271,19 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		map<string, RepairJob*>::const_iterator iter = newAircraft->GetMyUnplannedMapBegin();
 		while (iter != newAircraft->GetMyUnplannedMapEnd())
 		{
-
-			if ((iter->second->WillSchedule() == false))
+			if (true){
+			/*if ((iter->second->WillSchedule() == false))
 			{
 				iter++;
 
 				continue;
-			}
+			}*/
 
 			////TESTING
 			//////////////////////////////////
 			/*Roll the dice*/
-			else if (iter->second->WillSchedule() == true)
-			{
+			/*else if (iter->second->WillSchedule() == true)
+			{*/
 				//cout << "************* " << newAircraft->GetAircraftType() << " WILL SCHEDULE " << iter->first << endl;
 				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
@@ -294,9 +294,6 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
 				 
 				cout << "..................ADDED UNPLANNED " << iter->second->GetName() << endl;
-			
-
-
 
 			}
 
@@ -416,27 +413,6 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 			else
 				it++;
 			//it++;
-		}
-
-		while (it != newAircraft->GetMyRJMapEnd())
-		{
-			if (it->second->GetSchedType() == "Calendar")
-			{
-				RepairJob* currJob = new RepairJob();
-				currJob->CopyRepairJob(*it->second);
-				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
-
-				cout << "..................ADDED CAL " << it->second->GetName() << endl;
-				it++;
-			}
-
-			else if (it->second->GetSchedType() != "Calendar")
-			{
-				newAircraft->DeleteJob(it->first);
-				it = newAircraft->GetMyRJMapBegin();
-			}
-			else
-				it++;
 		}
 
 

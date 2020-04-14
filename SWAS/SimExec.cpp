@@ -558,16 +558,18 @@ private:
 	//	//Will add an if statement on December 31 to increment the year by 1.
 	void AdvanceMonth() {
 		//	cout << "Advancing Month, and updating overflow bin" << endl;
-		if (_baseX == 12 - 1 && _baseY == 30) {
+		if (_baseX == December && _baseY == 30) {
 			_eventSet[_baseX][_baseY] = 0;
 			_year++;
 			_baseX = 0;
 			_baseY = 0;
+			_totalDaysPassed++;
 		}
 		else {
 			_eventSet[_baseX][_baseY] = 0;
 			_baseX++;
 			_baseY = 0;
+			_totalDaysPassed++;
 		}
 
 		int previousBase;
@@ -616,6 +618,7 @@ private:
 	void AdvanceDay() {
 		//cout << "Advancing Day" << endl;
 		_baseY++;
+		_totalDaysPassed++;
 	}
 };
 
@@ -624,6 +627,7 @@ SimExec::CondEventSet SimExec::_conditionalSet;
 SimulationTime SimExec::_simulationTime;
 InputReader SimExec::_inputReader;
 bool SimExec::_simulationFlag;
+int SimExec::_totalDaysPassed = 0;
 
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
@@ -793,6 +797,11 @@ void SimExec::FlipSimulationFlag()
 bool SimExec::GetSimulationFlag()
 {
 	return _simulationFlag;
+}
+
+Time SimExec::GetTotalSimulationTime()
+{
+	return (_totalDaysPassed * 24) + _simulationTime._timeOfDay;
 }
 
 void StopSimulation()

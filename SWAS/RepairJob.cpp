@@ -22,6 +22,7 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _calendarDate = mapRj._calendarDate;		    	// Calendar-schedule type repair jobs (date: mmddyyyy)
     _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
+	
 
     //cout << ".....IN RJ NEXT INDOOR REQ IS " << _indoorReq << endl;
 

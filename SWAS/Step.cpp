@@ -893,7 +893,7 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 
 	newCount = iter->second->GetResourceCount() - numNeeded;
 	resource->SetResourceCount(newCount);
-	iter->second->SetResourceCount(newCount);
+	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 
 
@@ -911,7 +911,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 	resource->SetResourceCount(newCount);
-	iter->second->SetResourceCount(newCount);
+	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
 

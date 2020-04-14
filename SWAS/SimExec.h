@@ -44,11 +44,13 @@ public:
 	static int RunSimulation(Time month, Time day, int year);
 	static void FlipSimulationFlag();
 	static bool GetSimulationFlag();
+	static Time GetTotalSimulationTime();
 
 private:
 	struct Event;
 	struct CondEvent;
 	static SimulationTime _simulationTime;
+	static int _totalDaysPassed;
 	class EventSet;
 	class CondEventSet;
 	static EventSet _eventSet;
