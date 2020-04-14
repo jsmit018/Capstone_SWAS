@@ -351,16 +351,15 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 
 	///TODO CHECK THIS LOGIC - want to get the NEXT highest priority
 	//iterate through the map
-
+	
 
 	string deleteIt;
 
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
-		deleteIt = "";
-		//if job is not my current job and is of the same type
-		//if next repairjob has higher priority (lower number) than current high priority
+			//if job is not my current job and is of the same type
+			//if next repairjob has higher priority (lower number) than current high priority
 		if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
 			&& iter->second->GetSchedType() == GetMyRepairJobObj(rjName)->GetSchedType()
 			&& iter->second->GetPriority() <= highPriority)
@@ -373,22 +372,21 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
 			nextJob = iter->second;
-		}
 
-		//i know this is wrong but cant think hard enough rn to figure out where to put it. cant delete the element before iter++ 
+			iter++;
+		}
 
 		else if (iter->second->GetSchedType() != GetMyRepairJobObj(rjName)->GetSchedType())
 		{
-			deleteIt = iter->first;
-			_myRepairJobs.erase(deleteIt);
+			iter = _myRepairJobs.erase(iter);
 		}
-		//_myRepairJobs.erase(deleteIt);
-
-		if (deleteIt == "")
-			iter++;
 		else
-			iter = _myRepairJobs.begin();
+		{
+			iter++;
+		}
+			
 	}
+
 	//cout << "------------------------------------ ID " 
 	//	<< this->GetAircraftID() << " " 
 	//	<< this->GetAircraftType() << "CURRENT JOB " 
@@ -408,7 +406,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 
 	//cout << this->GetAircraftID()<<"$$$$$$$$NEXT JOB'S PRIORITY AND TYPE ARE " << nextJob->GetPriority() 
 	//	<< " " << nextJob->GetSchedType() << endl;
-
+	
 	//cout << ".....IN NEXT JOB INDOOR REQ IS " << nextJob->GetIndoorReq() << endl;
 
 
@@ -447,24 +445,29 @@ int Aircraft::GetNextAircraftID()
 	return _nextID;
 }
 
+void Aircraft::ClearMyMap()
+{
+	_myRepairJobs.clear();
+}
+
 Aircraft* Aircraft::New()
 {
 	Aircraft* newAircraft = new Aircraft(*this);
 	//cout << "IN NEW AIRCRAFT " << newAircraft->GetAircraftType() << " HAS THIS MANY JOBS: " << newAircraft->GetMyRJMapSize() << endl;
-	map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
+	//map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
 
-	cout << "FOR AICRAFT " << this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
-	while (it != newAircraft->GetMyRJMapEnd())
-	{
-		RepairJob* currJob = new RepairJob();
-		currJob->CopyRepairJob(*it->second);
-		this->AddMyRepairJob(currJob->GetName(), currJob);
+	//cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
+	//while (it != newAircraft->GetMyRJMapEnd())
+	//{
+	//	RepairJob* currJob = new RepairJob();
+	//	currJob->CopyRepairJob(*it->second);
+	//	this->AddMyRepairJob(currJob->GetName(), currJob);
 
-		_myRepairJobs.insert(pair<string, RepairJob*>(it->second->GetName(), it->second));
+	//	_myRepairJobs.insert(pair<string, RepairJob*>(it->second->GetName(), it->second));
 
-		cout << "..................ADDED " << it->first << endl;
-		it++;
-	}
+	//	cout << "..................ADDED " << it->first << endl;
+	//	it++;
+	//}
 
 	return newAircraft; // add appropriate parameters
 	//return new Aircraft();
@@ -530,14 +533,14 @@ map<string, RepairJob*> Aircraft::GetUnplanJobMap()
 
 RepairJob* Aircraft::GetMyRepairJobObj(string name)
 {
-	//	cout << " ----- IN GET REPAIR JOB " << endl;
-	//	cout << "Job name is " << name << endl;
+//	cout << " ----- IN GET REPAIR JOB " << endl;
+//	cout << "Job name is " << name << endl;
 
 	map<string, RepairJob*>::iterator it = _myRepairJobs.find(name);
 	if (it == _myRepairJobs.end())
 		return nullptr;
-	//	cout << "FoUND JOB " << it->first << endl;
-	//	cout << "STEPS SIZE " << it->second->GetStepVecSize() << endl;
+//	cout << "FoUND JOB " << it->first << endl;
+//	cout << "STEPS SIZE " << it->second->GetStepVecSize() << endl;
 	return it->second;
 }
 
