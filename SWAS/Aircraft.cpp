@@ -342,7 +342,10 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	//int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
 	//int myPriority = this->GetRepairJobObj(rjName)->GetPriority();
 	//this->getrepairjobobj(rjname)->getstep(1)->getrjpriority()
+	//cout << "..................... priority " << GetMyRepairJobObj(rjName)->GetPriority() << endl;
+
 	int myPriority = this->GetMyRepairJobObj(rjName)->GetStep(1)->GetRJPriority();
+	//cout << "..................... priority " << myPriority << endl;
 	//cout << this->GetAircraftID() << " " << this->GetAircraftType() <<" ++++++++++++++++++AIRCRAFT " << this->GetMyRepairJobObj(rjName)->GetName() << " PRIORITY IS " 
 	//	<< this->GetMyRepairJobObj(rjName)->GetPriority() << " TYPE IS " << this->GetMyRepairJobObj(rjName)->GetSchedType() << endl;
 
@@ -353,6 +356,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
+
 	//	cout << "---HERE" << this->GetAircraftID() << endl;
 
 		//this is where apache is getting stuck
@@ -361,11 +365,14 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		//cout << iter->second->GetName() << endl;
 		//if next repairjob has lower priority (higher number)
 		//this should be the highest, so we shouldn't need this if
-		/*if (iter->second->GetPriority() > myPriority)
-		{*/
+		//if (iter->second->GetPriority() > myPriority)
+		//{
 			//cout << "---HERE2" << this->GetAircraftID() << endl;
+			//if job is not my current job and is of the same type
 			//if next repairjob has higher priority (lower number) than current high priority
-			if (iter->second->GetPriority() <= highPriority)
+			if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
+				&& iter->second->GetSchedType() == GetMyRepairJobObj(rjName)->GetSchedType()
+				&& iter->second->GetPriority() <= highPriority)
 			{
 			//	cout << this->GetAircraftID() <<" HIGH PRIORITY JOB IS " << iter->first << " IT HAS PRIORITY OF "
 			//		<< iter->second->GetPriority() << " AND IS OF TYPE " << iter->second->GetSchedType()
@@ -375,16 +382,23 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			//	cout << "xxxxx IN PRIORITY " << highPriority << endl;
 				//this one is the next job
 				nextJob = iter->second;
-
-				//iter->second->SetPriority(INT_MAX); // This would ensure that no job would ever get repeated
-				//or
-				//This could remove the logic of the function and we just get the beginning of the map for each call 
-				//_myRepairJobs.erase(iter);
 			}
-		/*}*/
-
+		//}
+			
 		iter++;
 	}
+	//cout << "------------------------------------ ID " 
+	//	<< this->GetAircraftID() << " " 
+	//	<< this->GetAircraftType() << "CURRENT JOB " 
+	//	<< this->GetMyRepairJobObj(rjName)->GetName() <<
+	//	" NEXT JOB " << nextJob->GetName() << endl;
+
+
+//	cout << "---------------------- NUMBER BEFORE " << _myRepairJobs.size() << endl;
+	//_myRepairJobs.erase(nextJob->GetName());
+	//_myRepairJobs.erase(GetMyRepairJobObj(rjName)->GetName());
+//	cout << "---------------------- NUMBER AFTER " << _myRepairJobs.size() << endl;
+
 
 //	cout << "-=-=-=-=-=-=-=-JOB " << nextJob->GetName() << endl;
 //	cout << "STEP ID " << nextJob->GetStep(1)->GetStepID();
@@ -602,6 +616,11 @@ int Aircraft::GetMyUnplannedMapSize()
 	//cout << endl;
 
 	return _myUnplannedJobsMap.size();
+}
+
+void Aircraft::DeleteJob(string repairJob)
+{
+	_myRepairJobs.erase(repairJob);
 }
 
 void Aircraft::SetAircraftIAT(string iatUnplanned)
