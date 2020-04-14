@@ -387,11 +387,11 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 			
 		iter++;
 	}
-	cout << "------------------------------------ ID " 
-		<< this->GetAircraftID() << " " 
-		<< this->GetAircraftType() << "CURRENT JOB " 
-		<< this->GetMyRepairJobObj(rjName)->GetName() <<
-		" NEXT JOB " << nextJob->GetName() << endl;
+	//cout << "------------------------------------ ID " 
+	//	<< this->GetAircraftID() << " " 
+	//	<< this->GetAircraftType() << "CURRENT JOB " 
+	//	<< this->GetMyRepairJobObj(rjName)->GetName() <<
+	//	" NEXT JOB " << nextJob->GetName() << endl;
 
 
 //	cout << "---------------------- NUMBER BEFORE " << _myRepairJobs.size() << endl;

@@ -606,15 +606,15 @@ bool isNextJob = false;
 
 void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 {
-	cout << " _________________________________________________________________________" << aircraft->GetAircraftID() << "JOB IS " << _myRJ << endl;
-	cout << endl;
-	cout << endl;
+//	cout << " _________________________________________________________________________" << aircraft->GetAircraftID() << "JOB IS " << _myRJ << endl;
+//	cout << endl;
+//	cout << endl;
 
 	_acquiredResources = acquiredResources;
 //	cout << "nnnnnnn aircraft name " << aircraft->GetAircraftType() << endl;
 //	cout << "nnnnnnn job name " << aircraft->GetMyRepairJobObj(_myRJ)->GetName() << endl;
-	cout << "/...............................STEP ID IS " << _stepID << endl;
-		cout << "CURR VEC SIZE IS " << aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize() << endl;
+//	cout << "/...............................STEP ID IS " << _stepID << endl;
+//		cout << "CURR VEC SIZE IS " << aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize() << endl;
 
 //////////
 
@@ -686,7 +686,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		//else if i have more jobs
 		else
 		{
-			cout << ".....CURR JOB IS" << _myRJ << "--NEXT JOB IS ";
+			//cout << ".....CURR JOB IS" << _myRJ << "--NEXT JOB IS ";
 
 			//get next job
 			//_myRJ = aircraft->GetNextRepairJob(_myRJ)->GetName();
@@ -743,9 +743,9 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			///does not work, possibly because getting map copy not actual map
 			//cout << "---------------------- NUMBER BEFORE DELETING " << _myRJ << " IS " << aircraft->GetMyRJMapSize() << endl;
 			string oldJob = _myRJ;
-			cout << "------------------ old job" << oldJob;
+			//cout << "------------------ old job" << oldJob;
 			SetMyRJName(aircraft->GetNextRepairJob(_myRJ)->GetName());
-			cout << "  new job " << _myRJ << endl;
+			//cout << "  new job " << _myRJ << endl;
  			aircraft->DeleteJob(oldJob);
 			//cout << "---------------------- NUMBER AFTER " << aircraft->GetMyRJMapSize() << endl;
 
