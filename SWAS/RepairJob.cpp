@@ -83,12 +83,12 @@ Step* RepairJob::GetFirstStep()
 
 bool RepairJob::WillSchedule()
 {
-    if (_unplannedProb->GetRV() >= 0.51)
-    {
+    //if (_unplannedProb->GetRV() >= 0.51)
+    //{
         return true;
-    }
-    else
-        return false;
+    //}
+    //else
+    //    return false;
 }
 
 Distribution* RepairJob::GetUnplannedProb()
