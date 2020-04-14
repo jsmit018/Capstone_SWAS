@@ -43,6 +43,7 @@ public:
 	void SetNumCalEvents(int numCalEvents);
 	void SetAircraftID(int id);
 	void SetBaySizeReq(string baySizeReq);
+	void DeleteJob(string repairJob);
 	//void SetRecurFlag(char flag);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
@@ -98,6 +99,7 @@ private:
 	string	_repairJobName;
 	//char _recurFlag = 'N';
 	vector<Distribution*> _recurIatVec;
+	//vector<string> _jobsLeft;
 	//	Repair job name
 	Distribution* _iatUnplanned;						//	Distribution for random aircraft interarrival times (iat) 
 	Distribution* _iatRecurring;
