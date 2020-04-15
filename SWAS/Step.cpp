@@ -390,7 +390,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				AcquireResourceEM(it->second, 1);
 				cout << "---------------BAY SIZE ACQUIRED IS " << it->first << endl;
 				Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
+				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
 			}
 			else {
 				cout << "we have to wait for a bay \n";
@@ -902,7 +902,7 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 	//numIt->second->SetResourceCount(newCount);
 
 
-	Scribe::UpdateResourceUtilization(resource->GetResourceName(), resource->GetResourceCount(), SimExec::GetSimulationTime()._timeOfDay);
+	Scribe::UpdateResourceUtilization(resource->GetResourceName(), resource->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
 
 }
 
