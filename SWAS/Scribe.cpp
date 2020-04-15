@@ -731,6 +731,7 @@ void Scribe::UpdateResourceUtilization(string resource, int usage, float current
 		{
 			runCurrent->resourceRunner->utilizationHours += (runCurrent->resourceRunner->initialCount - runCurrent->resourceRunner->availability) * (currentTime - runCurrent->resourceRunner->lastchange);
 			runCurrent->resourceRunner->availability -= usage;
+			runCurrent->resourceRunner->lastchange = SimExec::GetTotalSimulationTime();
 		}
 
 		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
