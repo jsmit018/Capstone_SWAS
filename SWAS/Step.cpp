@@ -323,6 +323,8 @@ void Step::OrderArrivalEM(Parts* parts)
 void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 {
 	cout << "am  i here \n";
+	if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July" && SimExec::GetSimulationTime()._day >= 1 && SimExec::GetSimulationTime()._timeOfDay >= 1)
+		cout << "Hehe sounds like a lotta hoopla" << endl;
 	cout << aircraft->GetNextAircraftID() << endl;
 
 	cout << endl << " after blah blah \n";
