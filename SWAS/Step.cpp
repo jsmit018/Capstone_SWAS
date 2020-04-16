@@ -313,7 +313,9 @@ void Step::OrderArrivalEM(Parts* parts)
 	map<string, Parts*>::const_iterator iter = _reqPartsMap.find(parts->GetPartsName());
 	newCount = iter->second->GetInitPartsCount();
 
-	parts->SetPartsCount(newCount);
+	//parts->SetPartsCount(newCount);
+	SetPartPoolCount(parts->GetPartsName(), newCount);
+
 	//Scribe::RecordRestock(parts->GetPartsName(), SimExec::GetSimulationTime()._timeOfDay);
 	SimExec::CheckConditionalEvents(0, parts);
 }
@@ -497,13 +499,13 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					newCount = it->second->GetPartsCount() - it->second->GetNumPartsNeeded();
 
 					it->second->SetPartsCount(newCount);*/
-					AcquireParts(iter2->second);
-					Scribe::RecordPartRequest(iter->first, iter->second->GetNumResNeeded(), true);
+					AcquireParts(iter2->second, iter2->second->GetNumPartsNeeded());
+					Scribe::RecordPartRequest(iter2->first, iter2->second->GetNumPartsNeeded(), true);
 				}
 
 				else if (it->second->AreEnoughParts() == false) {
 					cout << "There are not enough parts scheduling to place a new order" << endl;
-					Scribe::RecordPartRequest(iter->first, iter->second->GetNumResNeeded(), false);
+					Scribe::RecordPartRequest(iter2->first, iter2->second->GetNumPartsNeeded(), false);
 					SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, it->second), 0.0, "PlaceOrderEA");
 					// WAITING
 					cout << "Adding Aircraft to the Conditional Event list until " << it->first << " becomes available" << endl;
@@ -1483,9 +1485,19 @@ void Step::AddParts(Parts* parts, string partsName)
 	_reqPartsMap[partsName] = parts;
 }
 
-void Step::AcquireParts(Parts* parts)
+
+void Step::AcquireParts(Parts* parts, int numNeeded)
 {
 	int newCount;
+
+	map<string, Parts*>::const_iterator iter = _partsPool.find(parts->GetPartsName());
+	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
+	if (numNeeded <= iter->second->GetPartsCount())
+	{
+		newCount = iter->second->GetPartsCount() - numNeeded;
+		SetPartPoolCount(parts->GetPartsName(), newCount);
+	}
+
 
 	//new count of resource pool is = to current count - num needed from req resource map
 }
