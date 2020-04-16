@@ -19,6 +19,8 @@ public:
 
 	static void AddToResPool(Resource* resource, string resourceName);
 	static void AddToPartsPool(Parts* parts, string partsName);
+	static void SetResPoolCount(Resource*,int);
+	static void SetPartPoolCount(Parts*,int);
 	void SetName(string name);
 	void SetType(string type);
 	void SetInspecFailProb(string failureProb);

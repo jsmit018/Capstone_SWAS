@@ -456,9 +456,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//store in acquired resource vector
 				_acquiredResources.push_back(iter->first);
 				cout << "----------ACQUIRED  " << iter->first << endl;
-
-				Scribe::UpdateResourceRequests(iter->second->GetResourceName(), true);
-				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), iter->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+				
 			}
 			else {
 				cout << " we have to wait for a/an " << iter->first << endl;
@@ -584,7 +582,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 			else {
 				cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-				Scribe::RecordServiceWaitEnd(aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
+				Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 				SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 			}
 
@@ -651,7 +649,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		//for all resources in next step's required list
 		while (iter != _reqResourceMap.end())
 		{
-			for (int i = 0; i < _acquiredResources.size(); i++)
+			for (int i = 1; i < _acquiredResources.size(); i++)
 			{
 				//cout << " ____ IN CHECK FOR RESOURCES IN NEXT STEP" << endl;
 				//if resource name is found in acquired vector, keep it in the vector
@@ -901,14 +899,14 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 	if (numNeeded <= iter->second->GetResourceCount())
 	{
 		acquired = true;
+		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
+		newCount = iter->second->GetResourceCount() - numNeeded;
+		resource->SetResourceCount(newCount);
 	}
-	newCount = iter->second->GetResourceCount() - numNeeded;
-	resource->SetResourceCount(newCount);
+	
 	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 
-
-	Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 	Scribe::UpdateResourceRequests(resource->GetResourceName(), acquired);
 }
 
@@ -926,7 +924,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
 
-	int negativeCount = 0 - numRelease;  //Used to increment utilization for scribe
+	int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 
 	/////////******For Andrea is this where we want to put this? I feel it may be best!
@@ -1435,6 +1433,16 @@ void Step::AddToResPool(Resource* resource, string resourceName)
 void Step::AddToPartsPool(Parts* parts, string partsName)
 {
 	_partsPool[partsName] = parts;
+}
+  
+void Step::SetResPoolCount(Resource* resource, int newCount)
+{
+	resource->SetResourceCount(newCount);
+}
+
+void Step::SetPartPoolCount(Parts* part, int newCount)
+{
+	part->SetPartsCount(newCount);
 }
 
 map<string, Resource*>::iterator Step::FindResource(string resource)
