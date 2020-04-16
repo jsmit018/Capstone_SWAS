@@ -56,11 +56,13 @@ struct SimExec::CondEvent {
 		_priority = priority;
 		_cea = cea;
 		_nextCondEvent = 0;
+		_prevCondEvent = 0;
 	}
 
 	int _priority;
 	CondEventAction* _cea;
 	CondEvent* _nextCondEvent;
+	CondEvent* _prevCondEvent;
 };
 
 class SimExec::CondEventSet {
@@ -74,20 +76,29 @@ public:
 		if (_condSet == 0) {
 			_condSet = c;
 		}
-		else if (_condSet->_priority < c->_priority) {
+		else if (_condSet->_priority > c->_priority) {
 			c->_nextCondEvent = _condSet;
+			c->_prevCondEvent = 0;
+			_condSet->_prevCondEvent = c;
 			_condSet = c;
 		}
 		else {
 			CondEvent* curr = _condSet;
-			while ((curr != 0) ? (c->_priority <= curr->_priority) : false) {
-				curr = curr->_nextCondEvent;
+			//while ((curr->_nextCondEvent != 0) ? (c->_priority <= curr->_priority) : false) {
+			while (curr->_nextCondEvent != 0){
+				if (c->_priority < curr->_priority)
+					break;
+				else
+					curr = curr->_nextCondEvent;
 			}
-			if (curr == 0) {
-				curr = c;
+			if (curr->_nextCondEvent == 0) {
+				c->_prevCondEvent = curr;
+				curr->_nextCondEvent = c;
 			}
 			else {
 				c->_nextCondEvent = curr->_nextCondEvent;
+				c->_prevCondEvent = curr;
+				c->_nextCondEvent->_prevCondEvent = c;
 				curr->_nextCondEvent = c;
 			}
 		}
@@ -98,9 +109,22 @@ public:
 		while (curr != 0) {
 			if (curr->_cea->Condition(resource, parts)) {
 				curr->_cea->Execute();
+				//curr = curr->_nextCondEvent;
+				if (curr = _condSet) {
+					_condSet = _condSet->_nextCondEvent;
+					if (_condSet == NULL) {
+						_condSet = 0;
+						return 0;
+					}
+					else
+						_condSet->_prevCondEvent = 0;
+				}
+				else {
+					curr->_prevCondEvent->_nextCondEvent = curr->_nextCondEvent;
+				}
 				return true;
 			}
-			curr = curr->_nextCondEvent;
+				curr = curr->_nextCondEvent;
 		}
 		return false;
 	}
@@ -475,7 +499,7 @@ public:
 				}
 			}
 			else*/
-				_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
+			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
 			if (_eventSet[_baseX][_baseY] == 0)
 			{
 				if (_baseY == _endOfMonth[_baseX]) {
@@ -493,10 +517,16 @@ public:
 				}
 				else {
 					while (_eventSet[_baseX][_baseY] == 0) {
+						if (_numEvents == 1)
+							break;
 						if (_baseY == _endOfMonth[_baseX])
 							AdvanceMonth();
 						else
 							AdvanceDay();
+
+						/*if (_year == 2025 && ConvertMonth(GetSimulationTime()._month) == "July")
+							while (_eventSet[_overflow][0] != 0)
+								cout << _eventSet[_overflow][0]->_eventActionName << ", " << ConvertMonth(_eventSet[_overflow][0]->_timeMonth) << ", " << _eventSet[_overflow][0]->_year << endl;*/
 					}
 					_simulationTime._timeOfDay = next->_timeOfDay;
 					_simulationTime._month = next->_timeMonth;
@@ -764,7 +794,7 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 				FlipSimulationFlag();
 				return 3;
 			}
-			cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << " " << GetSimulationTime()._timeOfDay << endl;
+			cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << " " << GetSimulationTime()._timeOfDay << " " << GetSimulationTime()._year << endl;
 			ea->Execute();
 			delete ea;
 			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day

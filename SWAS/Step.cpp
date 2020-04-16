@@ -81,7 +81,7 @@ public:
 
 	bool Condition(Resource* resource, Parts* parts) {
 		if (resource == _resource) {
-			if (_resource->GetResourceCount() > _amountNeeded)
+			if (_resource->GetResourceCount() >= _amountNeeded)
 				return true;
 			else
 				return false;
@@ -397,7 +397,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				cout << "we have to wait for a bay \n";
 				// WAITING
 	//			cout << "Adding the Aircraft to the Conditional Event List until a Bay is available" << endl;
-				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources));
 				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 				Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 				return;
@@ -444,30 +444,32 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					break;
 			}
 
-			//map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
 
 			//otherwise if not acquired yet
 			//if resource count is greater than number needed
-			if (iter->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+			if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
 			{
 				//decrement appropriately
 				/*int newCount;
 				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
 				it->second->SetResourceCount(newCount);*/
-				AcquireResourceEM(iter->second, iter->second->GetNumResNeeded());
+				AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
 				//store in acquired resource vector
-				_acquiredResources.push_back(iter->first);
-				cout << "----------ACQUIRED  " << iter->first << endl;
+				_acquiredResources.push_back(it->first);
+				cout << "----------ACQUIRED  " << it->first << endl;
 				
 			}
 			else {
 				cout << " we have to wait for a/an " << iter->first << endl;
+				if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July")
+					cout << "Hehe sounds like a lotta hoopla" << endl;
 				//INSERT WAITING LOGIC
 	//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
-				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, iter->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
+				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 				iter++;
-				Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
-				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), iter->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+				Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
+				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 				return;
 			}
 			iter++;
@@ -664,12 +666,17 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//if the resource doesn't match, release it
 				else
 				{
-					cout << "Releasing " << _acquiredResources[i] << endl;
-					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
-					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
-					//empty appropriate acquired vector index
-					cout << "-------size of acquired list " << _acquiredResources.size() << endl;
-					_acquiredResources.erase(_acquiredResources.begin() + i);
+					if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+						continue;
+					}
+					else {
+						cout << "Releasing " << _acquiredResources[i] << endl;
+						//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
+						ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+						//empty appropriate acquired vector index
+						cout << "-------size of acquired list " << _acquiredResources.size() << endl;
+						_acquiredResources.erase(_acquiredResources.begin() + i);
+					}
 				}
 			}
 			iter++;
@@ -696,6 +703,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//empty appropriate acquired vector index
 				for (int i = 0; i < _acquiredResources.size(); i++)
 				{
+					if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+						map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+						ReleaseResourceEM(resIt->second, 1);
+					}
 					_acquiredResources.erase(_acquiredResources.begin() + i);
 				}
 				iter++;
@@ -758,6 +769,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
 
 					//empty appropriate acquired vector index
+					for (int i = 0; i < _acquiredResources.size(); ++i) {
+						if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+							map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+							ReleaseResourceEM(resIt->second, 1);
+						}
+					}
 					_acquiredResources.clear();
 
 					iter++;
@@ -905,7 +922,9 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		SetResPoolCount(resource->GetResourceName(),newCount);
+		resource->SetResourceCount(newCount);
+		//SetResPoolCount(resource->GetResourceName(),newCount);
+		SetResPoolCount(iter->second->GetResourceName(), newCount);
 	}
 	
 	//iter->second->SetResourceCount(newCount);
@@ -924,7 +943,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 	resource->SetResourceCount(newCount);
-	//iter->second->SetResourceCount(newCount);
+	iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
 
@@ -932,7 +951,8 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 
 	/////////******For Andrea is this where we want to put this? I feel it may be best!
-	SimExec::CheckConditionalEvents(resource, 0);
+	//SimExec::CheckConditionalEvents(resource, 0);
+	SimExec::CheckConditionalEvents(iter->second, 0);
 
 }
 
