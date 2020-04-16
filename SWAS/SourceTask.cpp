@@ -365,7 +365,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			cout << "..................ADDED UNPLANNED RANDOMLY " << iter->second->GetName() << endl;
 		}
 
-
+		Scribe::TallyUnplanned(_aircraft->GetMyRJMapSize());
 		//repairJob->GetFirstStep()->ScheduleFirstStep(repairJob->GetFirstStep(), newAircraft);
 		//Depart(_aircraft->New());
 		_numberGenerated++;
