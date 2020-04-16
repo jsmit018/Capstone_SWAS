@@ -7,6 +7,7 @@
 #include "Resource.h"
 #include "Parts.h"
 #include "PriorityQueue.h"
+#include "Scribe.h"
 //#include "Aircraft.h"
 
 class Step : public Task
@@ -18,6 +19,8 @@ public:
 
 	static void AddToResPool(Resource* resource, string resourceName);
 	static void AddToPartsPool(Parts* parts, string partsName);
+	static void SetResPoolCount(string,int);
+	static void SetPartPoolCount(string,int);
 	void SetName(string name);
 	void SetType(string type);
 	void SetInspecFailProb(string failureProb);
@@ -26,6 +29,7 @@ public:
 	void SetReqParts(string reqParts);
 	void SetReturnStep(/*int stepId*/ int returnStep);
 	void SetStepIndoorReq(char indoorReq);
+	void SetStepBayReq(char baySizeReq);
 	void SetStepID(int stepID);
 	void SetRJPriority(int RJpriority);
 	void SetMyRJName(string myRJ);
@@ -35,7 +39,7 @@ public:
 	void AddParts(Parts* parts, string partsName);
 	void PrintParts();
 	void PrintResources();
-	void PrintPools();
+	static void PrintPools();
 	//void PrintEvent();
 	void InitialArrivalBayCheck();
 	map<string, Resource*>::iterator FindResource(string resource);
@@ -49,6 +53,7 @@ public:
 	int GetNumberInQueue();
 	int GetRJPriority();
 	int GetRJIndoorReq();
+	int GetStepID();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
@@ -72,7 +77,8 @@ private:
 	Distribution* _serviceTime;
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
 	string _name;
-	char _indoorReq; /// this is not populated right now
+	char _indoorReq;
+	string _baySizeReq;
 	int _RJpriority;
 	int _stepID;
 	int _numInQueue;
@@ -88,6 +94,7 @@ private:
 	map<string, Parts*> _reqPartsMap;		//map of required parts
 	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
+	//Scribe* outputRecorder = new Scribe();
 
 	bool haveAllResources();	//check for whether acquired resources can be released
 	bool ResourceInReqResource(string resource)
@@ -118,8 +125,8 @@ private:
 	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void AcquireResourceEM(Resource* resource);
-	void ReleaseResourceEM(Resource* resource);
+	void AcquireResourceEM(Resource* resource, int numNeeded);
+	void ReleaseResourceEM(Resource* resource, int numRelease);
 	void FailResourceEM(Resource* resource);
 	void RestoreResourceEM(Resource* resource);
 

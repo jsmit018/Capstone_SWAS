@@ -59,9 +59,11 @@ public:
 	string GetName();
 	int GetNumberGenerated();
 	void Execute(Aircraft* aircraft);
+	void AddToPriorityMap(int priority, string job);
 private:
 	//vector<Distribution*> _interarrivalTimeRecurring;
 	map<string, Distribution*> _recurringIATs;
+	map<int, string> _jobPriority;
 	Distribution* _interarrivalTimeRND;
 	Aircraft* _aircraft;
 	string _aircraftType;
@@ -75,4 +77,5 @@ private:
 	void ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calobj);
 	//void ScheduleNextRecurringAircraftEM();
 	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob);
+	//Scribe* outputRecorder = new Scribe();
 };

@@ -25,9 +25,9 @@ int* CalConverter::GetCalArray() {
 	_calArray = new int[_monthMap.size()];
 	while (iter != _monthMap.end()) {
 		_calArray[iter->first - 1] = iter->second;
-		cout << "Month: " << iter->first << " Days: " << iter->second << endl;
+		//	cout << "Month: " << iter->first << " Days: " << iter->second << endl;
 		iter++;
-		
+
 	}
 
 	return _calArray;
@@ -43,7 +43,7 @@ TimeConverter::TimeConverter()
 }
 
 void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue,
-	int baseX, int baseY, int* endOfMonth, int recurring, Time simTime) {
+	int baseX, int baseY, int* endOfMonth, Time sTime, int recurring, Time simTime) {
 	div_t divresult; // Declaring div_t object to obtain quotient and remainder
 	divresult = div(ceil(distributionValue), 24); // Divide the distribution by 24 gives an amount of days + a time)
 	//If there is recurrent scheduling
@@ -51,17 +51,19 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 		//int remainder = 0;
 		if (baseX + ceil(distributionValue) > 11) {
 			baseX = ((baseX + (int)distributionValue) % 12);
-			if (baseY > endOfMonth[baseX])
-				baseY = 0;
+			if (baseY > endOfMonth[baseX]) {
+				int rem = baseY % endOfMonth[baseX];
+				baseY = 0 + rem;
+			}
 			Month = baseX;
 			Day = baseY;
-			timeOfDay = simTime;
+			timeOfDay = sTime;
 		}
 		else {
 			baseX += (int)distributionValue;
 			Month = baseX;
 			Day = baseY;
-			timeOfDay = simTime;
+			timeOfDay = sTime;
 		}
 	}
 	else {
@@ -81,7 +83,24 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 				}
 				Month = baseX;
 				Day = remainder;
-				timeOfDay = divresult.rem;
+				////div_t tRemainder;
+				//tRemainder = div(divresult.rem, 24);
+				if (sTime + divresult.rem > 24) {
+					int dividend;
+					do {
+						if (Day + 1 > endOfMonth[baseX])
+							Day = 0;
+						else
+							Day++;
+						dividend = ((int)sTime + divresult.rem) % 24;
+					} while (dividend >= 24);
+					//Day += 1;
+					timeOfDay = 0 + dividend;
+				}
+				else
+				{
+					timeOfDay = sTime + (int)divresult.rem;
+				}
 			}
 			else
 			{
@@ -90,20 +109,68 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 					year++;
 					Month = baseX;
 					Day = remainder;
-					timeOfDay = divresult.rem;
+					if (sTime + divresult.rem > 24) {
+						int dividend;
+						do {
+							if (Day + 1 > endOfMonth[baseX])
+								Day = 0;
+							else
+								Day++;
+							dividend = ((int)sTime + divresult.rem) % 24;
+						} while (dividend >= 24);
+						//Day += 1;
+						timeOfDay = 0 + dividend;
+					}
+					else
+					{
+						timeOfDay = sTime + (int)divresult.rem;
+					}
+					//timeOfDay = divresult.rem;
 				}
 				else { // Otherwise we just advance the month
 					baseX++;
 					Month = baseX;
 					Day = remainder;
-					timeOfDay = (int)divresult.rem;
+					if (sTime + divresult.rem > 24) {
+						int dividend;
+						do {
+							if (Day + 1 > endOfMonth[baseX])
+								Day = 0;
+							else
+								Day++;
+							dividend = ((int)sTime + divresult.rem) % 24;
+						} while (dividend >= 24);
+						//Day += 1;
+						timeOfDay = 0 + dividend;
+					}
+					else
+					{
+						timeOfDay = sTime + (int)divresult.rem;
+					}
+					//timeOfDay = (int)divresult.rem;
 				}
 			}
 		}
 		else { // If the scheduling time doesn't advance us into the next month
 			Month = baseX;
 			Day = (baseY + divresult.quot);
-			timeOfDay = divresult.rem;
+			if (sTime + divresult.rem >= 24) {
+				int dividend;
+				do {
+					if (Day + 1 > endOfMonth[baseX])
+						Day = 0;
+					else
+						Day++;
+					dividend = ((int)sTime + divresult.rem) % 24;
+				} while (dividend >= 24);
+				//Day += 1;
+				timeOfDay = 0 + dividend;
+			}
+			else
+			{
+				timeOfDay = sTime + (int)divresult.rem;
+			}
+			//timeOfDay = divresult.rem;
 		}
 	}
 }

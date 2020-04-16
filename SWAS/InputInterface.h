@@ -20,6 +20,7 @@ public:
 	void ReadInputData();
 	void PrintEverything();
 	void AddSelectedAircraft(string aircraftName);
+	void SetNumRuns(int numRuns);
 	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();
 	map<string, Aircraft*>::iterator GetMasterMapBegin();
@@ -29,7 +30,9 @@ public:
 	static map<string, Aircraft*> GetMasterMap();
 	static map<string, Resource*> GetMasterResourceMap();
 	static int GetMapSize();
+	static int GetNumRuns();
 private:
+	static int _numRuns;
 	static map<string, Aircraft*> _masterMap;
 	static map<string, Resource*> _masterResourceMap;
 	CalConverter* calConvert;
@@ -37,6 +40,7 @@ private:
 	GUISelectedAircraft* _GUIListHead;
 	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere
+	//Scribe* outputRecorder = new Scribe();
 
 	//Trial CalObjs
 

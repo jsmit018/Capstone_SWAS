@@ -30,7 +30,7 @@ public:
 		if (_head == 0) {	//empty list
 			_head = _tail = node;
 		}
-		else if (_head->_priority < priority){
+		else if (_head->_priority < priority) {
 			//_tail = _tail->next = node;
 			node->next = _head;
 			_head = node;
@@ -63,7 +63,7 @@ public:
 			//			delete n;
 //			cout << SimObj::GetSimulationTime() << ", queue " << _name << ", GetEntity, Entity , queue size, " << _size << endl;
 			_size--;
-//			cout << SimObj::GetSimulationTime() << ", queue " << _name << ", GetEntity, Entity , queue size, " << _size << endl;
+			//			cout << SimObj::GetSimulationTime() << ", queue " << _name << ", GetEntity, Entity , queue size, " << _size << endl;
 			return t;
 		}
 	}

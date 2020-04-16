@@ -3,6 +3,7 @@
 Distribution::Distribution() {}
 
 string Distribution::_seedType = "null";
+int Distribution::_systemSeed = 0;
 
 void Distribution::PrintDistribution()
 {
@@ -10,15 +11,41 @@ void Distribution::PrintDistribution()
 
 std::default_random_engine Distribution::generator;
 
-//void Distribution::SetSystemSeed(int seed) {
-//	generator.seed(seed);
-
+void Distribution::SetSystemSeed(int seed) {
+	int sysSeed = IsSystemSeedTypeSameorDifferent(seed);
+	//^Functinon above updated system seed
 //TO DO: If statement for seed based on type
-
-//}
+	if (sysSeed == 0) {
+		cout << "Seed was the same" << endl;
+	}
+	else if (sysSeed == 1)
+		cout << "System Seed was different, system seed updated" << endl;
+}
 
 void Distribution::SetSystemSeedType(string seedType) {
 	_seedType = seedType;
+}
+
+//void Distribution::SetSystemSeed(int seed)
+//{
+//	_systemSeed = seed;
+//}
+
+int Distribution::IsSystemSeedTypeSameorDifferent(int seed)
+{
+	if (_systemSeed == seed) {
+		return 0;
+	}
+	else {
+		_systemSeed = seed;
+		generator.seed(_systemSeed);
+		return 1;
+	}
+}
+
+int Distribution::GetSystemSeed()
+{
+	return _systemSeed;
 }
 
 Exponential::Exponential(double mean) : Distribution()
@@ -176,10 +203,10 @@ double Triangular::GetRV()
 	return x;
 }
 
-Distribution * Triangular::CopyThis()
+Distribution* Triangular::CopyThis()
 {
-	Triangular* newptr = new Triangular(_min,_expected, _max);
-	return newptr; 
+	Triangular* newptr = new Triangular(_min, _expected, _max);
+	return newptr;
 }
 
 //void Triangular::Copy(Distribution& dis)
@@ -250,7 +277,7 @@ Poisson::Poisson(double mean)
 
 std::poisson_distribution<int>* Poisson::GetDistr()
 {
-	return _distr; 
+	return _distr;
 }
 
 //double Poisson::GetMean()
