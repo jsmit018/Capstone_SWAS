@@ -945,7 +945,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 	//resource->SetResourceCount(newCount);
-	SetPartPoolCount(iter->second->GetResourceName(), newCount);
+	SetResPoolCount(iter->second->GetResourceName(), newCount);
 	iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);

@@ -803,7 +803,7 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 			return 0;
 		}
 	}
-	else if (_simulationFlag == false) {
+	else if (_simulationFlag == false || !_eventSet.HasEvent()) {
 		if (_simulationTime._timeOfDay >= 10) {
 			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
 				<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
@@ -812,6 +812,7 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
 				<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
 		}
+		_simulationFlag = false;
 		return 3;
 	}
 }
