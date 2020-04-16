@@ -106,22 +106,38 @@ public:
 
 	bool CheckConditionalEvents(Resource* resource, Parts* parts) {
 		CondEvent* curr = _condSet;
+		//curr (and _condSet have data
 		while (curr != 0) {
 			if (curr->_cea->Condition(resource, parts)) {
 				curr->_cea->Execute();
 				//curr = curr->_nextCondEvent;
-				if (curr = _condSet) {
+				//is head node to be deleted
+				if (curr == _condSet) {
 					_condSet = _condSet->_nextCondEvent;
 					if (_condSet == NULL) {
 						_condSet = 0;
-						return 0;
+						delete curr;
 					}
 					else
+					{
 						_condSet->_prevCondEvent = 0;
+						delete curr;
+					}
+						
 				}
-				else {
+				//curr is not the first node
+				if (curr->_prevCondEvent != NULL)
+				{
 					curr->_prevCondEvent->_nextCondEvent = curr->_nextCondEvent;
+					
 				}
+				//curr is not the last node
+				if (curr->_nextCondEvent != NULL)
+				{
+					curr->_nextCondEvent->_prevCondEvent = curr->_prevCondEvent;
+				}
+
+				delete curr;
 				return true;
 			}
 				curr = curr->_nextCondEvent;
