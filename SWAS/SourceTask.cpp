@@ -362,6 +362,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*it->second);
 			newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+			
 
 			cout << "..................ADDED UNPLANNED RANDOMLY " << iter->second->GetName() << endl;
 		}
