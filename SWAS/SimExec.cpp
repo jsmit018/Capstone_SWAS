@@ -85,7 +85,7 @@ public:
 		else {
 			CondEvent* curr = _condSet;
 			//while ((curr->_nextCondEvent != 0) ? (c->_priority <= curr->_priority) : false) {
-			while (curr->_nextCondEvent != 0){
+			while (curr->_nextCondEvent != 0) {
 				if (c->_priority < curr->_priority)
 					break;
 				else
@@ -107,26 +107,50 @@ public:
 	bool CheckConditionalEvents(Resource* resource, Parts* parts) {
 		CondEvent* curr = _condSet;
 		while (curr != 0) {
+			//Check to see if the current nodes conditions are met
 			if (curr->_cea->Condition(resource, parts)) {
+				//If met Execute the associated Event Method
 				curr->_cea->Execute();
 				//curr = curr->_nextCondEvent;
-				if (curr = _condSet) {
+				//Event has Executed, see if the current node is the head node
+				if (curr == _condSet) {
+					//If it is advance the head node to the next node
 					_condSet = _condSet->_nextCondEvent;
+					//If there is no next node and head node is now null
 					if (_condSet == NULL) {
+						//reinitialize it to 0 and delete the placeholder
 						_condSet = 0;
-						return 0;
+						delete curr;
 					}
-					else
+					else {
+						//Set the previous node to 0 as there is no other node infront of head and delete the placeholder
 						_condSet->_prevCondEvent = 0;
+						delete curr;
+					}
 				}
 				else {
+					//Curr is not head node so connect the last node to the next node and then delete placeholder
 					curr->_prevCondEvent->_nextCondEvent = curr->_nextCondEvent;
+					if (curr->_nextCondEvent == NULL) {
+						curr->_prevCondEvent->_nextCondEvent = 0;
+						continue;
+					}
+					else
+						curr->_nextCondEvent->_prevCondEvent = curr->_prevCondEvent;
+					delete curr;
 				}
+				//Return true that the event executed
 				return true;
 			}
-				curr = curr->_nextCondEvent;
+			//If curr's condition isn't met check the next node
+			curr = curr->_nextCondEvent;
 		}
+		//No Conditions events were met for resources.
 		return false;
+	}
+
+	CondEvent* GetConditionalSet() {
+		return _condSet;
 	}
 
 private:
@@ -833,6 +857,17 @@ bool SimExec::GetSimulationFlag()
 Time SimExec::GetTotalSimulationTime()
 {
 	return (_totalDaysPassed * 24) + _simulationTime._timeOfDay;
+}
+
+int SimExec::PrintNumInCondES()
+{
+	int condEventTracker = 0;
+	CondEvent* start = _conditionalSet.GetConditionalSet();
+	while (start != 0) {
+		start = start->_nextCondEvent;
+		condEventTracker++;
+	}
+	return condEventTracker;
 }
 
 void StopSimulation()

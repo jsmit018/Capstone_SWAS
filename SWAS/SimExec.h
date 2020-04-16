@@ -45,6 +45,7 @@ public:
 	static void FlipSimulationFlag();
 	static bool GetSimulationFlag();
 	static Time GetTotalSimulationTime();
+	static int PrintNumInCondES();
 
 private:
 	struct Event;
