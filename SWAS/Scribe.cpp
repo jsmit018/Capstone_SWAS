@@ -1263,6 +1263,7 @@ void Scribe::SetRuns(int runs)
 	}
 }
 
+//Increment number of unplanned Repair Jobs by a given integer value
 void Scribe::TallyUnplanned(int unplannedSet)
 {
 	unplanned += unplannedSet;
