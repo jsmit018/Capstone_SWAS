@@ -923,13 +923,13 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 
 	newCount = iter->second->GetResourceCount() + numRelease;
 
-	resource->SetResourceCount(newCount);
+	SetPartPoolCount(iter->second->GetResourceName(), newCount);
 	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
 
 	int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-	SetPartPoolCount(iter->second->GetResourceName(), newCount);
+	
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 
 	/////////******For Andrea is this where we want to put this? I feel it may be best!
