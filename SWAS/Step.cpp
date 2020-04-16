@@ -727,7 +727,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 				while (iter != _reqResourceMap.end())
 				{
-					if (iter->first != "S Bay" || iter->first != "M Bay" || iter->first != "L Bay")
+					if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
 					{
 						cout << "Releasing " << iter->first << endl;
 						//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
@@ -736,8 +736,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//empty appropriate acquired vector index
 					for (int i = 0; i < _acquiredResources.size(); i++)
 					{
-						if (_acquiredResources[i] != "S Bay" || _acquiredResources[i] != "M Bay" || _acquiredResources[i] != "L Bay")
+						if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
 							_acquiredResources.erase(_acquiredResources.begin() + i);
+							i--;
+						}
 					}
 					iter++;
 				}
@@ -1037,14 +1039,19 @@ map<string, Resource*>::iterator Step::GetResourceMapEnd()
 
 void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 {
-	SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
+	// Testing //
+	vector<string> test;
+	SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
+	//SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
 void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj)
 {
+	vector<string> test;
 	for (int i = 0; i < 1; ++i) {
-		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
+		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, test), "StartServiceEA");
+		//SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
 	}
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
@@ -1414,7 +1421,9 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 //	}
 ////
 //	cout << " ************IN SCHEDULE FIRSt STEP " << endl;
-	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
+	vector<string> test;
+	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
+	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
