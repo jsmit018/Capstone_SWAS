@@ -901,7 +901,7 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		resource->SetResourceCount(newCount);
+		SetResPoolCount(resource,newCount);
 	}
 	
 	//iter->second->SetResourceCount(newCount);
