@@ -448,7 +448,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 			//otherwise if not acquired yet
 			//if resource count is greater than number needed
-			if (iter->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+			if (_resourcePool.find(iter->first)->second->GetResourceCount() >= iter->second->GetNumResNeeded())
 			{
 				//decrement appropriately
 				/*int newCount;
@@ -465,9 +465,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//INSERT WAITING LOGIC
 	//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, iter->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
-				iter++;
 				Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
 				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), iter->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+				iter++;
 				return;
 			}
 			iter++;
@@ -929,6 +929,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	IsResourceReleased(iter, newCount);
 
 	int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
+	SetPartPoolCount(iter->second->GetResourceName(), newCount);
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 
 	/////////******For Andrea is this where we want to put this? I feel it may be best!
