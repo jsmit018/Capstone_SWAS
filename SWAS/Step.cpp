@@ -901,7 +901,7 @@ void Step::AcquireResourceEM(Resource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		SetResPoolCount(resource,newCount);
+		SetResPoolCount(resource->GetResourceName(),newCount);
 	}
 	
 	//iter->second->SetResourceCount(newCount);
@@ -1435,14 +1435,14 @@ void Step::AddToPartsPool(Parts* parts, string partsName)
 	_partsPool[partsName] = parts;
 }
   
-void Step::SetResPoolCount(Resource* resource, int newCount)
+void Step::SetResPoolCount(string resource, int newCount)
 {
-	resource->SetResourceCount(newCount);
+	_resourcePool.find(resource)->second->SetResourceCount(newCount);
 }
 
-void Step::SetPartPoolCount(Parts* part, int newCount)
+void Step::SetPartPoolCount(string part, int newCount)
 {
-	part->SetPartsCount(newCount);
+	_partsPool.find(part)->second->SetPartsCount(newCount);
 }
 
 map<string, Resource*>::iterator Step::FindResource(string resource)
