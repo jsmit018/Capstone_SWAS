@@ -130,5 +130,5 @@ private:
 	void FailResourceEM(Resource* resource);
 	void RestoreResourceEM(Resource* resource);
 
-	void AcquireParts(Parts* parts);
+	void AcquireParts(Parts* parts, int numNeeded);
 };

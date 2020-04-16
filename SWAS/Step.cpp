@@ -1483,9 +1483,26 @@ void Step::AddParts(Parts* parts, string partsName)
 	_reqPartsMap[partsName] = parts;
 }
 
-void Step::AcquireParts(Parts* parts)
+void Step::AcquireParts(Parts* parts, int numNeeded)
 {
 	int newCount;
+	bool acquired = false;
+
+	map<string, Parts*>::const_iterator iter = _partsPool.find(parts->GetPartsName());
+	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
+	if (numNeeded <= iter->second->GetPartsCount())
+	{
+		acquired = true;
+		Scribe::UpdateResourceUtilization(parts->GetPartsName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
+		Scribe::RecordPartRequest(parts->GetPartsName(), parts->GetNumPartsNeeded(), acquired);
+		newCount = iter->second->GetPartsCount() - numNeeded;
+		SetResPoolCount(parts->GetPartsName(), newCount);
+	}
+
+	//iter->second->SetResourceCount(newCount);
+	//numIt->second->SetResourceCount(newCount);
+
+	//Scribe::UpdateResourceRequests(resource->GetResourceName(), acquired);
 
 	//new count of resource pool is = to current count - num needed from req resource map
 }
