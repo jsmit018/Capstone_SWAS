@@ -494,6 +494,7 @@ void Aircraft::SetAircraftType(string aircraftType)
 
 string Aircraft::GetAircraftType()
 {
+	cout << " in get aircraft type " << _aircraftType << endl;
 	return _aircraftType;
 }
 
@@ -636,6 +637,13 @@ void Aircraft::DeleteJob(string repairJob)
 {
 	_myRepairJobs.erase(repairJob);
 }
+
+//void Aircraft::DeleteAircraft(Aircraft*& aircraft)
+//{
+//	delete aircraft;
+//	aircraft = NULL;
+//}
+
 
 void Aircraft::SetAircraftIAT(string iatUnplanned)
 {

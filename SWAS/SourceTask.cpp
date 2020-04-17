@@ -261,6 +261,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		cout << "Departing Unplanned Arrival" << endl;
 		Aircraft* newAircraft = _aircraft->New();
 		newAircraft->ClearMyMap();
+		//cout << "------------------CLEARED UNPLANNED MAP SIZE IS " << newAircraft->GetMyRJMapSize() << endl;
 
 		//newAircraft->GetMyRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep()->ScheduleFirstStep(newAircraft->GetRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep(), newAircraft);
 		//_aircraft->GetMyRepairJobObj(_aircraft->GetAircraftType())->GetFirstStep(1)->ScheduleFirstStep(_aircraft->GetAircraftType()->GetFirstStep(1)->ScheduleFirstStep(), _aircraft->New());
@@ -294,6 +295,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 				RepairJob* currJob = new RepairJob();
 				currJob->CopyRepairJob(*iter->second);
 				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+				Scribe::TallyUnplanned(1);
 				 
 				cout << "..................ADDED UNPLANNED " << iter->second->GetName() << endl;
 			}
@@ -324,12 +326,9 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		//job is the job with highest priority
 		job = _jobPriority.begin()->second;
 
-		//schedule that job
-	
-		/*If yes, schedule it*/
-			//cout << "*********FIRST STEP IS " << testIt->second->GetFirstStep()->GetName();
+		//schedule that high priority job
 		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->
-			ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
+		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
 		jobCounter++; 
 
 		
@@ -365,7 +364,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			cout << "..................ADDED UNPLANNED RANDOMLY " << iter->second->GetName() << endl;
 		}
 
-
+		
 		//repairJob->GetFirstStep()->ScheduleFirstStep(repairJob->GetFirstStep(), newAircraft);
 		//Depart(_aircraft->New());
 		_numberGenerated++;

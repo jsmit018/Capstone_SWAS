@@ -86,8 +86,16 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 				////div_t tRemainder;
 				//tRemainder = div(divresult.rem, 24);
 				if (sTime + divresult.rem > 24) {
-					Day += 1;
-					timeOfDay = 0 + (((int)sTime + divresult.rem) % 24);
+					int dividend;
+					do {
+						if (Day + 1 > endOfMonth[baseX])
+							Day = 0;
+						else
+							Day++;
+						dividend = ((int)sTime + divresult.rem) % 24;
+					} while (dividend >= 24);
+					//Day += 1;
+					timeOfDay = 0 + dividend;
 				}
 				else
 				{
@@ -102,8 +110,16 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 					Month = baseX;
 					Day = remainder;
 					if (sTime + divresult.rem > 24) {
-						Day += 1;
-						timeOfDay = 0 + (((int)sTime + divresult.rem) % 24);
+						int dividend;
+						do {
+							if (Day + 1 > endOfMonth[baseX])
+								Day = 0;
+							else
+								Day++;
+							dividend = ((int)sTime + divresult.rem) % 24;
+						} while (dividend >= 24);
+						//Day += 1;
+						timeOfDay = 0 + dividend;
 					}
 					else
 					{
@@ -116,8 +132,16 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 					Month = baseX;
 					Day = remainder;
 					if (sTime + divresult.rem > 24) {
-						Day += 1;
-						timeOfDay = 0 + (((int)sTime + divresult.rem) % 24);
+						int dividend;
+						do {
+							if (Day + 1 > endOfMonth[baseX])
+								Day = 0;
+							else
+								Day++;
+							dividend = ((int)sTime + divresult.rem) % 24;
+						} while (dividend >= 24);
+						//Day += 1;
+						timeOfDay = 0 + dividend;
 					}
 					else
 					{
@@ -130,9 +154,17 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 		else { // If the scheduling time doesn't advance us into the next month
 			Month = baseX;
 			Day = (baseY + divresult.quot);
-			if (sTime + divresult.rem > 24) {
-				Day += 1;
-				timeOfDay = 0 + (((int)sTime + divresult.rem) % 24);
+			if (sTime + divresult.rem >= 24) {
+				int dividend;
+				do {
+					if (Day + 1 > endOfMonth[baseX])
+						Day = 0;
+					else
+						Day++;
+					dividend = ((int)sTime + divresult.rem) % 24;
+				} while (dividend >= 24);
+				//Day += 1;
+				timeOfDay = 0 + dividend;
 			}
 			else
 			{
