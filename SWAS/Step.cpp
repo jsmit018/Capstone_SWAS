@@ -432,6 +432,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 	if (_type == "process" || _type == "Process")
 	{
+		bool alreadyAcquired = false;
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources listed in required map
 		while (iter != _reqResourceMap.end())
@@ -440,38 +441,44 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if it's already acquired, break
-				if (iter->first == _acquiredResources[i])
+				if (iter->first == _acquiredResources[i]) {
+					alreadyAcquired = true;
 					break;
+				}
 			}
 
-			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
-
-			//otherwise if not acquired yet
-			//if resource count is greater than number needed
-			if (_resourcePool.find(iter->first)->second->GetResourceCount() >= iter->second->GetNumResNeeded())
-			//if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
-			{
-				//decrement appropriately
-				/*int newCount;
-				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
-				it->second->SetResourceCount(newCount);*/
-				AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
-				//store in acquired resource vector
-				_acquiredResources.push_back(it->first);
-				cout << "----------ACQUIRED  " << it->first << endl;
-				
-			}
+			if (alreadyAcquired)
+				cout << "I already have " << iter->first << endl;
 			else {
-				cout << " we have to wait for a/an " << iter->first << endl;
-				if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July")
-					cout << "Hehe sounds like a lotta hoopla" << endl;
-				//INSERT WAITING LOGIC
-	//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
-				SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
-				iter++;
-				Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
-				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
-				return;
+				map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+
+				//otherwise if not acquired yet
+				//if resource count is greater than number needed
+				if (_resourcePool.find(iter->first)->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+					//if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+				{
+					//decrement appropriately
+					/*int newCount;
+					newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
+					it->second->SetResourceCount(newCount);*/
+					AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
+					//store in acquired resource vector
+					_acquiredResources.push_back(it->first);
+					cout << "----------ACQUIRED  " << it->first << endl;
+
+				}
+				else {
+					cout << " we have to wait for a/an " << iter->first << endl;
+					if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July")
+						cout << "Hehe sounds like a lotta hoopla" << endl;
+					//INSERT WAITING LOGIC
+		//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
+					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
+					iter++;
+					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
+					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+					return;
+				}
 			}
 			iter++;
 		}
