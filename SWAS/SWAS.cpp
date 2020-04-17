@@ -312,7 +312,7 @@ int main()
 		cout << SimExec::PrintNumInCondES() << endl;
 
 		//For Kevin, this causes an infinite loop
-		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
+		ScribeSetTerminationTime(SimExec::GetTotalSimulationTime());
 
 	}
 

@@ -3,7 +3,7 @@
 Number of Runs,1
 Warehouse Length,0.000000
 Warehouse Width,0.000000
-Runtime Duration,0.000000
+Runtime Duration,48144.000000
 Number of Planned Repair Jobs,4
 Number of Unplanned Repair Jobs,170
 
@@ -20,17 +20,17 @@ Run 1,
 Resources
 Run 1,,,,,,
 Resource, Initial Count, Utilization Hours, Utilization Percent, Number of Requests, Unsuccessful Requests,
-Mechanic,4,-3942682.000000,-inf,60,23,
-Apprentice,2,0.000000,-nan(ind),0,0,
-QA Engineer,6,123753696.000000,inf,172,1,
-Lift,2,0.000000,-nan(ind),0,0,
-Dolly,2,-340496.000000,-inf,40,0,
-Crane,2,0.000000,-nan(ind),0,0,
-Workbench,3,0.000000,-nan(ind),0,0,
-Generator,5,0.000000,-nan(ind),0,0,
-S Bay,10,0.000000,-nan(ind),0,0,
-M Bay,8,-8610305.000000,-inf,82,62,
-L Bay,8,0.000000,-nan(ind),0,0,
+Mechanic,4,106982.000000,55.553131,60,23,
+Apprentice,2,0.000000,0.000000,0,0,
+QA Engineer,6,-2671436.000000,-924.807556,172,1,
+Lift,2,0.000000,0.000000,0,0,
+Dolly,2,4408.000000,4.577933,40,0,
+Crane,2,0.000000,0.000000,0,0,
+Workbench,3,0.000000,0.000000,0,0,
+Generator,5,0.000000,0.000000,0,0,
+S Bay,10,0.000000,0.000000,0,0,
+M Bay,8,110887.000000,28.790451,82,62,
+L Bay,8,0.000000,0.000000,0,0,
 ,,,,,,
 Resource Failure
 Run 1,,,,
