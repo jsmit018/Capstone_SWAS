@@ -261,6 +261,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		cout << "Departing Unplanned Arrival" << endl;
 		Aircraft* newAircraft = _aircraft->New();
 		newAircraft->ClearMyMap();
+		//cout << "------------------CLEARED UNPLANNED MAP SIZE IS " << newAircraft->GetMyRJMapSize() << endl;
 
 		//newAircraft->GetMyRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep()->ScheduleFirstStep(newAircraft->GetRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep(), newAircraft);
 		//_aircraft->GetMyRepairJobObj(_aircraft->GetAircraftType())->GetFirstStep(1)->ScheduleFirstStep(_aircraft->GetAircraftType()->GetFirstStep(1)->ScheduleFirstStep(), _aircraft->New());
@@ -325,12 +326,9 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		//job is the job with highest priority
 		job = _jobPriority.begin()->second;
 
-		//schedule that job
-	
-		/*If yes, schedule it*/
-			//cout << "*********FIRST STEP IS " << testIt->second->GetFirstStep()->GetName();
+		//schedule that high priority job
 		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->
-			ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
+		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
 		jobCounter++; 
 
 		

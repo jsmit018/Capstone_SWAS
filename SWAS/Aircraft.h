@@ -45,6 +45,7 @@ public:
 	void SetBaySizeReq(string baySizeReq);
 	void DeleteJob(string repairJob);
 	void ClearMyMap();
+	void DeleteAircraft(Aircraft*& aircraft);
 	//void SetRecurFlag(char flag);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
