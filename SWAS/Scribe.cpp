@@ -826,13 +826,13 @@ void Scribe::RecordResourceWaitEnd(int id, string resource, float end)
 				if (runCurrent->resourceWaitRunner->ellapse == -1)
 				{
 					runCurrent->resourceWaitRunner->timeEnd = end;
-					runCurrent->resourceWaitRunner->dayEnd = SimExec::GetSimulationTime()._day;
-					runCurrent->resourceWaitRunner->monthEnd = SimExec::GetSimulationTime()._month;
+					runCurrent->resourceWaitRunner->dayEnd = SimExec::GetSimulationTime()._day + 1;
+					runCurrent->resourceWaitRunner->monthEnd = SimExec::GetSimulationTime()._month + 1;
 					runCurrent->resourceWaitRunner->yearEnd = SimExec::GetSimulationTime()._year;
 
 					//Convert Start Date into days
 						//Year indicates full years with every fourth year being a leap year with one extra day
-					int startDate = (runCurrent->resourceWaitRunner->yearStart) * 365.25;
+					long double startDate = int((runCurrent->resourceWaitRunner->yearStart) * 365.25);
 
 					//Add full months
 					for (int i = 1; i < (runCurrent->resourceWaitRunner->monthStart); i++)
@@ -861,7 +861,7 @@ void Scribe::RecordResourceWaitEnd(int id, string resource, float end)
 					startDate += (runCurrent->resourceWaitRunner->dayStart);
 
 					//Repeat process for End Date
-					int endDate = (runCurrent->resourceWaitRunner->yearEnd) * 365.25;
+					long double endDate = int((runCurrent->resourceWaitRunner->yearEnd) * 365.25);
 					for (int i = 1; i < (runCurrent->resourceWaitRunner->monthEnd); i++)
 					{
 						if (i == 4 || i == 6 || i == 9 || i == 11)
@@ -887,8 +887,8 @@ void Scribe::RecordResourceWaitEnd(int id, string resource, float end)
 					endDate += (runCurrent->resourceWaitRunner->dayEnd);
 
 					//Convert start and end to hours - current day is not complete
-					float startTime = (startDate * 24) - (24 - runCurrent->resourceWaitRunner->timeStart);
-					float endTime = (endDate * 24) - (24 - runCurrent->resourceWaitRunner->timeEnd);
+					long double startTime = (startDate * 24) + runCurrent->resourceWaitRunner->timeStart;
+					long double endTime = (endDate * 24) + runCurrent->resourceWaitRunner->timeEnd;
 
 					runCurrent->resourceWaitRunner->ellapse = endTime - startTime;
 				}

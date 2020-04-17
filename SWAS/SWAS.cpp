@@ -284,6 +284,8 @@ void InitializeAircraft()
 int main()
 {
 	inputReader.ReadInputData();
+
+	Scribe::SetSaveFile("output.csv");
 	//Step::PrintPools();
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
 	//*Note: Let tyler know this function name so he can add it to his unity logic
@@ -313,6 +315,8 @@ int main()
 		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
 
 	}
+
+	Scribe::Archive();
 
 	return 0;
 }
