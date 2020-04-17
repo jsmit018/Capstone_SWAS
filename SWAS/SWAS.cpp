@@ -305,6 +305,10 @@ int main()
 		while (SimExec::GetSimulationFlag())
 			SimExec::RunSimulation(0, 0, 2030);
 
+		cout << endl << endl << endl;
+
+		cout << SimExec::PrintNumInCondES() << endl;
+
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetSimulationTime()._timeOfDay);
 

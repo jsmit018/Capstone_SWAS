@@ -448,13 +448,11 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					alreadyAcquired = true;
 					break;
 				}
-					
 			}
 
 			if (alreadyAcquired)
 				cout << "I've already gotten " << iter->first << endl;
-			else
-			{
+			else {
 				map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
 
 				//otherwise if not acquired yet
