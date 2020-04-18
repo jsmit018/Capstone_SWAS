@@ -81,7 +81,7 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
 	_numberGenerated = 0;
 
-	cout << "Scheduling First Unplanned Aircraft Arrival" << endl;
+	//cout << "Scheduling First Unplanned Aircraft Arrival" << endl;
 	SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this, repairJob),
 		_interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 }
@@ -168,10 +168,10 @@ SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
 {
 	_aircraft = aircraft;
 	_name = name;
-	cout << "Scheduling Calendar Arrival" << endl;
+	//cout << "Scheduling Calendar Arrival" << endl;
 	//for (int i = 0; i < numCalEventsToSched; ++i) {
 	SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextCalendarAircraftEA(this, repairJob, calobj), 0.0, "ScheduleNextCalendarAircraftEA");
-	cout << "Calendar Event Scheduled" << endl;
+	//cout << "Calendar Event Scheduled" << endl;
 	//}
 }
 
@@ -242,7 +242,7 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 	}
 	//cout << newAircraft->GetAircraftType() << " ----------------CALENDAR MAP SIZE " << newAircraft->GetMyRJMapSize() << endl;
 
-	cout << "Scheduling Calendar Aircraft to Arrive" << endl;
+	//cout << "Scheduling Calendar Aircraft to Arrive" << endl;
 	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
 	_numberGenerated++;
 	Scribe::RecordAircraft(_aircraft->GetAircraftType());
@@ -255,10 +255,10 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 {
 	if (_numberGenerated != _numberOfAircraftToGenerate)
 	{
-		cout << "Unplanned Aircraft has arrived, ";
-		cout << "Scheduling next Unplanned Aircraft Arrival" << endl;
+		//cout << "Unplanned Aircraft has arrived, ";
+		//cout << "Scheduling next Unplanned Aircraft Arrival" << endl;
 		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this, repairJob), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
-		cout << "Departing Unplanned Arrival" << endl;
+		//cout << "Departing Unplanned Arrival" << endl;
 		Aircraft* newAircraft = _aircraft->New();
 		newAircraft->ClearMyMap();
 		//cout << "------------------CLEARED UNPLANNED MAP SIZE IS " << newAircraft->GetMyRJMapSize() << endl;
@@ -325,7 +325,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 				/*Add name of every repair job in the list to vector for random selection*/
 				newAircraft->InsertJobName(iter->first);
 
-				cout << "vector size is " << newAircraft->GetUnplanVecSize();
+				//cout << "vector size is " << newAircraft->GetUnplanVecSize();
 				iter++;
 			}
 
@@ -367,8 +367,8 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
 		//Scheduling recurring aircrafts
-		cout << "Recurring Aircraft has arrived, ";
-		cout << "Scheduling next Recurring Aircraft Arrival: " << repairJob->GetName() << endl;
+	//	cout << "Recurring Aircraft has arrived, ";
+	//	cout << "Scheduling next Recurring Aircraft Arrival: " << repairJob->GetName() << endl;
 		SimExec::ScheduleEventAtRecurring(_aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this, recurringIAT, repairJob), recurringIAT->GetRV(), "ScheduleNextRecurringAircraftEA");
 		Aircraft* newAircraft = _aircraft->New();
 

@@ -862,7 +862,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//		cout << "fail vector size: " << row.size() << endl;
 
 					resName = row[0];
-					cout << "ROW 0 " << row[0] << endl;
+					//cout << "ROW 0 " << row[0] << endl;
 					RepairJob* resRepairJob = new RepairJob();
 					resRepairJob->SetName(row[4]);
 
