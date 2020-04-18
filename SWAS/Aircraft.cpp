@@ -14,8 +14,8 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 {
 	_aircraftID = ++_nextID;
 
-	cout << " IN AIRCRAFT COPY CONSTRUCTOR " << endl;
-	cout << "AIRCRAT ID IS " << _aircraftID << endl;
+	//cout << " IN AIRCRAFT COPY CONSTRUCTOR " << endl;
+	//cout << "AIRCRAT ID IS " << _aircraftID << endl;
 
 	_aircraftType = mapAircraft._aircraftType;						//	Aircraft name: i.e. F35
 	_priority = mapAircraft._priority;								//	Aircraft priority: helps determine first to be served in queues

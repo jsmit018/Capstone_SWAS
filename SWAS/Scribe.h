@@ -61,8 +61,8 @@ public:
     int initialCount;
     float lastchange;
     int availability;
-    float utilizationHours;
-    float utilizationPercent;
+    double utilizationHours;
+    double utilizationPercent;
     int requestNumber;
     int unsuccessfulRequests;
 
