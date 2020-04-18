@@ -19,14 +19,20 @@ public:
 
 	static void AddToResPool(Resource* resource, string resourceName);
 	static void AddToPartsPool(Parts* parts, string partsName);
+	static map<string, Parts*> GetPartsPool();
+	static map<string, Resource*> GetResPool();
+	static int GetPartsPoolSize();
+	static int GetResPoolSize();
 	static void SetResPoolCount(string,int);
 	static void SetPartPoolCount(string,int);
 	void SetName(string name);
 	void SetType(string type);
+	void SetNumOfParts(string partsName, int numNeeded);
 	void SetInspecFailProb(string failureProb);
 	void SetServiceTime(string serviceTime); //change to distribution
-	void SetReqResource(string reqResource);
-	void SetReqParts(string reqParts);
+	void SetReqResource(string reqResource/*, Resource* resource*/);
+	//void SetReqParts(string reqParts);
+	void SetReqParts(string reqParts, int numNeeded);
 	void SetReturnStep(/*int stepId*/ int returnStep);
 	void SetStepIndoorReq(char indoorReq);
 	void SetStepBayReq(char baySizeReq);
@@ -36,7 +42,7 @@ public:
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
-	void AddParts(Parts* parts, string partsName);
+	void AddParts(Parts* parts, string partsName, int numNeeded);
 	void PrintParts();
 	void PrintResources();
 	static void PrintPools();
@@ -54,6 +60,8 @@ public:
 	int GetRJPriority();
 	int GetRJIndoorReq();
 	int GetStepID();
+	int GetResMapSize();
+	int GetPartsMapSize();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();

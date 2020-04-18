@@ -5,8 +5,6 @@
 #include <string>
 #include <sstream>
 
-//Make separate class for Parts...they have nothing in common
-
 class Resource
 {
 public:
@@ -36,7 +34,7 @@ public:
 	int GetNumResNeeded();
 	string GetFailureName();
 	string GetFailureType();
-	Distribution* GetFailureDistr();	//change to distribution
+	Distribution* GetFailureDistr();
 	string GetRepairProcess();
 
 private:

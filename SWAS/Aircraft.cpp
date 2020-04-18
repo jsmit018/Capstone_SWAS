@@ -259,7 +259,6 @@ void Aircraft::SetCalendarObj(string date)
 	//cout << "NEW YEAR IS " << year << endl;
 
 
-	/*Jordan: These throw exceptions during runtime: */
 
 	// 3/30: Fixed runtime issues with _myCalObj push_back. [Jordan]
 	//**Issue: Throws read access error
@@ -454,21 +453,6 @@ void Aircraft::ClearMyMap()
 Aircraft* Aircraft::New()
 {
 	Aircraft* newAircraft = new Aircraft(*this);
-	//cout << "IN NEW AIRCRAFT " << newAircraft->GetAircraftType() << " HAS THIS MANY JOBS: " << newAircraft->GetMyRJMapSize() << endl;
-	//map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
-
-	//cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
-	//while (it != newAircraft->GetMyRJMapEnd())
-	//{
-	//	RepairJob* currJob = new RepairJob();
-	//	currJob->CopyRepairJob(*it->second);
-	//	this->AddMyRepairJob(currJob->GetName(), currJob);
-
-	//	_myRepairJobs.insert(pair<string, RepairJob*>(it->second->GetName(), it->second));
-
-	//	cout << "..................ADDED " << it->first << endl;
-	//	it++;
-	//}
 
 	return newAircraft; // add appropriate parameters
 	//return new Aircraft();

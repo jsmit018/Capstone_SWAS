@@ -2,9 +2,9 @@
 
 Resource::Resource()
 {
-	_failureName = "none specified yet";
-	_failureType = "none specified yet";
-	_repairProc = "none specified yet";
+	//_failureName = "none specified yet";
+	//_failureType = "none specified yet";
+	//_repairProc = "none specified yet";
 }
 
 void Resource::CopyMapResource(const Resource& mapResource)
@@ -16,8 +16,11 @@ void Resource::CopyMapResource(const Resource& mapResource)
 	_width = mapResource._width;
 	_failureName = mapResource._failureName;
 	_failureType = mapResource._failureType;
-	_failureDist = mapResource._failureDist;
 	_repairProc = mapResource._repairProc;
+	if (mapResource._failureDist == nullptr)
+		_failureDist = nullptr; 
+	else
+		_failureDist = mapResource._failureDist->CopyThis();
 }
 
 //@TODO will need to figure out logic for what happens if amount needed is greater
@@ -225,6 +228,14 @@ void Resource::PrintResProperties()
 	cout << "			Resource footprint Y: " << _width << endl;
 	cout << "			Failure name: " << _failureName << endl;
 	cout << "			Failure type: " << _failureType << endl;
+	cout << "			Failure distr: ";
+	if (_failureDist == nullptr)
+	{
+		cout << " no failure distr" << endl;
+	}
+	else
+		_failureDist->PrintDistribution();
+	cout << endl;
 	cout << "			Repair process: " << _repairProc << endl;
 	cout << endl;
 }

@@ -11,6 +11,7 @@ using namespace std;
 
 map<string, Aircraft*> InputReader::_masterMap;
 map<string, Resource*> InputReader::_masterResourceMap;
+map<string, Parts*> InputReader::_masterPartsMap;
 int InputReader::_numRuns;
 
 struct InputReader::GUISelectedAircraft {
@@ -589,6 +590,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					Step* newStep = new Step(stepDurTemp, stepNameTemp);
+					Resource* newRes = new Resource();
+					Parts* newParts = new Parts();
 
 					//if on the first line of the table, current job is first line, row[0] and job priority is first line, row[1]
 					if (rowCounter == 0) {
@@ -642,16 +645,19 @@ void InputReader::ReadInputData() //initialization for getting data
 					newStep->SetServiceTime(row[7]);
 
 					//reqResource = row[8];
-					newStep->SetReqResource(row[8]);
+					//newStep->SetReqResource(row[8]);
 
-					newStep->SetReqParts(row[9]);
+					//newStep->SetReqParts(row[9]);
 
-					if (row.size() == 12)
-					{
-						/*	istringstream ssSteps5(row[11]);
-							ssSteps5 >> numParts;*/
-							//					newStep->SetNumPartsNeeded(row[11]);
-					}
+					//if (row.size() == 11)
+					//{
+					//	istringstream ssSteps5(row[10]);
+					//	ssSteps5 >> numParts;
+					//	newStep->SetReqParts(row[9], numParts);
+					//	//newStep->SetNumOfParts(, numParts);
+					//}
+					//else
+					//	newStep->SetReqParts(row[9], 0);
 
 					map<string, Aircraft*>::const_iterator iter = _masterMap.begin();
 
@@ -668,15 +674,28 @@ void InputReader::ReadInputData() //initialization for getting data
 								// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-								it->second->AddStep(newStep);
+								//in each new step, insert new obj of parts into req res list 
+								newStep->SetReqResource(row[8]);
+
+								//in each new step, insert new obj of parts into req parts list 
+								if (row.size() == 11)
+								{
+									istringstream ssSteps5(row[10]);
+									ssSteps5 >> numParts;
+									newStep->SetReqParts(row[9], numParts);
+								}
+
+								//add this step to the repair job's list
+								it->second->AddStep(newStep);							
+
 							}
 
 							it++;
 						}
 
 						iter++;
-
 					}
+
 
 				}
 
@@ -760,9 +779,14 @@ void InputReader::ReadInputData() //initialization for getting data
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
 
+					if (resName == "S Bay" || resName == "M Bay" || resName == "L Bay")
+					{
+						Step::AddToResPool(res, resName);
+					}
+
 					Scribe::RecordResource(resName, resCount);
 
-					Step::AddToResPool(res, res->GetResourceName());
+					//Step::AddToResPool(res, res->GetResourceName());
 
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
 					//ITERATE THROUGH MASTER MAP
@@ -779,12 +803,14 @@ void InputReader::ReadInputData() //initialization for getting data
 
 								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 									continue;
-
 								it->second->SetResourceName(resName);
 								it->second->SetResourceCount(resCount);
-								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
-								//				it->second->PrintResProperties();
+								//cout << "REsourcE couNT ";
+								//cout << it->second->GetResourceCount() << endl;
 
+								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
+								//it->second->PrintResProperties();
+								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
 							}
 
 							iter++;
@@ -836,14 +862,14 @@ void InputReader::ReadInputData() //initialization for getting data
 					//		cout << "fail vector size: " << row.size() << endl;
 
 					resName = row[0];
-
+					cout << "ROW 0 " << row[0] << endl;
 					RepairJob* resRepairJob = new RepairJob();
 					resRepairJob->SetName(row[4]);
 
 					resRepairJob->AddResourceRepair(resRepairJob, resName);
 
 
-					//ADD VALUES OF RESOURCE TO STORED RESOURCE IN MAP BELONGING TO STEP
+
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
 					//ITERATE THROUGH MASTER MAP
 					while (masterIter != _masterMap.end())
@@ -852,24 +878,44 @@ void InputReader::ReadInputData() //initialization for getting data
 						map<string, RepairJob*>::const_iterator iter = masterIter->second->GetRJMapBegin();
 						while (iter != masterIter->second->GetRJMapEnd())
 						{
-							//ITERATE THROUGH THEIR STEP VECTORS
+							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(resName);
+								//map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(row[0]);
+								map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->GetResourceMapBegin();
+								while (it != iter->second->GetStep(i + 1)->GetResourceMapEnd())
+									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
+										continue;*/
+								{
+									if (it->first == row[0]) 
+									{
+										//cout << "RES NAME " << row[0] << endl;
+										iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+										iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
+										it->second->SetFailureName(row[1]);
+										//cout << " " << it->second->GetFailureName() << endl;
+										it->second->SetFailureType(row[2]);
+										//cout << " " << it->second->GetFailureType() << endl;
+										it->second->SetFailureDistr(row[3]);
+										it->second->SetRepairProcess(row[4]);
+										//cout << " " << it->second->GetRepairProcess() << endl;
+										//it->second->PrintResProperties();
+									}
 
-								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
-									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+									map<string, Resource*>::iterator masterResIt;
+									masterResIt = _masterResourceMap.find(row[0]);
+									if (masterResIt != _masterResourceMap.end())
+									{
+										masterResIt->second->SetFailureName(row[1]);
+										masterResIt->second->SetFailureType(row[2]);
+										masterResIt->second->SetFailureDistr(row[3]);
+										masterResIt->second->SetRepairProcess(row[4]);
+									}
 
-								continue;
-								//iter->second->GetStep(i)->SetStepIndoorReq(iter->second->GetIndoorReq());
-
-								iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
-								it->second->SetFailureName(row[1]);
-								it->second->SetFailureType(row[2]);
-								it->second->SetFailureDistr(row[3]);
-								it->second->SetRepairProcess(row[4]);
-								//it->second->PrintResProperties();
+									it++;
+								}
 							}
+
 
 							iter++;
 						}
@@ -946,8 +992,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					ssParts2 >> threshold;
 					newParts->SetThreshold(threshold);
 
-
-					Step::AddToPartsPool(newParts, newParts->GetPartsName());
+					newParts->SetLeadTime(row[3]);
+					_masterPartsMap.insert(pair<string, Parts*>(partName, newParts));
 
 
 					//ADD VALUES OF PARTS TO STORED PARTS IN MAP BELONGING TO STEP
@@ -966,7 +1012,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 								if (iter->second->GetStep(i + 1)->IsPartsMapEnd(it))
 									continue;
-
 								it->second->SetPartsName(partName);
 								it->second->SetPartsCount(count);
 								it->second->SetInitPartsCount(count);
@@ -981,6 +1026,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 						masterIter++;
 					}
+				//	Step::AddToPartsPool(newParts, newParts->GetPartsName());
 
 				}
 
@@ -1013,7 +1059,83 @@ void InputReader::ReadInputData() //initialization for getting data
 		//		it->second->PrintProperties();
 		it++;
 	}
+
+
+	//go through mastermap to get steps
+	//for every step 
+		//for each unique resource
+			//copy and insert into resPool
+		//for each unique part
+			//copy and insert into partsPool
+
+	//map<string, Aircraft*>::const_iterator masterIter2 = _masterMap.begin();
+	////ITERATE THROUGH MASTER MAP
+	//while (masterIter2 != _masterMap.end())
+	//{
+	//	//ITERATE THROUGH REPAIR JOBS
+	//	map<string, RepairJob*>::const_iterator iter = masterIter2->second->GetRJMapBegin();
+	//	while (iter != masterIter2->second->GetRJMapEnd())
+	//	{
+	//		//ITERATE THROUGH THEIR STEPS
+	//		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
+	//		{
+	//			//ITERATE THROUGH REQ PARTS MAP
+	//			map<string, Parts*>::const_iterator partsIter = iter->second->GetStep(i + 1)->GetPartsMapBegin();
+	//			while (partsIter != iter->second->GetStep(i + 1)->GetPartsMapEnd())
+	//			{
+	//				map<string, Parts*> tempMap = Step::GetPartsPool();
+	//				if (tempMap.find(partsIter->first) == tempMap.end())
+	//				{
+	//					Parts* partCopy = new Parts();
+	//					partCopy->CopyMapParts(*partsIter->second);
+	//					Step::AddToPartsPool(partCopy, partsIter->first);
+	//				}
+	//				partsIter++;
+	//			}
+
+	//		}
+	//		iter++;
+	//	}
+	//	masterIter2++;
+	//}
+
+
+	map<string, Parts*>::const_iterator partsIter = _masterPartsMap.begin();
+	while (partsIter != _masterPartsMap.end())
+	{
+		map<string, Parts*> tempMap = Step::GetPartsPool();
+		if (tempMap.find(partsIter->first) == tempMap.end())
+		{
+			Parts* partCopy = new Parts();
+			partCopy->CopyMapParts(*partsIter->second);
+			Step::AddToPartsPool(partCopy, partsIter->first);
+		}
+		partsIter++;
+	}
+
+
+	map<string, Resource*>::const_iterator resIter = _masterResourceMap.begin();
+	while (resIter != _masterResourceMap.end())
+	{
+		map<string, Resource*> tempMap = Step::GetResPool();
+		if (tempMap.find(resIter->first) == tempMap.end())
+		{
+			Resource* resCopy = new Resource();
+			resCopy->CopyMapResource(*resIter->second);
+			Step::AddToResPool(resCopy, resIter->first);
+		}
+		resIter++;
+	}
+
+	//cout << "RES POOL SIZE IS " << Step::GetResPoolSize()<< endl;
+	//cout << "PARTS POOL SIZE IS " << Step::GetPartsPoolSize()<< endl;
+
+	//cout << "PRINTING POOLS" << endl;
+	//Step::PrintPools();
+
+
 }
+
 
 map<string, Aircraft*>::iterator InputReader::GetMasterMapBegin()
 {
@@ -1035,6 +1157,16 @@ int InputReader::GetNumRuns()
 	return _numRuns;
 }
 
+map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
+{
+	return _masterResourceMap.begin();
+}
+
+map<string, Resource*>::iterator  InputReader::GetMasterResMapEnd()
+{
+	return _masterResourceMap.end();
+}
+
 void InputReader::PrintEverything()
 {
 	//Aircraft
@@ -1047,6 +1179,20 @@ void InputReader::PrintEverything()
 		//for loop to get each repair job
 		cout << "_________________________________________________________________________________" << endl;
 		cout << "_________________________________________________________________________________" << endl;
+		iter++;
+	}
+}
+
+
+void InputReader::PrintMasterResMap()
+{
+	map<string, Resource*>::const_iterator iter = _masterResourceMap.begin();
+
+	while (iter != _masterResourceMap.end())
+	{
+		cout << "__________" << endl;
+		cout << iter->first << endl;
+		iter->second->PrintResProperties();
 		iter++;
 	}
 }
@@ -1118,4 +1264,9 @@ map<string, Aircraft*> InputReader::GetMasterMap()
 map<string, Resource*> InputReader::GetMasterResourceMap()
 {
 	return _masterResourceMap;
+}
+
+map<string, Parts*> InputReader::GetMasterPartsMap()
+{
+	return _masterPartsMap;
 }
