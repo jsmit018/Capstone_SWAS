@@ -980,12 +980,14 @@ void Step::FailResourceEM(Resource* resource)
 
 	newCount = iter->second->GetResourceCount() - 1;
 	SetResPoolCount(iter->first, newCount);
+	resource->FailResource();
 	//resource->SetResourceCount(newCount);
 
 	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
 	//This Event action should actually be scheduling a restore resource instead of a fail one.
 	cout << "Resource has failed, scheduling a restore resource" << endl;
-	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
+	//SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
+	SimExec::ScheduleEventAtRecurring(0, new RestoreResourceEA(this, resource), resource->GetFailureDistr()->GetRV(), "RestoreResourceEA", 1);
 	Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 }
 
@@ -1076,6 +1078,15 @@ map<string, Resource*>::iterator Step::GetResourceMapBegin()
 map<string, Resource*>::iterator Step::GetResourceMapEnd()
 {
 	return _reqResourceMap.end();
+}
+
+void Step::ScheduleFailures()
+{
+	map<string, Resource*>::const_iterator failIt = _resourcePool.begin();
+	while (failIt != _resourcePool.end()) {
+		SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(this, failIt->second), failIt->second->GetFailureDistr()->GetRV(), "FailResourceEA");
+		failIt++;
+	}
 }
 
 void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
@@ -1467,6 +1478,10 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
+	if (_failCount == 0) {
+		ScheduleFailures();
+		_failCount++;
+	}
 }
 
 

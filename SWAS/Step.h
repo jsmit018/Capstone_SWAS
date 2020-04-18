@@ -61,6 +61,7 @@ public:
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
+	void ScheduleFailures();
 
 	//For Testing
 	//----------------------
@@ -82,6 +83,7 @@ private:
 	int _RJpriority;
 	int _stepID;
 	int _numInQueue;
+	int _failCount = 0;
 	Step* _nextStep;	// NOT POPULATED
 	//	Resource* _bays;		//determined by Warehouse GUI
 	string _type;
