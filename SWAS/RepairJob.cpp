@@ -20,21 +20,10 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _schedType = mapRj._schedType;				        // Interarrival schedule type
     _indoorReq = mapRj._indoorReq;				        // Y or N for indoor requirement of repair job
     _calendarDate = mapRj._calendarDate;		    	// Calendar-schedule type repair jobs (date: mmddyyyy)
-    _recurringAmt = mapRj._recurringAmt->CopyThis();                // Number of months between Recurring-schedule type repair jobs
+    _recurringAmt = mapRj._recurringAmt->CopyThis();    // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis();	// Distribution for probability of certain repair job after random iat
 	
 
-    //cout << ".....IN RJ NEXT INDOOR REQ IS " << _indoorReq << endl;
-
-
-   // cout << "$$$$$$$$ SCHED TYPE: " << _name << " " << _schedType << endl;
-
-    // to ensure that the copies are actual copies and 
-    //that the same pointers is not being shared by different repair jobs:
-
-   // cout << "OLD REPAIR STEPS VECtoR SIZE ****: " << mapRj._vecSteps.size() << endl;
-    //for copying the vector of steps
-    // for number of steps in mapRj._vecSteps
     for (int i = 0; i < mapRj._vecSteps.size(); i++)
     {
 
@@ -45,19 +34,8 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
         //store new step copy into new step vector
         _vecSteps.push_back(newStep);
 
-     //   cout << "JOB IS " << newStep->GetMyRJName() << endl;
-      //  cout << "STEP ID IS " << newStep->GetStepID() << endl;
-        //  cout << endl;
-          //   cout << "  ****      MY STEPS VEC SIZE:  " << _vecSteps.size() << endl;
-        //  cout << endl;
     }
-    // and also maybe for distribution, but that might not matter?
 
-    //cout << "***Vec Size: " << _vecSteps.size() << endl;
-    //cout << "***Vec Size: " << mapRj._vecSteps.size() << endl;
-    //cout << endl;
-    //cout << "***Map Size: " << _resourceRepairMap.size() << endl;
-    //cout << endl;
 }
 
 Step* RepairJob::GetStep(int stepID)

@@ -19,22 +19,27 @@ public:
 	~InputReader();
 	void ReadInputData();
 	void PrintEverything();
+	void PrintMasterResMap();
 	void AddSelectedAircraft(string aircraftName);
 	void SetNumRuns(int numRuns);
 	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();
 	map<string, Aircraft*>::iterator GetMasterMapBegin();
 	map<string, Aircraft*>::iterator GetMasterMapEnd();
+	static map<string, Resource*>::iterator GetMasterResMapBegin();
+	static map<string, Resource*>::iterator GetMasterResMapEnd();
 	//	static void GetMyStep(string repairName, int stepId); //for getting step object 
 	static Aircraft* GetAircraft(string aircraftName);
 	static map<string, Aircraft*> GetMasterMap();
 	static map<string, Resource*> GetMasterResourceMap();
+	static map<string, Parts*> GetMasterPartsMap();
 	static int GetMapSize();
 	static int GetNumRuns();
 private:
 	static int _numRuns;
 	static map<string, Aircraft*> _masterMap;
 	static map<string, Resource*> _masterResourceMap;
+	static map<string, Parts*> _masterPartsMap;
 	CalConverter* calConvert;
 	struct GUISelectedAircraft;
 	GUISelectedAircraft* _GUIListHead;

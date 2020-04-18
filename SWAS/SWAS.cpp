@@ -81,7 +81,6 @@ void ScribeSetTerminationTime(double termTime) {
 ///////////////////////////////////////////////////
 
 
-//Jordan, this is what's happening.
 /////In InitializeAircraft() (Previously named ArriveAircraft())
 //for each aircraft in GUI selection
 	//instantiates it by copying from master map
@@ -113,6 +112,21 @@ void ScribeSetTerminationTime(double termTime) {
 //had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
 InputReader inputReader;
 
+
+///Jordan: 
+void SchedResourceFailure()
+{
+	//schedule resource failure logic
+	map<string, Resource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
+	while (iter != InputReader::GetMasterResMapEnd())
+	{
+		cout << "" << endl;
+		//schedule iter's first failure in iter->second->GetFailureDistr()
+
+		iter++;
+	}
+
+}
 
 void InitializeAircraft()
 {
@@ -285,7 +299,7 @@ int main()
 {
 	inputReader.ReadInputData();
 
-	Scribe::SetSaveFile("output.csv");
+	Scribe::SetSaveFile("Output.csv");
 	//Step::PrintPools();
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
 	//*Note: Let tyler know this function name so he can add it to his unity logic

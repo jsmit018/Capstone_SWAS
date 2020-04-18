@@ -2,9 +2,9 @@
 
 Parts::Parts()
 {
-	_partsName = "none needed";
-	_partsCount = 0;
-	_orderThreshold = 0;
+	//_partsName = "none needed";
+	//_partsCount = 0;
+	//_orderThreshold = 0;
 }
 
 void Parts::CopyMapParts(const Parts& mapParts)
@@ -14,7 +14,13 @@ void Parts::CopyMapParts(const Parts& mapParts)
 	_numNeeded = mapParts._numNeeded;
 	_partsName = mapParts._partsName;
 	_orderThreshold = mapParts._orderThreshold;
-	_leadTime = mapParts._leadTime;
+
+	if (mapParts._leadTime == nullptr)
+		_leadTime = nullptr;
+	else
+	{
+		_leadTime = mapParts._leadTime->CopyThis();
+	}
 }
 
 void Parts::SetPartsCount(int partsCount)
@@ -174,6 +180,7 @@ void Parts::SetLeadTime(string leadTime)
 		_leadTime = new Weibull(scale, shape);
 	}
 
+	
 	//Calls the print function added to each distribution - Determines correct distribution and prints
 //	cout << "LEAD TIME ";
 //	_leadTime->PrintDistribution();
@@ -190,5 +197,8 @@ void Parts::PrintPartsProperties()
 	cout << "			Parts count: " << _partsCount << endl;
 	cout << "			Initial count: " << _initCount << endl;
 	cout << "			Order threshold: " << _orderThreshold << endl;
+	cout << "			Lead Time: ";
+	if(_leadTime != nullptr)
+		_leadTime->PrintDistribution();
 	cout << endl;
 }
