@@ -122,8 +122,17 @@ void SchedResourceFailure()
 	{
 		cout << "" << endl;
 		//schedule iter's first failure in iter->second->GetFailureDistr()
-		iter->second->ScheduleFirstFailures(iter->second);
-		iter++;
+		//if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay")
+		if (iter->second->GetFailureName() == "")
+		{
+			iter++;
+			continue;
+		}
+		else
+		{
+			iter->second->ScheduleFirstFailures(iter->second);
+			iter++;
+		}
 	}
 
 }
@@ -141,9 +150,9 @@ void InitializeAircraft()
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
 	Distribution::SetSystemSeed(8);
-	//inputReader.AddSelectedAircraft("F-35");
+	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
-	//inputReader.AddSelectedAircraft("Apache");
+	inputReader.AddSelectedAircraft("Apache");
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
 

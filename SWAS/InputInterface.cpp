@@ -887,11 +887,15 @@ void InputReader::ReadInputData() //initialization for getting data
 									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 										continue;*/
 								{
+									
+									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+									iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
+
 									if (it->first == row[0]) 
 									{
 										//cout << "RES NAME " << row[0] << endl;
-										iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
-										iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
+										//iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+										//iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
 										it->second->SetFailureName(row[1]);
 										//cout << " " << it->second->GetFailureName() << endl;
 										it->second->SetFailureType(row[2]);
