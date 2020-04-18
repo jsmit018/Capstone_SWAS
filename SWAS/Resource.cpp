@@ -1,4 +1,6 @@
 #include "Resource.h"
+#include "SimExec.h"
+#include "Scribe.h"
 
 Resource::Resource()
 {
@@ -6,6 +8,65 @@ Resource::Resource()
 	//_failureType = "none specified yet";
 	//_repairProc = "none specified yet";
 }
+
+class Resource::WaitForResourceEA : public CondEventAction {
+public:
+	WaitForResourceEA(Resource* resource, int amountNeeded) {
+		_resource = resource;
+		_amountNeeded = amountNeeded;
+	}
+
+	bool Condition(Resource* resource, Parts* parts) {
+		if (resource == _resource) {
+			if (_resource->GetResourceCount() >= _amountNeeded)
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
+	void Execute() {
+		//Scribe::RecordResourceWaitEnd(_aircraft->GetAircraftID(), _resource->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+		_resource->FailResourceEM(_resource);
+	}
+
+private:
+	Resource* _resource;
+	int _amountNeeded;
+};
+
+class Resource::FailResourceEA : public EventAction {
+public:
+	FailResourceEA(Resource* resource) {
+		//_step = step;
+		_resource = resource;
+	}
+
+	void Execute() {
+		_resource->FailResourceEM(_resource);
+	}
+private:
+	//Step* _step;
+	Resource* _resource;
+};
+
+class Resource::RestoreResourceEA : public EventAction {
+public:
+	RestoreResourceEA( Resource* resource) {
+		//_step = step;
+		_resource = resource;
+	}
+
+	void Execute() {
+		_resource->RestoreResourceEM(_resource);
+	}
+
+private:
+	//Step* _step;
+	Resource* _resource;
+};
 
 void Resource::CopyMapResource(const Resource& mapResource)
 {
@@ -56,6 +117,7 @@ void Resource::FailResource()
 {
 	//@TODO write the algorithm for a resource failure essentially is just scheduling an event
 	//so needed EA and EM
+	_resourceCount--;
 }
 
 void Resource::RestoreResource()
@@ -215,6 +277,12 @@ void Resource::SetRepairProcess(string repairProc)
 	_repairProc = repairProc;
 }
 
+void Resource::ScheduleFirstFailures(Resource* resource)
+{
+	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 2, "FailResourceEA");
+	SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 1, "FailResourceEA");
+}
+
 string Resource::GetRepairProcess()
 {
 	return _repairProc;
@@ -238,4 +306,44 @@ void Resource::PrintResProperties()
 	cout << endl;
 	cout << "			Repair process: " << _repairProc << endl;
 	cout << endl;
+}
+
+void Resource::FailResourceEM(Resource* resource)
+{
+	int newCount;
+	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
+	//RepairJob* newJob;
+
+	//map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+
+	//newCount = iter->second->GetResourceCount() - 1;
+	//SetResPoolCount(iter->first, newCount);
+	//resource->SetResourceCount(newCount);
+	if (resource->GetResourceCount() > 0) {
+		//Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
+		resource->FailResource();
+
+		//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
+		//This Event action should actually be scheduling a restore resource instead of a fail one.
+		//cout << "Resource has failed, scheduling a restore resource" << endl;
+		//SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
+
+		//Jordan: schedule next failure in iter->second->GetFailureDistr
+		//SimExec::ScheduleEventAtRecurring(0, new RestoreResourceEA(resource), resource->GetFailureDistr()->GetRV(), "RestoreResourceEA");
+		SimExec::ScheduleEventAtRecurring(0, new RestoreResourceEA(resource),	2, "RestoreResourceEA");
+		Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
+	}
+	else {
+		//cout << "Waiting for next available resource to become available, and it will fail" << endl;
+		SimExec::ScheduleConditionalEvent(0, new WaitForResourceEA(resource, 1));
+	}
+}
+
+void Resource::RestoreResourceEM(Resource* resource)
+{
+	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;
+	resource->RestoreResource();
+	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), resource->GetFailureDistr()->GetRV(), "FailResourceEA");
+	SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 2, "FailResourceEA");
+	SimExec::CheckConditionalEvents(resource, 0);
 }

@@ -69,6 +69,8 @@ public:
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
+	//void ScheduleResourceFailure();
+	
 
 	//For Testing
 	//----------------------
@@ -90,6 +92,7 @@ private:
 	int _RJpriority;
 	int _stepID;
 	int _numInQueue;
+	int _failCount = 0;
 	Step* _nextStep;	// NOT POPULATED
 	//	Resource* _bays;		//determined by Warehouse GUI
 	string _type;
@@ -123,8 +126,8 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
-	class FailResourceEA;
-	class RestoreResourceEA;
+	/*class FailResourceEA;
+	class RestoreResourceEA;*/
 	class WaitForResourceEA;
 	class NeedPartsEA;
 
@@ -135,8 +138,8 @@ private:
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
-	void FailResourceEM(Resource* resource);
-	void RestoreResourceEM(Resource* resource);
+	//void FailResourceEM(Resource* resource);
+	//void RestoreResourceEM(Resource* resource);
 
 	void AcquireParts(Parts* parts, int newCount);
 };

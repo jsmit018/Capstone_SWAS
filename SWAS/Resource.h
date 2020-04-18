@@ -28,6 +28,8 @@ public:
 	void SetFailureDistr(string failureDistr);
 	void SetRepairProcess(string repairProc);
 
+	void ScheduleFirstFailures(Resource* resource);
+
 	int GetResourceCount();
 	string GetResourceName();
 	double GetResourceFootprint();
@@ -47,4 +49,11 @@ private:
 	string _failureType;
 	Distribution* _failureDist;
 	string _repairProc;
+
+	class RestoreResourceEA;
+	class FailResourceEA;
+	class WaitForResourceEA;
+
+	void FailResourceEM(Resource* resource);
+	void RestoreResourceEM(Resource* resource);
 };
