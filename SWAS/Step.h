@@ -23,8 +23,8 @@ public:
 	static map<string, Resource*> GetResPool();
 	static int GetPartsPoolSize();
 	static int GetResPoolSize();
-	static void SetResPoolCount(string,int);
-	static void SetPartPoolCount(string,int);
+	static void SetResPoolCount(string, int);
+	static void SetPartPoolCount(string, int);
 	void SetName(string name);
 	void SetType(string type);
 	void SetNumOfParts(string partsName, int numNeeded);
@@ -70,7 +70,7 @@ public:
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
 	//void ScheduleResourceFailure();
-	
+
 
 	//For Testing
 	//----------------------
