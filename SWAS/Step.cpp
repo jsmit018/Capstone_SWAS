@@ -733,6 +733,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		}
 		//schedule the next step
 		cout << this->GetMyRJName() << "'s step " << _stepID <<" has finished, scheduling the next maintenance step." << endl;
+		cout << aircraft->GetAircraftID();
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID++), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	}
 	//else if the current step is the last step
