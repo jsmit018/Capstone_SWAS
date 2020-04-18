@@ -58,7 +58,7 @@ public:
 	//Time GetServiceTime();
 	int GetNumberInQueue();
 	int GetRJPriority();
-	int GetRJIndoorReq();
+	char GetRJIndoorReq();
 	int GetStepID();
 	int GetResMapSize();
 	int GetPartsMapSize();
