@@ -273,36 +273,36 @@ private:
 	int _numRelease;
 };
 
-class Step::FailResourceEA : public EventAction {
-public:
-	FailResourceEA(Step* step, Resource* resource) {
-		_step = step;
-		_resource = resource;
-	}
-
-	void Execute() {
-		_step->FailResourceEM(_resource);
-	}
-private:
-	Step* _step;
-	Resource* _resource;
-};
-
-class Step::RestoreResourceEA : public EventAction {
-public:
-	RestoreResourceEA(Step* step, Resource* resource) {
-		_step = step;
-		_resource = resource;
-	}
-
-	void Execute() {
-		_step->RestoreResourceEM(_resource);
-	}
-
-private:
-	Step* _step;
-	Resource* _resource;
-};
+//class Step::FailResourceEA : public EventAction {
+//public:
+//	FailResourceEA(Step* step, Resource* resource) {
+//		_step = step;
+//		_resource = resource;
+//	}
+//
+//	void Execute() {
+//		_step->FailResourceEM(_resource);
+//	}
+//private:
+//	Step* _step;
+//	Resource* _resource;
+//};
+//
+//class Step::RestoreResourceEA : public EventAction {
+//public:
+//	RestoreResourceEA(Step* step, Resource* resource) {
+//		_step = step;
+//		_resource = resource;
+//	}
+//
+//	void Execute() {
+//		_step->RestoreResourceEM(_resource);
+//	}
+//
+//private:
+//	Step* _step;
+//	Resource* _resource;
+//};
 
 // PLACE ORDER/ REPLENISH order process
 	// schedule an event that will act as "place order"   -> placeorderEA does placeOrderEM
@@ -906,34 +906,34 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 }
 
 
-void Step::FailResourceEM(Resource* resource)
-{
-	int newCount;
-	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
-	//RepairJob* newJob;
-
-	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
-
-	newCount = iter->second->GetResourceCount() - 1;
-	SetResPoolCount(iter->first, newCount);
-	//resource->SetResourceCount(newCount);
-
-	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
-	//This Event action should actually be scheduling a restore resource instead of a fail one.
-	cout << "Resource has failed, scheduling a restore resource" << endl;
-	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
-
-	//Jordan: schedule next failure in iter->second->GetFailureDistr
-
-	Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
-}
-
-void Step::RestoreResourceEM(Resource* resource)
-{
-	cout << "Resource has been restored, updating amount and checking conditional events" << endl;
-	resource->RestoreResource();
-	SimExec::CheckConditionalEvents(resource, 0);
-}
+//void Step::FailResourceEM(Resource* resource)
+//{
+//	int newCount;
+//	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
+//	//RepairJob* newJob;
+//
+//	map<string, Resource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
+//
+//	newCount = iter->second->GetResourceCount() - 1;
+//	SetResPoolCount(iter->first, newCount);
+//	//resource->SetResourceCount(newCount);
+//
+//	//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
+//	//This Event action should actually be scheduling a restore resource instead of a fail one.
+//	cout << "Resource has failed, scheduling a restore resource" << endl;
+//	SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
+//
+//	//Jordan: schedule next failure in iter->second->GetFailureDistr
+//
+//	Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
+//}
+//
+//void Step::RestoreResourceEM(Resource* resource)
+//{
+//	cout << "Resource has been restored, updating amount and checking conditional events" << endl;
+//	resource->RestoreResource();
+//	SimExec::CheckConditionalEvents(resource, 0);
+//}
 
 
 ////////////////////////////////////////////
@@ -1448,6 +1448,20 @@ void Step::AddResource(Resource* resource, string resourceName, int numNeeded)
 	//cout << "INSERTED " << _reqResourceMap[resourceName]->GetResourceName() << endl;
 
 }
+
+//void SchedResourceFailure()
+//{
+//	//schedule resource failure logic
+//	map<string, Resource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
+//	while (iter != InputReader::GetMasterResMapEnd())
+//	{
+//		cout << "" << endl;
+//		//schedule iter's first failure in iter->second->GetFailureDistr()
+//
+//		iter++;
+//	}
+//
+//}
 
 int Step::GetResMapSize()
 {

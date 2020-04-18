@@ -122,7 +122,7 @@ void SchedResourceFailure()
 	{
 		cout << "" << endl;
 		//schedule iter's first failure in iter->second->GetFailureDistr()
-
+		iter->second->ScheduleFirstFailures(iter->second);
 		iter++;
 	}
 
@@ -315,6 +315,7 @@ int main()
 		cout << "RUN NUMBER " << i + 1 << endl;
 		*/
 		InitializeAircraft();
+		SchedResourceFailure();
 		//InitalizeAircraft(GetScribe());
 
 		///Included for simulation testing purposes -> will be moved during GUI integration

@@ -69,7 +69,8 @@ public:
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
-	void ScheduleFailures();
+	//void ScheduleResourceFailure();
+	
 
 	//For Testing
 	//----------------------
@@ -125,8 +126,8 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
-	class FailResourceEA;
-	class RestoreResourceEA;
+	/*class FailResourceEA;
+	class RestoreResourceEA;*/
 	class WaitForResourceEA;
 	class NeedPartsEA;
 
@@ -137,8 +138,8 @@ private:
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
-	void FailResourceEM(Resource* resource);
-	void RestoreResourceEM(Resource* resource);
+	//void FailResourceEM(Resource* resource);
+	//void RestoreResourceEM(Resource* resource);
 
 	void AcquireParts(Parts* parts, int newCount);
 };
