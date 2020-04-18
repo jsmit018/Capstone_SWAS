@@ -52,6 +52,7 @@ private:
 
 	class RestoreResourceEA;
 	class FailResourceEA;
+	class WaitForResourceEA;
 
 	void FailResourceEM(Resource* resource);
 	void RestoreResourceEM(Resource* resource);

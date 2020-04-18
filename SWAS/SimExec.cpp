@@ -285,8 +285,9 @@ public:
 		Time Day = 0.0;
 		Time timeOfDay = 0.0;
 		int year = _year;
-		//	cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
+		if (eaName == "FailResourceEA" || eaName == "RestoreResourceEA")
+			_numEvents--;
 		//	cout << "Number of Events increased to " << _numEvents << endl;
 		//	cout << "Converting Distribution to Appropriate Time" << endl;
 		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, _simulationTime._timeOfDay, recurring);
@@ -495,17 +496,17 @@ public:
 			while (_eventSet[_baseX][_baseY] == 0) {
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
-					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
+					/*_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
 					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
 					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
-					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
+					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;*/
 				}
 				else {
 					AdvanceDay();
-					_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
+					/*_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
 					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
 					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
-					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;
+					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;*/
 				}
 			}
 			Event* next = _eventSet[_baseX][_baseY];
@@ -565,8 +566,10 @@ public:
 				_simulationTime._year = next->_year;
 			}
 			EventAction* ea = next->_ea;
-			delete next;
 			_numEvents--;
+			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA")
+				_numEvents++;
+			delete next;
 			return ea;
 		}
 		else {
