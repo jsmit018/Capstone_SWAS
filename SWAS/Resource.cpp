@@ -325,7 +325,7 @@ void Resource::FailResourceEM(Resource* resource)
 
 		//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
 		//This Event action should actually be scheduling a restore resource instead of a fail one.
-		cout << "Resource has failed, scheduling a restore resource" << endl;
+		//cout << "Resource has failed, scheduling a restore resource" << endl;
 		//SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
 
 		//Jordan: schedule next failure in iter->second->GetFailureDistr
@@ -334,14 +334,14 @@ void Resource::FailResourceEM(Resource* resource)
 		Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 	}
 	else {
-		cout << "Waiting for next available resource to become available, and it will fail" << endl;
+		//cout << "Waiting for next available resource to become available, and it will fail" << endl;
 		SimExec::ScheduleConditionalEvent(0, new WaitForResourceEA(resource, 1));
 	}
 }
 
 void Resource::RestoreResourceEM(Resource* resource)
 {
-	cout << "Resource has been restored, updating amount and checking conditional events" << endl;
+	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;
 	resource->RestoreResource();
 	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), resource->GetFailureDistr()->GetRV(), "FailResourceEA");
 	SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 2, "FailResourceEA");
