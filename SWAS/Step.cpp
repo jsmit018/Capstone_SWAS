@@ -703,7 +703,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				{
 					cout <<aircraft->GetAircraftID() << " " << aircraft->GetAircraftType() << " Retaining " << _acquiredResources[i] << " for " << this->GetName() << endl;
 					//go to next resource
-					//continue;
+					continue;
 				}
 				//if the resource doesn't match, release it
 				else
@@ -751,10 +751,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//empty appropriate acquired vector index
 				for (int i = 0; i < _acquiredResources.size(); i++)
 				{
-					//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-						map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
-						ReleaseResourceEM(resIt->second, 1);
-					//}
+					if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+							map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+							ReleaseResourceEM(resIt->second, 1);
+					}
 					_acquiredResources.erase(_acquiredResources.begin() + i);
 					i--;
 				}
@@ -969,6 +969,7 @@ bool Step::IsInpectionFail(Distribution* inspecFailProb)
 	//}
 	//else return false;
 	return true;
+	//return false;
 }
 
 bool Step::IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount)
