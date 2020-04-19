@@ -122,17 +122,16 @@ void SchedResourceFailure()
 	{
 		cout << "" << endl;
 		//schedule iter's first failure in iter->second->GetFailureDistr()
-		//if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay")
-		if (iter->second->GetFailureName() == "")
-		{
-			iter++;
-			continue;
+		if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+		//if (iter->second->GetFailureName() == 		
+			//continue;
 		}
 		else
 		{
 			iter->second->ScheduleFirstFailures(iter->second);
-			iter++;
+			//iter++;
 		}
+		iter++;
 	}
 
 }
