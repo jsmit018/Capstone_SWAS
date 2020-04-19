@@ -123,6 +123,48 @@ private:
 
 };
 
+class Step::ResWaitForResEA : public CondEventAction {
+public:
+	ResWaitForResEA(Step* step, Resource* resource, Resource* required, int amountNeeded, vector<string> acqResources) {
+		_step = step;
+		_resource = resource;
+		_required = required;
+		_amountNeeded = amountNeeded;
+		_acqResources = acqResources;
+	}
+
+	bool Condition(Resource* required, Parts* parts)
+	{
+		if (required == _required)
+		{
+			if (required->GetResourceCount() >= _amountNeeded)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	void Execute()
+	{
+		_step->StartRepairServiceEM(_resource, _acqResources);
+	}
+
+private:
+	Step* _step;
+	Resource* _resource;
+	Resource* _required;
+	int _amountNeeded;
+	vector<string> _acqResources;
+};
+
 class Step::NeedPartsEA : public CondEventAction {
 public:
 	NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
@@ -206,6 +248,23 @@ private:
 	vector<string> _acqResources;
 };
 
+class Step::StartRepairServiceEA : public EventAction {
+public:
+	StartRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources) {
+		_step = step;
+		_resource = resource;
+		_acqResources = acqResources;
+	}
+
+	void Execute() {
+		_step->StartRepairServiceEM(_resource, _acqResources);
+	}
+private:
+	Step* _step;
+	Resource* _resource;
+	vector<string> _acqResources;
+};
+
 class Step::DoneServiceEA : public EventAction {
 public:
 	DoneServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources)
@@ -222,6 +281,25 @@ public:
 private:
 	Step* _step;
 	Aircraft* _aircraft;
+	vector<string> _acqResources;
+};
+
+class Step::DoneRepairServiceEA : public EventAction {
+public:
+	DoneRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources)
+	{
+		_step = step;
+		_resource = resource;
+		_acqResources = acqResources;
+	}
+
+	void Execute()
+	{
+		_step->DoneRepairServiceEM(_resource, _acqResources);
+	}
+private:
+	Step* _step;
+	Resource* _resource;
 	vector<string> _acqResources;
 };
 
@@ -627,8 +705,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//store in acquired resource vector
 				_acquiredResources.push_back(it->first);
 
-				Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
+				//Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
+				//Scribe::UpdateResourceUtilization(it->second->GetResourceName(), it->second->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
 				//			}
 
 							//else {
@@ -673,6 +751,109 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 	}
 
+}
+void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResources)
+{
+	
+	if (isReturnStep == true)
+	{
+		cout << " is return step " << _name << " for " << resource->GetResourceName() << " return step is " << RepairJob::FindResRepairJobObj(resource->GetResourceName())->GetMyReturnStep();
+		SetStepID(RepairJob::FindResRepairJobObj(resource->GetResourceName())->GetMyReturnStep());
+	}
+	else
+	{
+		Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetTotalSimulationTime());
+	}
+	isReturnStep = false;
+
+	_acquiredResources = acquiredResources;
+	cout << "Step " << _type << " " << _name << " " << _stepID << " of " << resource->GetFailureName() << " started on "
+		<< resource->GetResourceName();
+
+	bool hasResource = false;
+
+	if (_type == "process" || _type == "Process")
+	{
+		bool alreadyAcquired = false;
+		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+
+		while (iter != _reqResourceMap.end())
+		{
+			for (int i = 0; i < _acquiredResources.size(); i++)
+			{
+				if (iter->first == _acquiredResources[i])
+				{
+					alreadyAcquired = true;
+					break;
+				}
+			}
+
+			if (alreadyAcquired)
+			{
+				cout << resource->GetResourceName() << ": I already have a " << iter->first << endl;
+			}
+
+			else
+			{
+				map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+
+				if (_resourcePool.find(iter->first)->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+				{
+					AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
+					_acquiredResources.push_back(it->first);
+				}
+				else
+				{
+					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources));
+					return;
+				}
+			}
+			iter++;
+		}
+		DoneRepairServiceEA* repair = new DoneRepairServiceEA(this, resource, acquiredResources);
+		SimExec::ScheduleEventAt(1, repair, this->_servTime->GetRV(), "RestoreEA");
+	}
+	
+	else if (_type == "inspection" || _type == "Inspection")
+	{
+		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+		while (iter != _reqResourceMap.end())
+		{
+			for (int i = 0; i < _acquiredResources.size(); i++)
+			{
+				if (iter->first == acquiredResources[i])
+				{
+					break;
+				}
+			}
+			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+
+			if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+			{
+				AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
+				_acquiredResources.push_back(it->first);
+
+				if (IsInpectionFail(_inspecFailProb) == true)
+				{
+					isReturnStep = true;
+					cout << resource->GetResourceName() << ": Inspection failed, Rescheduling appropriate maintenance step " << _returnStep << endl;
+					SimExec::ScheduleEventAt(_RJpriority, new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_returnStep), resource, acquiredResources), 0, "RepairResourceEA");
+				}
+				else if (IsInpectionFail(_inspecFailProb) == false)
+				{
+					cout << "Resource Maintenance passed inspection.  Scheduling restore service." << endl;
+					SimExec::ScheduleEventAt(1, new DoneRepairServiceEA(this, resource, acquiredResources), 0, "RepairStepDoneEA");
+				}
+			}
+			else
+			{
+				SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources));
+				return;
+			}
+		}
+		iter++;
+
+	}
 }
 //
 //void Step::PrintEvent(Aircraft* aircraft,  RepairJob* repairjob, Step* step, Resource* resource, Parts* parts)
@@ -875,6 +1056,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 	}
 
+}
+
+void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources)
+{
 }
 
 void Step::AddQueueEM(Aircraft* aircraft)

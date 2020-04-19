@@ -121,8 +121,10 @@ private:
 	static map<string, Parts*> _partsPool;
 
 	class StartServiceEA;
+	class StartRepairServiceEA;
 	class AddQueueEA;
 	class DoneServiceEA;
+	class DoneRepairServiceEA;
 	class PlaceOrderEA;
 	class OrderArrivalEA;
 	class AcquireResourceEA;
@@ -130,13 +132,16 @@ private:
 	/*class FailResourceEA;
 	class RestoreResourceEA;*/
 	class WaitForResourceEA;
+	class ResWaitForResEA;
 	class NeedPartsEA;
 
 	void PlaceOrderEM(Parts* parts);	
 	void OrderArrivalEM(Parts* parts);
 	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
+	void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
+	void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
 	//void FailResourceEM(Resource* resource);

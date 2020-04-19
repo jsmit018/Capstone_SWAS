@@ -339,3 +339,16 @@ void RepairJob::PrintJobProperties()
     cout << endl;
 }
 
+RepairJob* RepairJob::FindResRepairJobObj(string name)
+{
+    map<string, RepairJob*>::iterator it = _resourceRepairMap.find(name);
+    if (it == _resourceRepairMap.end())
+    {
+        return nullptr;
+    }
+    else
+    {
+        return it->second;
+    }
+}
+

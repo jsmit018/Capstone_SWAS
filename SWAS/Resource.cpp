@@ -288,6 +288,16 @@ string Resource::GetRepairProcess()
 	return _repairProc;
 }
 
+RepairJob* Resource::GetRepairJobObj(string name)
+{
+	return nullptr;
+}
+
+RepairJob* Resource::GetMyRepairJobObj(string name)
+{
+	return nullptr;
+}
+
 void Resource::PrintResProperties()
 {
 	cout << "			Resource name: " << _resourceName << endl;

@@ -24,6 +24,9 @@ public:
 	void SetUnplannedProb(string unplannedProb); //switch to distribution pointer
 	void PrintJobProperties();
 
+	static RepairJob* FindResRepairJobObj(string name);
+	static RepairJob* GetMyResRepairJobObj(string name);
+
 	string GetName();
 	int GetPriority();
 	string GetSchedType();
