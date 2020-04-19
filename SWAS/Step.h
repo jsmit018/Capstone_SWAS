@@ -62,6 +62,7 @@ public:
 	int GetStepID();
 	int GetResMapSize();
 	int GetPartsMapSize();
+	int GetReturnStep();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
