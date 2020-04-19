@@ -7,6 +7,7 @@
 
 map<string, Resource*> Step::_resourcePool;
 map<string, Parts*> Step::_partsPool;
+bool isReturnStep = false;
 
 Step::Step(Distribution* serviceTime, string name) : Task(name)
 {
@@ -38,7 +39,10 @@ void Step::CopyMapStep(const Step& mapStep)
 	_servTime = mapStep._servTime; // does this need to have copythis()
 	_reqRes = mapStep._reqRes;
 	_reqParts = mapStep._reqParts;
-	_returnStep = mapStep._returnStep;
+	if (mapStep._returnStep == NULL)
+		_returnStep = NULL;
+	else
+		_returnStep = mapStep._returnStep;
 
 
 	//cout << ".....IN STEP NEXT INDOOR REQ IS " << _indoorReq << endl;
@@ -336,12 +340,19 @@ void Step::OrderArrivalEM(Parts* parts)
 	SimExec::CheckConditionalEvents(0, parts);
 }
 
+int Step::GetReturnStep()
+{
+	return _returnStep;
+}
 void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 {
-	//cout << "am  i here \n";
-	//cout << aircraft->GetNextAircraftID() << endl;
+	if (isReturnStep == true)
+	{
+		cout << "is return step " << _name << " for " << aircraft->GetAircraftID() << " return step is "<< aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep() << endl;
+		SetStepID(aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep());
+	}
+	isReturnStep = false;
 
-	//cout << endl << " after blah blah \n";
 	_acquiredResources = acquiredResources;
 	cout << "Step " << _type << " " << _name << " " << _stepID << " of " << this->GetMyRJName() << " started on "
 		<< aircraft->GetAircraftType() << " of ID " << aircraft->GetAircraftID() << endl;
@@ -630,15 +641,23 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 							//if inspection results in failure
 				if (IsInpectionFail(_inspecFailProb) == true)
 				{
+					isReturnStep = true;
 					//TODO: Check if this is right
+					cout << _myRJ << " return step " << _returnStep << "vec size" << aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize() << endl;
 					Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
-					cout << "Inspection failed, Rescheduling appropriate maintenance." << endl;
+					cout << aircraft->GetAircraftID() << "'s Inspection failed, Rescheduling appropriate maintenance at step " << _returnStep << endl;
+					//cout << aircraft->GetAircraftID() <<  "'S NEW RETURN ID IS " << _returnStep << endl;
+					//_stepID = _returnStep;
+
+					cout << "in return step" << endl;
+
 					SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 					//reschedule step of id = to return step id and all following steps
+
 					return;
 				}
 
-				else
+				else if (IsInpectionFail(_inspecFailProb) == false)
 				{
 					cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
 					Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
@@ -701,6 +720,9 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			{
 				//cout << " ____ IN CHECK FOR RESOURCES IN NEXT STEP" << endl;
 				//if resource name is found in acquired vector, keep it in the vector
+
+				//cout << " THE RETURN ID IS " << _returnStep << endl;
+				//cout << " THE STEP ID IS " << _stepID << endl;
 				if (aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i]))
 				{
 					cout <<aircraft->GetAircraftID() << " " << aircraft->GetAircraftType() << " Retaining " << _acquiredResources[i] << " for " << this->GetName() << endl;
@@ -964,13 +986,13 @@ bool Step::IsPartsMapEnd(map<string, Parts*>::iterator it)
 bool Step::IsInpectionFail(Distribution* inspecFailProb)
 {
 	//is this how we're handling the distributions? [to check with Yang]
-	//if (inspecFailProb->GetRV() >= 0.51)
-	//{
-	//	cout << "failure" << endl;
-	//	return true;
-	//}
-	//else return false;
-	return true;
+	if (inspecFailProb->GetRV() >= 0.51)
+	{
+		cout << "failure" << endl;
+		return true;
+	}
+	else return false;
+	//return true;
 }
 
 bool Step::IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount)

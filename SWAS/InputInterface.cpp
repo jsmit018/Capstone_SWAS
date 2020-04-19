@@ -637,8 +637,13 @@ void InputReader::ReadInputData() //initialization for getting data
 					//	inspecFailProb = row[5];
 					newStep->SetInspecFailProb(row[5]);
 
-					istringstream ssSteps3(row[6]);
-					ssSteps3 >> returnStep;
+					if (row[6] == "")
+						returnStep = NULL;
+					else
+					{
+						istringstream ssSteps3(row[6]);
+						ssSteps3 >> returnStep;
+					}
 					newStep->SetReturnStep(returnStep);
 
 					//stepDur = row[7];
