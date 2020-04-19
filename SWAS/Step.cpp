@@ -754,7 +754,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				{
 					//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
 					map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
-					ReleaseResourceEM(resIt->second, 1);
+					//ReleaseResourceEM(resIt->second, 1);
 					//}
 					_acquiredResources.erase(_acquiredResources.begin() + i);
 					i--;
