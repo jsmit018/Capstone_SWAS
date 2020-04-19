@@ -344,6 +344,7 @@ void Resource::RestoreResourceEM(Resource* resource)
 	cout << "Resource has been restored, updating amount and checking conditional events" << endl;
 	resource->RestoreResource();
 	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), resource->GetFailureDistr()->GetRV(), "FailResourceEA");
+	Scribe::RecordRestore(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetTotalSimulationTime());
 	SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 2, "FailResourceEA");
 	SimExec::CheckConditionalEvents(resource, 0);
 }
