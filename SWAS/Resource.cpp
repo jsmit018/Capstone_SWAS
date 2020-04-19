@@ -310,7 +310,7 @@ void Resource::PrintResProperties()
 
 void Resource::FailResourceEM(Resource* resource)
 {
-	int newCount;
+	//int newCount;
 	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
 	//RepairJob* newJob;
 
@@ -319,29 +319,29 @@ void Resource::FailResourceEM(Resource* resource)
 	//newCount = iter->second->GetResourceCount() - 1;
 	//SetResPoolCount(iter->first, newCount);
 	//resource->SetResourceCount(newCount);
-	if (resource->GetResourceCount() > 0) {
+	//if (resource->GetResourceCount() > 0) {
 		//Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 		resource->FailResource();
 
 		//SimExec::ScheduleEventAt(newJob->GetPriority(), new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "New Repair Job");
 		//This Event action should actually be scheduling a restore resource instead of a fail one.
-		cout << "Resource has failed, scheduling a restore resource" << endl;
+		//cout << "Resource has failed, scheduling a restore resource" << endl;
 		//SimExec::ScheduleEventAt(1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
 
 		//Jordan: schedule next failure in iter->second->GetFailureDistr
 		//SimExec::ScheduleEventAtRecurring(0, new RestoreResourceEA(resource), resource->GetFailureDistr()->GetRV(), "RestoreResourceEA");
 		SimExec::ScheduleEventAtRecurring(0, new RestoreResourceEA(resource),	2, "RestoreResourceEA");
 		Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
-	}
-	else {
-		cout << "Waiting for next available resource to become available, and it will fail" << endl;
-		SimExec::ScheduleConditionalEvent(0, new WaitForResourceEA(resource, 1));
-	}
+	//}	
+	//else {
+	//	//cout << "Waiting for next available resource to become available, and it will fail" << endl;
+	//	SimExec::ScheduleConditionalEvent(0, new WaitForResourceEA(resource, 1));
+	//}
 }
 
 void Resource::RestoreResourceEM(Resource* resource)
 {
-	cout << "Resource has been restored, updating amount and checking conditional events" << endl;
+	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;
 	resource->RestoreResource();
 	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), resource->GetFailureDistr()->GetRV(), "FailResourceEA");
 	Scribe::RecordRestore(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetTotalSimulationTime());

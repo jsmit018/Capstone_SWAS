@@ -58,10 +58,11 @@ public:
 	//Time GetServiceTime();
 	int GetNumberInQueue();
 	int GetRJPriority();
-	int GetRJIndoorReq();
+	char GetRJIndoorReq();
 	int GetStepID();
 	int GetResMapSize();
 	int GetPartsMapSize();
+	int GetReturnStep();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
 	string GetMyRJName();
@@ -131,7 +132,7 @@ private:
 	class WaitForResourceEA;
 	class NeedPartsEA;
 
-	void PlaceOrderEM(Parts* parts);
+	void PlaceOrderEM(Parts* parts);	
 	void OrderArrivalEM(Parts* parts);
 	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);

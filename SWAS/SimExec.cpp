@@ -775,7 +775,7 @@ int SimExec::RunSimulation() {
 			FlipSimulationFlag();
 			return 3;
 		}
-		cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << endl;
+		//cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << endl;
 		ea->Execute();
 		delete ea;
 		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
@@ -821,7 +821,7 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 				FlipSimulationFlag();
 				return 3;
 			}
-			cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << " " << GetSimulationTime()._timeOfDay << " " << GetSimulationTime()._year << endl;
+			//cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << " " << GetSimulationTime()._timeOfDay << " " << GetSimulationTime()._year << endl;
 			ea->Execute();
 			delete ea;
 			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day

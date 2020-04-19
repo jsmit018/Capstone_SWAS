@@ -637,8 +637,13 @@ void InputReader::ReadInputData() //initialization for getting data
 					//	inspecFailProb = row[5];
 					newStep->SetInspecFailProb(row[5]);
 
-					istringstream ssSteps3(row[6]);
-					ssSteps3 >> returnStep;
+					if (row[6] == "")
+						returnStep = NULL;
+					else
+					{
+						istringstream ssSteps3(row[6]);
+						ssSteps3 >> returnStep;
+					}
 					newStep->SetReturnStep(returnStep);
 
 					//stepDur = row[7];
@@ -862,7 +867,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//		cout << "fail vector size: " << row.size() << endl;
 
 					resName = row[0];
-					cout << "ROW 0 " << row[0] << endl;
+					//cout << "ROW 0 " << row[0] << endl;
 					RepairJob* resRepairJob = new RepairJob();
 					resRepairJob->SetName(row[4]);
 
@@ -887,11 +892,15 @@ void InputReader::ReadInputData() //initialization for getting data
 									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 										continue;*/
 								{
+									
+									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+									iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
+
 									if (it->first == row[0]) 
 									{
 										//cout << "RES NAME " << row[0] << endl;
-										iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
-										iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
+										//iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+										//iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
 										it->second->SetFailureName(row[1]);
 										//cout << " " << it->second->GetFailureName() << endl;
 										it->second->SetFailureType(row[2]);
