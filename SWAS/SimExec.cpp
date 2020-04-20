@@ -871,6 +871,7 @@ int SimExec::PrintNumInCondES()
 	int condEventTracker = 0;
 	CondEvent* start = _conditionalSet.GetConditionalSet();
 	while (start != 0) {
+		cout << "Event: " << start->_eaName << ", Aircraft: " << start->_type << ", Needs: " << start->_resourceNeeded << endl;
 		start = start->_nextCondEvent;
 		condEventTracker++;
 	}
