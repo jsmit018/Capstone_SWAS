@@ -308,45 +308,45 @@ void RepairJob::PrintResourceRepairs()
 }
 
 RepairJob* RepairJob::GetResourceRepair(string resourceName)
-{
+{ 
     map<string, RepairJob*>::iterator it = _resourceRepairMap.find(resourceName);
     if (it == _resourceRepairMap.end())
-        return nullptr;
+        return nullptr; 
     return it->second;
 }
-
+ 
 void RepairJob::PrintJobProperties()
-{
+{ 
 
     cout << "   Repair Job Name: " << _name << endl;
     cout << "   Schedule Type: " << _schedType << endl;
     cout << "   Repair Job Priority: " << _priority << endl;
     cout << "   Unplanned Probability: ";
     _unplannedProb->PrintDistribution();
-    cout << endl;
+    cout << endl; 
     //cout << "   Calendar Occurrence: " << _calendarDate << endl;
     //cout << "   Reccuring Amount: " << _recurringAmt << endl;
     cout << "   Indoor Requirement? " << _indoorReq << endl;
     cout << endl;
 
     for (int i = 0; i < _vecSteps.size(); i++)
-    {
+    { 
         _vecSteps[i]->Print();
         cout << endl;
         //_vecSteps[1]->PrintPools();
     }
-    cout << endl;
-}
+    cout << endl; 
+} 
 
 RepairJob* RepairJob::GetMyResRepairJobObj(string name)
 {
-    map<string, RepairJob*>::iterator it = _resourceRepairMap.find(name);
-    if (it == _resourceRepairMap.end())
-    {
-        return nullptr;
+    map<string, RepairJob*>::iterator it = _resourceRepairMap.find(name); 
+    if (it == _resourceRepairMap.end()) 
+    { 
+        return nullptr; 
     }
-    else
-    {
-        return it->second;
+    else 
+    { 
+        return it->second; 
     }
 }

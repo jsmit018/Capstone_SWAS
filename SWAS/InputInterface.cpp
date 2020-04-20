@@ -531,37 +531,37 @@ void InputReader::ReadInputData() //initialization for getting data
 							//Required Parts
 							//Amount of Parts Needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 						//Store Step Object in Repair Job's map
-
+			 
 			if (line.find("Steps Table") != string::npos) {
 				printf("got Steps Table \n \n");
-
+				 
 				string currentJob;
 				int jobPriority;
 
-				int stepID;
-				string stepName;
+				int stepID; 
+				string stepName; 
 				string stepNameTemp;
-				string stepType;
-				string inspecFailProb;
-				int returnStep;
-				Distribution* stepDurTemp = 0;
-				string stepDur;
-				string reqResource;
-				string reqParts;
-				int numParts;
-				int numResources;
-
-				int rowCounter = 0;
-
-				getline(dataFile, line);
-				vector <string> row;
-
+				string stepType; 
+ 				string inspecFailProb;
+ 				int returnStep;
+ 				Distribution* stepDurTemp = 0;
+ 				string stepDur;
+ 				string reqResource;
+ 				string reqParts;
+ 				int numParts;
+ 				int numResources;
+				 
+				int rowCounter = 0; 
+ 
+ 				getline(dataFile, line);
+ 				vector <string> row;
+				 
 				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
-					getline(dataFile, line);
-
+ 					getline(dataFile, line);
+					 
 					//	cout << "NEW STEP LINE " << line << endl;
 					if (line == ",,,,,,,,,,")
 						break;
@@ -578,15 +578,15 @@ void InputReader::ReadInputData() //initialization for getting data
 							if (!getline(iss, line, ','))
 								break;
 
-							if (line.empty()) {
-								//								cout << "Empty cell \n";
-															//	break;
-							}
-
-							row.push_back(line);
-						}
+ 							if (line.empty()) {
+ 								//								cout << "Empty cell \n";
+ 															//	break;
+  							}
+							 
+							row.push_back(line); 
+						} 
 						else
-							getline(iss, line);
+ 							getline(iss, line);
 					}
 
 					Step* newStep = new Step(stepDurTemp, stepNameTemp);

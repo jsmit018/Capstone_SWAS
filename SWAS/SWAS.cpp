@@ -219,8 +219,11 @@ void InitializeAircraft()
 					//(sourceblock schedules arrival, arrival schedules next arrival)
 					cout << endl;
 					//cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
-					cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
+					//cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
+					cout << endl;
+					cout << endl;
+
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),
 						firstAircraft->GetAircraftType(),
