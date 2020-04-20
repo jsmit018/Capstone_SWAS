@@ -1,6 +1,6 @@
 #include "RepairJob.h"
 
-map<string, RepairJob*> RepairJob::_resourceRepairMap;
+
 
 RepairJob::RepairJob()
 {
@@ -339,7 +339,7 @@ void RepairJob::PrintJobProperties()
     cout << endl;
 }
 
-RepairJob* RepairJob::FindResRepairJobObj(string name)
+RepairJob* RepairJob::GetMyResRepairJobObj(string name)
 {
     map<string, RepairJob*>::iterator it = _resourceRepairMap.find(name);
     if (it == _resourceRepairMap.end())

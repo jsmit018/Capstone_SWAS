@@ -104,6 +104,7 @@ private:
 	int _returnStep;		// Maybe this should be a pointer to the step instead of its "id"
 	map<string, Resource*> _reqResourceMap;		//map of required resources
 	map<string, Parts*> _reqPartsMap;		//map of required parts
+
 	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
 	//Scribe* outputRecorder = new Scribe();

@@ -56,8 +56,6 @@ private:
 	class FailResourceEA;
 	class WaitForResourceEA;
 
-	map<string, RepairJob*> _myRepairJob;
-	Step* _nextStep;
 	Distribution* failureDistribution;
 
 	void FailResourceEM(Resource* resource);
