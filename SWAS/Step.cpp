@@ -1085,6 +1085,31 @@ void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResour
 			}
 			iter++;
 		}
+		cout << endl;
+		cout << resource->GetResourceName() << _myRJ << "'s step " << _stepID << " "
+			<< _name << " has finished, scheduling next maintenance step: "
+			<< RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->GetName() << endl;
+		SimExec::ScheduleEventAt(GetRJPriority(), new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID), resource, _acquiredResources), 0, "StartRepairServiceEa");
+	}
+	else if (_stepID == RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStepVecSize())
+	{
+		cout << "Repair complete on " << resource->GetResourceName() << endl;
+		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+		while (iter != _reqResourceMap.end())
+		{
+			cout << "  Releasing: " << iter->first << endl;
+			ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+
+			for (int i = 0; i < _acquiredResources.size(); i++)
+			{
+				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+				ReleaseResourceEM(resIt->second, 1);
+
+				_acquiredResources.erase(_acquiredResources.begin() + i);
+				i--;
+			}
+			iter++;
+		}
 
 	}
 }
@@ -1201,13 +1226,15 @@ bool Step::IsPartsMapEnd(map<string, Parts*>::iterator it)
 bool Step::IsInpectionFail(Distribution* inspecFailProb)
 {
 	//is this how we're handling the distributions? [to check with Yang]
-	if (inspecFailProb->GetRV() >= 0.51)
+	/*if (inspecFailProb->GetRV() >= 0.51)
 	{
 		cout << "failure" << endl;
 		return true;
 	}
 	else return false;
 	//return true;
+	*/
+	return false;
 }
 
 bool Step::IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount)
