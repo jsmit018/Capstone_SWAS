@@ -42,6 +42,7 @@ public:
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
+	void AddBayResource(Aircraft* aircraft);
 	void AddParts(Parts* parts, string partsName, int numNeeded);
 	void PrintParts();
 	void PrintResources();
@@ -82,6 +83,7 @@ public:
 	void AddQueueEM();						// if bay not avial, increment queue
 	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay
 	void Print();
+	//void AddBayReq();
 private:
 	string _myRJ;
 	Distribution* _serviceTime;

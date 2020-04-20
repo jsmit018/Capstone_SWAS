@@ -674,10 +674,11 @@ void InputReader::ReadInputData() //initialization for getting data
 								// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
+								//cout << " adding resources for new step " << endl;
 								//in each new step, insert new obj of parts into req res list 
 								newStep->SetReqResource(row[8]);
+				
 
-								//in each new step, insert new obj of parts into req parts list 
 								if (row.size() == 11)
 								{
 									istringstream ssSteps5(row[10]);
@@ -777,12 +778,15 @@ void InputReader::ReadInputData() //initialization for getting data
 					res->SetResourceName(resName);
 					res->SetResourceCount(resCount);
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
-					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
+
 
 					if (resName == "S Bay" || resName == "M Bay" || resName == "L Bay")
 					{
+						res->SetNumResNeeded(1);
 						Step::AddToResPool(res, resName);
 					}
+
+					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
 
 					Scribe::RecordResource(resName, resCount);
 
@@ -804,13 +808,17 @@ void InputReader::ReadInputData() //initialization for getting data
 								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 									continue;
 								it->second->SetResourceName(resName);
+								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumResNeeded());
 								it->second->SetResourceCount(resCount);
 								//cout << "REsourcE couNT ";
 								//cout << it->second->GetResourceCount() << endl;
-
+								
+					
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 								//it->second->PrintResProperties();
 								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
+
+
 							}
 
 							iter++;
@@ -1021,6 +1029,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetInitPartsCount(count);
 								it->second->SetThreshold(threshold);
 								it->second->SetLeadTime(row[3]);
+								
 								//it->second->PrintPartsProperties();
 
 							}
@@ -1060,6 +1069,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	//	cout << "////////////////////////////////////////////////////// \n";
 	while (it != _masterMap.end())
 	{
+
 		//		it->second->PrintProperties();
 		it++;
 	}
@@ -1123,9 +1133,11 @@ void InputReader::ReadInputData() //initialization for getting data
 	{
 		map<string, Resource*> tempMap = Step::GetResPool();
 		if (tempMap.find(resIter->first) == tempMap.end())
-		{
+		{		
+			cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
 			Resource* resCopy = new Resource();
 			resCopy->CopyMapResource(*resIter->second);
+			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumResNeeded() << endl;
 			Step::AddToResPool(resCopy, resIter->first);
 		}
 		resIter++;
@@ -1258,6 +1270,16 @@ Aircraft* InputReader::GetAircraft(string aircraftName)
 	}
 	else
 		return nullptr;
+}
+
+void InputReader::SetMasterResNum(string name, int num)
+{
+	map<string, Resource*>::const_iterator iter = _masterResourceMap.begin();
+	while (iter != _masterResourceMap.end())
+	{
+		_masterResourceMap.find(name)->second->SetNumResNeeded(num);
+		iter++;
+	}
 }
 
 map<string, Aircraft*> InputReader::GetMasterMap()

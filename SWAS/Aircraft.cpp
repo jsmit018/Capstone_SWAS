@@ -210,9 +210,11 @@ void Aircraft::CopyMyJobList(string aircraftType)
 			//	//------------
 			//	myJobIter++;
 			//}
+			AddBayReqToRes();
 		}
 		iter++;
 	}
+
 }
 
 
@@ -457,7 +459,6 @@ Aircraft* Aircraft::New()
 {
 	//_aircraftID = ++_nextID;
 	Aircraft* newAircraft = new Aircraft(*this);
-
 	return newAircraft; // add appropriate parameters
 	//return new Aircraft();
 }
@@ -594,6 +595,32 @@ string Aircraft::GetRandomElement()
 	string random_element = _unplannedRjVec[dist(engine)];
 
 	return random_element;
+}
+
+void Aircraft::AddBayReqToRes()
+{
+	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
+	while (iter != _myRepairJobs.end())
+	{
+		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
+		{
+			map<string, Resource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
+			while (resIter != InputReader::GetMasterResMapEnd())
+			{
+				//cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl;
+				if (resIter->first == _baySizeReq)
+				{
+					resIter->second->SetNumResNeeded(1);
+					iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
+
+					cout << "adding" << resIter->first << endl;
+				}
+				resIter++;
+			}
+		}
+		iter++;
+	}
+		
 }
 
 int Aircraft::GetUnplanVecSize()
