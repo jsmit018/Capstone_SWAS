@@ -24,6 +24,8 @@ public:
 	void SetUnplannedProb(string unplannedProb); //switch to distribution pointer
 	void PrintJobProperties();
 
+	static RepairJob* GetMyResRepairJobObj(string name);
+
 	string GetName();
 	int GetPriority();
 	string GetSchedType();
@@ -33,6 +35,7 @@ public:
 	Distribution* GetUnplannedProb();
 	//void GetNextStep(string rjType);
 	int GetStepVecSize();
+	int GetMyReturnStep();
 	Step* GetStep(int stepID);
 	bool WillSchedule();
 	Step* GetFirstStep();
