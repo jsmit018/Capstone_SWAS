@@ -1305,6 +1305,14 @@ Resource* Step::GetResourceObj(string name)
 		return nullptr;
 	return it->second;
 }
+Parts* Step::GetPartsObj(string name)
+{
+	map<string, Parts*>::iterator it = _reqPartsMap.find(name);
+	if (it == _reqPartsMap.end())
+		return nullptr;
+	return it->second;
+}
+
 
 map<string, Resource*>::iterator Step::GetResourceMapBegin()
 {

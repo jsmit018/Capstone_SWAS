@@ -29,6 +29,7 @@ public:
 	static map<string, Resource*>::iterator GetMasterResMapBegin();
 	static map<string, Resource*>::iterator GetMasterResMapEnd();
 	static void SetMasterResNum(string name, int num);
+	static void SetMasterPartsNum(string name, int num);
 	//	static void GetMyStep(string repairName, int stepId); //for getting step object 
 	static Aircraft* GetAircraft(string aircraftName);
 	static map<string, Aircraft*> GetMasterMap();

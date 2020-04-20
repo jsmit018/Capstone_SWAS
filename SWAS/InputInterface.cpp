@@ -1027,6 +1027,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetPartsName(partName);
 								it->second->SetPartsCount(count);
 								it->second->SetInitPartsCount(count);
+								SetMasterPartsNum(partName, iter->second->GetStep(i + 1)->GetPartsObj(partName)->GetNumPartsNeeded());
 								it->second->SetThreshold(threshold);
 								it->second->SetLeadTime(row[3]);
 								
@@ -1278,6 +1279,16 @@ void InputReader::SetMasterResNum(string name, int num)
 	while (iter != _masterResourceMap.end())
 	{
 		_masterResourceMap.find(name)->second->SetNumResNeeded(num);
+		iter++;
+	}
+}
+
+void InputReader::SetMasterPartsNum(string name, int num)
+{
+	map<string, Parts*>::const_iterator iter = _masterPartsMap.begin();
+	while (iter != _masterPartsMap.end())
+	{
+		_masterPartsMap.find(name)->second->SetNumPartsNeeded(num);
 		iter++;
 	}
 }

@@ -65,6 +65,7 @@ public:
 	int GetReturnStep();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
+	Parts* GetPartsObj(string name);
 	string GetMyRJName();
 	map<string, Parts*>::iterator GetPartsMapBegin();
 	map<string, Parts*>::iterator GetPartsMapEnd();
