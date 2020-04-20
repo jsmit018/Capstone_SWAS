@@ -38,18 +38,6 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 
 }
 
-int RepairJob::GetMyReturnStep()
-{
-    int returnStep;
-
-    for (int i = 0; i < GetStepVecSize(); i++)
-    {
-        if (_vecSteps[i]->GetReturnStep() != 0)
-            returnStep = _vecSteps[i]->GetReturnStep();
-    }
-    return returnStep;
-}
-
 Step* RepairJob::GetStep(int stepID)
 {
     if (_vecSteps.size() == 0)

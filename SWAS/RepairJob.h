@@ -33,7 +33,6 @@ public:
 	Distribution* GetUnplannedProb();
 	//void GetNextStep(string rjType);
 	int GetStepVecSize();
-	int GetMyReturnStep();
 	Step* GetStep(int stepID);
 	bool WillSchedule();
 	Step* GetFirstStep();
