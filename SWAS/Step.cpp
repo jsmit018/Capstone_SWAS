@@ -7,6 +7,7 @@
 
 map<string, Resource*> Step::_resourcePool;
 map<string, Parts*> Step::_partsPool;
+map<string, RepairJob*> RepairJob::_resourceRepairMap;
 bool isReturnStep = false;
 
 Step::Step(Distribution* serviceTime, string name) : Task(name)
@@ -1060,6 +1061,32 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources)
 {
+	_acquiredResources = acquiredResources;
+	if (_stepID < RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStepVecSize())
+	{
+		int nextID = _stepID + 1;
+		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+
+		while (iter != _reqResourceMap.end())
+		{
+			for (int i = 0; i < _acquiredResources.size(); i++)
+			{
+				if (RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i]))
+				{
+					cout << resource->GetResourceName() << " Retaining " << _acquiredResources[i] << " for " << this->GetName() << endl;
+				}
+				else
+				{
+					cout << resource->GetResourceName() << " Releasing " << _acquiredResources[i] << endl;
+					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+					_acquiredResources.erase(_acquiredResources.begin() + i);
+					i--;
+				}
+			}
+			iter++;
+		}
+
+	}
 }
 
 void Step::AddQueueEM(Aircraft* aircraft)
