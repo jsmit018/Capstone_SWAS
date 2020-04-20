@@ -142,7 +142,8 @@ failureNode::failureNode(string resource, string failure, float time)
 {
 	resourceType = resource;
 	failureType = failure;
-	ellapse = time;
+	tStart = SimExec::GetTotalSimulationTime();
+	ellapse = -1;
 	date = (to_string(SimExec::GetSimulationTime()._month + 1) + "/" + to_string(SimExec::GetSimulationTime()._day + 1) + "/" + to_string(SimExec::GetSimulationTime()._year));
 
 	next = nullptr;
@@ -791,6 +792,27 @@ void Scribe::RecordFailure(string resource, string failure, float time)
 		runCurrent->failureTail->next = new failureNode(resource, failure, time);
 		runCurrent->failureTail = runCurrent->failureTail->next;
 	}
+}
+
+void Scribe::RecordRestore(string resource, string failure, float time)
+{
+	runCurrent->failureRunner = runCurrent->failureHead;
+	do
+	{
+		if (runCurrent->failureRunner->resourceType == resource)
+		{
+			if (runCurrent->failureRunner->failureType == failure)
+			{
+				if (runCurrent->failureRunner->ellapse == -1)
+				{
+					runCurrent->failureRunner->tEnd = SimExec::GetTotalSimulationTime();
+					runCurrent->failureRunner->ellapse = runCurrent->failureRunner->tEnd - runCurrent->failureRunner->tStart;
+				}
+			}
+		}
+
+		runCurrent->failureRunner = runCurrent->failureRunner->next;
+	} while (runCurrent->failureRunner != nullptr);
 }
 
 //Create a node containing an aircraft type, aircraft ID, resource type and a start time

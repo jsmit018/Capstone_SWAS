@@ -613,7 +613,7 @@ void Aircraft::AddBayReqToRes()
 					resIter->second->SetNumResNeeded(1);
 					iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
 
-					cout << "adding" << resIter->first << endl;
+					//cout << "adding" << resIter->first << endl;
 				}
 				resIter++;
 			}

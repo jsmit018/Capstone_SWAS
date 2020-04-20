@@ -42,7 +42,6 @@ public:
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
-	void AddBayResource(Aircraft* aircraft);
 	void AddParts(Parts* parts, string partsName, int numNeeded);
 	void PrintParts();
 	void PrintResources();
@@ -63,8 +62,10 @@ public:
 	int GetStepID();
 	int GetResMapSize();
 	int GetPartsMapSize();
+	int GetReturnStep();
 	Distribution* GetServiceTime();
 	Resource* GetResourceObj(string name);
+	Parts* GetPartsObj(string name);
 	string GetMyRJName();
 	map<string, Parts*>::iterator GetPartsMapBegin();
 	map<string, Parts*>::iterator GetPartsMapEnd();
@@ -83,7 +84,6 @@ public:
 	void AddQueueEM();						// if bay not avial, increment queue
 	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay
 	void Print();
-	//void AddBayReq();
 private:
 	string _myRJ;
 	Distribution* _serviceTime;
@@ -105,6 +105,7 @@ private:
 	int _returnStep;		// Maybe this should be a pointer to the step instead of its "id"
 	map<string, Resource*> _reqResourceMap;		//map of required resources
 	map<string, Parts*> _reqPartsMap;		//map of required parts
+
 	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
 	//Scribe* outputRecorder = new Scribe();
@@ -122,8 +123,10 @@ private:
 	static map<string, Parts*> _partsPool;
 
 	class StartServiceEA;
+	class StartRepairServiceEA;
 	class AddQueueEA;
 	class DoneServiceEA;
+	class DoneRepairServiceEA;
 	class PlaceOrderEA;
 	class OrderArrivalEA;
 	class AcquireResourceEA;
@@ -131,13 +134,16 @@ private:
 	/*class FailResourceEA;
 	class RestoreResourceEA;*/
 	class WaitForResourceEA;
+	class ResWaitForResEA;
 	class NeedPartsEA;
 
-	void PlaceOrderEM(Parts* parts);
+	void PlaceOrderEM(Parts* parts);	
 	void OrderArrivalEM(Parts* parts);
 	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
+	void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
+	void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
 	//void FailResourceEM(Resource* resource);
