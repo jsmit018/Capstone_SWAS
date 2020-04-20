@@ -81,6 +81,8 @@ public:
     string resourceType;
     string failureType;
     string date;
+    float tStart;
+    float tEnd;
     float ellapse;
 
     failureNode* next;
@@ -275,6 +277,7 @@ public:
     static void UpdateResourceUtilization();
     static void UpdateResourceRequests(string, bool);
     static void RecordFailure(string, string, float);
+    static void RecordRestore(string, string, float);
     static void RecordResourceWait(string, int, string, float);
     static void RecordResourceWaitEnd(int, string, float);
     static void RecordServiceWait(string, int, string, float);

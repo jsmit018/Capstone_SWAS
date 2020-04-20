@@ -39,6 +39,8 @@ public:
 	Distribution* GetFailureDistr();
 	string GetRepairProcess();
 
+	
+
 private:
 	int _resourceCount;
 	int _numNeeded;
@@ -53,6 +55,8 @@ private:
 	class RestoreResourceEA;
 	class FailResourceEA;
 	class WaitForResourceEA;
+
+	Distribution* failureDistribution;
 
 	void FailResourceEM(Resource* resource);
 	void RestoreResourceEM(Resource* resource);
