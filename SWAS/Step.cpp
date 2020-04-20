@@ -758,8 +758,8 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 	
 	if (isReturnStep == true)
 	{
-		cout << " is return step " << _name << " for " << resource->GetResourceName() << " return step is " << RepairJob::FindResRepairJobObj(resource->GetResourceName())->GetMyReturnStep();
-		SetStepID(RepairJob::FindResRepairJobObj(resource->GetResourceName())->GetMyReturnStep());
+		cout << " is return step " << _name << " for " << resource->GetResourceName() << " return step is " << RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetMyReturnStep();
+		SetStepID(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetMyReturnStep());
 	}
 	else
 	{
