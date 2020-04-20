@@ -323,7 +323,7 @@ int main()
 		cout << "RUN NUMBER " << i + 1 << endl;
 		*/
 		InitializeAircraft();
-		SchedResourceFailure();
+		//SchedResourceFailure();
 		//InitalizeAircraft(GetScribe());
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
