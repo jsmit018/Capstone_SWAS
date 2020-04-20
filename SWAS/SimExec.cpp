@@ -52,17 +52,21 @@ struct SimExec::Event {
 };
 
 struct SimExec::CondEvent {
-	CondEvent(int priority, CondEventAction* cea) {
+	CondEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded) {
 		_priority = priority;
 		_cea = cea;
 		_nextCondEvent = 0;
 		_prevCondEvent = 0;
+		_eaName = eaName;
+		_type = type;
+		_resourceNeeded = resourceNeeded;
 	}
 
 	int _priority;
 	CondEventAction* _cea;
 	CondEvent* _nextCondEvent;
 	CondEvent* _prevCondEvent;
+	string _eaName, _type, _resourceNeeded;
 };
 
 class SimExec::CondEventSet {
@@ -71,8 +75,8 @@ public:
 		_condSet = 0;
 	}
 
-	void AddConditionalEvent(int priority, CondEventAction* cea) {
-		CondEvent* c = new CondEvent(priority, cea);
+	void AddConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded) {
+		CondEvent* c = new CondEvent(priority, cea, eaName, type, resourceNeeded);
 		if (_condSet == 0) {
 			_condSet = c;
 		}
@@ -728,10 +732,10 @@ void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double dis
 	_eventSet.AddEventRecurring(priority, ea, distributionValue, recurring, eaName);
 }
 
-void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea)
+void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded)
 {
 	//	cout << "Scheduling Conditional Event";
-	_conditionalSet.AddConditionalEvent(priority, cea);
+	_conditionalSet.AddConditionalEvent(priority, cea, eaName, type, resourceNeeded);
 }
 
 void SimExec::SetSystemSink(SinkBlock* sinkBlock)

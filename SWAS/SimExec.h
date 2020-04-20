@@ -31,7 +31,7 @@ public:
 	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName);
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName);
 	static void ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring = 1);
-	static void ScheduleConditionalEvent(int priority, CondEventAction* cea);
+	static void ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded);
 	static void SetSystemSink(SinkBlock* sinkBlock);
 	static SinkBlock* GetSystemSink();
 	static string ConvertDate(Time month);
