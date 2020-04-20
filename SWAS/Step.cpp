@@ -1007,7 +1007,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-				map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
 				//	int num = _reqResourceMap.find(_acquiredResources[i])->second->GetNumResNeeded();
 				ReleaseResourceEM(resIt->second, resIt->second->GetNumResNeeded());
 				cout << "Releasing this many " << resIt->second->GetNumResNeeded()
