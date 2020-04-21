@@ -589,11 +589,12 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 	if (_type == "process" || _type == "Process")
 	{
-		bool alreadyAcquired = false;
+		//bool alreadyAcquired = false;
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources listed in required map
 		while (iter != _reqResourceMap.end())
 		{
+			bool alreadyAcquired = false;
 			//compare key to acquired resources vector
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
@@ -626,7 +627,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				}
 				else {
 					//	cout << " we have to wait for a/an " << iter->first << endl;
-					if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July")
+					//if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July")
 						//		cout << "Hehe sounds like a lotta hoopla" << endl;
 							//INSERT WAITING LOGIC
 				//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
@@ -693,7 +694,6 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//}
 
 					iterParts++;
-					/*}*/
 				}
 
 
