@@ -9,30 +9,73 @@
 
 using namespace std;
 
+map<string, Aircraft*> InputReader::_masterMap;
+map<string, Resource*> InputReader::_masterResourceMap;
+map<string, Parts*> InputReader::_masterPartsMap;
+int InputReader::_numRuns;
+
+struct InputReader::GUISelectedAircraft {
+	GUISelectedAircraft(string aircraftName) {
+		_aircraftName = aircraftName;
+		_nextAircraft = NULL;
+	}
+	string _aircraftName;
+	GUISelectedAircraft* _nextAircraft;
+};
+
 InputReader::InputReader()
 {
-
+	calConvert = new CalConverter();
 }
 
 InputReader::~InputReader()
-{
-	// Iterate through the whole map and deallocate all pointer objects using the syntaxt delete objectPointer;
-	// for each map element
-	//	Aircraft * toDelete = map::iterator->first;
-	// if there are pointers within that object that pointer is pointing to
-		// first iterate through those to deallocate them
-	// delete toDelete; 
+{/*
+	// Iterate through the whole map and deallocate all pointer objects
+	map <string, Aircraft*>::const_iterator airIt = _masterMap.begin();
+	// for each aircraft element
+	while (airIt != _masterMap.end())
+	{
+		//for each repairjob element
+		map <string, RepairJob*>::const_iterator rjIt = airIt->second->GetRJMapBegin();
+		while (rjIt != airIt->second->GetRJMapEnd())
+		{
+			//for each step element
+			for (int i = 0; i < rjIt->second->GetStepVecSize(); i++)
+			{
+				//for each resource element
+				map <string, Resource*>::const_iterator resIt = rjIt->second->GetStep(i+1)->GetResourceMapBegin();
+				while (resIt != rjIt->second->GetStep(i+1)->GetResourceMapEnd())
+				{
+					Resource* toDelete = resIt->second;
+					delete toDelete;
+				}
+				//for each part element
+				map <string, Parts*>::const_iterator partsIt = rjIt->second->GetStep(i+1)->GetPartsMapBegin();
+				while (partsIt != rjIt->second->GetStep(i+1)->GetPartsMapEnd())
+				{
+					Parts* toDelete = partsIt->second;
+					delete toDelete;
+				}
+				Step* toDelete = rjIt->second->GetStep(i+1);
+				delete toDelete;
+			}
+			RepairJob* toDelete = rjIt->second;
+			delete toDelete;
+		}
+		Aircraft* toDelete = airIt->second;
+		delete toDelete;*/
+		//}
 }
 
 void InputReader::ReadInputData() //initialization for getting data
 {
-	CalConverter calConvert;
+	//CalConverter calConvert;
 	//Step step;
 	Resource resource;
 	string line;
 
-
-	ifstream dataFile("SWASInputData.csv");
+	ifstream dataFile("SWASInputData_V1.csv");
+	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
 
@@ -40,7 +83,6 @@ void InputReader::ReadInputData() //initialization for getting data
 			//	cout << line << endl; 
 			char c;
 			string commas;
-
 
 			//////////////////////////////////////////
 			//////////////   RUN INFO    /////////////
@@ -50,7 +92,7 @@ void InputReader::ReadInputData() //initialization for getting data
 			//Get seed type value [Done]
 				//Give to Distribution [Errors]
 			//Get number of runs [Done]
-				//Give to SimExec []
+				//Make loop for main[Done]
 
 			if (line.find("Run Info Table") != string::npos) {
 				printf("got Run Info table \n");
@@ -63,10 +105,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				if (line != ",,,,,,,,,," && line.find("Number of Runs") != string::npos) {
 					dataFile >> numRuns >> c >> seedType;
 
+					SetNumRuns(numRuns);
+
 					//removed 10 commas from string
 					seedType = seedType.erase(seedType.length() - 10);
 
-					//						cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
+					//cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
 
 					Distribution::SetSystemSeedType(seedType);
 					//in distribution file, there will be an if statement that determines whether 
@@ -95,11 +139,13 @@ void InputReader::ReadInputData() //initialization for getting data
 					str >> month;
 					if (str.peek() == ',')
 						str.ignore();
+					if (month == 0)
+						break;
 					str >> numDays;
 
-					//					cout << "month " << month << " days, " << numDays << endl; 
+					//	cout << "month " << month << " days, " << numDays << endl; 
 
-					calConvert.InsertDays(month, numDays);
+					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
 				}
 			}
@@ -125,20 +171,20 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-
-					////parsing the whole file and storing individual strings
+					//	cout << "another line " << line << endl;
+						////parsing the whole file and storing individual strings
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -169,6 +215,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						//for each index, set each variable
 						//	istringstream iss0(row[0]);
 					airType = row[0];
+					//cout << "ROW " << row[0];
 					newAir->SetAircraftType(airType);
 
 					istringstream iss1(row[1]);
@@ -183,17 +230,20 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					newAir->SetAircraftFootprint(airLength, airWingspan);
 
+					newAir->SetBaySizeReq(row[4]);
+
 					_masterMap.insert(pair<string, Aircraft*>(airType, newAir));
-					for (map<string, Aircraft*>::const_iterator it = _masterMap.begin(); it != _masterMap.end(); ++it)
-					{
+					//for (map<string, Aircraft*>::const_iterator it = _masterMap.begin(); it != _masterMap.end(); ++it)
+					//{
 						//						cout << "MAP: " << it->first << endl;
 						//						cout << "OBJ: ";
 						//						it->second->PrintProperties();
 						//						cout << endl;
-					}
+					//}
 
-					//					cout << "after aircraft for loop \n";	
+					//						
 				}
+				//	cout << "after aircraft for loop \n";
 			}
 
 
@@ -206,12 +256,11 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
-
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -219,7 +268,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -239,7 +288,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					unplannedType = row[0];
 
 					unplannedIAT = row[1];
-
 					//compare to string
 					map<string, Aircraft*>::const_iterator iter = _masterMap.find(unplannedType);
 					if (iter == _masterMap.end()) {
@@ -248,8 +296,10 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					iter->second->SetAircraftIAT(unplannedIAT);
-					//						iter->second->PrintProperties();
-					//						cout << endl;
+
+					//		iter->second->PrintProperties();
+					//		cout << endl;
+
 				}
 			}
 
@@ -278,16 +328,17 @@ void InputReader::ReadInputData() //initialization for getting data
 				string schedCal;
 				double schedRecur;
 				char indoorReq;
+				int numPlanned = 0;
 
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -295,7 +346,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -325,7 +376,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					schedType = row[2];
 					//					cout << "sched type: " << schedType << endl;
 					newJob->SetSchedType(schedType);
-
+			
 					if (schedType == "Calendar") {
 						schedCal = row[3];
 						//						cout << "calendar date: " << schedCal << endl;						newJob->SetSchedType(schedType);
@@ -333,10 +384,22 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					else if (schedType == "Recurring") {
+
 						istringstream unss3(row[3]);
 						unss3 >> schedRecur;
 						//						cout << "recur: " << schedRecur << endl;
-						newJob->SetRecurring(schedRecur);
+						newJob->SetRecurringAmt(schedRecur);
+
+						//	cout << "THE AIRCRAFT THAT HAS A RECURRING JOB OF " << schedRecur << " IS " << plannedType << endl;
+
+						map<string, Aircraft*>::const_iterator iter = _masterMap.find(plannedType);
+						if (iter != _masterMap.end())
+						{
+							iter->second->AddRecurIAT(repairName, newJob->GetRecurringAmt());
+
+							iter++;
+						}
+
 					}
 
 					istringstream unss4(row[4]);
@@ -344,13 +407,16 @@ void InputReader::ReadInputData() //initialization for getting data
 					//					cout << "indoor req: " << indoorReq << endl << endl;
 					newJob->SetIndoorReq(indoorReq);
 
-										//cout << "PLANNED: " << endl;
-										//newJob->PrintJobProperties();
-										//cout << endl;
+					//cout << "PLANNED: " << endl;
+					//newJob->PrintJobProperties();
+					//cout << endl;
+
 
 
 					_masterMap[plannedType]->AddRepairJob(newJob, repairName);
+					numPlanned++;
 				}
+				Scribe::SetPlanned(numPlanned);
 			}
 			///////Unplanned////////
 
@@ -375,12 +441,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -388,7 +454,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -404,10 +470,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					RepairJob* newJob = new RepairJob();
 
-					//	for (int i = 0; i < row.size(); ++i) {
-						//	cout << "line " << i << ": " << row[i] << endl;
-					//	}
-
 					unplanType = row[0];
 					//					cout << "craft type: " << unplanType << endl;
 					//TO DO:			if "all", set up logic
@@ -417,29 +479,32 @@ void InputReader::ReadInputData() //initialization for getting data
 					newJob->SetName(unRepairName);
 
 					repJobProb = row[2];
-					//	cout << "probability: " << repJobProb << endl;
+					//cout << "probability: " << repJobProb << endl;
 					newJob->SetUnplannedProb(repJobProb);
+
 
 					istringstream unss(row[3]);
 					unss >> unIndoorReq;
 					//	cout << "indoor req: " << unIndoorReq << endl << endl;
 					newJob->SetIndoorReq(unIndoorReq);
 
-										//cout << "UNPLANNED: " << endl;
-										//newJob->PrintJobProperties();
-										//cout << endl;
+					//cout << "UNPLANNED: " << endl;
+					//newJob->PrintJobProperties();
+					//cout << endl;
 
 					if (unplanType == "All")
 					{
 						map<string, Aircraft*>::iterator it = _masterMap.begin();
 						while (it != _masterMap.end())
 						{
-							it->second->AddRepairJob(newJob, unRepairName);
+							RepairJob* anotherOne = new RepairJob(*newJob);
+							it->second->AddRepairJob(anotherOne, unRepairName);
 							it++;
 						}
 					}
 					else
 					{
+						RepairJob* anotherOne = new RepairJob(*newJob);
 						//add new repair job to list of unplanType aircraft's repair jobs in the master map
 						_masterMap[unplanType]->AddRepairJob(newJob, unRepairName);
 					}
@@ -475,9 +540,11 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				int stepID;
 				string stepName;
+				string stepNameTemp;
 				string stepType;
 				string inspecFailProb;
 				int returnStep;
+				Distribution* stepDurTemp = 0;
 				string stepDur;
 				string reqResource;
 				string reqParts;
@@ -489,20 +556,22 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+
+					//	cout << "NEW STEP LINE " << line << endl;
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream iss(line);
 
 					////parsing the whole file and storing individual strings
 					while (iss)
 					{
-						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						//csv empty cell has 10 commas
+						if (line != ",,,,,,,,,,") {
 
 
 							////breaking up strings by comma
@@ -520,25 +589,39 @@ void InputReader::ReadInputData() //initialization for getting data
 							getline(iss, line);
 					}
 
-					Step* newStep = new Step(stepDur, stepName);
+					Step* newStep = new Step(stepDurTemp, stepNameTemp);
+					Resource* newRes = new Resource();
+					Parts* newParts = new Parts();
 
-					//	for (int i = 0; i < row.size(); ++i) {
-						//	cout << "line " << i << ": " << row[i] << endl;
-					//	}
-//					cout << "row : " << row[0] << endl;
-					//	cout << "row size " << row.size() << endl; 
+					//if on the first line of the table, current job is first line, row[0] and job priority is first line, row[1]
 					if (rowCounter == 0) {
 						currentJob = row[0];
+
+						istringstream ssSteps(row[1]);
+						ssSteps >> jobPriority;
+
 						rowCounter++;
 					}
+					//if new line's job name value isn't empty, new job name value is current job
 					if (row[0] != "")
 					{
-//						cout << "non blank row " << endl;
+						//cout << "non blank row " << endl;
 						currentJob = row[0];
 					}
+					//if new line's priority value isn't empty, new prioruty value is current priority
+					if (row[1] != "")
+					{
+						istringstream ssSteps(row[1]);
+						ssSteps >> jobPriority;
+					}
 
-					istringstream ssSteps(row[1]);
-					ssSteps >> jobPriority;
+					newStep->SetMyRJName(currentJob);
+					//cout << "&&&&&JOB PRIORITY" << jobPriority << endl;
+
+					//istringstream ssSteps(row[1]);
+					//ssSteps >> jobPriority;
+					newStep->SetRJPriority(jobPriority);
+					//cout << "&%&%&%&%&%&%& PRIORITY " << jobPriority << endl;
 
 					//compare jobname to insert priority to correct map location
 
@@ -562,19 +645,19 @@ void InputReader::ReadInputData() //initialization for getting data
 					newStep->SetServiceTime(row[7]);
 
 					//reqResource = row[8];
-					newStep->SetReqResource(row[8]);
+					//newStep->SetReqResource(row[8]);
 
-					istringstream ssSteps4(row[9]);
-					ssSteps4 >> numResources;
+					//newStep->SetReqParts(row[9]);
 
-					//reqParts = row[10];
-					newStep->SetReqParts(row[10]);
-
-					if (row.size() == 12)
-					{
-						istringstream ssSteps5(row[11]);
-						ssSteps5 >> numParts;
-					}
+					//if (row.size() == 11)
+					//{
+					//	istringstream ssSteps5(row[10]);
+					//	ssSteps5 >> numParts;
+					//	newStep->SetReqParts(row[9], numParts);
+					//	//newStep->SetNumOfParts(, numParts);
+					//}
+					//else
+					//	newStep->SetReqParts(row[9], 0);
 
 					map<string, Aircraft*>::const_iterator iter = _masterMap.begin();
 
@@ -583,24 +666,40 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iter != _masterMap.end())
 					{
 						map<string, RepairJob*>::iterator it = iter->second->GetRJMapBegin();
+						//	cout << "aircraft name " << iter->second->GetAircraftType() << endl;
 
-						while(it != iter->second->GetRJMapEnd())
+						while (it != iter->second->GetRJMapEnd())
 						{
-							// create object, get the name of the repair job in the aircraft object and check that it exists
+							//	cout << "rj name: " << it->second->GetName() << endl;
+								// create object, get the name of the repair job in the aircraft object and check that it exists
 							if (it->second->GetName() == currentJob)
 							{
-								//cout << " about to add a step \n" << endl;
-								it->second->AddStep(newStep);
-								it++;
+								//cout << " adding resources for new step " << endl;
+								//in each new step, insert new obj of parts into req res list 
+								newStep->SetReqResource(row[8]);
+				
+
+								if (row.size() == 11)
+								{
+									istringstream ssSteps5(row[10]);
+									ssSteps5 >> numParts;
+									newStep->SetReqParts(row[9], numParts);
+								}
+
+								//add this step to the repair job's list
+								it->second->AddStep(newStep);							
+
 							}
-							else
-								it++;
+
+							it++;
 						}
+
 						iter++;
-						
 					}
 
+
 				}
+
 			}
 
 			//////////////////////////////////////////
@@ -637,12 +736,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				//reading row as string
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -650,7 +749,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -674,7 +773,24 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					istringstream ssResource3(row[3]);
 					ssResource3 >> resourceFootprintY;
-		
+
+					Resource* res = new Resource();
+					res->SetResourceName(resName);
+					res->SetResourceCount(resCount);
+					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
+
+
+					if (resName == "S Bay" || resName == "M Bay" || resName == "L Bay")
+					{
+						res->SetNumResNeeded(1);
+						Step::AddToResPool(res, resName);
+					}
+
+					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
+
+					Scribe::RecordResource(resName, resCount);
+
+					//Step::AddToResPool(res, res->GetResourceName());
 
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
 					//ITERATE THROUGH MASTER MAP
@@ -687,17 +803,21 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Resource*>::iterator it = iter->second->GetStep(i)->FindResource(resName);
-								
-								if (iter->second->GetStep(i)->IsResourceMapEnd(it))
+								map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(resName);
+
+								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 									continue;
-								
 								it->second->SetResourceName(resName);
+								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumResNeeded());
 								it->second->SetResourceCount(resCount);
+								//cout << "REsourcE couNT ";
+								//cout << it->second->GetResourceCount() << endl;
+								
+					
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
-				//				it->second->PrintResProperties();
-						
-								Step::AddToResPool(it->second, it->second->GetResourceName());
+								//it->second->PrintResProperties();
+								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
+
 
 							}
 
@@ -719,12 +839,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				//reading row as string
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -732,7 +852,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -750,14 +870,14 @@ void InputReader::ReadInputData() //initialization for getting data
 					//		cout << "fail vector size: " << row.size() << endl;
 
 					resName = row[0];
-
+					//cout << "ROW 0 " << row[0] << endl;
 					RepairJob* resRepairJob = new RepairJob();
 					resRepairJob->SetName(row[4]);
-					
+
 					resRepairJob->AddResourceRepair(resRepairJob, resName);
 
-					
-					//ADD VALUES OF RESOURCE TO STORED RESOURCE IN MAP BELONGING TO STEP
+
+
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
 					//ITERATE THROUGH MASTER MAP
 					while (masterIter != _masterMap.end())
@@ -769,17 +889,45 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Resource*>::iterator it = iter->second->GetStep(i)->FindResource(resName);
+								//map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(row[0]);
+								map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->GetResourceMapBegin();
+								while (it != iter->second->GetStep(i + 1)->GetResourceMapEnd())
+									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
+										continue;*/
+								{
+									
+									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+									iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
 
-								if (iter->second->GetStep(i)->IsResourceMapEnd(it))
-									continue;
+									if (it->first == row[0]) 
+									{
+										//cout << "RES NAME " << row[0] << endl;
+										//iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+										//iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
+										it->second->SetFailureName(row[1]);
+										//cout << " " << it->second->GetFailureName() << endl;
+										it->second->SetFailureType(row[2]);
+										//cout << " " << it->second->GetFailureType() << endl;
+										it->second->SetFailureDistr(row[3]);
+										it->second->SetRepairProcess(row[4]);
+										//cout << " " << it->second->GetRepairProcess() << endl;
+										//it->second->PrintResProperties();
+									}
 
-								it->second->SetFailureName(row[1]);
-								it->second->SetFailureType(row[2]);
-								it->second->SetFailureDistr(row[3]);
-								it->second->SetRepairProcess(row[4]);
-		//						it->second->PrintResProperties();
+									map<string, Resource*>::iterator masterResIt;
+									masterResIt = _masterResourceMap.find(row[0]);
+									if (masterResIt != _masterResourceMap.end())
+									{
+										masterResIt->second->SetFailureName(row[1]);
+										masterResIt->second->SetFailureType(row[2]);
+										masterResIt->second->SetFailureDistr(row[3]);
+										masterResIt->second->SetRepairProcess(row[4]);
+									}
+
+									it++;
+								}
 							}
+
 
 							iter++;
 						}
@@ -814,12 +962,12 @@ void InputReader::ReadInputData() //initialization for getting data
 				//reading row as string
 				vector <string> row;
 
-				while (line != ",,,,,,,,,,,")
+				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
 					getline(dataFile, line);
-					if (line == ",,,,,,,,,,,")
+					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
 
@@ -827,7 +975,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (ss)
 					{
 						//csv empty cell has 11 commas
-						if (line != ",,,,,,,,,,,") {
+						if (line != ",,,,,,,,,,") {
 							////breaking up strings by comma
 							if (!getline(ss, line, ','))
 								break;
@@ -843,16 +991,22 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 					Parts* newParts = new Parts();
 					//		cout << "fail vector size: " << row.size() << endl;
-					
+
 					partName = row[0];
-//					newParts->SetPartsName(partName);
+					newParts->SetPartsName(partName);
 
 					istringstream ssParts1(row[1]);
 					ssParts1 >> count;
-//					newParts->SetPartsCount(count);
+					newParts->SetPartsCount(count);
+					newParts->SetInitPartsCount(count);
 
 					istringstream ssParts2(row[2]);
 					ssParts2 >> threshold;
+					newParts->SetThreshold(threshold);
+
+					newParts->SetLeadTime(row[3]);
+					_masterPartsMap.insert(pair<string, Parts*>(partName, newParts));
+
 
 					//ADD VALUES OF PARTS TO STORED PARTS IN MAP BELONGING TO STEP
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
@@ -866,26 +1020,27 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Parts*>::iterator it = iter->second->GetStep(i)->FindParts(partName);
+								map<string, Parts*>::iterator it = iter->second->GetStep(i + 1)->FindParts(partName);
 
-								if (iter->second->GetStep(i)->IsPartsMapEnd(it))
+								if (iter->second->GetStep(i + 1)->IsPartsMapEnd(it))
 									continue;
-
 								it->second->SetPartsName(partName);
 								it->second->SetPartsCount(count);
+								it->second->SetInitPartsCount(count);
+								SetMasterPartsNum(partName, iter->second->GetStep(i + 1)->GetPartsObj(partName)->GetNumPartsNeeded());
 								it->second->SetThreshold(threshold);
 								it->second->SetLeadTime(row[3]);
-	//							it->second->PrintPartsProperties();
-
-								Step::AddToPartsPool(it->second, it->second->GetPartsName());
+								
+								//it->second->PrintPartsProperties();
 
 							}
-				
+
 							iter++;
 						}
 
 						masterIter++;
 					}
+				//	Step::AddToPartsPool(newParts, newParts->GetPartsName());
 
 				}
 
@@ -895,7 +1050,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 			while (iter != _masterMap.end())
 			{
-//				iter->second->PrintProperties();
+				//				iter->second->PrintProperties();
 				iter++;
 			}
 
@@ -915,9 +1070,118 @@ void InputReader::ReadInputData() //initialization for getting data
 	//	cout << "////////////////////////////////////////////////////// \n";
 	while (it != _masterMap.end())
 	{
+
 		//		it->second->PrintProperties();
 		it++;
 	}
+
+
+	//go through mastermap to get steps
+	//for every step 
+		//for each unique resource
+			//copy and insert into resPool
+		//for each unique part
+			//copy and insert into partsPool
+
+	//map<string, Aircraft*>::const_iterator masterIter2 = _masterMap.begin();
+	////ITERATE THROUGH MASTER MAP
+	//while (masterIter2 != _masterMap.end())
+	//{
+	//	//ITERATE THROUGH REPAIR JOBS
+	//	map<string, RepairJob*>::const_iterator iter = masterIter2->second->GetRJMapBegin();
+	//	while (iter != masterIter2->second->GetRJMapEnd())
+	//	{
+	//		//ITERATE THROUGH THEIR STEPS
+	//		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
+	//		{
+	//			//ITERATE THROUGH REQ PARTS MAP
+	//			map<string, Parts*>::const_iterator partsIter = iter->second->GetStep(i + 1)->GetPartsMapBegin();
+	//			while (partsIter != iter->second->GetStep(i + 1)->GetPartsMapEnd())
+	//			{
+	//				map<string, Parts*> tempMap = Step::GetPartsPool();
+	//				if (tempMap.find(partsIter->first) == tempMap.end())
+	//				{
+	//					Parts* partCopy = new Parts();
+	//					partCopy->CopyMapParts(*partsIter->second);
+	//					Step::AddToPartsPool(partCopy, partsIter->first);
+	//				}
+	//				partsIter++;
+	//			}
+
+	//		}
+	//		iter++;
+	//	}
+	//	masterIter2++;
+	//}
+
+
+	map<string, Parts*>::const_iterator partsIter = _masterPartsMap.begin();
+	while (partsIter != _masterPartsMap.end())
+	{
+		map<string, Parts*> tempMap = Step::GetPartsPool();
+		if (tempMap.find(partsIter->first) == tempMap.end())
+		{
+			Parts* partCopy = new Parts();
+			partCopy->CopyMapParts(*partsIter->second);
+			Step::AddToPartsPool(partCopy, partsIter->first);
+		}
+		partsIter++;
+	}
+
+
+	map<string, Resource*>::const_iterator resIter = _masterResourceMap.begin();
+	while (resIter != _masterResourceMap.end())
+	{
+		map<string, Resource*> tempMap = Step::GetResPool();
+		if (tempMap.find(resIter->first) == tempMap.end())
+		{		
+			cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
+			Resource* resCopy = new Resource();
+			resCopy->CopyMapResource(*resIter->second);
+			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumResNeeded() << endl;
+			Step::AddToResPool(resCopy, resIter->first);
+		}
+		resIter++;
+	}
+
+	//cout << "RES POOL SIZE IS " << Step::GetResPoolSize()<< endl;
+	//cout << "PARTS POOL SIZE IS " << Step::GetPartsPoolSize()<< endl;
+
+	//cout << "PRINTING POOLS" << endl;
+	//Step::PrintPools();
+
+
+}
+
+
+map<string, Aircraft*>::iterator InputReader::GetMasterMapBegin()
+{
+	return _masterMap.begin();
+}
+
+map<string, Aircraft*>::iterator InputReader::GetMasterMapEnd()
+{
+	return _masterMap.end();
+}
+
+void InputReader::SetNumRuns(int numRuns)
+{
+	_numRuns = numRuns;
+}
+
+int InputReader::GetNumRuns()
+{
+	return _numRuns;
+}
+
+map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
+{
+	return _masterResourceMap.begin();
+}
+
+map<string, Resource*>::iterator  InputReader::GetMasterResMapEnd()
+{
+	return _masterResourceMap.end();
 }
 
 void InputReader::PrintEverything()
@@ -934,4 +1198,112 @@ void InputReader::PrintEverything()
 		cout << "_________________________________________________________________________________" << endl;
 		iter++;
 	}
+}
+
+
+void InputReader::PrintMasterResMap()
+{
+	map<string, Resource*>::const_iterator iter = _masterResourceMap.begin();
+
+	while (iter != _masterResourceMap.end())
+	{
+		cout << "__________" << endl;
+		cout << iter->first << endl;
+		iter->second->PrintResProperties();
+		iter++;
+	}
+}
+
+CalConverter* InputReader::GetCalConverter()
+{
+	return calConvert;
+}
+
+void InputReader::AddSelectedAircraft(string aircraftName)
+{
+	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
+
+	if (_GUIListHead == NULL) {
+		_GUIListHead = newAircraft;
+	}
+	else {
+		GUISelectedAircraft* iter = _GUIListHead;
+		while (iter->_nextAircraft != NULL)
+		{
+			iter = iter->_nextAircraft;
+		}
+		iter->_nextAircraft = newAircraft;
+	}
+
+}
+
+bool InputReader::FindSelectedAircraft(string aircraftName)
+{
+	GUISelectedAircraft* iter = _GUIListHead;
+	while (iter != NULL)
+	{
+		if (iter->_aircraftName == aircraftName) {
+			//		cout << "FOUND AIRCRAFT " << iter->_aircraftName << endl;
+
+			return true;
+		}
+		else
+		{
+			iter = iter->_nextAircraft;
+			//		cout << "NEXT AIRCRAFT ITER FOR LINKED LIST" << endl;
+		}
+	}
+	return false;
+}
+
+int InputReader::GetMapSize()
+{
+	return _masterMap.size();
+}
+
+Aircraft* InputReader::GetAircraft(string aircraftName)
+{
+
+	map<string, Aircraft*>::const_iterator iter = _masterMap.find(aircraftName);
+	if (iter != _masterMap.end())
+	{
+		return iter->second;
+	}
+	else
+		return nullptr;
+}
+
+void InputReader::SetMasterResNum(string name, int num)
+{
+	map<string, Resource*>::const_iterator iter = _masterResourceMap.begin();
+	while (iter != _masterResourceMap.end())
+	{
+		_masterResourceMap.find(name)->second->SetNumResNeeded(num);
+		iter++;
+	}
+}
+
+void InputReader::SetMasterPartsNum(string name, int num)
+{
+	map<string, Parts*>::const_iterator iter = _masterPartsMap.begin();
+	while (iter != _masterPartsMap.end())
+	{
+		_masterPartsMap.find(name)->second->SetNumPartsNeeded(num);
+		iter++;
+	}
+}
+
+map<string, Aircraft*> InputReader::GetMasterMap()
+{
+	return _masterMap;
+}
+
+map<string, Resource*> InputReader::GetMasterResourceMap()
+{
+	return _masterResourceMap;
+}
+
+map<string, Parts*> InputReader::GetMasterPartsMap()
+{
+	return _masterPartsMap;
 }

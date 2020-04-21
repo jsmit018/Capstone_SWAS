@@ -8,3 +8,6 @@
 /x64
 /SWAS/Debug
 /SWAS/SWAS.vcxproj.user
+/SWAS/x64/Debug
+/SWAS/output.csv
+/SWAS/output.xlsx
