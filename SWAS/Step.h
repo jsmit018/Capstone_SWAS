@@ -23,7 +23,7 @@ public:
 	static map<string, Resource*> GetResPool();
 	static int GetPartsPoolSize();
 	static int GetResPoolSize();
-	static void SetResPoolCount(string, int);
+	static void SetResPoolCount(string, double);
 	static void SetPartPoolCount(string, int);
 	void SetName(string name);
 	void SetType(string type);
@@ -40,6 +40,7 @@ public:
 	void SetRJPriority(int RJpriority);
 	void SetMyRJName(string myRJ);
 	void ScheduleFirstStep(Step* step, Aircraft* aircaft);
+	void ReleaseBay(Resource*, string, string, int);
 
 	void AddResource(Resource* resource, string resourceName, int numNeeded);
 	void AddParts(Parts* parts, string partsName, int numNeeded);
@@ -54,6 +55,9 @@ public:
 	bool IsInpectionFail(Distribution* inspecFailProb);
 	bool IsPartsMapEnd(map<string, Parts*>::iterator it);
 	bool IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount);
+	bool IsMyBaySizeAvailable(string baySize);
+	bool AreThereBaysAvailable();
+	bool WasBayAcquired(string bayName);
 	string GetName();
 	//Time GetServiceTime();
 	int GetNumberInQueue();
@@ -67,6 +71,7 @@ public:
 	Resource* GetResourceObj(string name);
 	Parts* GetPartsObj(string name);
 	string GetMyRJName();
+	string AcquireBay(Resource*, int);
 	map<string, Parts*>::iterator GetPartsMapBegin();
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
