@@ -23,6 +23,7 @@ void Parts::CopyMapParts(const Parts& mapParts)
 	}
 }
 
+
 void Parts::SetPartsCount(int partsCount)
 {
 	_partsCount = partsCount;
@@ -195,6 +196,7 @@ void Parts::PrintPartsProperties()
 {
 	cout << "			Parts name: " << _partsName << endl;
 	cout << "			Parts count: " << _partsCount << endl;
+	cout << "			Nun needed:	" << _numNeeded << endl;
 	cout << "			Initial count: " << _initCount << endl;
 	cout << "			Order threshold: " << _orderThreshold << endl;
 	cout << "			Lead Time: ";

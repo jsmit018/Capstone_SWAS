@@ -43,6 +43,7 @@ public:
 	void SetNumCalEvents(int numCalEvents);
 	void SetAircraftID(int id);
 	void SetBaySizeReq(string baySizeReq);
+	void AddBayReqToRes();
 	void DeleteJob(string repairJob);
 	void ClearMyMap();
 	void DeleteAircraft(Aircraft*& aircraft);
