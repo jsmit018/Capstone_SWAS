@@ -948,7 +948,7 @@ string Step::GetMyRJName()
 
 string Step::AcquireBay(Resource* bay, int numNeeded)
 {
-	int newCount;
+	double newCount;
 	bool acquired = false;
 	map<string, Resource*>::const_iterator iter = _resourcePool.find(bay->GetResourceName());
 
