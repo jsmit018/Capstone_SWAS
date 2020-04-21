@@ -434,6 +434,13 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	}
 	isReturnStep = false;
 
+	cout << "!!!!!!!!!!! STEP IS " << _stepID << " RESOURCE NEEDS ARE ";
+	map<string, Resource*>::const_iterator sIt = _reqResourceMap.begin();
+	while (sIt != _reqResourceMap.end())
+	{
+		cout << sIt->first << " " << sIt->second->GetNumResNeeded() << endl;
+		sIt++;
+	}
 	//map<string, Resource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
 	//while (resIter != InputReader::GetMasterResMapEnd())
 	//{
@@ -991,7 +998,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+				map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
 				//	int num = _reqResourceMap.find(_acquiredResources[i])->second->GetNumResNeeded();
 				ReleaseResourceEM(resIt->second, resIt->second->GetNumResNeeded());
 				cout << "Releasing this many " << resIt->second->GetNumResNeeded()

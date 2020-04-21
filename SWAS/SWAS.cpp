@@ -213,16 +213,13 @@ void InitializeAircraft()
 						10);
 				}
 
-				else if (myIter->second->GetSchedType() == "Unplanned")
+				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
 				{
 					////// unplannedsourceblock schedules first arrival at unpl iat  
-					//(sourceblock schedules arrival, arrival schedules next arrival)
-					cout << endl;
+					//(sourceblock schedules arrival, arrival schedules next arrival
 					//cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
 					//cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
-					cout << endl;
-					cout << endl;
-					cout << endl;
+
 
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),
