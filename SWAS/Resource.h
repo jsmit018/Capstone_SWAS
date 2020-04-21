@@ -19,7 +19,7 @@ public:
 	void RestoreResource();
 	void PrintResProperties();
 
-	void SetResourceCount(int resourceCount);
+	void SetResourceCount(double resourceCount);
 	void SetResourceName(string resourceName);
 	void SetResourceFootprint(double length, double width);
 	void SetNumResNeeded(int numNeeded);
@@ -30,7 +30,7 @@ public:
 
 	void ScheduleFirstFailures(Resource* resource);
 
-	int GetResourceCount();
+	double GetResourceCount();
 	string GetResourceName();
 	double GetResourceFootprint();
 	int GetNumResNeeded();
