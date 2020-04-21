@@ -141,6 +141,7 @@ private:
 	class WaitForResourceEA;
 	class ResWaitForResEA;
 	class NeedPartsEA;
+	class NeedBaysEA;
 
 	void PlaceOrderEM(Parts* parts);	
 	void OrderArrivalEM(Parts* parts);
