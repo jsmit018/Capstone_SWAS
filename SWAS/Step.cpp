@@ -803,6 +803,10 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					alreadyAcquired = true;
 					break;
 				}
+				else if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+					alreadyAcquired = true;
+					break;
+				}
 			}
 
 			if (alreadyAcquired)
