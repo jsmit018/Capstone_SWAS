@@ -1351,14 +1351,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			else
 			{
 				//cout << " here 4" << endl;
-				//Empty resources from the last job
-				map<string, Resource*>::const_iterator iter = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapBegin();
-				while (iter != aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd())
+				map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+				while (iter != _reqResourceMap.end())
 				{
-					if (iter == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd())
-					{
-						break;
-					}
+
 					cout << ".................ID: " << aircraft->GetAircraftID() << "Releasing " << iter->first << endl;
 					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
