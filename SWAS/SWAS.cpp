@@ -213,7 +213,7 @@ void InitializeAircraft()
 						10);
 				}
 
-				else if (myIter->second->GetSchedType() == "Unplanned")
+				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
 				{
 					////// unplannedsourceblock schedules first arrival at unpl iat  
 					//(sourceblock schedules arrival, arrival schedules next arrival)
