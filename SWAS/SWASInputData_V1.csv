@@ -127,7 +127,7 @@ Engine Driven Hydraulic Pump - Replace,1,1,Troubleshoot,Process,,,Tri(0.25 0.4 0
 LH MLG Drage Brace Assy - Replace,1,1,Troubleshoot,Process,,,Tri(0.3 0.8 0.9),Mechanic(1)&Generator(1),,
 ,,2,Access,Process,,,Tri(0.1 0.2 0.35),Apprentice(1)&Large Toolbox(1),,
 ,,3,UPJACK,Process,,,Fixed(0.50),Mechanic(4)&Tripod Jack(3),,
-,,4,Remove/Replace,Process,,,Tri(1.8 2.0 2.25),Mechanic(2)&Large Toolbox(1)&Tripod Jack (3),Drag Brace,1
+,,4,Remove/Replace,Process,,,Tri(1.8 2.0 2.25),Mechanic(2)&Large Toolbox(1)&Tripod Jack(3),Drag Brace,1
 ,,5,Verify,Inpection,Fixed(0.008),3,Tri(0.4 0.5 0.65),Mechanic(3)&Tripod Jack(3)&Generator (1),,
 ,,6,DOWNJACK,Process,,,Fixed(0.50),Mechanic(4)&Tripod Jack(3),,
 ,,7,Close,Process,,,Tri(0.2 0.25 0.3),Apprentice(1)&Large Toolbox(1),,
@@ -241,7 +241,7 @@ Crane,2,61.7,61.7,,,,,,,
 Workbench,3,8,3,,,,,,,
 Generator,12,18,7.1,,,,,,,
 Ladder,4,1,3,,,,,,,
-Tripod Jack,3,6,5,,,,,,,
+Tripod Jack,7,6,5,,,,,,,
 Large Toolbox,6,7,3.5,,,,,,,
 Cockpit Pressure  Tester,1,4,5,,,,,,,
 Avionics Equipment Lift,1,4.5,4.5,,,,,,,
