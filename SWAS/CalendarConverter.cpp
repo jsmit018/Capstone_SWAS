@@ -48,9 +48,13 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 	divresult = div(ceil(distributionValue), 24); // Divide the distribution by 24 gives an amount of days + a time)
 	//If there is recurrent scheduling
 	if (recurring == 1) {
-		//int remainder = 0;
+		int remainder = 0;
 		if (baseX + ceil(distributionValue) > 11) {
-			baseX = ((baseX + (int)distributionValue) % 12);
+			do {
+				year++;
+				remainder = ((baseX + (int)distributionValue) % 12);
+			} while (remainder >= 12);
+			baseX = remainder;
 			if (baseY > endOfMonth[baseX]) {
 				int rem = baseY % endOfMonth[baseX];
 				baseY = 0 + rem;

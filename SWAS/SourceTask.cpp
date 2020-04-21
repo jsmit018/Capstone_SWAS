@@ -308,8 +308,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		job = _jobPriority.begin()->second;
 
 		//schedule that high priority job
-		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->
-		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
+		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
 		jobCounter++; 
 
 		
