@@ -19,7 +19,7 @@ public:
 	void RestoreResource();
 	void PrintResProperties();
 
-	void SetResourceCount(int resourceCount);
+	void SetResourceCount(double resourceCount);
 	void SetResourceName(string resourceName);
 	void SetResourceFootprint(double length, double width);
 	void SetNumResNeeded(int numNeeded);

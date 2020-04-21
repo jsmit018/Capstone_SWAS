@@ -179,7 +179,7 @@ public:
 
 	bool Condition(Resource* resource, Parts* parts) {
 		if (parts == _parts) {
-			if (_parts->GetPartsCount() > _amountNeeded)
+			if (_parts->GetPartsCount() >= _amountNeeded)
 				return true;
 			else
 				return false;
@@ -402,7 +402,7 @@ void Step::PlaceOrderEM(Parts* parts)
 	cout << "Parts total has fallen below its identified threshold, placing an order" << endl;
 	double restockTime = parts->GetLeadTime()->GetRV();
 	Scribe::RecordRestock(parts->GetPartsName(), restockTime);
-	SimExec::ScheduleEventAt(1, new OrderArrivalEA(this, parts), restockTime, "OrderArrivalEA");
+	SimExec::ScheduleEventAt(0, new OrderArrivalEA(this, parts), restockTime, "OrderArrivalEA");
 }
 
 void Step::OrderArrivalEM(Parts* parts)
@@ -410,7 +410,8 @@ void Step::OrderArrivalEM(Parts* parts)
 	//Logic: new count = initial count -- same as new count = current count + (initial count - current count)
 	int newCount;
 
-	map<string, Parts*>::const_iterator iter = _reqPartsMap.find(parts->GetPartsName());
+	//map<string, Parts*>::const_iterator iter = _reqPartsMap.find(parts->GetPartsName());
+	map<string, Parts*>::const_iterator iter = _partsPool.find(parts->GetPartsName());
 	newCount = iter->second->GetInitPartsCount();
 
 	//parts->SetPartsCount(newCount);
@@ -418,6 +419,9 @@ void Step::OrderArrivalEM(Parts* parts)
 
 	//Scribe::RecordRestock(parts->GetPartsName(), SimExec::GetSimulationTime()._timeOfDay);
 	SimExec::CheckConditionalEvents(0, parts);
+	
+	if (iter->second->GetPartsCount() <= iter->second->GetThreshold())
+		SimExec::ScheduleEventAt(0, new PlaceOrderEA(this, iter->second), 0.0, "PlaceOrderEA");
 }
 
 int Step::GetReturnStep()
@@ -526,7 +530,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 							_acquiredResources.push_back(bay);
 						}
 						else {
-							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first);
+							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 							Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 							Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 							return;
@@ -534,7 +538,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 					}
 					else {
-						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first);
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 						Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 						Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 						return;
@@ -557,7 +561,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//	Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 				//	return;
 				//}
-				it++;
+				//it++;
 			}
 		}
 
@@ -633,9 +637,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 					if (_acquiredResources.size() > 0)
-						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first);
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 					else
-						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first);
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 					iter++;
 					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
@@ -685,10 +689,10 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					else if (it->second->AreEnoughParts() == false) {
 						cout << "There are not enough parts scheduling to place a new order" << endl;
 						Scribe::RecordPartRequest(iterParts->first, iterParts->second->GetNumPartsNeeded(), false);
-						SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, it->second), 0.0, "PlaceOrderEA");
+						//SimExec::ScheduleEventAt(0, new PlaceOrderEA(this, it->second), 0.0, "PlaceOrderEA");
 						// WAITING
 						cout << "Adding Aircraft to the Conditional Event list until " << it->first << " becomes available" << endl;
-						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources), "NeedPartsEA", aircraft->GetAircraftType(), it->first);
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources), "NeedPartsEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 						return;
 					}
 					//}
@@ -735,9 +739,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
 				//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 				if (_acquiredResources.size() > 0)
-					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first);
+					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 				else
-					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first);
+					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 				Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 				return;
@@ -859,9 +863,9 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 				{
 					//SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources));
 					if (_acquiredResources.size() > 0)
-						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName());
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName(),77.7);
 					else
-						SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName());
+						SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
 					return;
 					return;
 				}
@@ -906,9 +910,9 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 			else
 			{
 				if (_acquiredResources.size() > 0)
-					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName());
+					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
 				else
-					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName());
+					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
 				return;
 			}
 		}
@@ -967,10 +971,10 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		if (iter->first == "S Bay") {
 			//Check up to Med
 			map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && miter->second->GetResourceCount() - (numNeeded / 2) >= 0) {
+			if (miter->second->GetResourceCount() > 0 && miter->second->GetResourceCount() - ((double)numNeeded / 2) >= 0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
-				newCount = miter->second->GetResourceCount() - (numNeeded / 2);
+				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2);
 				SetResPoolCount(miter->second->GetResourceName(), newCount);
 				return miter->second->GetResourceName();
 			}
@@ -978,14 +982,14 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check up to Large
 				map<string, Resource*>::const_iterator liter = _resourcePool.find("L Bay");
 				if (liter->second->GetResourceCount() > 0) {
-					if (liter->second->GetResourceCount() - (numNeeded / 4) < 0) {
+					if (liter->second->GetResourceCount() - ((double)numNeeded / 4) < 0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
 					else {
 						acquired = true;
 						Scribe::UpdateResourceRequests(liter->second->GetResourceName(), acquired);
-						newCount = liter->second->GetResourceCount() - (numNeeded / 4);
+						newCount = liter->second->GetResourceCount() - ((double)numNeeded / 4);
 						SetResPoolCount(liter->second->GetResourceName(), newCount);
 						return liter->second->GetResourceName();
 					}
@@ -999,10 +1003,10 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		else if (iter->first == "M Bay") {
 			//Check up
 			map<string, Resource*>::const_iterator liter = _resourcePool.find("L Bay");
-			if (liter->second->GetResourceCount() > 0 && (liter->second->GetResourceCount() - (numNeeded / 2)) >= 0) {
+			if (liter->second->GetResourceCount() > 0 && (liter->second->GetResourceCount() - ((double)numNeeded / 2)) >= 0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(liter->second->GetResourceName(), acquired);
-				newCount = liter->second->GetResourceCount() - (numNeeded / 2);
+				newCount = liter->second->GetResourceCount() - ((double)numNeeded / 2.0);
 				SetResPoolCount(liter->second->GetResourceName(), newCount);
 				return liter->second->GetResourceName();
 			}
@@ -1010,13 +1014,13 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check down
 				map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
 				if (siter->second->GetResourceCount() > 0) {
-					if (siter->second->GetResourceCount() - (numNeeded * 2) <= 0) {
+					if (siter->second->GetResourceCount() - ((double)numNeeded * 2) <= 0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
 					else {
 						acquired = true;
-						newCount = siter->second->GetResourceCount() - (numNeeded * 2);
+						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 2);
 						SetResPoolCount(siter->second->GetResourceName(), newCount);
 						Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
 						return siter->second->GetResourceName();
@@ -1031,10 +1035,10 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		else if (iter->first == "L Bay") {
 			//Check down to Med
 			map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - (numNeeded * 2)) >= 0) {
+			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded * 2)) >= 0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
-				newCount = miter->second->GetResourceCount() - (numNeeded / 2);
+				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2);
 				SetResPoolCount(miter->second->GetResourceName(), newCount);
 				return miter->second->GetResourceName();
 			}
@@ -1042,13 +1046,13 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check down to small
 				map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
 				if (siter->second->GetResourceCount() > 0) {
-					if (siter->second->GetResourceCount() - (numNeeded * 4) < 0) {
+					if (siter->second->GetResourceCount() - ((double)numNeeded * 4) < 0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
 					else {
 						acquired = true;
-						newCount = siter->second->GetResourceCount() - (numNeeded * 4);
+						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 4);
 						SetResPoolCount(siter->second->GetResourceName(), newCount);
 						Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
 						return siter->second->GetResourceName();
@@ -2113,9 +2117,11 @@ void Step::AcquireParts(Parts* parts, int numNeeded)
 		if (newCount <= iter->second->GetThreshold())
 		{
 			//		cout << "Parts Count reached threshold, ordering more " << iter->first << endl;
-			SimExec::ScheduleEventAt(1, new PlaceOrderEA(this, iter->second), 0.0, "PlaceOrderEA");
+			SimExec::ScheduleEventAt(0, new PlaceOrderEA(this, iter->second), 0.0, "PlaceOrderEA");
 		}
 	}
+	/*else if(numNeeded <= iter->second->GetThreshold())
+		SimExec::ScheduleEventAt(0, new PlaceOrderEA(this, iter->second), 0.0, "PlaceOrderEA");*/
 
 	//if (iter->second->GetPartsCount() <= iter->second->GetThreshold())
 	//{

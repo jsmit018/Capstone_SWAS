@@ -52,7 +52,7 @@ struct SimExec::Event {
 };
 
 struct SimExec::CondEvent {
-	CondEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded) {
+	CondEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID) {
 		_priority = priority;
 		_cea = cea;
 		_nextCondEvent = 0;
@@ -60,9 +60,11 @@ struct SimExec::CondEvent {
 		_eaName = eaName;
 		_type = type;
 		_resourceNeeded = resourceNeeded;
+		_aID = aID;
 	}
 
 	int _priority;
+	int _aID;
 	CondEventAction* _cea;
 	CondEvent* _nextCondEvent;
 	CondEvent* _prevCondEvent;
@@ -75,8 +77,8 @@ public:
 		_condSet = 0;
 	}
 
-	void AddConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded) {
-		CondEvent* c = new CondEvent(priority, cea, eaName, type, resourceNeeded);
+	void AddConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID) {
+		CondEvent* c = new CondEvent(priority, cea, eaName, type, resourceNeeded, aID);
 		if (_condSet == 0) {
 			_condSet = c;
 		}
@@ -835,10 +837,10 @@ void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double dis
 	_eventSet.AddEventRecurring(priority, ea, distributionValue, recurring, eaName);
 }
 
-void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded)
+void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID)
 {
 	//	cout << "Scheduling Conditional Event";
-	_conditionalSet.AddConditionalEvent(priority, cea, eaName, type, resourceNeeded);
+	_conditionalSet.AddConditionalEvent(priority, cea, eaName, type, resourceNeeded, aID);
 }
 
 void SimExec::SetSystemSink(SinkBlock* sinkBlock)
@@ -982,7 +984,7 @@ int SimExec::PrintNumInCondES()
 	int condEventTracker = 0;
 	CondEvent* start = _conditionalSet.GetConditionalSet();
 	while (start != 0) {
-		cout << "Event: " << start->_eaName << ", Aircraft: " << start->_type << ", Needs: " << start->_resourceNeeded << endl;
+		cout << "Event: " << start->_eaName << ", Aircraft: " << start->_type << ", Needs: " << start->_resourceNeeded << ", ID: " << start->_aID << endl;
 		start = start->_nextCondEvent;
 		condEventTracker++;
 	}
