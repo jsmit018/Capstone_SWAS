@@ -1218,7 +1218,9 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						}
 						hound++;
 					}
-					if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
+					if (sherlock->first != hound->first)
+						continue;
+					else if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
 					{
 						ReleaseResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
 					}
