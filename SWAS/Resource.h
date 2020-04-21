@@ -30,7 +30,7 @@ public:
 
 	void ScheduleFirstFailures(Resource* resource);
 
-	int GetResourceCount();
+	double GetResourceCount();
 	string GetResourceName();
 	double GetResourceFootprint();
 	int GetNumResNeeded();

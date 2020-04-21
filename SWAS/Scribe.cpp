@@ -722,7 +722,8 @@ void Scribe::RecordResource(string resource, int count)
 }
 
 //Update the utilization values for a specific resource
-void Scribe::UpdateResourceUtilization(string resource, int usage, float currentTime)
+//void Scribe::UpdateResourceUtilization(string resource, int usage, float currentTime)
+void Scribe::UpdateResourceUtilization(string resource, double usage, float currentTime)
 {
 
 	runCurrent->resourceRunner = runCurrent->resourceHead;

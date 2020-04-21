@@ -200,6 +200,43 @@ private:
 	vector<string> _acqResources;
 };
 
+class Step::NeedBaysEA : public CondEventAction {
+public:
+	NeedBaysEA(Step* step, Aircraft* aircraft, vector<string> acqResources, Resource* bay, int numNeeded) {
+		_step = step;
+		_aircraft = aircraft;
+		_acqResources = acqResources;
+		_bay = bay;
+		_numNeeded = numNeeded;
+	}
+
+	bool Condition(Resource* resource, Parts* parts) {
+		if (resource == _bay) {
+			if (_bay->GetResourceCount() >= _numNeeded)
+				return true;
+			else {
+				if (_step->AreThereBaysAvailable())
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+			return false;
+	}
+
+	void Execute() {
+		_step->StartServiceEM(_aircraft, _acqResources);
+	}
+
+private:
+	Step* _step;
+	Aircraft* _aircraft;
+	vector<string> _acqResources;
+	Resource* _bay;
+	int _numNeeded;
+};
+
 class Step::PlaceOrderEA : public EventAction
 {
 public:
@@ -530,7 +567,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 							_acquiredResources.push_back(bay);
 						}
 						else {
-							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+							//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedBaysEA(this, aircraft, _acquiredResources, it->second, 1), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 							Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 							Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 							return;
@@ -538,7 +576,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 					}
 					else {
-						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+						//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedBaysEA(this, aircraft, _acquiredResources, it->second, 1), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 						Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 						Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 						return;
@@ -971,10 +1010,10 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		if (iter->first == "S Bay") {
 			//Check up to Med
 			map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && miter->second->GetResourceCount() - ((double)numNeeded / 2) >= 0) {
+			if (miter->second->GetResourceCount() > 0 && miter->second->GetResourceCount() - ((double)numNeeded / 2.0) >= 0.0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
-				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2);
+				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2.0);
 				SetResPoolCount(miter->second->GetResourceName(), newCount);
 				return miter->second->GetResourceName();
 			}
@@ -982,14 +1021,14 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check up to Large
 				map<string, Resource*>::const_iterator liter = _resourcePool.find("L Bay");
 				if (liter->second->GetResourceCount() > 0) {
-					if (liter->second->GetResourceCount() - ((double)numNeeded / 4) < 0) {
+					if (liter->second->GetResourceCount() - ((double)numNeeded / 4.0) < 0.0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
 					else {
 						acquired = true;
 						Scribe::UpdateResourceRequests(liter->second->GetResourceName(), acquired);
-						newCount = liter->second->GetResourceCount() - ((double)numNeeded / 4);
+						newCount = liter->second->GetResourceCount() - ((double)numNeeded / 4.0);
 						SetResPoolCount(liter->second->GetResourceName(), newCount);
 						return liter->second->GetResourceName();
 					}
@@ -1003,10 +1042,10 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		else if (iter->first == "M Bay") {
 			//Check up
 			map<string, Resource*>::const_iterator liter = _resourcePool.find("L Bay");
-			if (liter->second->GetResourceCount() > 0 && (liter->second->GetResourceCount() - ((double)numNeeded / 2)) >= 0) {
+			if (liter->second->GetResourceCount() > 0 && (liter->second->GetResourceCount() - ((double)numNeeded / 2.0)) >= 0.0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(liter->second->GetResourceName(), acquired);
-				newCount = liter->second->GetResourceCount() - ((double)numNeeded / 2.0);
+				newCount = liter->second->GetResourceCount() - ((double)numNeeded) / 2.0;
 				SetResPoolCount(liter->second->GetResourceName(), newCount);
 				return liter->second->GetResourceName();
 			}
@@ -1014,13 +1053,13 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check down
 				map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
 				if (siter->second->GetResourceCount() > 0) {
-					if (siter->second->GetResourceCount() - ((double)numNeeded * 2) <= 0) {
+					if (siter->second->GetResourceCount() - ((double)numNeeded * 2.0) <= 0.0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
 					else {
 						acquired = true;
-						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 2);
+						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 2.0);
 						SetResPoolCount(siter->second->GetResourceName(), newCount);
 						Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
 						return siter->second->GetResourceName();
@@ -1035,10 +1074,10 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		else if (iter->first == "L Bay") {
 			//Check down to Med
 			map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded * 2)) >= 0) {
+			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded * 2.0)) >= 0.0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
-				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2);
+				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2.0);
 				SetResPoolCount(miter->second->GetResourceName(), newCount);
 				return miter->second->GetResourceName();
 			}
@@ -1046,13 +1085,13 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check down to small
 				map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
 				if (siter->second->GetResourceCount() > 0) {
-					if (siter->second->GetResourceCount() - ((double)numNeeded * 4) < 0) {
+					if (siter->second->GetResourceCount() - ((double)numNeeded * 4.0) < 0.0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
 					else {
 						acquired = true;
-						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 4);
+						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 4.0);
 						SetResPoolCount(siter->second->GetResourceName(), newCount);
 						Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
 						return siter->second->GetResourceName();

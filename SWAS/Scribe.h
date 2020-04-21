@@ -273,7 +273,7 @@ public:
     static void TallyAircraft(string);
     static void RecordMission(string);
     static void RecordResource(string, int);
-    static void UpdateResourceUtilization(string, int, float);
+    static void UpdateResourceUtilization(string, double, float);
     static void UpdateResourceUtilization();
     static void UpdateResourceRequests(string, bool);
     static void RecordFailure(string, string, float);
