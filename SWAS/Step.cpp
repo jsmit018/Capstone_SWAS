@@ -1207,7 +1207,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-				map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+				//map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
 				if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
 					ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
 					cout << "Releasing this many " << resIt->second->GetNumResNeeded()
@@ -1288,7 +1289,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					for (int i = 0; i < _acquiredResources.size(); ++i) {
 						//Releasing Bay
 						//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-						map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+						//map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+						map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
 						if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
 							ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
 							cout << "Releasing this many " << resIt->second->GetNumResNeeded()
