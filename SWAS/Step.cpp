@@ -496,6 +496,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	Scribe::RecordRepairJob(aircraft->GetAircraftType(), aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 	Scribe::RecordServiceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
 
+	if (aircraft->GetAircraftID() == 25)
+		cout << "I am here" << endl;
 	//check if acquired resource vector has bay or spot
 	bool hasResource = false;
 
@@ -646,6 +648,12 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					alreadyAcquired = true;
 					break;
 				}
+				else if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+					alreadyAcquired = true;
+					break;
+				}
+				
+				
 			}
 
 			if (alreadyAcquired)
@@ -1199,7 +1207,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+				map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
 				if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
 					ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
 					cout << "Releasing this many " << resIt->second->GetNumResNeeded()
@@ -1280,7 +1288,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					for (int i = 0; i < _acquiredResources.size(); ++i) {
 						//Releasing Bay
 						//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-						map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+						map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
 						if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
 							ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
 							cout << "Releasing this many " << resIt->second->GetNumResNeeded()
