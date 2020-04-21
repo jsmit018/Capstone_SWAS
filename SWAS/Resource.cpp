@@ -130,12 +130,12 @@ void Resource::RestoreResource()
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
 
-void Resource::SetResourceCount(int resourceCount)
+void Resource::SetResourceCount(double resourceCount)
 {
 	_resourceCount = resourceCount;
 }
 
-int Resource::GetResourceCount()
+double Resource::GetResourceCount()
 {
 	return _resourceCount;
 }
