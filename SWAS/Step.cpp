@@ -767,62 +767,71 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		//for all resources listed in required map
 		while (iter != _reqResourceMap.end())
 		{
+			bool alreadyAcquired = false;
 			//cout << " zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz "  << endl;
 
 			//compare key to acquired resources vector
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
-				//if it's already acquired, break
-				if (iter->first == _acquiredResources[i])
+				if (iter->first == _acquiredResources[i]) {
+					alreadyAcquired = true;
 					break;
+				}
+				else if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+					alreadyAcquired = true;
+					break;
+				}
 			}
+			if (alreadyAcquired)
+				cout << "Already Acquired" << endl;
+			else {
+				map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
 
-			map<string, Resource*>::iterator it = _resourcePool.find(iter->first);
+				if (it->second->GetResourceCount() < iter->second->GetNumResNeeded())
+				{
+					cout << " we have to wait for a/an " << it->first << endl;
+					//INSERT WAITING LOGIC
+					cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
+					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
+					if (_acquiredResources.size() > 0)
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					else
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
+					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+					return;
+				}
+				//otherwise if not acquired yet
+				//if resource count is greater than number needed
+				//if (it->second->GetResourceCount() >= it->second->GetNumResNeeded())
+				else if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
+				{
+					cout << "in else if " << endl;
+					//decrement appropriately
+					/*int newCount;
+					newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
+					it->second->SetResourceCount(newCount);*/
+					AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
 
-			if (it->second->GetResourceCount() < iter->second->GetNumResNeeded())
-			{
-				cout << " we have to wait for a/an " << it->first << endl;
-				//INSERT WAITING LOGIC
-				cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
-				//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
-				if (_acquiredResources.size() > 0)
-					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-				else
-					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-				Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
-				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
-				return;
-			}
-			//otherwise if not acquired yet
-			//if resource count is greater than number needed
-			//if (it->second->GetResourceCount() >= it->second->GetNumResNeeded())
-			else if (it->second->GetResourceCount() >= iter->second->GetNumResNeeded())
-			{
-				cout << "in else if " << endl;
-				//decrement appropriately
-				/*int newCount;
-				newCount = it->second->GetResourceCount() - it->second->GetNumResNeeded();
-				it->second->SetResourceCount(newCount);*/
-				AcquireResourceEM(it->second, iter->second->GetNumResNeeded());
+					//store in acquired resource vector
+					_acquiredResources.push_back(it->first);
 
-				//store in acquired resource vector
-				_acquiredResources.push_back(it->first);
+					//Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
+					//Scribe::UpdateResourceUtilization(it->second->GetResourceName(), iter->second->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
+					//			}
 
-				//Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
-				//Scribe::UpdateResourceUtilization(it->second->GetResourceName(), iter->second->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
-				//			}
+								//else {
+								//	cout << " we have to wait for a/an " << it->first << endl;
+								//	//INSERT WAITING LOGIC
+								//	cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
+								//	SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
+								//	Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
+								//	Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
+								//	return;
+								//}
 
-							//else {
-							//	cout << " we have to wait for a/an " << it->first << endl;
-							//	//INSERT WAITING LOGIC
-							//	cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
-							//	SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources));
-							//	Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
-							//	Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
-							//	return;
-							//}
-
-							//if inspection results in failure
+								//if inspection results in failure
+				}
 			}
 			iter++;
 			Scribe::RecordServiceWaitEnd(aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
@@ -1177,6 +1186,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		}
 		//schedule the next step
 		cout << endl;
+		if (aircraft->GetAircraftID() == 8)
+			cout << "Ooooh, honey honey" << endl;
 		cout << "AIR ID: " << aircraft->GetAircraftID()
 			<< " " << _myRJ << "'s step " << _stepID << " "
 			<< _name << " has finished, scheduling the next maintenance step: "

@@ -120,7 +120,8 @@ private:
 	{
 		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
 			return false;
-		return true;
+		else
+			return true;
 	}
 
 	/// to do //
