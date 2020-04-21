@@ -676,9 +676,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//			cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 					if (_acquiredResources.size() > 0)
-						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 					else
-						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 					iter++;
 					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
@@ -778,9 +778,9 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
 				//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 				if (_acquiredResources.size() > 0)
-					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 				else
-					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 				Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 				Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 				return;
@@ -1050,58 +1050,58 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				return liter->second->GetResourceName();
 			}
 			else {
-				//Check down
-				map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
-				if (siter->second->GetResourceCount() > 0) {
-					if (siter->second->GetResourceCount() - ((double)numNeeded * 2.0) <= 0.0) {
-						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
-						return "";
-					}
-					else {
-						acquired = true;
-						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 2.0);
-						SetResPoolCount(siter->second->GetResourceName(), newCount);
-						Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
-						return siter->second->GetResourceName();
-					}
-				}
-				else {
+				////Check down
+				//map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
+				//if (siter->second->GetResourceCount() > 0) {
+				//	if (siter->second->GetResourceCount() - ((double)numNeeded * 2.0) <= 0.0) {
+				//		Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
+				//		return "";
+				//	}
+				//	else {
+				//		acquired = true;
+				//		newCount = siter->second->GetResourceCount() - ((double)numNeeded * 2.0);
+				//		SetResPoolCount(siter->second->GetResourceName(), newCount);
+				//		Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
+				//		return siter->second->GetResourceName();
+				//	}
+				//}
+				//else {
 					Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 					return "";
-				}
+				//}
 			}
 		}
 		else if (iter->first == "L Bay") {
-			//Check down to Med
-			map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded * 2.0)) >= 0.0) {
-				acquired = true;
-				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
-				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2.0);
-				SetResPoolCount(miter->second->GetResourceName(), newCount);
-				return miter->second->GetResourceName();
-			}
-			else {
-				//Check down to small
-				map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
-				if (siter->second->GetResourceCount() > 0) {
-					if (siter->second->GetResourceCount() - ((double)numNeeded * 4.0) < 0.0) {
-						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
-						return "";
-					}
-					else {
-						acquired = true;
-						newCount = siter->second->GetResourceCount() - ((double)numNeeded * 4.0);
-						SetResPoolCount(siter->second->GetResourceName(), newCount);
-						Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
-						return siter->second->GetResourceName();
-					}
-				}
-				else {
+			////Check down to Med
+			//map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
+			//if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded * 2.0)) >= 0.0) {
+			//	acquired = true;
+			//	Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
+			//	newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2.0);
+			//	SetResPoolCount(miter->second->GetResourceName(), newCount);
+			//	return miter->second->GetResourceName();
+			//}
+			//else {
+			//	//Check down to small
+			//	map<string, Resource*>::const_iterator siter = _resourcePool.find("S Bay");
+			//	if (siter->second->GetResourceCount() > 0) {
+			//		if (siter->second->GetResourceCount() - ((double)numNeeded * 4.0) < 0.0) {
+			//			Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
+			//			return "";
+			//		}
+			//		else {
+			//			acquired = true;
+			//			newCount = siter->second->GetResourceCount() - ((double)numNeeded * 4.0);
+			//			SetResPoolCount(siter->second->GetResourceName(), newCount);
+			//			Scribe::UpdateResourceRequests(siter->second->GetResourceName(), acquired);
+			//			return siter->second->GetResourceName();
+			//		}
+			//	}
+			//	else {
 					Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 					return "";
-				}
-			}
+		/*		}
+			}*/
 		}
 	}
 
@@ -1977,17 +1977,17 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 			}
 		}
 		else if (myOriginalBaySize == "M Bay") {
-			if (baySizeIHave == "S Bay") {
-				map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
-				newCount = it->second->GetResourceCount() + (numRelease * 2);
-				SetResPoolCount(it->first, newCount);
-				//numIt->second->SetResourceCount(newCount);
-				IsResourceReleased(it, newCount);
+			//if (baySizeIHave == "S Bay") {
+			//	map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
+			//	newCount = it->second->GetResourceCount() + (numRelease * 2);
+			//	SetResPoolCount(it->first, newCount);
+			//	//numIt->second->SetResourceCount(newCount);
+			//	IsResourceReleased(it, newCount);
 
-				int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-			}
-			else if (baySizeIHave == "L Bay") {
+			//	int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
+			//	Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
+			//}
+			if (baySizeIHave == "L Bay") {
 				map<string, Resource*>::const_iterator it = _resourcePool.find("L Bay");
 				newCount = it->second->GetResourceCount() + (numRelease / 2);
 				SetResPoolCount(it->first, newCount);
@@ -1998,28 +1998,28 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 			}
 		}
-		else if (myOriginalBaySize == "L Bay") {
-			if (baySizeIHave == "S Bay") {
-				map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
-				newCount = it->second->GetResourceCount() + (numRelease * 4);
-				SetResPoolCount(it->first, newCount);
-				//numIt->second->SetResourceCount(newCount);
-				IsResourceReleased(it, newCount);
+		//else if (myOriginalBaySize == "L Bay") {
+		//	if (baySizeIHave == "S Bay") {
+		//		map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
+		//		newCount = it->second->GetResourceCount() + (numRelease * 4);
+		//		SetResPoolCount(it->first, newCount);
+		//		//numIt->second->SetResourceCount(newCount);
+		//		IsResourceReleased(it, newCount);
 
-				int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-			}
-			else if (baySizeIHave == "M Bay") {
-				map<string, Resource*>::const_iterator it = _resourcePool.find("M Bay");
-				newCount = it->second->GetResourceCount() + (numRelease * 2);
-				SetResPoolCount(it->first, newCount);
-				//numIt->second->SetResourceCount(newCount);
-				IsResourceReleased(it, newCount);
+		//		int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
+		//		Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
+		//	}
+		//	else if (baySizeIHave == "M Bay") {
+		//		map<string, Resource*>::const_iterator it = _resourcePool.find("M Bay");
+		//		newCount = it->second->GetResourceCount() + (numRelease * 2);
+		//		SetResPoolCount(it->first, newCount);
+		//		//numIt->second->SetResourceCount(newCount);
+		//		IsResourceReleased(it, newCount);
 
-				int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-			}
-		}
+		//		int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
+		//		Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
+		//	}
+		//}
 	}
 }
 
