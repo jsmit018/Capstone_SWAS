@@ -436,7 +436,7 @@ void Step::PlaceOrderEM(Parts* parts)
 		//	cout << "poop " << endl;
 		//Schedule Order Arrivals EA at now + lead time
 		cout << _myRJ << " " << _stepID << " " << parts->GetPartsName() << endl;
-	cout << "Parts total has fallen below its identified threshold, placing an order" << endl;
+	//cout << "Parts total has fallen below its identified threshold, placing an order" << endl;
 	double restockTime = parts->GetLeadTime()->GetRV();
 	Scribe::RecordRestock(parts->GetPartsName(), restockTime);
 	SimExec::ScheduleEventAt(0, new OrderArrivalEA(this, parts), restockTime, "OrderArrivalEA");
@@ -1157,7 +1157,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						//empty appropriate acquired vector index
 						//cout << "-------size of acquired list " << _acquiredResources.size() << endl;
 						_acquiredResources.erase(_acquiredResources.begin() + i);
-						i--;
+						//i--;
 					}
 					//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
 					//	continue;
@@ -1967,7 +1967,7 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 		if (myOriginalBaySize == "S Bay") {
 			if (baySizeIHave == "M Bay") {
 				map<string, Resource*>::const_iterator it = _resourcePool.find("M Bay");
-				newCount = it->second->GetResourceCount() + (numRelease / 2);
+				newCount = it->second->GetResourceCount() + ((double)numRelease / 2.0);
 				SetResPoolCount(it->first, newCount);
 				//numIt->second->SetResourceCount(newCount);
 				IsResourceReleased(it, newCount);
@@ -1977,7 +1977,7 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 			}
 			else if (baySizeIHave == "L Bay") {
 				map<string, Resource*>::const_iterator it = _resourcePool.find("L Bay");
-				newCount = it->second->GetResourceCount() + (numRelease / 4);
+				newCount = it->second->GetResourceCount() + ((double)numRelease / 4.0);
 				SetResPoolCount(it->first, newCount);
 				//numIt->second->SetResourceCount(newCount);
 				IsResourceReleased(it, newCount);
@@ -1999,7 +1999,7 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 			//}
 			if (baySizeIHave == "L Bay") {
 				map<string, Resource*>::const_iterator it = _resourcePool.find("L Bay");
-				newCount = it->second->GetResourceCount() + (numRelease / 2);
+				newCount = it->second->GetResourceCount() + ((double)numRelease / 2.0);
 				SetResPoolCount(it->first, newCount);
 				//numIt->second->SetResourceCount(newCount);
 				IsResourceReleased(it, newCount);
