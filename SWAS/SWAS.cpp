@@ -328,7 +328,7 @@ int main()
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		while (SimExec::GetSimulationFlag())
-			SimExec::RunSimulation(0, 0, 2030);
+			SimExec::RunSimulation(0, 0, 2035);
 
 		cout << endl << endl << endl;
 
@@ -340,6 +340,8 @@ int main()
 	}
 
 	Scribe::Archive();
+
+	
 
 	return 0;
 }

@@ -42,7 +42,8 @@ public:
 	
 
 private:
-	int _resourceCount;
+	//int _resourceCount;
+	double _resourceCount;
 	int _numNeeded;
 	string _resourceName;
 	double _length;
