@@ -559,7 +559,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			{
 				if (IsMyBaySizeAvailable(it->first)) {
 					_acquiredResources.push_back(it->first);
-					AcquireResourceEM(it->second, 1);
+					//AcquireResourceEM(it->second, 1);
+					AcquireBay(it->second, 1);
 				}
 				else {
 					if (AreThereBaysAvailable()) {
@@ -951,6 +952,10 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 					alreadyAcquired = true;
 					break;
 				}
+				else if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+					alreadyAcquired = true;
+					break;
+				}
 			}
 
 			if (alreadyAcquired)
@@ -1218,11 +1223,16 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						}
 						hound++;
 					}
-					if (sherlock->first != hound->first)
-						continue;
-					else if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
+					/*if (sherlock->first != hound->first)
+						continue;*/
+					if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
 					{
+						
 						ReleaseResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
+						if (sherlock->first == "Mechanic") {
+							cout << "I'm released " << (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()) << " " << sherlock->first << endl;
+							system("PAUSE");
+						}
 					}
 				}
 				//if the resource doesn't match, release it
@@ -1232,8 +1242,13 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					{
 						map<string, Resource*>::const_iterator iter = _reqResourceMap.find(_acquiredResources[i]);
 						cout << "ID: " << aircraft->GetAircraftID() << "Releasing " << _acquiredResources[i] << endl;
+						
 						//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 						ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+						if (iter->first == "Mechanic") {
+							cout << "I'm releasing " << iter->second->GetNumResNeeded() << " " << iter->first;
+							system("PAUSE");
+						}
 						//empty appropriate acquired vector index
 						//cout << "-------size of acquired list " << _acquiredResources.size() << endl;
 						_acquiredResources.erase(_acquiredResources.begin() + i);
@@ -1284,28 +1299,74 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		/*	iter++;
 		}*/
 		//empty appropriate acquired vector index
-			for (int i = 0; i < _acquiredResources.size(); i++)
+			map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+			int count = 0;
+			while (iter != _reqResourceMap.end())
 			{
-				//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-				//map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
-				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
-				if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
-					ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
-					cout << "Releasing this many " << resIt->second->GetNumResNeeded()
-						<< " " << resIt->first << endl;
-				}
-				//	int num = _reqResourceMap.find(_acquiredResources[i])->second->GetNumResNeeded();
-				else {
-					ReleaseResourceEM(resIt->second, resIt->second->GetNumResNeeded());
 
-					cout << "Releasing this many " << resIt->second->GetNumResNeeded()
-						<< " " << resIt->first << endl;
+				cout << ".................ID: " << aircraft->GetAircraftID() << "Releasing " << iter->first << endl;
+				//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
+				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+					for (int i = 0; i < _acquiredResources.size(); ++i) {
+						if (_acquiredResources[i] == iter->first) {
+							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+							_acquiredResources.erase(_acquiredResources.begin() + i);
+							break;
+						}
+						//count++;
+					}
 				}
-				//}
-				_acquiredResources.erase(_acquiredResources.begin() + i);
-				//cout << aircraft->GetAircraftID() << " acquired should be 0 and is " << _acquiredResources.size() << endl;
-				i--;
+				else {
+					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+					for (int i = 0; i < _acquiredResources.size(); ++i) {
+						if (_acquiredResources[i] == iter->first) {
+							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+							_acquiredResources.erase(_acquiredResources.begin() + i);
+							break;
+						}
+						//count++;
+					}
+				}
+
+				iter++;
 			}
+
+			if (_acquiredResources.size() > 0) {
+				if (_acquiredResources[0] == "S Bay" || _acquiredResources[0] == "M Bay" || _acquiredResources[0] == "L Bay") {
+					//for (int i = 0; i < _acquiredResources.size(); ++i) {
+						//if (_acquiredResources[i] == iter->first) {
+					map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0]);
+					ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0], 1);
+					_acquiredResources.erase(_acquiredResources.begin());
+					//break;
+				//}
+				//count++;
+			//}
+				}
+			}
+				//for (int i = 0; i < _acquiredResources.size(); i++)
+				//{
+				//	//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+				//	//map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+				//	map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+				//	if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
+				//		ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
+				//		cout << "Releasing this many " << resIt->second->GetNumResNeeded()
+				//			<< " " << resIt->first << endl;
+				//	}
+				//	//	int num = _reqResourceMap.find(_acquiredResources[i])->second->GetNumResNeeded();
+				//	else {
+				//		ReleaseResourceEM(resIt->second, resIt->second->GetNumResNeeded());
+
+				//		cout << "Releasing this many " << resIt->second->GetNumResNeeded()
+				//			<< " " << resIt->first << endl;
+				//	}
+				//	//}
+				//	_acquiredResources.erase(_acquiredResources.begin() + i);
+				//	//cout << aircraft->GetAircraftID() << " acquired should be 0 and is " << _acquiredResources.size() << endl;
+				//	i--;
+				//}
+			//}
 
 
 			//depart
@@ -1356,6 +1417,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			//else, next repair job doesn't need a bay, so clear everything.
 			else
 			{
+				int count = 0;
 				//cout << " here 4" << endl;
 				map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 				while (iter != _reqResourceMap.end())
@@ -1363,25 +1425,58 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 					cout << ".................ID: " << aircraft->GetAircraftID() << "Releasing " << iter->first << endl;
 					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
-					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
-
+					if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+						for (int i = 0; i < _acquiredResources.size(); ++i) {
+							if (_acquiredResources[i] == iter->first) {
+								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+								_acquiredResources.erase(_acquiredResources.begin() + i);
+								break;
+							}
+							//count++;
+						}
+					}
+					else {
+						ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+						for (int i = 0; i < _acquiredResources.size(); ++i) {
+							if (_acquiredResources[i] == iter->first) {
+								//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+								_acquiredResources.erase(_acquiredResources.begin() + i);
+								break;
+							}
+							//count++;
+						}
+					}
+						
 					iter++;
 				}
-
-					//empty appropriate acquired vector index
-					for (int i = 0; i < _acquiredResources.size(); ++i) {
-						//Releasing Bay
-						//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
-						//map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
-						map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
-						if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
-							ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
-							cout << "Releasing this many " << resIt->second->GetNumResNeeded()
-								<< " " << resIt->first << endl;
-						}
-						//ReleaseResourceEM(resIt->second, 1);
-					//}
+				
+				if (_acquiredResources.size() > 0) {
+					if (_acquiredResources[0] == "S Bay" || _acquiredResources[0] == "M Bay" || _acquiredResources[0] == "L Bay") {
+						//for (int i = 0; i < _acquiredResources.size(); ++i) {
+							//if (_acquiredResources[i] == iter->first) {
+						map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0]);
+								ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0], 1);
+								_acquiredResources.erase(_acquiredResources.begin());
+								//break;
+							//}
+							//count++;
+						//}
 					}
+				}
+					//empty appropriate acquired vector index
+					//for (int i = 0; i < _acquiredResources.size(); ++i) {
+					//	//Releasing Bay
+					//	//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+					//	//map<string, Resource*>::const_iterator resIt = _reqResourceMap.find(_acquiredResources[i]);
+					//	map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+					//	if (resIt->first == "S Bay" || resIt->first == "M Bay" || resIt->first == "L Bay") {
+					//		ReleaseBay(resIt->second, aircraft->GetBaySizeReq(), _acquiredResources[i], 1);
+					//		cout << "Releasing this many " << resIt->second->GetNumResNeeded()
+					//			<< " " << resIt->first << endl;
+					//	}
+					//	//ReleaseResourceEM(resIt->second, 1);
+					////}
+					//}
 					_acquiredResources.clear();
 
 					
@@ -1501,9 +1596,13 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
 
 	newCount = iter->second->GetResourceCount() + numRelease;
+	cout << "--------------\n" <<
+		"Resource: " << iter->first << ", Initial Count: " << resource->GetResourceCount() << ", current count: " << iter->second->GetResourceCount() <<
+		", new count: " << newCount << ", after updating through ResPoolFunc: ";
 
 	//resource->SetResourceCount(newCount);
 	SetResPoolCount(iter->first, newCount);
+	cout << iter->second->GetResourceCount()  << "\n----------" << endl;
 	//iter->second->SetResourceCount(newCount);
 	//numIt->second->SetResourceCount(newCount);
 	IsResourceReleased(iter, newCount);
@@ -2055,7 +2154,7 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 				IsResourceReleased(it, newCount);
 
 				int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
+				Scribe::UpdateResourceUtilization("M Bay", negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 			}
 			else if (baySizeIHave == "L Bay") {
 				map<string, Resource*>::const_iterator it = _resourcePool.find("L Bay");
@@ -2065,7 +2164,7 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 				IsResourceReleased(it, newCount);
 
 				int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
+				Scribe::UpdateResourceUtilization("L Bay", negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 			}
 		}
 		else if (myOriginalBaySize == "M Bay") {
@@ -2087,7 +2186,7 @@ void Step::ReleaseBay(Resource* bay, string myOriginalBaySize, string baySizeIHa
 				IsResourceReleased(it, newCount);
 
 				int negativeCount = numRelease * (-1);  //Used to increment utilization for scribe
-				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
+				Scribe::UpdateResourceUtilization("L Bay", negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 			}
 		}
 		//else if (myOriginalBaySize == "L Bay") {

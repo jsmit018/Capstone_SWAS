@@ -989,6 +989,7 @@ int SimExec::PrintNumInCondES()
 		condEventTracker++;
 	}
 	cout << _eventSet.GetNumEvents() << endl;
+	cout << "Total number of Aircraft that have left the Simulation: " << GetSystemSink()->GetTerminatedAircraft() << endl;
 	return condEventTracker;
 }
 
