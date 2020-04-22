@@ -47,10 +47,12 @@ public:
 	void DeleteJob(string repairJob);
 	void ClearMyMap();
 	void DeleteAircraft(Aircraft*& aircraft);
+	
 	//void SetRecurFlag(char flag);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
 	RepairJob* GetMyRepairJobObj(string name); //used for searching 
+	int GetAirCount();
 	int GetSource();
 	int GetAircraftID();
 	double GetAircraftFootprint();
@@ -62,6 +64,7 @@ public:
 	int GetMyRJMapSize();
 	int GetMyUnplannedMapSize();
 	int GetUnplanVecSize();
+	void AddAirCount();
 	string GetRandomElement();
 	string GetBaySizeReq();
 	//char GetRecurFlag();

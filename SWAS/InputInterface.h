@@ -37,9 +37,12 @@ public:
 	static map<string, Parts*> GetMasterPartsMap();
 	static int GetMapSize();
 	static int GetNumRuns();
+	static int GetAirCount();
+	static void AddAirCount();
 private:
 	static int _numRuns;
-	static map<string, Aircraft*> _masterMap;
+	static int _airCount;
+	static map<string, Aircraft*>_masterMap;
 	static map<string, Resource*> _masterResourceMap;
 	static map<string, Parts*> _masterPartsMap;
 	CalConverter* calConvert;

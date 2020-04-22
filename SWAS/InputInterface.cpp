@@ -13,6 +13,7 @@ map<string, Aircraft*> InputReader::_masterMap;
 map<string, Resource*> InputReader::_masterResourceMap;
 map<string, Parts*> InputReader::_masterPartsMap;
 int InputReader::_numRuns;
+int InputReader::_airCount;
 
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
@@ -1047,6 +1048,17 @@ int InputReader::GetNumRuns()
 	return _numRuns;
 }
 
+int InputReader::GetAirCount()
+{
+	cout << " AIRCRAFT COUNT IS " << _airCount << endl;
+	return _airCount;
+}
+
+void InputReader::AddAirCount()
+{
+	_airCount++;
+}
+
 map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
 {
 	return _masterResourceMap.begin();
@@ -1177,3 +1189,4 @@ map<string, Parts*> InputReader::GetMasterPartsMap()
 {
 	return _masterPartsMap;
 }
+
