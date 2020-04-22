@@ -67,7 +67,7 @@ void InitializeAircraft()
 	Distribution::SetSystemSeed(8);
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
-	inputReader.AddSelectedAircraft("Apache");
+	//inputReader.AddSelectedAircraft("Apache");
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
 

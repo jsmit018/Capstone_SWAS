@@ -76,6 +76,7 @@ public:
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
+	map<string, Resource*>::iterator FindResourceinReqResMap(string resource);
 	//void ScheduleResourceFailure();
 
 
