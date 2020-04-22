@@ -1,0 +1,42 @@
+﻿  Step.cpp
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(112,119): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(441,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(496,117): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(497,119): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(574,150): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(583,149): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(711,265): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(716,148): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(781,94): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(845,265): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(849,148): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(885,95): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(893,89): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(908,90): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(926,113): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(970,237): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(970,241): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(972,281): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1017,237): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1017,241): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1019,280): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1066,100): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1306,90): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1388,90): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1481,105): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1501,46): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1510,108): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2031,47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2040,104): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2050,47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2056,113): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2060,47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2066,113): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2082,47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2088,113): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2129,26): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2134,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2211,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2216,28): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1177): warning C4715: 'Step::AcquireBay': not all control paths return a value
+  SWAS.vcxproj -> G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\x64\Debug\SWAS.exe
