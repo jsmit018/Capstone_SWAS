@@ -175,14 +175,7 @@ string RepairJob::GetCalendarDate()
 void RepairJob::SetRecurringAmt(double recurringAmt)
 {
     _recurringAmt = new Constant(recurringAmt);
-
-
-    /*  cout << "*****************************IAT RECURRING IS: ";
-          _recurringAmt->PrintDistribution();
-       cout << endl;*/
-
 }
-
 
 Distribution* RepairJob::GetRecurringAmt()
 {
@@ -198,8 +191,6 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
 
     getline(unProb, firstHalf, '(');
     getline(unProb, secHalf, ')');
-    //	cout << "first: " << firstHalf << endl;
-    //	cout << "sec: " << secHalf << endl;
 
     istringstream nums(secHalf);
     if (firstHalf == "Triangular" || firstHalf == "Tri")
@@ -260,7 +251,6 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
     }
 
     //Determines correct distribution and prints
-  //  cout << " 99(3(#((##( ";
   //  _unplannedProb->PrintDistribution();
   //  cout << endl;
 }
@@ -270,26 +260,9 @@ void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
 
-    //  cout << "adding step" << _vecSteps.size() << endl;
     step->SetStepID(_vecSteps.size());
-    /*int stepID;
-    for (int i = 0; i < _vecSteps.size(); i++)
-    {
-        stepID = i + 1;
-        cout << "step id from add step is " << stepID;
-        step->SetStepID(stepID);
-    }*/
 
-    //    cout << endl << "new size " << vecSteps.size() << endl;
 };
-
-//Step* RepairJob::GetSteps()
-//{
-//    for (int i = 0; i < _vecSteps.size; i++)
-//    {
-//        return _vecSteps[i];
-//    }
-//}
 
 void RepairJob::AddResourceRepair(RepairJob* repairJob, string resourceName)
 {
