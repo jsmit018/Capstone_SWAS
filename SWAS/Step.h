@@ -120,7 +120,8 @@ private:
 	{
 		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
 			return false;
-		return true;
+		else
+			return true;
 	}
 
 	/// to do //
@@ -143,7 +144,7 @@ private:
 	class NeedPartsEA;
 	class NeedBaysEA;
 
-	void PlaceOrderEM(Parts* parts);	
+	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
 	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
