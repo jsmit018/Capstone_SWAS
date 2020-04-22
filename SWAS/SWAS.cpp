@@ -193,6 +193,7 @@ int main()
 
 	}
 
+	inputReader.GetAirCount();
 	Scribe::Archive();
 
 	

@@ -3,6 +3,7 @@
 #include "Aircraft.h"
 
 int Aircraft::_nextID = 0;
+int _airCount = 0;
 
 Aircraft::Aircraft()
 {
@@ -306,10 +307,12 @@ void Aircraft::ClearMyMap()
 	_myRepairJobs.clear();
 }
 
+
 Aircraft* Aircraft::New()
 {
 	//_aircraftID = ++_nextID;
 	Aircraft* newAircraft = new Aircraft(*this);
+	InputReader::AddAirCount();
 	return newAircraft; // add appropriate parameters
 }
 
