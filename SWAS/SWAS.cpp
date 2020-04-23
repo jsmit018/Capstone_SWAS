@@ -39,8 +39,8 @@ void SchedResourceFailure()
 		cout << "" << endl;
 		//schedule iter's first failure in iter->second->GetFailureDistr()
 		if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
-		//if (iter->second->GetFailureName() == 		
-			//continue;
+			//if (iter->second->GetFailureName() == 		
+				//continue;
 		}
 		else
 		{
@@ -196,7 +196,7 @@ int main()
 	inputReader.GetAirCount();
 	Scribe::Archive();
 
-	
+
 
 	return 0;
 }
