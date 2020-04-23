@@ -116,6 +116,7 @@ public:
 			//Check to see if the current nodes conditions are met
 			if (curr->_cea->Condition(resource, parts)) {
 				//If met Execute the associated Event Method
+				cout << "Executed from CES, ID: " << curr->_aID <<endl;
 				curr->_cea->Execute();
 				//curr = curr->_nextCondEvent;
 				//Event has Executed, see if the current node is the head node
@@ -126,12 +127,12 @@ public:
 					if (_condSet == NULL) {
 						//reinitialize it to 0 and delete the placeholder
 						_condSet = 0;
-						delete curr;
+						//delete curr;
 					}
 					else {
 						//Set the previous node to 0 as there is no other node infront of head and delete the placeholder
 						_condSet->_prevCondEvent = 0;
-						delete curr;
+						//delete curr;
 					}
 				}
 				else {
@@ -139,13 +140,14 @@ public:
 					curr->_prevCondEvent->_nextCondEvent = curr->_nextCondEvent;
 					if (curr->_nextCondEvent == NULL) {
 						curr->_prevCondEvent->_nextCondEvent = 0;
-						continue;
+						//continue;
 					}
 					else
 						curr->_nextCondEvent->_prevCondEvent = curr->_prevCondEvent;
-					delete curr;
+					//delete curr;
 				}
 				//Return true that the event executed
+				//delete curr;
 				return true;
 			}
 			//If curr's condition isn't met check the next node
@@ -989,6 +991,7 @@ int SimExec::PrintNumInCondES()
 		condEventTracker++;
 	}
 	cout << _eventSet.GetNumEvents() << endl;
+	cout << "Total number of Aircraft that have left the Simulation: " << GetSystemSink()->GetTerminatedAircraft() << endl;
 	return condEventTracker;
 }
 
