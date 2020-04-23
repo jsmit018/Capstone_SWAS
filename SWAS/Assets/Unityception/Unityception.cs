@@ -47,26 +47,6 @@ public class Unityception : SkinnedWindow
 	private bool IsPlaying { get { return playToggle.isOn; } }
 	private bool IsPaused { get { return pauseToggle.isOn; } }
 
-	//SWAS: flags for toolbox selections
-	private bool toolboxSelected;
-	private bool sceneSelected;
-	private bool itemDrag;
-
-	private Transform dragObj;
-	private Vector3 dragOffset;
-
-	//SWAS: array of buttons within toolbox
-	private Button[] toolBoxButtons;
-
-	//SWAS: Toolbox Object
-	public Texture2D toolBoxCursorImage;
-	public Transform toolBoxObjectA;
-	public Transform toolBoxObjectB;
-
-	//SWAS: Toolbox Panel Assigment
-	[SerializeField]
-	private RectTransform toolBox;
-
 	[SerializeField]
 	private Button creditsRuntimeInspector;
 	[SerializeField]
@@ -121,29 +101,14 @@ public class Unityception : SkinnedWindow
 	private TextAsset[] panelLayouts;
 
 	private Vector2 sceneViewPrevSize;
-	private Vector3 createPosition;
 
 	protected override void Awake()
 	{
 		base.Awake();
 
-		//SWAS: set initial flag
-		toolboxSelected = false;
-		//itemDrag = false;
-
-		//SWAS: size ToolBoxButtons to # in toolBox
-		toolBoxButtons = toolBox.GetComponentsInChildren<Button>();
-
-		//SWAS: Create onClick listeners for each toolBox button
-		for (int i = 0; i < toolBoxButtons.Length; i++)
-		{
-			Button button = toolBoxButtons[i];
-			button.onClick.AddListener(() => CreateItem(button));
-		}
-
 		mainCam = GameObject.FindWithTag( "MainCamera" ).GetComponent<Camera>();
 		mainCamParent = mainCam.transform.parent;
-		mainCamRT = new RenderTexture( 2, 2, 0 );
+		mainCamRT = new RenderTexture( 2, 2, 16 );
 		mainCam.targetTexture = mainCamRT;
 
 		sceneViewDrawer.texture = mainCamRT;
@@ -155,22 +120,6 @@ public class Unityception : SkinnedWindow
 		{
 			if(eventData.button == PointerEventData.InputButton.Left)
 			{
-				Vector2 position;
-				RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneView, eventData.position, null, out position);
-
-				Vector2 viewport = new Vector2(position.x / sceneViewPrevSize.x + 0.5f, position.y / sceneViewPrevSize.y + 0.5f);
-				if (Physics.Raycast(mainCam.ViewportPointToRay(viewport), out RaycastHit hit))
-				{
-					if (hit.transform.CompareTag("ToolboxItem"))
-					{
-						itemDrag = true;
-						dragObj = hit.transform;
-						dragOffset = new Vector3(dragObj.position.x - hit.point.x, dragObj.position.y - hit.point.y, 0f);
-					}
-				}
-			}
-			else
-			{
 				sceneViewPointer = eventData;
 			}
 		};
@@ -179,34 +128,7 @@ public class Unityception : SkinnedWindow
 		{
 			if( eventData.button == PointerEventData.InputButton.Left )
 			{
-				if (itemDrag)
-					itemDrag = false;
-			}
-			else
-			{
 				sceneViewPointer = null;
-			}
-		};
-
-		sceneViewPointerListener.PointerClick += ( eventData ) =>
-		{
-			if( eventData.button == PointerEventData.InputButton.Left )
-			{
-				Vector2 position;
-				RectTransformUtility.ScreenPointToLocalPointInRectangle( sceneView, eventData.position, null, out position );
-
-				Vector2 viewport = new Vector2( position.x / sceneViewPrevSize.x + 0.5f, position.y / sceneViewPrevSize.y + 0.5f );
-				if( Physics.Raycast( mainCam.ViewportPointToRay( viewport ), out RaycastHit hit ) )
-				{
-					hierarchy.Select(hit.collider.transform);
-					if(toolboxSelected)
-					{
-						Debug.Log("I clicked at... " + hit.point);
-						createPosition = hit.point;
-						toolboxSelected = false;
-						sceneSelected = true;
-					}
-				}
 			}
 		};
 
@@ -290,22 +212,6 @@ public class Unityception : SkinnedWindow
 		PanelUtils.GetAssociatedTab( creditsView ).Panel.FloatingSize = new Vector2( 250f, 300f );
 	}
 
-	private void Update()
-	{
-		if(itemDrag)
-		{
-			Vector2 position;
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneView, Input.mousePosition, null, out position);
-
-			Vector2 viewport = new Vector2(position.x / sceneViewPrevSize.x + 0.5f, position.y / sceneViewPrevSize.y + 0.5f);
-			
-			if (Physics.Raycast(mainCam.ViewportPointToRay(viewport), out RaycastHit hit))
-			{
-					dragObj.position = new Vector3(hit.point.x + dragOffset.x, hit.point.y + dragOffset.y, 0f);
-			}
-		}
-	}
-
 	private void LateUpdate()
 	{
 		if( sceneViewTab == null )
@@ -321,22 +227,6 @@ public class Unityception : SkinnedWindow
 			mainCam.aspect = sceneViewSize.x / sceneViewSize.y;
 
 			sceneViewPrevSize = sceneViewSize;
-		}
-
-		if( sceneViewPointer != null )
-		{
-			Vector3 rot = mainCamParent.localEulerAngles;
-			while( rot.x > 180f )
-				rot.x -= 360f;
-			while( rot.x < -180f )
-				rot.x += 360f;
-
-			Vector2 delta = sceneViewPointer.delta * 0.5f;
-			rot.x = Mathf.Clamp( rot.x - delta.y, -89.8f, 89.8f );
-			rot.y += delta.x;
-			rot.z = 0f;
-
-			mainCamParent.localEulerAngles = rot;
 		}
 	}
 
@@ -369,33 +259,6 @@ public class Unityception : SkinnedWindow
 		dropdownTemplateCheckmark.color = Skin.ToggleCheckmarkColor;
 	}
 
-	//SWAS: create item given button press
-	private void CreateItem(Button button)
-	{
-		Debug.Log("I clicked on " + button.transform.name);
-		//Hold until click in scene
-		toolboxSelected = true;
-		sceneSelected = false;
-
-		StartCoroutine(PlaceInScene(button.transform.name));
-	}
-
-	IEnumerator PlaceInScene(string name)
-	{
-		//Wait for scene selection
-		while (!sceneSelected)
-		{
-			//Had to put this here for now b/c the panel resize will change cursor back to default...
-			Cursor.SetCursor(toolBoxCursorImage, Vector2.zero, CursorMode.Auto);
-			yield return null;
-		}
-		if (name == "ThingA")
-			Instantiate(toolBoxObjectA, createPosition, Quaternion.identity);
-		else
-			Instantiate(toolBoxObjectB, createPosition, Quaternion.identity);
-		Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-	}
-
 	private IEnumerator StepCoroutine()
 	{
 		Time.timeScale = 1f;
@@ -411,4 +274,15 @@ public class Unityception : SkinnedWindow
 		Application.OpenURL( url );
 #endif
 	}
+
+	public Vector2 GetSceneViewPrevSize()
+	{
+		return sceneViewPrevSize;
+	}
+
+	public Camera GetMainCam()
+	{
+		return mainCam;
+	}
+
 }
