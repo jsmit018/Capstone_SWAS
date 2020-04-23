@@ -110,6 +110,7 @@ public:
 	}
 
 	void Execute() {
+		_aircraft->SetCELflag(1);
 		Scribe::RecordResourceWaitEnd(_aircraft->GetAircraftID(), _resource->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
@@ -194,6 +195,8 @@ public:
 	}
 
 	void Execute() {
+		cout << " WAIT FOR PARTS " << endl;
+		_aircraft->SetCELflag(1);
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
 
@@ -491,6 +494,20 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquired
 		SetStepID(aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep());
 	}
 	isReturnStep = false;
+
+	if (aircraft->IsAfterCEL() == true)
+	{
+		cout << " AFTER CEL " << endl;
+
+		for (int i = 0; i < _acquiredResources.size(); i++)
+		{
+				cout << aircraft->GetAircraftID() << " has resource "
+				<< _acquiredResources[i].first << " in quantity "
+				<< _acquiredResources[i].second << endl;
+		}
+		aircraft->SetCELflag(0);
+	}
+
 
 	//if (_stepID == 4 && aircraft->GetAircraftID() == 11 && aircraft->GetAircraftType() == "F-35")
 		//cout << "Bleh" << endl;
@@ -926,19 +943,19 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquired
 						}
 						hound++;
 					}
-					////If what I need is more than what I have
-					//if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
-					//	////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
-					//	//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
-					//	//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
-					//	iter++;
-					//	continue;
-					//}
-					/*else*/ if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
+					if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
+						////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
+						//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
+						//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
+						iter++;
+						continue;
+					}
+					else if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
 					{
 						map<string, Resource*>::const_iterator it = _resourcePool.find(sherlock->first);
 						int diff = sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded();
 						if (diff > it->second->GetResourceCount()) {
+							//aircraft->SetCELflag(1);
 							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), sherlock->first, aircraft->GetAircraftID());
 							return;
 						}
@@ -1980,7 +1997,7 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 	//	_myRJ == "28 VDC Battery - Replacement"
 	//	)
 	//{
-
+	
 	cout << " pool count after release is: ";
 	cout << iter->second->GetResourceCount() << "\n+++++++" << endl;
 	//}

@@ -4,6 +4,7 @@
 
 int Aircraft::_nextID = 0;
 int _airCount = 0;
+int _CELflag = 0;
 
 Aircraft::Aircraft()
 {
@@ -25,6 +26,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	_wingspan = mapAircraft._wingspan;								//	Aircraft size y dimension
 	_repairJobName = mapAircraft._repairJobName;
 	_baySizeReq = mapAircraft._baySizeReq;
+	_CELflag = mapAircraft._CELflag;
 	//cout << "MY UNPLANNED IAT " << _aircraftType << endl; 
 	//mapAircraft._iatUnplanned->PrintDistribution();
 	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis();
@@ -200,6 +202,19 @@ bool Aircraft::AreMoreJobs()
 	if (iter != _myRepairJobs.end())
 		return true;
 	return false;
+}
+
+void Aircraft::SetCELflag(int CELflag)
+{
+	_CELflag = CELflag;
+}
+
+bool Aircraft::IsAfterCEL()
+{
+	if (_CELflag == 1)
+		return true;
+	if (_CELflag == 0)
+		return false;
 }
 
 bool Aircraft::AreMoreSteps()
