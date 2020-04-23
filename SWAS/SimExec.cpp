@@ -117,6 +117,8 @@ public:
 			if (curr->_cea->Condition(resource, parts)) {
 				//If met Execute the associated Event Method
 				cout << "Executed from CES, ID: " << curr->_aID <<endl;
+				/*if (curr->_aID == 15)
+					cout << "WHYYY" << endl;*/
 				curr->_cea->Execute();
 				//curr = curr->_nextCondEvent;
 				//Event has Executed, see if the current node is the head node
@@ -147,7 +149,7 @@ public:
 					//delete curr;
 				}
 				//Return true that the event executed
-				//delete curr;
+				delete curr;
 				return true;
 			}
 			//If curr's condition isn't met check the next node

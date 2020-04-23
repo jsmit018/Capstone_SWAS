@@ -153,7 +153,7 @@ private:
 	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
 	void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
-	void ReleaseResourceEM(Resource* resource, int numRelease);
+	void ReleaseResourceEM(Resource* resource, int numRelease, int test = 0);
 	//void FailResourceEM(Resource* resource);
 	//void RestoreResourceEM(Resource* resource);
 
