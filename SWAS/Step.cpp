@@ -553,6 +553,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						else {
 							//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedBaysEA(this, aircraft, _acquiredResources, it->second, 1), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+							
 							Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 							Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 							return;
@@ -656,18 +657,41 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						}
 						hound++;
 					}
-					//If what I need is more than what I have
-					if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
-						////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
-						//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
-						//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
-						iter++;
-						continue;
-					}
-					else if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
+					////If what I need isn't acquired
+					//if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
+					//	////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
+					//	//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
+					//	//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
+					//	iter++;
+					//	continue;
+					//}
+					/*else */if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
 					{
 						map<string, Resource*>::const_iterator it = _resourcePool.find(sherlock->first);
-						if ((sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()) > it->second->GetResourceCount()) {
+
+						int diff = sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded();
+						if (diff > it->second->GetResourceCount()) {
+							
+//////////////////////////////////////////////////////
+							//if we have to wait for a resource, free the others (except for the bay)
+							map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+							while (iter != _reqResourceMap.end())
+							{
+								if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
+								{
+									ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+								}
+								//empty appropriate acquired vector index
+								for (int i = 0; i < _acquiredResources.size(); i++)
+								{
+									if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+										_acquiredResources.erase(_acquiredResources.begin() + i);
+										i--;
+									}
+								}
+								iter++;
+							}
+///////////////////////////////////////////////////
 							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), sherlock->first, aircraft->GetAircraftID());
 							return;
 						}
@@ -702,17 +726,47 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//	//cout << "----------ACQUIRED  " << it->first << endl;
 
 				}
+				//else if there aren't enough resources in the pool, we wait
 				else {
 					//	//cout << " we have to wait for a/an " << iter->first << endl;
 					//if (SimExec::GetSimulationTime()._year == 2025 && SimExec::ConvertDate(SimExec::GetSimulationTime()._month) == "July")
-						//		//cout << "Hehe sounds like a lotta hoopla" << endl;
 							//INSERT WAITING LOGIC
 				//			//cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
-					if (_acquiredResources.size() > 0)
-						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-					else
+					
+					/////COMMENTED OUT FOR TESTING
+					//if (_acquiredResources.size() > 0)
+					//{
+
+					//	SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					//}
+					//else
+					//{
+
+						//////////////////////////////////////////////////////
+							//if we have to wait for a resource, free the others (except for the bay)
+						map<string, Resource*>::const_iterator iter2 = _reqResourceMap.begin();
+						while (iter2 != _reqResourceMap.end())
+						{
+							if (iter2->first != "S Bay" && iter2->first != "M Bay" && iter2->first != "L Bay")
+							{
+								ReleaseResourceEM(iter2->second, iter2->second->GetNumResNeeded());
+							}
+							//empty appropriate acquired vector index
+							for (int i = 0; i < _acquiredResources.size(); i++)
+							{
+								if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+									_acquiredResources.erase(_acquiredResources.begin() + i);
+									i--;
+								}
+							}
+							iter2++;
+						}
+						///////////////////////////////////////////////////
+
+
 						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					//}
 					iter++;
 					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
@@ -729,9 +783,6 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		if (_reqPartsMap.size() > 0)
 		{
 			map<string, Parts*>::const_iterator iterParts = _reqPartsMap.begin();
-			////cout << "BLAH " << _reqPartsMap.size() << endl;
-			////cout << iterParts->first << endl;
-			////cout << "after \n";
 			if (iterParts->second->GetPartsName() == "none needed")
 			{
 				//cout << "No parts needed" << endl;
@@ -764,6 +815,31 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						//SimExec::ScheduleEventAt(0, new PlaceOrderEA(this, it->second), 0.0, "PlaceOrderEA");
 						// WAITING
 						//cout << "Adding Aircraft to the Conditional Event list until " << it->first << " becomes available" << endl;
+
+
+
+						//////////////////////////////////////////////////////
+							//if we have to wait for a resource, free the others (except for the bay)
+						map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+						while (iter != _reqResourceMap.end())
+						{
+							if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
+							{
+								ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+							}
+							//empty appropriate acquired vector index
+							for (int i = 0; i < _acquiredResources.size(); i++)
+							{
+								if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+									_acquiredResources.erase(_acquiredResources.begin() + i);
+									i--;
+								}
+							}
+							iter++;
+						}
+						///////////////////////////////////////////////////
+
+
 						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources), "NeedPartsEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 						return;
 					}
@@ -786,14 +862,11 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	else if (_type == "inspection" || _type == "Inspection")
 	{
 
-		////cout << " zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz " << endl;
-
 		map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 		//for all resources listed in required map
 		while (iter != _reqResourceMap.end())
 		{
 			bool alreadyAcquired = false;
-			////cout << " zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz "  << endl;
 
 			//compare key to acquired resources vector
 			for (int i = 0; i < _acquiredResources.size(); i++)
@@ -828,18 +901,19 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						}
 						hound++;
 					}
-					//If what I need is more than what I have
-					if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
-						////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
-						//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
-						//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
-						iter++;
-						continue;
-					}
-					else if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
+					////If what I need is more than what I have
+					//if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
+					//	////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
+					//	//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
+					//	//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
+					//	iter++;
+					//	continue;
+					//}
+					/*else*/ if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
 					{
 						map<string, Resource*>::const_iterator it = _resourcePool.find(sherlock->first);
-						if ((sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()) > it->second->GetResourceCount()) {
+						int diff = sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded();
+						if (diff > it->second->GetResourceCount()) {
 							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), sherlock->first, aircraft->GetAircraftID());
 							return;
 						}
@@ -862,10 +936,37 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//INSERT WAITING LOGIC
 					//cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
 					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
-					if (_acquiredResources.size() > 0)
-						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-					else
-						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					
+					////COMMENTED OUT FOR TESTING
+					//if (_acquiredResources.size() > 0)
+					//	SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					//else
+
+
+
+					//////////////////////////////////////////////////////
+							//if we have to wait for a resource, free the others (except for the bay)
+					map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+					while (iter != _reqResourceMap.end())
+					{
+						if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
+						{
+							ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+						}
+						//empty appropriate acquired vector index
+						for (int i = 0; i < _acquiredResources.size(); i++)
+						{
+							if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+								_acquiredResources.erase(_acquiredResources.begin() + i);
+								i--;
+							}
+						}
+						iter++;
+					}
+					///////////////////////////////////////////////////
+
+
+					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 					return;
