@@ -241,8 +241,8 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
-			//if job is not my current job and is of the same type
-			//if next repairjob has higher priority (lower number) than current high priority
+		//if job is not my current job and is of the same type
+		//if next repairjob has higher priority (lower number) than current high priority
 		if (iter->second->GetName() != GetMyRepairJobObj(rjName)->GetName()
 			&& iter->second->GetSchedType() == GetMyRepairJobObj(rjName)->GetSchedType()
 			&& iter->second->GetPriority() <= highPriority)
@@ -263,7 +263,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 		{
 			iter++;
 		}
-			
+
 	}
 
 
@@ -463,7 +463,7 @@ void Aircraft::AddBayReqToRes()
 		}
 		iter++;
 	}
-		
+
 }
 
 int Aircraft::GetUnplanVecSize()
@@ -633,7 +633,7 @@ void Aircraft::PrintMyProperties()
 	//cout << "After creating the iterator to the map " << std::endl; 
 	while (it != _myRepairJobs.end())
 	{
-//		it->second->PrintJobProperties();
+		//		it->second->PrintJobProperties();
 		it++;
 	}
 }
