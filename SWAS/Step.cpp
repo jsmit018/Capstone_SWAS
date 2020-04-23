@@ -88,7 +88,8 @@ void Step::CopyMapStep(const Step& mapStep)
 
 class Step::WaitForResourceEA : public CondEventAction {
 public:
-	WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+	//WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+	WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<pair<string, int>> acqResources) {
 		_step = step;
 		_resource = resource;
 		_aircraft = aircraft;
@@ -119,14 +120,16 @@ private:
 	Aircraft* _aircraft;
 	int _amountNeeded;
 	string _funcName;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 	//Scribe* _outputRecorder;
 
 };
 
 class Step::ResWaitForResEA : public CondEventAction {
 public:
-	ResWaitForResEA(Step* step, Resource* resource, Resource* required, int amountNeeded, vector<string> acqResources) {
+	//ResWaitForResEA(Step* step, Resource* resource, Resource* required, int amountNeeded, vector<string> acqResources) {
+	ResWaitForResEA(Step* step, Resource* resource, Resource* required, int amountNeeded, vector<pair<string, int>> acqResources) {
 		_step = step;
 		_resource = resource;
 		_required = required;
@@ -163,13 +166,15 @@ private:
 	Resource* _resource;
 	Resource* _required;
 	int _amountNeeded;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 };
 
 
 class Step::NeedPartsEA : public CondEventAction {
 public:
-	NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+	//NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
+	NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<pair<string, int>> acqResources) {
 		_step = step;
 		_parts = parts;
 		_aircraft = aircraft;
@@ -197,12 +202,14 @@ private:
 	Step* _step;
 	Aircraft* _aircraft;
 	int _amountNeeded;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 };
 
 class Step::NeedBaysEA : public CondEventAction {
 public:
-	NeedBaysEA(Step* step, Aircraft* aircraft, vector<string> acqResources, Resource* bay, int numNeeded) {
+	//NeedBaysEA(Step* step, Aircraft* aircraft, vector<string> acqResources, Resource* bay, int numNeeded) {
+	NeedBaysEA(Step* step, Aircraft* aircraft, vector<pair<string, int>> acqResources, Resource* bay, int numNeeded) {
 		_step = step;
 		_aircraft = aircraft;
 		_acqResources = acqResources;
@@ -232,7 +239,8 @@ public:
 private:
 	Step* _step;
 	Aircraft* _aircraft;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 	Resource* _bay;
 	int _numNeeded;
 };
@@ -272,7 +280,8 @@ private:
 
 class Step::StartServiceEA : public EventAction {
 public:
-	StartServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources) {
+	//StartServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources) {
+	StartServiceEA(Step* step, Aircraft* aircraft, vector<pair<string, int>> acqResources) {
 		_step = step;
 		_aircraft = aircraft;
 		_acqResources = acqResources;
@@ -284,12 +293,14 @@ public:
 private:
 	Step* _step;
 	Aircraft* _aircraft;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 };
 
 class Step::StartRepairServiceEA : public EventAction {
 public:
-	StartRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources) {
+	//StartRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources) {
+	StartRepairServiceEA(Step* step, Resource* resource, vector<pair<string, int>> acqResources) {
 		_step = step;
 		_resource = resource;
 		_acqResources = acqResources;
@@ -301,12 +312,14 @@ public:
 private:
 	Step* _step;
 	Resource* _resource;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 };
 
 class Step::DoneServiceEA : public EventAction {
 public:
-	DoneServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources)
+	//DoneServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources)
+	DoneServiceEA(Step* step, Aircraft* aircraft, vector<pair<string, int>> acqResources)
 	{
 		_step = step;
 		_aircraft = aircraft;
@@ -320,12 +333,14 @@ public:
 private:
 	Step* _step;
 	Aircraft* _aircraft;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 };
 
 class Step::DoneRepairServiceEA : public EventAction {
 public:
-	DoneRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources)
+	//DoneRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources)
+	DoneRepairServiceEA(Step* step, Resource* resource, vector<pair<string, int>> acqResources)
 	{
 		_step = step;
 		_resource = resource;
@@ -339,7 +354,8 @@ public:
 private:
 	Step* _step;
 	Resource* _resource;
-	vector<string> _acqResources;
+	//vector<string> _acqResources;
+	vector<pair<string, int>> _acqResources;
 };
 
 class Step::AddQueueEA : public EventAction {
@@ -466,7 +482,8 @@ int Step::GetReturnStep()
 	return _returnStep;
 }
 
-void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
+//void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
+void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
 {
 	if (isReturnStep == true)
 	{
@@ -507,7 +524,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	for (int i = 0; i < _acquiredResources.size(); i++)
 	{
 		if (_indoorReq == 'Y' || _indoorReq == 'y') {
-			if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+			//if (_acquiredResources[i] == "S Bay" || _acquiredResources[i] == "M Bay" || _acquiredResources[i] == "L Bay") {
+			if (_acquiredResources[i].first == "S Bay" || _acquiredResources[i].first == "M Bay" || _acquiredResources[i].first == "L Bay") {
 				//if (_acquiredResources[i] == "bay") {
 				hasResource = true;
 				break;
@@ -539,7 +557,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			if (it != _resourcePool.end())
 			{
 				if (IsMyBaySizeAvailable(it->first)) {
-					_acquiredResources.push_back(it->first);
+					//_acquiredResources.push_back(it->first);
+					_acquiredResources.push_back(make_pair(it->first,1));
 					//AcquireResourceEM(it->second, 1);
 					AcquireBay(it->second, 1);
 				}
@@ -548,7 +567,7 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						string bay = AcquireBay(it->second, 1);
 						if (WasBayAcquired(bay)) {
 							//cout << bay << " was acquired" << endl;
-							_acquiredResources.push_back(bay);
+							_acquiredResources.push_back(make_pair(bay,1));
 						}
 						else {
 							//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, 1, _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
@@ -627,7 +646,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if it's already acquired, break
-				if (iter->first == _acquiredResources[i]) {
+				//if (iter->first == _acquiredResources[i]) {
+				if (iter->first == _acquiredResources[i].first) {
 					alreadyAcquired = true;
 					break;
 				}
@@ -657,15 +677,15 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						}
 						hound++;
 					}
-					////If what I need isn't acquired
-					//if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
-					//	////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
-					//	//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
-					//	//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
-					//	iter++;
-					//	continue;
-					//}
-					/*else */if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
+					//If what I need isn't acquired
+					if (hound == aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->GetResourceMapEnd()) {
+						////cout << "The resource I'm looking for is " << sherlock->first << ", and I have " << hound->first;
+						//hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID - 1)->FindResourceinReqResMap(sherlock->first);
+						//AcquireResourceEM(sherlock->second, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()));
+						iter++;
+						continue;
+					}
+					else if (sherlock->second->GetNumResNeeded() > hound->second->GetNumResNeeded())
 					{
 						map<string, Resource*>::const_iterator it = _resourcePool.find(sherlock->first);
 
@@ -674,23 +694,24 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 							
 //////////////////////////////////////////////////////
 							//if we have to wait for a resource, free the others (except for the bay)
-							map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
-							while (iter != _reqResourceMap.end())
-							{
-								if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
-								{
-									ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
-								}
-								//empty appropriate acquired vector index
-								for (int i = 0; i < _acquiredResources.size(); i++)
-								{
-									if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
-										_acquiredResources.erase(_acquiredResources.begin() + i);
-										i--;
-									}
-								}
-								iter++;
-							}
+							//map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+							//while (iter != _reqResourceMap.end())
+							//{
+							//	if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
+							//	{
+							//		ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+							//	}
+							//	//empty appropriate acquired vector index
+							//	for (int i = 0; i < _acquiredResources.size(); i++)
+							//	{
+							//		//if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+							//		if (_acquiredResources[i].first != "S Bay" && _acquiredResources[i].first != "M Bay" && _acquiredResources[i].first != "L Bay") {
+							//			_acquiredResources.erase(_acquiredResources.begin() + i);
+							//			i--;
+							//		}
+							//	}
+							//	iter++;
+							//}
 ///////////////////////////////////////////////////
 							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, (sherlock->second->GetNumResNeeded() - hound->second->GetNumResNeeded()), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), sherlock->first, aircraft->GetAircraftID());
 							return;
@@ -722,7 +743,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						//system("PAUSE");
 					//}
 					//store in acquired resource vector
-					_acquiredResources.push_back(it->first);
+					//_acquiredResources.push_back(it->first);
+					_acquiredResources.push_back(make_pair(it->first, iter->second->GetNumResNeeded()));
 					//	//cout << "----------ACQUIRED  " << it->first << endl;
 
 				}
@@ -734,39 +756,40 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//			//cout << it->first << " is unavailable, adding Aircraft to the Conditional Event List until it is available." << endl;
 					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 					
-					/////COMMENTED OUT FOR TESTING
-					//if (_acquiredResources.size() > 0)
-					//{
+					///COMMENTED OUT FOR TESTING
+					if (_acquiredResources.size() > 0)
+					{
 
-					//	SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-					//}
-					//else
-					//{
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					}
+					else
+					{
 
 						//////////////////////////////////////////////////////
 							//if we have to wait for a resource, free the others (except for the bay)
-						map<string, Resource*>::const_iterator iter2 = _reqResourceMap.begin();
-						while (iter2 != _reqResourceMap.end())
-						{
-							if (iter2->first != "S Bay" && iter2->first != "M Bay" && iter2->first != "L Bay")
-							{
-								ReleaseResourceEM(iter2->second, iter2->second->GetNumResNeeded());
-							}
-							//empty appropriate acquired vector index
-							for (int i = 0; i < _acquiredResources.size(); i++)
-							{
-								if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
-									_acquiredResources.erase(_acquiredResources.begin() + i);
-									i--;
-								}
-							}
-							iter2++;
-						}
+						//map<string, Resource*>::const_iterator iter2 = _reqResourceMap.begin();
+						//while (iter2 != _reqResourceMap.end())
+						//{
+						//	if (iter2->first != "S Bay" && iter2->first != "M Bay" && iter2->first != "L Bay")
+						//	{
+						//		ReleaseResourceEM(iter2->second, iter2->second->GetNumResNeeded());
+						//	}
+						//	//empty appropriate acquired vector index
+						//	for (int i = 0; i < _acquiredResources.size(); i++)
+						//	{
+						//		//if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+						//		if (_acquiredResources[i].first != "S Bay" && _acquiredResources[i].first != "M Bay" && _acquiredResources[i].first != "L Bay") {
+						//			_acquiredResources.erase(_acquiredResources.begin() + i);
+						//			i--;
+						//		}
+						//	}
+						//	iter2++;
+						//}
 						///////////////////////////////////////////////////
 
 
 						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-					//}
+					}
 					iter++;
 					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
@@ -819,24 +842,25 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 
 						//////////////////////////////////////////////////////
-							//if we have to wait for a resource, free the others (except for the bay)
-						map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
-						while (iter != _reqResourceMap.end())
-						{
-							if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
-							{
-								ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
-							}
-							//empty appropriate acquired vector index
-							for (int i = 0; i < _acquiredResources.size(); i++)
-							{
-								if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
-									_acquiredResources.erase(_acquiredResources.begin() + i);
-									i--;
-								}
-							}
-							iter++;
-						}
+						//	//if we have to wait for a resource, free the others (except for the bay)
+						//map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+						//while (iter != _reqResourceMap.end())
+						//{
+						//	if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
+						//	{
+						//		ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+						//	}
+						//	//empty appropriate acquired vector index
+						//	for (int i = 0; i < _acquiredResources.size(); i++)
+						//	{
+						//		//if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+						//		if (_acquiredResources[i].first != "S Bay" && _acquiredResources[i].first != "M Bay" && _acquiredResources[i].first != "L Bay") {
+						//			_acquiredResources.erase(_acquiredResources.begin() + i);
+						//			i--;
+						//		}
+						//	}
+						//	iter++;
+						//}
 						///////////////////////////////////////////////////
 
 
@@ -872,7 +896,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
 				//if it's already acquired, break
-				if (iter->first == _acquiredResources[i])
+				//if (iter->first == _acquiredResources[i])
+				if (iter->first == _acquiredResources[i].first)
 				{
 					alreadyAcquired = true;
 					break;
@@ -937,36 +962,37 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//cout << it->first << " is unavailable adding aircraft, " << aircraft->GetAircraftType() << " to the Conditional Event List until it is available." << endl;
 					//SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources));
 					
-					////COMMENTED OUT FOR TESTING
-					//if (_acquiredResources.size() > 0)
-					//	SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-					//else
+					//COMMENTED OUT FOR TESTING
+					if (_acquiredResources.size() > 0)
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+					else
 
 
 
 					//////////////////////////////////////////////////////
-							//if we have to wait for a resource, free the others (except for the bay)
-					map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
-					while (iter != _reqResourceMap.end())
-					{
-						if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
-						{
-							ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
-						}
-						//empty appropriate acquired vector index
-						for (int i = 0; i < _acquiredResources.size(); i++)
-						{
-							if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
-								_acquiredResources.erase(_acquiredResources.begin() + i);
-								i--;
-							}
-						}
-						iter++;
-					}
+					//		//if we have to wait for a resource, free the others (except for the bay)
+					//map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
+					//while (iter != _reqResourceMap.end())
+					//{
+					//	if (iter->first != "S Bay" && iter->first != "M Bay" && iter->first != "L Bay")
+					//	{
+					//		ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
+					//	}
+					//	//empty appropriate acquired vector index
+					//	for (int i = 0; i < _acquiredResources.size(); i++)
+					//	{
+					//		//if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+					//		if (_acquiredResources[i].first != "S Bay" && _acquiredResources[i].first != "M Bay" && _acquiredResources[i].first != "L Bay") {
+					//			_acquiredResources.erase(_acquiredResources.begin() + i);
+					//			i--;
+					//		}
+					//	}
+					//	iter++;
+					//}
 					///////////////////////////////////////////////////
 
 
-					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
+						SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
 					Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 					return;
@@ -988,7 +1014,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//}
 
 					//store in acquired resource vector
-					_acquiredResources.push_back(it->first);
+					//_acquiredResources.push_back(it->first);
+					_acquiredResources.push_back(make_pair(it->first,iter->second->GetNumResNeeded()));
 
 					//Scribe::UpdateResourceRequests(it->second->GetResourceName(), true);
 					//Scribe::UpdateResourceUtilization(it->second->GetResourceName(), iter->second->GetNumResNeeded(), SimExec::GetSimulationTime()._timeOfDay);
@@ -1048,10 +1075,12 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			map<string, Resource*>::const_iterator iter = _reqResourceMap.begin();
 			while (iter != _reqResourceMap.end())
 			{
-				if (iter == _reqResourceMap.find(_acquiredResources[i]))
+				//if (iter == _reqResourceMap.find(_acquiredResources[i]))
+				if (iter == _reqResourceMap.find(_acquiredResources[i].first))
 				{
 					num = iter->second->GetNumResNeeded();
-					cout << _acquiredResources[i] << " num " << num << endl;
+					//cout << _acquiredResources[i] << " num " << num << endl;
+					cout << _acquiredResources[i].first << " num " << num << endl;
 				}
 				iter++;
 			}
@@ -1059,7 +1088,8 @@ void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 	}
 }
 
-void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResources)
+//void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResources)
+void Step::StartRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources)
 {
 
 	if (isReturnStep == true)
@@ -1088,7 +1118,8 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 		{
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
-				if (iter->first == _acquiredResources[i])
+				//if (iter->first == _acquiredResources[i])
+				if (iter->first == _acquiredResources[i].first)
 				{
 					alreadyAcquired = true;
 					break;
@@ -1111,15 +1142,20 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 						//cout << "Acquired " << iter->second->GetNumResNeeded() << iter->first;
 						//system("PAUSE");
 					//}
-					_acquiredResources.push_back(it->first);
+					//_acquiredResources.push_back(it->first);
+					_acquiredResources.push_back(make_pair(it->first,iter->second->GetNumResNeeded()));
 				}
 				else
 				{
 					//SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources));
 					if (_acquiredResources.size() > 0)
-						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
+						SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new ResWaitForResEA(this,
+							resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", 
+							iter->first, resource->GetResourceName(), 77.7);
 					else
-						SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
+						SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), 
+							new ResWaitForResEA(this, resource, it->second, iter->second->GetNumResNeeded(), _acquiredResources), 
+							"ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
 					return;
 					return;
 				}
@@ -1137,7 +1173,8 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 		{
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
-				if (iter->first == acquiredResources[i])
+				//if (iter->first == acquiredResources[i])
+				if (iter->first == acquiredResources[i].first)
 				{
 					break;
 				}
@@ -1151,7 +1188,8 @@ void Step::StartRepairServiceEM(Resource* resource, vector<string> acquiredResou
 					//cout << "Acquired " << iter->second->GetNumResNeeded() << it->first;
 					//system("PAUSE");
 				//}
-				_acquiredResources.push_back(it->first);
+				//_acquiredResources.push_back(it->first);
+				_acquiredResources.push_back(make_pair(it->first,iter->second->GetNumResNeeded()));
 
 				if (IsInpectionFail(_inspecFailProb) == true)
 				{
@@ -1293,7 +1331,8 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 bool isNextJob = false;
 
 
-void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
+//void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
+void Step::DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
 {
 	////cout << aircraft->GetAircraftType() << " " << aircraft->GetAircraftID() << " ----------NUMBER OF JOBS " << aircraft->GetMyRJMapSize() << endl;
 	_acquiredResources = acquiredResources;
@@ -1311,19 +1350,22 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 		{
 			////cout << " ____ IN CHECK FOR RESOURCES IN NEXT STEP" << endl;
 			//if resource name is found in next step's acquired vector, keep it in the vector
-			if (aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i]))
+			//if (aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i]))
+			if (aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i].first))
 			{
 				//cout << aircraft->GetAircraftID() << " " << aircraft->GetAircraftType() << " Retaining " << _acquiredResources[i] << " for " << this->GetName() << endl;
 				//go to next resource
 				//continue;
 
 				//Check next step's resources against this step's resources and release if greater than
-				map<string, Resource*>::const_iterator sherlock = _reqResourceMap.find(_acquiredResources[i]);
+				//map<string, Resource*>::const_iterator sherlock = _reqResourceMap.find(_acquiredResources[i]);
+				map<string, Resource*>::const_iterator sherlock = _reqResourceMap.find(_acquiredResources[i].first);
 				map<string, Resource*>::const_iterator hound = aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID)->GetResourceMapBegin();
 				while (hound != aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID)->GetResourceMapEnd())
 				{
 
-					if (hound->first == _acquiredResources[i])
+					//if (hound->first == _acquiredResources[i])
+					if (hound->first == _acquiredResources[i].first)
 					{
 						break;
 					}
@@ -1343,16 +1385,17 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			//if the resource doesn't match, release it
 			else
 			{
-				if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay")
+				//if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay")
+				if (_acquiredResources[i].first != "S Bay" && _acquiredResources[i].first != "M Bay" && _acquiredResources[i].first != "L Bay")
 				{
-					map<string, Resource*>::const_iterator iter = _reqResourceMap.find(_acquiredResources[i]);
+					map<string, Resource*>::const_iterator iter = _reqResourceMap.find(_acquiredResources[i].first);
 					//cout << "ID: " << aircraft->GetAircraftID() << "Releasing " << _acquiredResources[i] << endl;
 					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 					ReleaseResourceEM(iter->second, iter->second->GetNumResNeeded());
-					if (iter->first == "Ladder" || iter->first == "Mechanic") {
+					//if (iter->first == "Ladder" || iter->first == "Mechanic") {
 						//cout << "Acquired " << iter->second->GetNumResNeeded() << iter->first;
 						//system("PAUSE");
-					}
+					//}
 
 					//empty appropriate acquired vector index
 					////cout << "-------size of acquired list " << _acquiredResources.size() << endl;
@@ -1404,10 +1447,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			map<string, Resource*>::const_iterator iter1 = _reqResourceMap.begin();
 			while (iter1 != _reqResourceMap.end())
 			{
-				if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+				//if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+				if (iter1 == _reqResourceMap.find(_acquiredResources[i].first))
 				{
 					acquired = iter1->second->GetNumResNeeded();
-					cout << _acquiredResources[i] << " previously acquired " << acquired << endl;
+					//cout << _acquiredResources[i] << " previously acquired " << acquired << endl;
+					cout << _acquiredResources[i].first << " previously acquired " << acquired << endl;
 				}
 				iter1++;
 			}
@@ -1416,10 +1461,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			map<string, Resource*>::const_iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
 			{
-				if (iter == _resourcePool.find(_acquiredResources[i]))
+				//if (iter == _resourcePool.find(_acquiredResources[i]))
+				if (iter == _resourcePool.find(_acquiredResources[i].first))
 				{
 					thisCount = iter->second->GetResourceCount();
-					cout << _acquiredResources[i] << " count " << thisCount << endl;
+					//cout << _acquiredResources[i] << " count " << thisCount << endl;
+					cout << _acquiredResources[i].first << " count " << thisCount << endl;
 				}
 				iter++;
 			}
@@ -1460,8 +1507,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
 					for (int i = 0; i < _acquiredResources.size(); ++i) {
-						if (_acquiredResources[i] == iter->first) {
-							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+						//if (_acquiredResources[i] == iter->first) {
+						if (_acquiredResources[i].first == iter->first) {
+							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i].first, iter->second->GetNumResNeeded());
 							_acquiredResources.erase(_acquiredResources.begin() + i);
 							break;
 						}
@@ -1475,7 +1524,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						//system("PAUSE");
 					//}
 					for (int i = 0; i < _acquiredResources.size(); ++i) {
-						if (_acquiredResources[i] == iter->first) {
+						//if (_acquiredResources[i] == iter->first) {
+						if (_acquiredResources[i].first == iter->first) {
 							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
 							_acquiredResources.erase(_acquiredResources.begin() + i);
 							break;
@@ -1490,11 +1540,14 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 			}
 
 			if (_acquiredResources.size() > 0) {
-				if (_acquiredResources[0] == "S Bay" || _acquiredResources[0] == "M Bay" || _acquiredResources[0] == "L Bay") {
+			//	if (_acquiredResources[0] == "S Bay" || _acquiredResources[0] == "M Bay" || _acquiredResources[0] == "L Bay") {
+				if (_acquiredResources[0].first == "S Bay" || _acquiredResources[0].first == "M Bay" || _acquiredResources[0].first == "L Bay") {
 					//for (int i = 0; i < _acquiredResources.size(); ++i) {
 						//if (_acquiredResources[i] == iter->first) {
-					map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0]);
-					ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0], 1);
+					//map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0]);
+					map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0].first);
+					//ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0], 1);
+					ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0].first, 1);
 					_acquiredResources.erase(_acquiredResources.begin());
 					//break;
 				}
@@ -1522,10 +1575,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				map<string, Resource*>::const_iterator iter1 = _reqResourceMap.begin();
 				while (iter1 != _reqResourceMap.end())
 				{
-					if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+					//if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+					if (iter1 == _reqResourceMap.find(_acquiredResources[i].first))
 					{
 						acquired = iter1->second->GetNumResNeeded();
-						cout << _acquiredResources[i] << " previously acquired " << acquired << endl;
+						//cout << _acquiredResources[i] << " previously acquired " << acquired << endl;
+						cout << _acquiredResources[i].first << " previously acquired " << acquired << endl;
 					}
 					iter1++;
 				}
@@ -1534,10 +1589,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				map<string, Resource*>::const_iterator iter = _resourcePool.begin();
 				while (iter != _resourcePool.end())
 				{
-					if (iter == _resourcePool.find(_acquiredResources[i]))
+					//if (iter == _resourcePool.find(_acquiredResources[i]))
+					if (iter == _resourcePool.find(_acquiredResources[i].first))
 					{
 						thisCount = iter->second->GetResourceCount();
-						cout << _acquiredResources[i] << " count " << thisCount << endl;
+						//cout << _acquiredResources[i] << " count " << thisCount << endl;
+						cout << _acquiredResources[i].first << " count " << thisCount << endl;
 					}
 					iter++;
 				}
@@ -1585,7 +1642,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//empty appropriate acquired vector index
 					for (int i = 0; i < _acquiredResources.size(); i++)
 					{
-						if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+						//if (_acquiredResources[i] != "S Bay" && _acquiredResources[i] != "M Bay" && _acquiredResources[i] != "L Bay") {
+						if (_acquiredResources[i].first != "S Bay" && _acquiredResources[i].first != "M Bay" && _acquiredResources[i].first != "L Bay") {
 							_acquiredResources.erase(_acquiredResources.begin() + i);
 							i--;
 						}
@@ -1609,10 +1667,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					map<string, Resource*>::const_iterator iter1 = _reqResourceMap.begin();
 					while (iter1 != _reqResourceMap.end())
 					{
-						if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+						//if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+						if (iter1 == _reqResourceMap.find(_acquiredResources[i].first))
 						{
 							acquired = iter1->second->GetNumResNeeded();
-							cout << "		" << _acquiredResources[i] << " previously acquired " << acquired << endl;
+							//cout << "		" << _acquiredResources[i] << " previously acquired " << acquired << endl;
+							cout << "		" << _acquiredResources[i].first << " previously acquired " << acquired << endl;
 						}
 						iter1++;
 					}
@@ -1621,10 +1681,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					map<string, Resource*>::const_iterator iter = _resourcePool.begin();
 					while (iter != _resourcePool.end())
 					{
-						if (iter == _resourcePool.find(_acquiredResources[i]))
+						//if (iter == _resourcePool.find(_acquiredResources[i]))
+						if (iter == _resourcePool.find(_acquiredResources[i].first))
 						{
 							thisCount = iter->second->GetResourceCount();
-							cout << "		" << _acquiredResources[i] << " count " << thisCount << endl;
+							//cout << "		" << _acquiredResources[i] << " count " << thisCount << endl;
+							cout << "		" << _acquiredResources[i].first << " count " << thisCount << endl;
 						}
 						iter++;
 					}
@@ -1643,8 +1705,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					//SimExec::ScheduleEventAt(_RJpriority, new ReleaseResourceEA(this, iter->second), 0.0, "ReleaseResourceEA");
 					if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
 						for (int i = 0; i < _acquiredResources.size(); ++i) {
-							if (_acquiredResources[i] == iter->first) {
-								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+							//if (_acquiredResources[i] == iter->first) {
+							if (_acquiredResources[i].first == iter->first) {
+								//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
+								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i].first, iter->second->GetNumResNeeded());
 								_acquiredResources.erase(_acquiredResources.begin() + i);
 								break;
 							}
@@ -1658,7 +1722,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 							//system("PAUSE");
 						//}
 						for (int i = 0; i < _acquiredResources.size(); ++i) {
-							if (_acquiredResources[i] == iter->first) {
+							//if (_acquiredResources[i] == iter->first) {
+							if (_acquiredResources[i].first == iter->first) {
 								//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), _acquiredResources[i], iter->second->GetNumResNeeded());
 								_acquiredResources.erase(_acquiredResources.begin() + i);
 								break;
@@ -1688,10 +1753,12 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					map<string, Resource*>::const_iterator iter1 = _reqResourceMap.begin();
 					while (iter1 != _reqResourceMap.end())
 					{
-						if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+						//if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
+						if (iter1 == _reqResourceMap.find(_acquiredResources[i].first))
 						{
 							acquired = iter1->second->GetNumResNeeded();
-							cout << "		" << _acquiredResources[i] << " previously acquired " << acquired << endl;
+							//cout << "		" << _acquiredResources[i] << " previously acquired " << acquired << endl;
+							cout << "		" << _acquiredResources[i].first << " previously acquired " << acquired << endl;
 						}
 						iter1++;
 					}
@@ -1700,21 +1767,26 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					map<string, Resource*>::const_iterator iter = _resourcePool.begin();
 					while (iter != _resourcePool.end())
 					{
-						if (iter == _resourcePool.find(_acquiredResources[i]))
+						//if (iter == _resourcePool.find(_acquiredResources[i]))
+						if (iter == _resourcePool.find(_acquiredResources[i].first))
 						{
 							thisCount = iter->second->GetResourceCount();
-							cout << "		" << _acquiredResources[i] << " count " << thisCount << endl;
+							//cout << "		" << _acquiredResources[i] << " count " << thisCount << endl;
+							cout << "		" << _acquiredResources[i].first << " count " << thisCount << endl;
 						}
 						iter++;
 					}
 				}
 
 				if (_acquiredResources.size() > 0) {
-					if (_acquiredResources[0] == "S Bay" || _acquiredResources[0] == "M Bay" || _acquiredResources[0] == "L Bay") {
+					//if (_acquiredResources[0] == "S Bay" || _acquiredResources[0] == "M Bay" || _acquiredResources[0] == "L Bay") {
+					if (_acquiredResources[0].first == "S Bay" || _acquiredResources[0].first == "M Bay" || _acquiredResources[0].first == "L Bay") {
 						//for (int i = 0; i < _acquiredResources.size(); ++i) {
 							//if (_acquiredResources[i] == iter->first) {
-						map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0]);
-						ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0], 1);
+						//map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0]);
+						map<string, Resource*>::const_iterator it = _resourcePool.find(_acquiredResources[0].first);
+						//ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0], 1);
+						ReleaseBay(it->second, aircraft->GetBaySizeReq(), _acquiredResources[0].first, 1);
 						_acquiredResources.erase(_acquiredResources.begin());
 						//break;
 					}
@@ -1748,7 +1820,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 
 }
 
-void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources)
+//void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources)
+void Step::DoneRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
 	if (_stepID < RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStepVecSize())
@@ -1760,7 +1833,8 @@ void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResour
 		{
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
-				if (RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i]))
+				//if (RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i]))
+				if (RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->ResourceInReqResource(_acquiredResources[i].first))
 				{
 					//cout << resource->GetResourceName() << " Retaining " << _acquiredResources[i] << " for " << this->GetName() << endl;
 				}
@@ -1804,7 +1878,8 @@ void Step::DoneRepairServiceEM(Resource* resource, vector<string> acquiredResour
 
 			for (int i = 0; i < _acquiredResources.size(); i++)
 			{
-				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+				//map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i]);
+				map<string, Resource*>::const_iterator resIt = _resourcePool.find(_acquiredResources[i].first);
 				//ReleaseResourceEM(resIt->second, 1);
 
 				_acquiredResources.erase(_acquiredResources.begin() + i);
@@ -2085,7 +2160,8 @@ map<string, Resource*>::iterator Step::FindResourceinReqResMap(string resource)
 void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 {
 	// Testing //
-	vector<string> test;
+	//vector<string> test;
+	vector<pair<string, int>> test;
 	SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
 	//SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	//cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
@@ -2093,7 +2169,8 @@ void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 
 void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj)
 {
-	vector<string> test;
+	//vector<string> test;
+	vector<pair<string, int>> test;
 	for (int i = 0; i < 1; ++i) {
 		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, test), "StartServiceEA");
 		//SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
@@ -2430,7 +2507,8 @@ void Step::InitialArrivalBayCheck()
 //now exclusive to unplanned
 void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
-	vector<string> test;
+	//vector<string> test;
+	vector<pair<string, int>> test;
 	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
 	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
 	//cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;

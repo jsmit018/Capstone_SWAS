@@ -112,7 +112,8 @@ private:
 	map<string, Resource*> _reqResourceMap;		//map of required resources
 	map<string, Parts*> _reqPartsMap;		//map of required parts
 
-	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
+	//vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
+	vector<pair<string, int>> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
 	//Scribe* outputRecorder = new Scribe();
 
@@ -147,11 +148,15 @@ private:
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
-	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
+	//void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
+	void StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
+	//void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
+	void StartRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
-	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
+	//void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
+	void DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
+	//void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
+	void DoneRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
 	//void FailResourceEM(Resource* resource);
