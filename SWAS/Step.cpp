@@ -1306,7 +1306,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 				if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
 				{
 					acquired = iter1->second->GetNumResNeeded();
-					cout << _acquiredResources[i] << " acquired " << acquired << endl;
+					cout << _acquiredResources[i] << " previously acquired " << acquired << endl;
 				}
 				iter1++;
 			}
@@ -1424,7 +1424,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 					if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
 					{
 						acquired = iter1->second->GetNumResNeeded();
-						cout << _acquiredResources[i] << " acquired " << acquired << endl;
+						cout << _acquiredResources[i] << " previously acquired " << acquired << endl;
 					}
 					iter1++;
 				}
@@ -1511,7 +1511,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
 						{
 							acquired = iter1->second->GetNumResNeeded();
-							cout << "		" << _acquiredResources[i] << " acquired " << acquired << endl;
+							cout << "		" << _acquiredResources[i] << " previously acquired " << acquired << endl;
 						}
 						iter1++;
 					}
@@ -1590,7 +1590,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 						if (iter1 == _reqResourceMap.find(_acquiredResources[i]))
 						{
 							acquired = iter1->second->GetNumResNeeded();
-							cout << "		" << _acquiredResources[i] << " acquired " << acquired << endl;
+							cout << "		" << _acquiredResources[i] << " previously acquired " << acquired << endl;
 						}
 						iter1++;
 					}
