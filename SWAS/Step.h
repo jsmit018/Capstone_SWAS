@@ -113,7 +113,7 @@ private:
 	map<string, Parts*> _reqPartsMap;		//map of required parts
 
 	//vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
-	vector<pair<string, int>> _acquiredResources;	//vector of acquired resources to be checked at the end of service
+	map<string, int> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
 	//Scribe* outputRecorder = new Scribe();
 
@@ -122,7 +122,7 @@ private:
 	{
 		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
 			return false;
-		else
+		else if (_reqResourceMap.find(resource) != _reqResourceMap.end())
 			return true;
 	}
 
@@ -149,14 +149,18 @@ private:
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
 	//void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
+	//void StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
+	void StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
 	//void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
-	void StartRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
+	//void StartRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
+	void StartRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	//void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
+	//void DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
+	void DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
 	//void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
-	void DoneRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
+	//void DoneRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
+	void DoneRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
 	//void FailResourceEM(Resource* resource);
