@@ -288,6 +288,19 @@ string Resource::GetRepairProcess()
 	return _repairProc;
 }
 
+bool Resource::IsAfterCEL()
+{
+	if (_CELflag == 1)
+		return true;
+	if (_CELflag == 0)
+		return false;
+}
+
+void Resource::SetCELflag(int CELflag)
+{
+	_CELflag = CELflag;
+}
+
 
 void Resource::PrintResProperties()
 {
@@ -307,6 +320,16 @@ void Resource::PrintResProperties()
 	cout << endl;
 	cout << "			Repair process: " << _repairProc << endl;
 	cout << endl;
+}
+
+void Resource::SetResourceID(int resourceID)
+{
+	_resourceID = resourceID;
+}
+
+int Resource::GetResourceID()
+{
+	return _resourceID;
 }
 
 void Resource::FailResourceEM(Resource* resource)
