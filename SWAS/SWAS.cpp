@@ -28,37 +28,23 @@ void ScribeSetTerminationTime(double termTime) {
 //had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
 InputReader inputReader;
 
-
-///Jordan: 
 void SchedResourceFailure()
 {
+	cout << " in sched resource fail " << endl;
 	//schedule resource failure logic
 	map<string, Resource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
 	while (iter != InputReader::GetMasterResMapEnd())
 	{
 		cout << "" << endl;
+		if (iter->second->GetFailureName() != "")
 		//schedule iter's first failure in iter->second->GetFailureDistr()
-		if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
-			//if (iter->second->GetFailureName() == 		
-				//continue;
-		}
-		else
-		{
-			//iter->second->ScheduleFirstFailures(iter->second);
-			//iter++;
-		}
+		iter->second->ScheduleFirstFailures(iter->second);
 		iter++;
 	}
-
 }
 
 void InitializeAircraft()
 {
-	//	InputReader inputReader;
-
-	/*Populates master map*/
-	//	inputReader.ReadInputData();
-	//inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);
@@ -73,8 +59,6 @@ void InitializeAircraft()
 
 	SimExec::SetSystemSink(depart);
 
-	//cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
-
 	//for all unique aircraft types in the master map 
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
 	while (iter != inputReader.GetMasterMapEnd())
@@ -83,9 +67,6 @@ void InitializeAircraft()
 		//if (search(head, iter->first) == true)
 		if (inputReader.FindSelectedAircraft(iter->first) == true)
 		{
-			//iter->second->PrintProperties(); 
-			//iter->second->GetAircraftIAT()->PrintDistribution();
-
 			/* Create the first instance of that particular aircraft type by copying from master map */
 			//Test count//
 			int count = 1;
@@ -102,8 +83,7 @@ void InitializeAircraft()
 				if (myIter->second->GetSchedType() == "Calendar")
 				{
 					////// calendarsourceblock schedules calendar arrival at date 
-					//(sourceblock schedules arrival, arrival happens once)
-					//cout << endl;
+
 					cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
 					SourceBlock* calArrival = new SourceBlock(
@@ -117,7 +97,6 @@ void InitializeAircraft()
 				else if (myIter->second->GetSchedType() == "Recurring")
 				{
 					////// recurringsourceblock schedules first arrival at recur iat 
-					//(sourceblock schedules arrival, arrival schedules next arrival)
 					cout << endl;
 					cout << "Scheduling recurring arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
@@ -132,10 +111,6 @@ void InitializeAircraft()
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
 				{
 					////// unplannedsourceblock schedules first arrival at unpl iat  
-					//(sourceblock schedules arrival, arrival schedules next arrival
-					//cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
-					//cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
-
 
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),

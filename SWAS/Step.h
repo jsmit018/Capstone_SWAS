@@ -27,7 +27,7 @@ public:
 	static void SetPartPoolCount(string, int);
 	void SetName(string name);
 	void SetType(string type);
-	void SetNumOfParts(string partsName, int numNeeded);
+	//void SetNumOfParts(string partsName, int numNeeded);
 	void SetInspecFailProb(string failureProb);
 	void SetServiceTime(string serviceTime); //change to distribution
 	void SetReqResource(string reqResource/*, Resource* resource*/);
@@ -139,32 +139,25 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
-	/*class FailResourceEA;
-	class RestoreResourceEA;*/
+	class FailResourceEA;
+	class RestoreResourceEA;
 	class WaitForResourceEA;
 	class ResWaitForResEA;
 	class NeedPartsEA;
+	class ResNeedPartsEA;
 	class NeedBaysEA;
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
-	//void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	//void StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
 	void StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
-	//void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
-	//void StartRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
 	void StartRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
-	//void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	//void DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources);
 	void DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
-	//void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
-	//void DoneRepairServiceEM(Resource* resource, vector<pair<string, int>> acquiredResources);
 	void DoneRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
-	//void FailResourceEM(Resource* resource);
-	//void RestoreResourceEM(Resource* resource);
+	void FailResourceEM(Resource* resource);
+	void RestoreResourceEM(Resource* resource);
 
 	void AcquireParts(Parts* parts, int newCount);
 };
