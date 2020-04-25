@@ -91,9 +91,12 @@ public:
 	bool IsMapEnd(map<string, RepairJob*>::const_iterator iter);
 	bool AreMoreJobs();
 	bool AreMoreSteps();
+	bool IsAfterCEL();
+	void SetCELflag(int CELflag);
 	//bool HasRecurJob();
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
+	int _CELflag;
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
 	static int _nextID;
 	int _sourceID;

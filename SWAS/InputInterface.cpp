@@ -1009,7 +1009,7 @@ void InputReader::ReadInputData() //initialization for getting data
 		map<string, Resource*> tempMap = Step::GetResPool();
 		if (tempMap.find(resIter->first) == tempMap.end())
 		{
-			cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
+			//cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
 			Resource* resCopy = new Resource();
 			resCopy->CopyMapResource(*resIter->second);
 			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumResNeeded() << endl;

@@ -161,9 +161,16 @@ void InitializeAircraft()
 
 }
 
+class hi
+{
+public:
+	hi(int _x) { x = _x; }
+	int x; 
+};
 
 int main()
 {
+
 	inputReader.ReadInputData();
 
 	Scribe::SetSaveFile("Output.csv");

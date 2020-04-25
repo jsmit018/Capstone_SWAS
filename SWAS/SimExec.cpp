@@ -330,7 +330,7 @@ public:
 			Event* curr = _eventSet[binX][binY];
 			//		cout << "Searching the list on where to place the event based on time and priority" << endl;
 			if (year == 2022)
-				cout << "Bleh" << endl;
+				//cout << "Bleh" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority < curr->_nextEvent->_priority) {
