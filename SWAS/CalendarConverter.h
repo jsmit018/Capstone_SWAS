@@ -21,7 +21,7 @@ class TimeConverter {
 public:
 	TimeConverter();
 	static void ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue, int baseX,
-		int baseY, int* endOfMonth, Time sTime, int recurring = 0, Time simTime = 0);
+		int baseY, int* endOfMonth, Time sTime, int recurring = 0, Time simTime = 0, int dayOrMonth = 0);
 };
 
 class CalendarObj {

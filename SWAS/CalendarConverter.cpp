@@ -43,10 +43,11 @@ TimeConverter::TimeConverter()
 }
 
 void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue,
-	int baseX, int baseY, int* endOfMonth, Time sTime, int recurring, Time simTime) {
+	int baseX, int baseY, int* endOfMonth, Time sTime, int recurring, Time simTime, int dayOrHour) {
 	div_t divresult; // Declaring div_t object to obtain quotient and remainder
 	divresult = div(ceil(distributionValue), 24); // Divide the distribution by 24 gives an amount of days + a time)
 	//If there is recurrent scheduling
+	
 	if (recurring == 1) {
 		int remainder = 0;
 		if (baseX + ceil(distributionValue) > 11) {
@@ -71,25 +72,95 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 		}
 	}
 	else {
-		if (baseY + (int)divresult.quot > endOfMonth[baseX]) { // Checking to see if the added time will make it advance past a month
-			int remainder = 0;
-			remainder = (baseY + divresult.quot) % endOfMonth[baseX]; // Check to see how far into the next month to schedule
-			if (baseY + divresult.quot % endOfMonth[baseX] > (endOfMonth[baseX] + endOfMonth[baseX + 1])) {
-				while (remainder > endOfMonth[baseX]) {
-					if (baseX == 11) {
+		if (dayOrHour == 0) {
+			if (baseY + (int)divresult.quot > endOfMonth[baseX]) { // Checking to see if the added time will make it advance past a month
+				int remainder = 0;
+				remainder = (baseY + divresult.quot) % endOfMonth[baseX]; // Check to see how far into the next month to schedule
+				if (baseY + divresult.quot % endOfMonth[baseX] > (endOfMonth[baseX] + endOfMonth[baseX + 1])) {
+					while (remainder > endOfMonth[baseX]) {
+						if (baseX == 11) {
+							baseX = 0;
+							year++;
+						}
+
+						else
+							baseX++;
+						remainder %= endOfMonth[baseX];
+					}
+					Month = baseX;
+					Day = remainder;
+					////div_t tRemainder;
+					//tRemainder = div(divresult.rem, 24);
+					if (sTime + divresult.rem > 24) {
+						int dividend;
+						do {
+							if (Day + 1 > endOfMonth[baseX])
+								Day = 0;
+							else
+								Day++;
+							dividend = ((int)sTime + divresult.rem) % 24;
+						} while (dividend >= 24);
+						//Day += 1;
+						timeOfDay = 0 + dividend;
+					}
+					else
+					{
+						timeOfDay = sTime + (int)divresult.rem;
+					}
+				}
+				else
+				{
+					if (baseX == 11) { //If we are in december we need to go into January and update the year
 						baseX = 0;
 						year++;
+						Month = baseX;
+						Day = remainder;
+						if (sTime + divresult.rem > 24) {
+							int dividend;
+							do {
+								if (Day + 1 > endOfMonth[baseX])
+									Day = 0;
+								else
+									Day++;
+								dividend = ((int)sTime + divresult.rem) % 24;
+							} while (dividend >= 24);
+							//Day += 1;
+							timeOfDay = 0 + dividend;
+						}
+						else
+						{
+							timeOfDay = sTime + (int)divresult.rem;
+						}
+						//timeOfDay = divresult.rem;
 					}
-
-					else
+					else { // Otherwise we just advance the month
 						baseX++;
-					remainder %= endOfMonth[baseX];
+						Month = baseX;
+						Day = remainder;
+						if (sTime + divresult.rem > 24) {
+							int dividend;
+							do {
+								if (Day + 1 > endOfMonth[baseX])
+									Day = 0;
+								else
+									Day++;
+								dividend = ((int)sTime + divresult.rem) % 24;
+							} while (dividend >= 24);
+							//Day += 1;
+							timeOfDay = 0 + dividend;
+						}
+						else
+						{
+							timeOfDay = sTime + (int)divresult.rem;
+						}
+						//timeOfDay = (int)divresult.rem;
+					}
 				}
+			}
+			else { // If the scheduling time doesn't advance us into the next month
 				Month = baseX;
-				Day = remainder;
-				////div_t tRemainder;
-				//tRemainder = div(divresult.rem, 24);
-				if (sTime + divresult.rem > 24) {
+				Day = (baseY + divresult.quot);
+				if (sTime + divresult.rem >= 24) {
 					int dividend;
 					do {
 						if (Day + 1 > endOfMonth[baseX])
@@ -105,76 +176,26 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 				{
 					timeOfDay = sTime + (int)divresult.rem;
 				}
-			}
-			else
-			{
-				if (baseX == 11) { //If we are in december we need to go into January and update the year
-					baseX = 0;
-					year++;
-					Month = baseX;
-					Day = remainder;
-					if (sTime + divresult.rem > 24) {
-						int dividend;
-						do {
-							if (Day + 1 > endOfMonth[baseX])
-								Day = 0;
-							else
-								Day++;
-							dividend = ((int)sTime + divresult.rem) % 24;
-						} while (dividend >= 24);
-						//Day += 1;
-						timeOfDay = 0 + dividend;
-					}
-					else
-					{
-						timeOfDay = sTime + (int)divresult.rem;
-					}
-					//timeOfDay = divresult.rem;
-				}
-				else { // Otherwise we just advance the month
-					baseX++;
-					Month = baseX;
-					Day = remainder;
-					if (sTime + divresult.rem > 24) {
-						int dividend;
-						do {
-							if (Day + 1 > endOfMonth[baseX])
-								Day = 0;
-							else
-								Day++;
-							dividend = ((int)sTime + divresult.rem) % 24;
-						} while (dividend >= 24);
-						//Day += 1;
-						timeOfDay = 0 + dividend;
-					}
-					else
-					{
-						timeOfDay = sTime + (int)divresult.rem;
-					}
-					//timeOfDay = (int)divresult.rem;
-				}
+				//timeOfDay = divresult.rem;
 			}
 		}
-		else { // If the scheduling time doesn't advance us into the next month
+		else if (dayOrHour == 1) 
+		{ //This is days
+			int rem = (int)distributionValue;
+			do{
+				if (baseY + 1 > endOfMonth[baseX]) {
+					baseX++;
+					baseY = 0;
+					rem -= 1;
+				}
+				else {
+					baseY++;
+					rem -= 1;
+				}
+			} while (rem != 0);
 			Month = baseX;
-			Day = (baseY + divresult.quot);
-			if (sTime + divresult.rem >= 24) {
-				int dividend;
-				do {
-					if (Day + 1 > endOfMonth[baseX])
-						Day = 0;
-					else
-						Day++;
-					dividend = ((int)sTime + divresult.rem) % 24;
-				} while (dividend >= 24);
-				//Day += 1;
-				timeOfDay = 0 + dividend;
-			}
-			else
-			{
-				timeOfDay = sTime + (int)divresult.rem;
-			}
-			//timeOfDay = divresult.rem;
+			Day = baseY;
+			timeOfDay = sTime;
 		}
 	}
 }
