@@ -83,7 +83,7 @@ public:
 	//For Testing
 	//----------------------
 	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
-	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
+	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i);
 	//----------------------
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource

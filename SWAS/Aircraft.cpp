@@ -322,6 +322,12 @@ void Aircraft::ClearMyMap()
 	_myRepairJobs.clear();
 }
 
+void Aircraft::UpdateList(const Aircraft& mapAircraft)
+{
+	ClearMyMap();
+	_myRepairJobs = mapAircraft._myRepairJobs;
+}
+
 
 Aircraft* Aircraft::New()
 {

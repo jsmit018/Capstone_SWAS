@@ -241,11 +241,28 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 			it++;
 	}
 	//cout << newAircraft->GetAircraftType() << " ----------------CALENDAR MAP SIZE " << newAircraft->GetMyRJMapSize() << endl;
-
+	it = newAircraft->GetMyRJMapBegin();
 	//cout << "Scheduling Calendar Aircraft to Arrive" << endl;
-	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
-	_numberGenerated++;
-	Scribe::RecordAircraft(_aircraft->GetAircraftType());
+	for (int i = 0; i < calObj->GetNumEvents() / 2; ++i) {
+		Aircraft* firstStep = new Aircraft(*newAircraft);
+		firstStep->UpdateList(*newAircraft);
+		map<string, RepairJob*>::const_iterator iter = newAircraft->GetMyRJMapBegin();
+		while (iter != newAircraft->GetMyRJMapEnd()) {
+			if (iter->first == it->first) {}
+			else
+			{
+				firstStep->DeleteJob(iter->first);
+			}
+			iter++;
+		}
+		repairJob = it->second;
+		//repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
+		repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), firstStep, calObj, i);
+		_numberGenerated++;
+		it++;
+		Scribe::RecordAircraft(_aircraft->GetAircraftType());
+	}
+	
 
 	//}
 }

@@ -47,6 +47,7 @@ public:
 	void DeleteJob(string repairJob);
 	void ClearMyMap();
 	void DeleteAircraft(Aircraft*& aircraft);
+	void UpdateList(const Aircraft& mapAircraft);
 
 	//void SetRecurFlag(char flag);
 

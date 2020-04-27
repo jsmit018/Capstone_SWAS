@@ -1912,14 +1912,18 @@ void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 	//cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
-void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj)
+void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i)
 {
 	//vector<string> test;
 	map<string, int> test;
-	for (int i = 0; i < 1; ++i) {
+	//for (int i = 0; i < 1; ++i) {
+	//for (int i = 0; i < calobj->GetNumEvents()/2; ++i) {
+		//Test//
+
+		//________
 		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, test), "StartServiceEA");
 		//SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
-	}
+//	}
 	//cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
