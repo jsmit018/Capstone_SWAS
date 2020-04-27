@@ -47,10 +47,12 @@ public:
 	void DeleteJob(string repairJob);
 	void ClearMyMap();
 	void DeleteAircraft(Aircraft*& aircraft);
+
 	//void SetRecurFlag(char flag);
 
 	RepairJob* GetRepairJobObj(string name); //used for searching 
 	RepairJob* GetMyRepairJobObj(string name); //used for searching 
+	int GetAirCount();
 	int GetSource();
 	int GetAircraftID();
 	double GetAircraftFootprint();
@@ -62,6 +64,7 @@ public:
 	int GetMyRJMapSize();
 	int GetMyUnplannedMapSize();
 	int GetUnplanVecSize();
+	void AddAirCount();
 	string GetRandomElement();
 	string GetBaySizeReq();
 	//char GetRecurFlag();
@@ -88,9 +91,12 @@ public:
 	bool IsMapEnd(map<string, RepairJob*>::const_iterator iter);
 	bool AreMoreJobs();
 	bool AreMoreSteps();
+	bool IsAfterCEL();
+	void SetCELflag(int CELflag);
 	//bool HasRecurJob();
 private:
 	string	_aircraftType;								//	Aircraft name: i.e. F35
+	int _CELflag;
 	int		_aircraftID;								//	Aircraft id: unique to individual aircraft
 	static int _nextID;
 	int _sourceID;

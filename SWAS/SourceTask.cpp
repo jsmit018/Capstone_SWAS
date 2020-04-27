@@ -255,6 +255,8 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 {
 	if (_numberGenerated != _numberOfAircraftToGenerate)
 	{
+		cout << "--------------------Scheduling " << " unplanned arrival for " << _aircraft->GetAircraftType() << endl;
+
 		//cout << "Unplanned Aircraft has arrived, ";
 		//cout << "Scheduling next Unplanned Aircraft Arrival" << endl;
 		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this, repairJob), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
@@ -288,6 +290,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			else if (iter->second->WillSchedule() == true)
 			{  
 				//cout << "************* " << newAircraft->GetAircraftType() << " WILL SCHEDULE " << iter->first << endl;
+
 				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
 				//cout << "*********** ADDING " << iter->first << " IT TO THE MAP " << endl;
@@ -308,8 +311,11 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		job = _jobPriority.begin()->second;
 
 		//schedule that high priority job
-		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
-		jobCounter++; 
+		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->
+		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
+		cout << " THIS IS AIR ID " << newAircraft->GetAircraftID() << " scheduling first step of " << job << endl;
+
+		jobCounter++;
 
 		
 
