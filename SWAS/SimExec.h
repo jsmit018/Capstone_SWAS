@@ -28,7 +28,7 @@ public:
 	static SimulationTime GetSimulationTime();
 	static InputReader GetInputReader();
 	static void SetInputReader(InputReader inputReader);
-	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName);
+	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours = 0);
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName);
 	static void ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring = 1);
 	static void ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID);

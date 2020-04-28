@@ -43,7 +43,7 @@ TimeConverter::TimeConverter()
 }
 
 void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue,
-	int baseX, int baseY, int* endOfMonth, Time sTime, int recurring, Time simTime, int dayOrHour) {
+	int baseX, int baseY, int* endOfMonth, Time sTime, int dayOrHour, int recurring, Time simTime) {
 	div_t divresult; // Declaring div_t object to obtain quotient and remainder
 	divresult = div(ceil(distributionValue), 24); // Divide the distribution by 24 gives an amount of days + a time)
 	//If there is recurrent scheduling
@@ -184,9 +184,17 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 			int rem = (int)distributionValue;
 			do{
 				if (baseY + 1 > endOfMonth[baseX]) {
-					baseX++;
-					baseY = 0;
-					rem -= 1;
+					if (baseX == 11) {
+						baseX = 0;
+						year++;
+						baseY = 0;
+						rem--;
+					}
+					else {
+						baseX++;
+						baseY = 0;
+						rem -= 1;
+					}
 				}
 				else {
 					baseY++;

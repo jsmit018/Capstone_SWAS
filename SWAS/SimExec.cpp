@@ -298,7 +298,7 @@ public:
 			_numEvents--;
 		//	cout << "Number of Events increased to " << _numEvents << endl;
 		//	cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, _simulationTime._timeOfDay, recurring);
+		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, _simulationTime._timeOfDay, 0, recurring);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
@@ -357,7 +357,7 @@ public:
 			cout << "***********************************************************************" << endl;*/
 	}
 
-	void AddEvent(int priority, EventAction* ea, double distributionValue, string eaName) {
+	void AddEvent(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours) {
 		//	cout << "***********************************************************************" << endl;
 		Time Month = 0.0;
 		Time Day = 0.0;
@@ -367,7 +367,11 @@ public:
 		_numEvents++;
 		//	cout << "Number of Events increased to " << _numEvents << endl;
 		//	cout << "Converting Distribution to Appropriate Time" << endl;
-		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, GetSimulationTime()._timeOfDay);
+		if (daysOrHours == 0)
+			TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, GetSimulationTime()._timeOfDay);
+		else
+			TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, GetSimulationTime()._timeOfDay, 1);
+
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
@@ -823,9 +827,9 @@ void SimExec::SetInputReader(InputReader inputReader)
 	_inputReader = inputReader;
 }
 
-void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName) {
+void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours) {
 	//	cout << "Scheduling Event" << endl;
-	_eventSet.AddEvent(priority, ea, distributionValue, eaName);
+	_eventSet.AddEvent(priority, ea, distributionValue, eaName, daysOrHours);
 }
 
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
