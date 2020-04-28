@@ -1059,6 +1059,10 @@ void InputReader::AddAirCount()
 	_airCount++;
 }
 
+void InputReader::CalAirFix() {
+	_airCount--;
+}
+
 map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
 {
 	return _masterResourceMap.begin();
