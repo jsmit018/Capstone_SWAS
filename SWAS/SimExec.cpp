@@ -147,7 +147,7 @@ public:
 					//delete curr;
 				}
 				//Return true that the event executed
-				//delete curr;
+				delete curr;
 				return true;
 			}
 			//If curr's condition isn't met check the next node
