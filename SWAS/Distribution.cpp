@@ -2,6 +2,11 @@
 
 Distribution::Distribution() {}
 
+string Distribution::GetSystemSeedType()
+{
+	return _seedType;
+}
+
 string Distribution::_seedType = "null";
 int Distribution::_systemSeed = 0;
 

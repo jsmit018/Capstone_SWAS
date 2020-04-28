@@ -10,6 +10,7 @@
 #include "Warehouse.h"
 #include "Scribe.h"
 #include <map>
+#include <time.h>
 
 using namespace std;
 
@@ -28,37 +29,23 @@ void ScribeSetTerminationTime(double termTime) {
 //had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
 InputReader inputReader;
 
-
-///Jordan: 
 void SchedResourceFailure()
 {
+	cout << " in sched resource fail " << endl;
 	//schedule resource failure logic
 	map<string, Resource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
 	while (iter != InputReader::GetMasterResMapEnd())
 	{
 		cout << "" << endl;
+		if (iter->second->GetFailureName() != "")
 		//schedule iter's first failure in iter->second->GetFailureDistr()
-		if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
-		//if (iter->second->GetFailureName() == 		
-			//continue;
-		}
-		else
-		{
-			//iter->second->ScheduleFirstFailures(iter->second);
-			//iter++;
-		}
+		iter->second->ScheduleFirstFailures(iter->second);
 		iter++;
 	}
-
 }
 
 void InitializeAircraft()
 {
-	//	InputReader inputReader;
-
-	/*Populates master map*/
-	//	inputReader.ReadInputData();
-	//inputReader.PrintEverything();
 	cout << "reading is finished" << endl;
 
 	//SimExec::SetInputReader(inputReader);
@@ -73,8 +60,6 @@ void InitializeAircraft()
 
 	SimExec::SetSystemSink(depart);
 
-	//cout << "Master Map has " << inputReader.GetMapSize() << " unique aircraft types." << endl;
-
 	//for all unique aircraft types in the master map 
 	map<string, Aircraft*>::const_iterator iter = inputReader.GetMasterMapBegin();
 	while (iter != inputReader.GetMasterMapEnd())
@@ -83,12 +68,10 @@ void InitializeAircraft()
 		//if (search(head, iter->first) == true)
 		if (inputReader.FindSelectedAircraft(iter->first) == true)
 		{
-			//iter->second->PrintProperties(); 
-			//iter->second->GetAircraftIAT()->PrintDistribution();
-
 			/* Create the first instance of that particular aircraft type by copying from master map */
 			//Test count//
 			int count = 1;
+			int cal = 1;
 			//____________
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			//		cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
@@ -99,12 +82,14 @@ void InitializeAircraft()
 
 			while (myIter != firstAircraft->GetMyRJMapEnd())
 			{
-				if (myIter->second->GetSchedType() == "Calendar")
+				if (myIter->second->GetSchedType() == "Calendar" && cal == 1)
 				{
 					////// calendarsourceblock schedules calendar arrival at date 
-					//(sourceblock schedules arrival, arrival happens once)
-					//cout << endl;
 					cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << firstAircraft->GetAircraftType() << " ";
+					firstAircraft->GetCalendarObj()->_months;
+					firstAircraft->GetCalendarObj()->_days;
+					cout << endl;
 					cout << endl;
 					SourceBlock* calArrival = new SourceBlock(
 						firstAircraft->GetAircraftType(),
@@ -112,12 +97,12 @@ void InitializeAircraft()
 						"Calendar Arrival",
 						firstAircraft->GetCalendarObj(),
 						myIter->second);
+					cal++;
 				}
 
 				else if (myIter->second->GetSchedType() == "Recurring")
 				{
 					////// recurringsourceblock schedules first arrival at recur iat 
-					//(sourceblock schedules arrival, arrival schedules next arrival)
 					cout << endl;
 					cout << "Scheduling recurring arrival for " << firstAircraft->GetAircraftType() << endl;
 					cout << endl;
@@ -126,16 +111,12 @@ void InitializeAircraft()
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Recurring Arrival",
-						10);
+						5);
 				}
 
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
 				{
 					////// unplannedsourceblock schedules first arrival at unpl iat  
-					//(sourceblock schedules arrival, arrival schedules next arrival
-					//cout << "Scheduling first unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
-					//cout << "Scheduling " << count << " unplanned arrival for " << firstAircraft->GetAircraftType() << endl;
-
 
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),
@@ -143,7 +124,7 @@ void InitializeAircraft()
 						firstAircraft,
 						"Unplanned Arrival",
 						myIter->second,
-						10);
+						5);
 					count++;
 
 				}
@@ -161,9 +142,9 @@ void InitializeAircraft()
 
 }
 
-
 int main()
 {
+
 	inputReader.ReadInputData();
 
 	Scribe::SetSaveFile("Output.csv");
@@ -179,6 +160,17 @@ int main()
 		InitializeAircraft();
 		//SchedResourceFailure();
 		//InitalizeAircraft(GetScribe());
+		
+		//If System Seed is the same vs. Different --If Random Generate a new system seed. --If the same don't worry about it
+		if (Distribution::GetSystemSeedType() == "random") {
+			srand((unsigned)time(0));
+			int result = (rand() % INT_MAX);
+			Distribution::SetSystemSeed(result);
+		}
+		else if (Distribution::GetSystemSeedType() == "same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
+			Distribution::SetSystemSeed(Distribution::GetSystemSeed());
+		}
+
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		while (SimExec::GetSimulationFlag())
@@ -196,7 +188,7 @@ int main()
 	inputReader.GetAirCount();
 	Scribe::Archive();
 
-	
+
 
 	return 0;
 }

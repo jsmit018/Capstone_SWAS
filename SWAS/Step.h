@@ -27,7 +27,7 @@ public:
 	static void SetPartPoolCount(string, int);
 	void SetName(string name);
 	void SetType(string type);
-	void SetNumOfParts(string partsName, int numNeeded);
+	//void SetNumOfParts(string partsName, int numNeeded);
 	void SetInspecFailProb(string failureProb);
 	void SetServiceTime(string serviceTime); //change to distribution
 	void SetReqResource(string reqResource/*, Resource* resource*/);
@@ -76,13 +76,14 @@ public:
 	map<string, Parts*>::iterator GetPartsMapEnd();
 	map<string, Resource*>::iterator GetResourceMapBegin();
 	map<string, Resource*>::iterator GetResourceMapEnd();
+	map<string, Resource*>::iterator FindResourceinReqResMap(string resource);
 	//void ScheduleResourceFailure();
 
 
 	//For Testing
 	//----------------------
 	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
-	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj);
+	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i);
 	//----------------------
 
 	/*void AcquireBayEM();					// check bay avail, grab bay if avail - effectively decrementing bay - give reference of bay resource
@@ -111,7 +112,8 @@ private:
 	map<string, Resource*> _reqResourceMap;		//map of required resources
 	map<string, Parts*> _reqPartsMap;		//map of required parts
 
-	vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
+	//vector<string> _acquiredResources;	//vector of acquired resources to be checked at the end of service
+	map<string, int> _acquiredResources;	//vector of acquired resources to be checked at the end of service
 	PriorityQueue<Aircraft>* _priorityQueue;
 	//Scribe* outputRecorder = new Scribe();
 
@@ -120,7 +122,7 @@ private:
 	{
 		if (_reqResourceMap.find(resource) == _reqResourceMap.end())
 			return false;
-		else
+		else if (_reqResourceMap.find(resource) != _reqResourceMap.end())
 			return true;
 	}
 
@@ -137,24 +139,25 @@ private:
 	class OrderArrivalEA;
 	class AcquireResourceEA;
 	class ReleaseResourceEA;
-	/*class FailResourceEA;
-	class RestoreResourceEA;*/
+	class FailResourceEA;
+	class RestoreResourceEA;
 	class WaitForResourceEA;
 	class ResWaitForResEA;
 	class NeedPartsEA;
+	class ResNeedPartsEA;
 	class NeedBaysEA;
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
-	void StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void StartRepairServiceEM(Resource* resource, vector<string> acquiredResources);
+	void StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
+	void StartRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
-	void DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources);
-	void DoneRepairServiceEM(Resource* resource, vector<string> acquiredResources);
+	void DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
+	void DoneRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
-	//void FailResourceEM(Resource* resource);
-	//void RestoreResourceEM(Resource* resource);
+	void FailResourceEM(Resource* resource);
+	void RestoreResourceEM(Resource* resource);
 
 	void AcquireParts(Parts* parts, int newCount);
 };

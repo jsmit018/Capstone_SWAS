@@ -18,6 +18,9 @@ public:
 	void FailResource();
 	void RestoreResource();
 	void PrintResProperties();
+	void SetResourceID(int resourceID);
+	int GetResourceID();
+
 
 	void SetResourceCount(double resourceCount);
 	void SetResourceName(string resourceName);
@@ -38,13 +41,16 @@ public:
 	string GetFailureType();
 	Distribution* GetFailureDistr();
 	string GetRepairProcess();
-
+	bool IsAfterCEL();
+	void SetCELflag(int CELflag);
 	
 
 private:
 	//int _resourceCount;
+	int _resourceID; // NOT SET YET
 	double _resourceCount;
 	int _numNeeded;
+	int _CELflag;
 	string _resourceName;
 	double _length;
 	double _width;

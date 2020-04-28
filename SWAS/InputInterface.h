@@ -39,6 +39,7 @@ public:
 	static int GetNumRuns();
 	static int GetAirCount();
 	static void AddAirCount();
+	static void CalAirFix();
 private:
 	static int _numRuns;
 	static int _airCount;

@@ -217,6 +217,7 @@ int SourceBlock::GetNumberGenerated() {
 void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calObj) {
 	//cout << "****************** IN CALENDAR EM" << endl;
 	Aircraft* newAircraft = _aircraft->New();
+	InputReader::CalAirFix();
 
 	map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
 	//cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
@@ -241,11 +242,31 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 			it++;
 	}
 	//cout << newAircraft->GetAircraftType() << " ----------------CALENDAR MAP SIZE " << newAircraft->GetMyRJMapSize() << endl;
-
+	it = newAircraft->GetMyRJMapBegin();
 	//cout << "Scheduling Calendar Aircraft to Arrive" << endl;
-	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
-	_numberGenerated++;
-	Scribe::RecordAircraft(_aircraft->GetAircraftType());
+	
+	for (int i = 0; i < calObj->GetNumEvents() / 2; ++i) {
+		Aircraft* firstStep = new Aircraft(*newAircraft);
+		firstStep->UpdateList(*newAircraft);
+		map<string, RepairJob*>::const_iterator iter = newAircraft->GetMyRJMapBegin();
+		while (iter != newAircraft->GetMyRJMapEnd()) {
+			if (iter->first == it->first) {}
+			else
+			{
+				firstStep->DeleteJob(iter->first);
+			}
+			iter++;
+		}
+		repairJob = it->second;
+		InputReader::AddAirCount();
+		//repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
+		repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), firstStep, calObj, i);
+		_numberGenerated++;
+		
+		it++;
+		Scribe::RecordAircraft(_aircraft->GetAircraftType());
+	}
+	
 
 	//}
 }

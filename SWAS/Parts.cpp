@@ -181,7 +181,7 @@ void Parts::SetLeadTime(string leadTime)
 		_leadTime = new Weibull(scale, shape);
 	}
 
-	
+
 	//Calls the print function added to each distribution - Determines correct distribution and prints
 //	cout << "LEAD TIME ";
 //	_leadTime->PrintDistribution();
@@ -200,7 +200,7 @@ void Parts::PrintPartsProperties()
 	cout << "			Initial count: " << _initCount << endl;
 	cout << "			Order threshold: " << _orderThreshold << endl;
 	cout << "			Lead Time: ";
-	if(_leadTime != nullptr)
+	if (_leadTime != nullptr)
 		_leadTime->PrintDistribution();
 	cout << endl;
 }

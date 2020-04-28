@@ -234,7 +234,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					newAir->SetBaySizeReq(row[4]);
 
 					_masterMap.insert(pair<string, Aircraft*>(airType, newAir));
-				
+
 				}
 			}
 
@@ -356,7 +356,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					schedType = row[2];
 
 					newJob->SetSchedType(schedType);
-			
+
 					if (schedType == "Calendar") {
 						schedCal = row[3];
 						newJob->SetCalendarDate(schedCal);
@@ -491,37 +491,37 @@ void InputReader::ReadInputData() //initialization for getting data
 							//Required Parts
 							//Amount of Parts Needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 						//Store Step Object in Repair Job's map
-			 
+
 			if (line.find("Steps Table") != string::npos) {
 				printf("got Steps Table \n \n");
-				 
+
 				string currentJob;
 				int jobPriority;
 
-				int stepID; 
-				string stepName; 
+				int stepID;
+				string stepName;
 				string stepNameTemp;
-				string stepType; 
- 				string inspecFailProb;
- 				int returnStep;
- 				Distribution* stepDurTemp = 0;
- 				string stepDur;
- 				string reqResource;
- 				string reqParts;
- 				int numParts;
- 				int numResources;
-				 
-				int rowCounter = 0; 
- 
- 				getline(dataFile, line);
- 				vector <string> row;
-				 
+				string stepType;
+				string inspecFailProb;
+				int returnStep;
+				Distribution* stepDurTemp = 0;
+				string stepDur;
+				string reqResource;
+				string reqParts;
+				int numParts;
+				int numResources;
+
+				int rowCounter = 0;
+
+				getline(dataFile, line);
+				vector <string> row;
+
 				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
 
- 					getline(dataFile, line);
-					 
+					getline(dataFile, line);
+
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream iss(line);
@@ -537,14 +537,14 @@ void InputReader::ReadInputData() //initialization for getting data
 							if (!getline(iss, line, ','))
 								break;
 
- 							if (line.empty()) {
-									//	break;
-  							}
-							 
-							row.push_back(line); 
-						} 
+							if (line.empty()) {
+								//	break;
+							}
+
+							row.push_back(line);
+						}
 						else
- 							getline(iss, line);
+							getline(iss, line);
 					}
 
 					Step* newStep = new Step(stepDurTemp, stepNameTemp);
@@ -599,12 +599,12 @@ void InputReader::ReadInputData() //initialization for getting data
 					while (iter != _masterMap.end())
 					{
 						map<string, RepairJob*>::iterator it = iter->second->GetRJMapBegin();
-	
+
 						while (it != iter->second->GetRJMapEnd())
 						{
 							if (it->second->GetName() == currentJob)
 							{
-								newStep->SetReqResource(row[8]);				
+								newStep->SetReqResource(row[8]);
 
 								if (row.size() == 11)
 								{
@@ -614,7 +614,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								}
 
 								//add this step to the repair job's list
-								it->second->AddStep(newStep);							
+								it->second->AddStep(newStep);
 
 							}
 
@@ -737,7 +737,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetResourceName(resName);
 								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumResNeeded());
 								it->second->SetResourceCount(resCount);
-				
+
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 								//it->second->PrintResProperties();
 								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
@@ -818,11 +818,11 @@ void InputReader::ReadInputData() //initialization for getting data
 									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 										continue;*/
 								{
-									
+
 									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
 									iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
 
-									if (it->first == row[0]) 
+									if (it->first == row[0])
 									{
 										it->second->SetFailureName(row[1]);
 										it->second->SetFailureType(row[2]);
@@ -946,7 +946,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								SetMasterPartsNum(partName, iter->second->GetStep(i + 1)->GetPartsObj(partName)->GetNumPartsNeeded());
 								it->second->SetThreshold(threshold);
 								it->second->SetLeadTime(row[3]);
-								
+
 								//it->second->PrintPartsProperties();
 
 							}
@@ -1008,8 +1008,8 @@ void InputReader::ReadInputData() //initialization for getting data
 	{
 		map<string, Resource*> tempMap = Step::GetResPool();
 		if (tempMap.find(resIter->first) == tempMap.end())
-		{		
-			cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
+		{
+			//cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
 			Resource* resCopy = new Resource();
 			resCopy->CopyMapResource(*resIter->second);
 			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumResNeeded() << endl;
@@ -1057,6 +1057,10 @@ int InputReader::GetAirCount()
 void InputReader::AddAirCount()
 {
 	_airCount++;
+}
+
+void InputReader::CalAirFix() {
+	_airCount--;
 }
 
 map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
