@@ -1029,7 +1029,7 @@ void Scribe::RecordRepairJob(string aircraft, int id, string job, int stepNum, s
 	}
 	else
 	{
-		runCurrent->repairJobTail->next = new repairJobNode(aircraft, id, job, start);
+		runCurrent->repairJobTail->next = new repairJobNode(aircraft, id, job, stepNum, stepNme, start);
 		runCurrent->repairJobTail = runCurrent->repairJobTail->next;
 	}
 }
@@ -1656,7 +1656,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("ID,Type,Job,Date Start,Start,Date Finish,Finish,Duration,");
+		tempStr += ("ID,Type,Job,Step Number,Step Name,Date Start,Start,Date Finish,Finish,Duration,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1671,12 +1671,12 @@ void Scribe::Archive()
 		{
 			if (runCurrent->repairJobRunner == nullptr)
 			{
-				tempStr += (",,,,,,,,");
+				tempStr += (",,,,,,,,,,");
 				endCount++;
 			}
 			else
 			{
-				tempStr += (to_string(runCurrent->repairJobRunner->aircraftID) + "," + (runCurrent->repairJobRunner->aircraftType) + "," + (runCurrent->repairJobRunner->jobType) + "," +
+				tempStr += (to_string(runCurrent->repairJobRunner->aircraftID) + "," + (runCurrent->repairJobRunner->aircraftType) + "," + (runCurrent->repairJobRunner->jobType) + "," + (to_string(runCurrent->repairJobRunner->stepNumber)) + "," + (runCurrent->repairJobRunner->stepName) + "," +
 					to_string(runCurrent->repairJobRunner->monthStart) + "/" + to_string(runCurrent->repairJobRunner->dayStart) + "/" + to_string(runCurrent->repairJobRunner->yearStart) + "," + to_string(runCurrent->repairJobRunner->timeStart) + "," +
 					to_string(runCurrent->repairJobRunner->monthEnd) + "/" + to_string(runCurrent->repairJobRunner->dayEnd) + "/" + to_string(runCurrent->repairJobRunner->yearEnd) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," +
 					to_string(runCurrent->repairJobRunner->ellapse) + ",");
