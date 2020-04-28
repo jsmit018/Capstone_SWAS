@@ -287,6 +287,8 @@ repairJobNode::repairJobNode()
 	aircraftType = "";
 	aircraftID = 0;
 	jobType = "";
+	stepNumber = 0;
+	stepName = "";
 	timeStart = 0;
 	dayStart = 0;
 	monthStart = 0;
@@ -300,11 +302,13 @@ repairJobNode::repairJobNode()
 	next = nullptr;
 }
 
-repairJobNode::repairJobNode(string aircraft, int id, string job, float time)
+repairJobNode::repairJobNode(string aircraft, int id, string job, int stepNum, string step, float time)
 {
 	aircraftType = aircraft;
 	aircraftID = id;
 	jobType = job;
+	stepNumber = stepNum;
+	stepName = step;
 	timeStart = time;
 	dayStart = SimExec::GetSimulationTime()._day + 1;
 	monthStart = SimExec::GetSimulationTime()._month + 1;
@@ -323,6 +327,8 @@ repairJobNode::repairJobNode(const repairJobNode& node2)
 	aircraftType = node2.aircraftType;
 	aircraftID = node2.aircraftID;
 	jobType = node2.jobType;
+	stepNumber = node2.stepNumber;
+	stepName = node2.stepName;
 	timeStart = node2.timeStart;
 	dayStart = node2.dayStart;
 	monthStart = node2.monthStart;
@@ -1014,11 +1020,11 @@ void Scribe::RecordServiceWaitEnd(int id, string spot, float end)
 }
 
 //Create a node containing an aircraft type, a repair job, and a start time
-void Scribe::RecordRepairJob(string aircraft, int id, string job, float start)
+void Scribe::RecordRepairJob(string aircraft, int id, string job, int stepNum, string stepNme, float start)
 {
 	if (runCurrent->repairJobHead == nullptr)
 	{
-		runCurrent->repairJobHead = new repairJobNode(aircraft, id, job, start);
+		runCurrent->repairJobHead = new repairJobNode(aircraft, id, job, stepNum, stepNme, start);
 		runCurrent->repairJobTail = runCurrent->repairJobHead;
 	}
 	else
@@ -1031,7 +1037,7 @@ void Scribe::RecordRepairJob(string aircraft, int id, string job, float start)
 /*Search for an existing repair node with a specified aircraft id, repair job and duration of -1 to record
 	the end time of the node and calculate duration
 */
-void Scribe::RecordRepairEnd(int id, string job, float end)
+void Scribe::RecordRepairEnd(int id, string job, int step, float end)
 {
 	runCurrent->repairJobRunner = runCurrent->repairJobHead;
 	do
@@ -1040,68 +1046,72 @@ void Scribe::RecordRepairEnd(int id, string job, float end)
 		{
 			if (runCurrent->repairJobRunner->jobType == job)
 			{
-				if (runCurrent->repairJobRunner->ellapse == -1)
+				if (runCurrent->repairJobRunner->stepNumber == step)
 				{
-					runCurrent->repairJobRunner->timeEnd = end;
-					runCurrent->repairJobRunner->dayEnd = SimExec::GetSimulationTime()._day + 1;
-					runCurrent->repairJobRunner->monthEnd = SimExec::GetSimulationTime()._month + 1;
-					runCurrent->repairJobRunner->yearEnd = SimExec::GetSimulationTime()._year;
-					long double startDate = int((runCurrent->repairJobRunner->yearStart) * 365.25);
-					for (int i = 1; i < (runCurrent->repairJobRunner->monthStart); i++)
+					if (runCurrent->repairJobRunner->ellapse == -1)
 					{
-						if (i == 4 || i == 6 || i == 9 || i == 11)
+						runCurrent->repairJobRunner->timeEnd = end;
+						runCurrent->repairJobRunner->dayEnd = SimExec::GetSimulationTime()._day + 1;
+						runCurrent->repairJobRunner->monthEnd = SimExec::GetSimulationTime()._month + 1;
+						runCurrent->repairJobRunner->yearEnd = SimExec::GetSimulationTime()._year;
+						long double startDate = int((runCurrent->repairJobRunner->yearStart) * 365.25);
+						for (int i = 1; i < (runCurrent->repairJobRunner->monthStart); i++)
 						{
-							startDate += 30;
-						}
-						else if (i == 2)
-						{
-							if ((int(runCurrent->repairJobRunner->yearStart) % 4) == 0)
+							if (i == 4 || i == 6 || i == 9 || i == 11)
 							{
-								startDate += 29;
+								startDate += 30;
+							}
+							else if (i == 2)
+							{
+								if ((int(runCurrent->repairJobRunner->yearStart) % 4) == 0)
+								{
+									startDate += 29;
+								}
+								else
+								{
+									startDate += 28;
+								}
 							}
 							else
 							{
-								startDate += 28;
+								startDate += 30;
 							}
 						}
-						else
-						{
-							startDate += 30;
-						}
-					}
 
-					startDate += (runCurrent->repairJobRunner->dayStart);
+						startDate += (runCurrent->repairJobRunner->dayStart);
 
-					long double endDate = int((runCurrent->repairJobRunner->yearEnd) * 365.25);
-					for (int i = 1; i < (runCurrent->repairJobRunner->monthEnd); i++)
-					{
-						if (i == 4 || i == 6 || i == 9 || i == 11)
+						long double endDate = int((runCurrent->repairJobRunner->yearEnd) * 365.25);
+						for (int i = 1; i < (runCurrent->repairJobRunner->monthEnd); i++)
 						{
-							endDate += 30;
-						}
-						else if (i == 2)
-						{
-							if ((int(runCurrent->repairJobRunner->yearEnd) % 4) == 0)
+							if (i == 4 || i == 6 || i == 9 || i == 11)
 							{
-								endDate += 29;
+								endDate += 30;
+							}
+							else if (i == 2)
+							{
+								if ((int(runCurrent->repairJobRunner->yearEnd) % 4) == 0)
+								{
+									endDate += 29;
+								}
+								else
+								{
+									endDate += 28;
+								}
 							}
 							else
 							{
-								endDate += 28;
+								endDate += 30;
 							}
 						}
-						else
-						{
-							endDate += 30;
-						}
+						endDate += (runCurrent->repairJobRunner->dayEnd);
+
+						long double startTime = (startDate * 24) + runCurrent->repairJobRunner->timeStart;
+						long double endTime = (endDate * 24) + runCurrent->repairJobRunner->timeEnd;
+
+						runCurrent->repairJobRunner->ellapse = (endTime - startTime);
 					}
-					endDate += (runCurrent->repairJobRunner->dayEnd);
-
-					long double startTime = (startDate * 24) + runCurrent->repairJobRunner->timeStart;
-					long double endTime = (endDate * 24) + runCurrent->repairJobRunner->timeEnd;
-
-					runCurrent->repairJobRunner->ellapse = (endTime - startTime);
 				}
+				
 			}
 		}
 

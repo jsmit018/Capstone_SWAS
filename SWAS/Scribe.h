@@ -143,13 +143,15 @@ struct repairJobNode
 public:
     //constructors
     repairJobNode();
-    repairJobNode(string, int, string, float);
+    repairJobNode(string, int, string, int, string, float);
     repairJobNode(const repairJobNode&);
     ~repairJobNode();
 
     string aircraftType;
     int aircraftID;
     string jobType;
+    int stepNumber;
+    string stepName;
     float timeStart;
     double dayStart;
     double monthStart;
@@ -282,8 +284,8 @@ public:
     static void RecordResourceWaitEnd(int, string, float);
     static void RecordServiceWait(string, int, string, float);
     static void RecordServiceWaitEnd(int, string, float);
-    static void RecordRepairJob(string, int, string, float);
-    static void RecordRepairEnd(int, string, float);
+    static void RecordRepairJob(string, int, string, int, string, float);
+    static void RecordRepairEnd(int, string, int, float);
     static void RecordRework(string, string, float);
     static void RecordPartRequest(string, int, bool);
     static void RecordRestock(string, float);
