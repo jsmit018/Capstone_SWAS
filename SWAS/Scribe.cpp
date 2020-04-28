@@ -1722,6 +1722,41 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("ID,Type,Job,Step,Date,Time,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->inspectionRunner == nullptr)
+			{
+				tempStr += (",,,,,,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += (to_string(runCurrent->inspectionRunner->craftID) + "," + (runCurrent->inspectionRunner->craftType) + "," + (runCurrent->inspectionRunner->repairJob) + "," + to_string(runCurrent->inspectionRunner->stepNum) + "," +
+					(runCurrent->inspectionRunner->date) + "," + to_string(runCurrent->inspectionRunner->time));
+				runCurrent->inspectionRunner = runCurrent->inspectionRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
+	} while (endCount < runNumber);
 
 	//Rework data for each run
 	fileOut << "Reworks\n";
