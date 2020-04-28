@@ -54,7 +54,7 @@ void InitializeAircraft()
 	Distribution::SetSystemSeed(8);
 	inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft("F-18");
-	//inputReader.AddSelectedAircraft("Apache");
+	inputReader.AddSelectedAircraft("Apache");
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
 
@@ -85,8 +85,11 @@ void InitializeAircraft()
 				if (myIter->second->GetSchedType() == "Calendar" && cal == 1)
 				{
 					////// calendarsourceblock schedules calendar arrival at date 
-
 					cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
+					cout << firstAircraft->GetAircraftType() << " ";
+					firstAircraft->GetCalendarObj()->_months;
+					firstAircraft->GetCalendarObj()->_days;
+					cout << endl;
 					cout << endl;
 					SourceBlock* calArrival = new SourceBlock(
 						firstAircraft->GetAircraftType(),
@@ -108,7 +111,7 @@ void InitializeAircraft()
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Recurring Arrival",
-						10);
+						5);
 				}
 
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
@@ -121,7 +124,7 @@ void InitializeAircraft()
 						firstAircraft,
 						"Unplanned Arrival",
 						myIter->second,
-						10);
+						5);
 					count++;
 
 				}
@@ -138,13 +141,6 @@ void InitializeAircraft()
 
 
 }
-
-class hi
-{
-public:
-	hi(int _x) { x = _x; }
-	int x; 
-};
 
 int main()
 {
