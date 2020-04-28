@@ -486,6 +486,10 @@ runNode::runNode()
 	restockRunner = nullptr;
 	restockTail = nullptr;
 
+	inspectionHead = nullptr;
+	inspectionRunner = nullptr;
+	inspectionTail = nullptr;
+
 	next = nullptr;
 }
 
@@ -501,6 +505,7 @@ runNode::runNode(const runNode& node2)
 	reworkHead = node2.reworkHead;
 	requestsHead = node2.requestsHead;
 	restockHead = node2.restockHead;
+	inspectionHead = node2.inspectionHead;
 
 	aircraftTail = node2.aircraftTail;
 	missionTail = node2.missionTail;
@@ -512,6 +517,7 @@ runNode::runNode(const runNode& node2)
 	reworkTail = node2.reworkTail;
 	requestsTail = node2.requestsTail;
 	restockTail = node2.restockTail;
+	inspectionTail = node2.inspectionTail;
 
 	aircraftRunner = nullptr;
 	missionRunner = nullptr;
@@ -523,6 +529,7 @@ runNode::runNode(const runNode& node2)
 	reworkRunner = nullptr;
 	requestsRunner = nullptr;
 	restockRunner = nullptr;
+	inspectionRunner = nullptr;
 
 	next = node2.next;
 }
@@ -1209,6 +1216,20 @@ void Scribe::RecordRestock(string resource, float time)
 	}
 }
 
+void Scribe::RecordInspectionFailure(int airID, string airType, string inspect, int stepNum)
+{
+	if (runCurrent->inspectionHead == nullptr)
+	{
+		runCurrent->inspectionHead = new InspectionFailureNode(airID, airType, inspect, stepNum);
+		runCurrent->inspectionTail = runCurrent->inspectionHead;
+	}
+	else
+	{
+		runCurrent->inspectionTail->next = new InspectionFailureNode(airID, airType, inspect, stepNum);
+		runCurrent->inspectionTail = runCurrent->inspectionTail->next;
+	}
+}
+
 //Call to begin next run
 void Scribe::AdvanceRun()
 {
@@ -1689,6 +1710,19 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
+	//Inspection Data for each run
+	fileOut << "Inspection Failures\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		runCurrent->inspectionRunner = runCurrent->inspectionHead;
+		runCurrent = runCurrent->next;
+	}
+
+
 	//Rework data for each run
 	fileOut << "Reworks\n";
 	tempStr = "";
@@ -1840,3 +1874,43 @@ runNode* Scribe::GetStart()
 	return runStart;
 }
 
+InspectionFailureNode::InspectionFailureNode()
+{
+	craftID = 0;
+	craftType = "";
+	repairJob = "";
+	stepNum = 0;
+	date = "";
+	time = 0;
+
+	next = nullptr;
+}
+
+InspectionFailureNode::InspectionFailureNode(int id, string aircraft, string inspectionName, int step)
+{
+	craftID = id;
+	craftType = aircraft;
+	repairJob = inspectionName;
+	stepNum = step;
+	date = (to_string(SimExec::GetSimulationTime()._month + 1) + "/" + to_string(SimExec::GetSimulationTime()._day) + "/" + to_string(SimExec::GetSimulationTime()._year));
+	time = SimExec::GetSimulationTime()._timeOfDay;
+
+	next = nullptr;
+}
+
+InspectionFailureNode::InspectionFailureNode(const InspectionFailureNode& node2)
+{
+	craftID = node2.craftID;
+	craftType = node2.craftType;
+	repairJob = node2.repairJob;
+	stepNum = node2.stepNum;
+	date = node2.date;
+	time = node2.time;
+
+	next = node2.next;
+}
+
+InspectionFailureNode::~InspectionFailureNode()
+{
+	delete this;
+}

@@ -948,6 +948,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			//cout << " heeere 2" << endl;
 
 			///////////
+			Scribe::RecordInspectionFailure(aircraft->GetAircraftID(), aircraft->GetAircraftType(), _myRJ, _stepID);
 			Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
 			cout << aircraft->GetAircraftID() <<" INSPECTION FAILED, RETURN STEP IS " << _returnStep << endl;
