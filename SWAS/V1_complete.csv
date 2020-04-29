@@ -229,6 +229,7 @@ Crash Memory - Unit Inspection,1,1,Access,Process,,,Uniform(0.40 0.60),Mechanic(
 ,,4,Install CMU,Process,,,Uniform(0.35 0.50),Mechanic(1)&Large Toolbox(1)&Lift(1),,
 ,,5,Verify,Inspection,Uniform(0.001 0.002),4,Uniform(0.25 0.35),Mechanic(1)&Large Toolbox(1),,
 ,,6,Close,Process,,,Uniform(0.55 0.80),Mechanic(1)&Apprentice(1)&Lift(1)&Large Toolbox(1),,
+,,,,,,,,,,
 Resource Table,,,,,,,,,,
 Resource Type,Count,Footprint Length,Footprint Width,,,,,,,
 Mechanic,4,0,0,,,,,,,
