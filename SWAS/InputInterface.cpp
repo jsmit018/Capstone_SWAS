@@ -75,7 +75,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	Resource resource;
 	string line;
 
-	ifstream dataFile("SWASInputData_V1.1.csv");
+	ifstream dataFile("V1_complete.csv");
 	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
@@ -1113,12 +1113,12 @@ CalConverter* InputReader::GetCalConverter()
 	return calConvert;
 }
 
-void InputReader::AddSelectedAircraft(string aircraftName)
-//void InputReader::AddSelectedAircraft(int aircraftNumber)
+//void InputReader::AddSelectedAircraft(string aircraftName)
+void InputReader::AddSelectedAircraft(int aircraftNumber)
 {
-	//map<int, string>::const_iterator iter = _addedAircraft.find(aircraftNumber);
-	//GUISelectedAircraft* newAircraft = new GUISelectedAircraft(iter->second);
-	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
+	map<int, string>::const_iterator iter = _addedAircraft.find(aircraftNumber);
+	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(iter->second);
+	//GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
 
 	if (_GUIListHead == NULL) {
 		_GUIListHead = newAircraft;

@@ -20,8 +20,8 @@ public:
 	void ReadInputData();
 	void PrintEverything();
 	void PrintMasterResMap();
-	void AddSelectedAircraft(string aircraftName);
-	//void AddSelectedAircraft(int aircraftNumber);
+	//void AddSelectedAircraft(string aircraftName);
+	void AddSelectedAircraft(int aircraftNumber);
 	void SetNumRuns(int numRuns);
 	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();

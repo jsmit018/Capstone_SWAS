@@ -52,10 +52,10 @@ void InitializeAircraft()
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
 	Distribution::SetSystemSeed(8);
-	inputReader.AddSelectedAircraft("F-35");
-	//inputReader.AddSelectedAircraft(1);
-	inputReader.AddSelectedAircraft("F-18");
-	//inputReader.AddSelectedAircraft(3);
+	//inputReader.AddSelectedAircraft("F-35");
+	inputReader.AddSelectedAircraft(1);
+	//inputReader.AddSelectedAircraft("F-18");
+	inputReader.AddSelectedAircraft(3);
 	//inputReader.AddSelectedAircraft("Apache");
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");

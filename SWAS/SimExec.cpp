@@ -52,7 +52,7 @@ struct SimExec::Event {
 };
 
 struct SimExec::CondEvent {
-	CondEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID) {
+	CondEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID, string repairJobName) {
 		_priority = priority;
 		_cea = cea;
 		_nextCondEvent = 0;
@@ -61,6 +61,7 @@ struct SimExec::CondEvent {
 		_type = type;
 		_resourceNeeded = resourceNeeded;
 		_aID = aID;
+		_repairJobName = repairJobName;
 	}
 
 	int _priority;
@@ -68,17 +69,19 @@ struct SimExec::CondEvent {
 	CondEventAction* _cea;
 	CondEvent* _nextCondEvent;
 	CondEvent* _prevCondEvent;
-	string _eaName, _type, _resourceNeeded;
+	string _eaName, _type, _resourceNeeded, _repairJobName;
 };
 
 class SimExec::CondEventSet {
 public:
 	CondEventSet() {
 		_condSet = 0;
+		_numInCES = 0;
 	}
 
-	void AddConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID) {
-		CondEvent* c = new CondEvent(priority, cea, eaName, type, resourceNeeded, aID);
+	void AddConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID, string repairJobName) {
+		_numInCES++;
+		CondEvent* c = new CondEvent(priority, cea, eaName, type, resourceNeeded, aID, repairJobName);
 		if (_condSet == 0) {
 			_condSet = c;
 		}
@@ -148,6 +151,7 @@ public:
 				}
 				//Return true that the event executed
 				delete curr;
+				_numInCES--;
 				return true;
 			}
 			//If curr's condition isn't met check the next node
@@ -161,8 +165,13 @@ public:
 		return _condSet;
 	}
 
+	int GetNumInCES() {
+		return _numInCES;
+	}
+
 private:
 	CondEvent* _condSet;
+	int _numInCES;
 };
 
 class SimExec::EventSet {
@@ -545,46 +554,46 @@ public:
 			}
 			else*/
 			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
-			if (_eventSet[_baseX][_baseY] == 0)
-			{
-				if (_baseY == _endOfMonth[_baseX]) {
-					AdvanceMonth();
-					while (_eventSet[_baseX][_baseY] == 0) {
-						if (_baseY == _endOfMonth[_baseX])
-							AdvanceMonth();
-						else
-							AdvanceDay();
-					}
-					_simulationTime._timeOfDay = next->_timeOfDay;
-					_simulationTime._month = next->_timeMonth;
-					_simulationTime._day = next->_timeDay;
-					_simulationTime._year = next->_year;
-				}
-				else {
-					while (_eventSet[_baseX][_baseY] == 0) {
-						if (_numEvents == 1)
-							break;
-						if (_baseY == _endOfMonth[_baseX])
-							AdvanceMonth();
-						else
-							AdvanceDay();
+			//if (_eventSet[_baseX][_baseY] == 0)
+			//{
+			//	if (_baseY == _endOfMonth[_baseX]) {
+			//		AdvanceMonth();
+			//		while (_eventSet[_baseX][_baseY] == 0) {
+			//			if (_baseY == _endOfMonth[_baseX])
+			//				AdvanceMonth();
+			//			else
+			//				AdvanceDay();
+			//		}
+			//		_simulationTime._timeOfDay = next->_timeOfDay;
+			//		_simulationTime._month = next->_timeMonth;
+			//		_simulationTime._day = next->_timeDay;
+			//		_simulationTime._year = next->_year;
+			//	}
+			//	else {
+			//		while (_eventSet[_baseX][_baseY] == 0) {
+			//			if (_numEvents == 1)
+			//				break;
+			//			if (_baseY == _endOfMonth[_baseX])
+			//				AdvanceMonth();
+			//			else
+			//				AdvanceDay();
 
-						/*if (_year == 2025 && ConvertMonth(GetSimulationTime()._month) == "July")
-							while (_eventSet[_overflow][0] != 0)
-								cout << _eventSet[_overflow][0]->_eventActionName << ", " << ConvertMonth(_eventSet[_overflow][0]->_timeMonth) << ", " << _eventSet[_overflow][0]->_year << endl;*/
-					}
-					_simulationTime._timeOfDay = next->_timeOfDay;
-					_simulationTime._month = next->_timeMonth;
-					_simulationTime._day = next->_timeDay;
-					_simulationTime._year = next->_year;
-				}
-			}
-			else {
+			//			/*if (_year == 2025 && ConvertMonth(GetSimulationTime()._month) == "July")
+			//				while (_eventSet[_overflow][0] != 0)
+			//					cout << _eventSet[_overflow][0]->_eventActionName << ", " << ConvertMonth(_eventSet[_overflow][0]->_timeMonth) << ", " << _eventSet[_overflow][0]->_year << endl;*/
+			//		}
+			//		_simulationTime._timeOfDay = next->_timeOfDay;
+			//		_simulationTime._month = next->_timeMonth;
+			//		_simulationTime._day = next->_timeDay;
+			//		_simulationTime._year = next->_year;
+			//	}
+			//}
+			//else {
 				_simulationTime._timeOfDay = next->_timeOfDay;
 				_simulationTime._month = next->_timeMonth;
 				_simulationTime._day = next->_timeDay;
 				_simulationTime._year = next->_year;
-			}
+			//}
 			EventAction* ea = next->_ea;
 			_numEvents--;
 			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA")
@@ -843,10 +852,10 @@ void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double dis
 	_eventSet.AddEventRecurring(priority, ea, distributionValue, recurring, eaName);
 }
 
-void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID)
+void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID, string repairJobName)
 {
 	//	cout << "Scheduling Conditional Event";
-	_conditionalSet.AddConditionalEvent(priority, cea, eaName, type, resourceNeeded, aID);
+	_conditionalSet.AddConditionalEvent(priority, cea, eaName, type, resourceNeeded, aID, repairJobName);
 }
 
 void SimExec::SetSystemSink(SinkBlock* sinkBlock)
@@ -990,7 +999,8 @@ int SimExec::PrintNumInCondES()
 	int condEventTracker = 0;
 	CondEvent* start = _conditionalSet.GetConditionalSet();
 	while (start != 0) {
-		cout << "Event: " << start->_eaName << ", Aircraft: " << start->_type << ", Needs: " << start->_resourceNeeded << ", ID: " << start->_aID << endl;
+		cout << "Event: " << start->_eaName << ", Aircraft: " << start->_type << ", Needs: " << start->_resourceNeeded << ", ID: " << start->_aID << 
+			", Repair Job: " << start->_repairJobName << endl;
 		start = start->_nextCondEvent;
 		condEventTracker++;
 	}
