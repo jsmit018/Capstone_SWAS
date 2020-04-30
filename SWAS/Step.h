@@ -134,7 +134,7 @@ private:
 	class StartRepairServiceEA;
 	class AddQueueEA;
 	class DoneServiceEA;
-	class DoneRepairServiceEA;
+	class DoneResourceServiceEA;
 	class PlaceOrderEA;
 	class OrderArrivalEA;
 	class AcquireResourceEA;
@@ -153,7 +153,7 @@ private:
 	void StartRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AddQueueEM(Aircraft* aircraft);
 	void DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources);
-	void DoneRepairServiceEM(Resource* resource, map<string, int> acquiredResources);
+	void DoneResourceServiceEM(Resource* resource, map<string, int> acquiredResources);
 	void AcquireResourceEM(Resource* resource, int numNeeded);
 	void ReleaseResourceEM(Resource* resource, int numRelease);
 	void FailResourceEM(Resource* resource);

@@ -403,10 +403,10 @@ private:
 	map<string, int> _acqResources;
 };
 
-class Step::DoneRepairServiceEA : public EventAction {
+class Step::DoneResourceServiceEA : public EventAction {
 public:
 	//DoneRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources)
-	DoneRepairServiceEA(Step* step, Resource* resource, map<string, int> acqResources)
+	DoneResourceServiceEA(Step* step, Resource* resource, map<string, int> acqResources)
 	{
 		_step = step;
 		_resource = resource;
@@ -415,7 +415,7 @@ public:
 
 	void Execute()
 	{
-		_step->DoneRepairServiceEM(_resource, _acqResources);
+		_step->DoneResourceServiceEM(_resource, _acqResources);
 	}
 private:
 	Step* _step;
@@ -1159,7 +1159,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 
 		cout << " IN START SERVICE - ACQUIRED VEC SIZE IS " << _acquiredResources.size() << endl;
 
-		DoneRepairServiceEA* doneEA = new DoneRepairServiceEA(this, resource, _acquiredResources);
+		DoneResourceServiceEA* doneEA = new DoneResourceServiceEA(this, resource, _acquiredResources);
 		SimExec::ScheduleEventAt(RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority(), doneEA, this->_servTime->GetRV(), "DoneServiceEA");
 		//what is this? does it mean waiting for a bay is ended? or service is ended? if either, needs to have an if statement for those cases
 
@@ -1293,7 +1293,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
 			Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
-			SimExec::ScheduleEventAt(1, new DoneRepairServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
+			SimExec::ScheduleEventAt(1, new DoneResourceServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
 }
@@ -1624,7 +1624,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 	}
 }
 
-void Step::DoneRepairServiceEM(Resource* resource, map<string, int> acquiredResources)
+void Step::DoneResourceServiceEM(Resource* resource, map<string, int> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
 
