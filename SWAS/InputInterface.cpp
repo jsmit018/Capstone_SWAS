@@ -14,6 +14,7 @@ map<string, Resource*> InputReader::_masterResourceMap;
 map<string, Parts*> InputReader::_masterPartsMap;
 int InputReader::_numRuns;
 int InputReader::_airCount;
+int InputReader::_IDcount;
 
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
@@ -1064,6 +1065,12 @@ void InputReader::AddAirCount()
 	_airCount++;
 }
 
+int InputReader::GetIDcount()
+{
+	//cout << "****Number of 'read in' Aircraft IDs " << _IDcount << endl;
+	return _IDcount;
+}
+
 void InputReader::CalAirFix() {
 	_airCount--;
 }
@@ -1116,6 +1123,7 @@ CalConverter* InputReader::GetCalConverter()
 //void InputReader::AddSelectedAircraft(string aircraftName)
 void InputReader::AddSelectedAircraft(int aircraftNumber)
 {
+	_IDcount++;
 	map<int, string>::const_iterator iter = _addedAircraft.find(aircraftNumber);
 	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(iter->second);
 	//GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
