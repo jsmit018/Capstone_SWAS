@@ -14,6 +14,7 @@
 #include <sqltypes.h>
 #include <sql.h>
 #include <map>
+#include <time.h>
 
 using namespace std;
 
@@ -55,9 +56,11 @@ void InitializeAircraft()
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
 	Distribution::SetSystemSeed(8);
-	inputReader.AddSelectedAircraft("F-35");
-	inputReader.AddSelectedAircraft("F-18");
-	inputReader.AddSelectedAircraft("Apache");
+	//inputReader.AddSelectedAircraft("F-35");
+	inputReader.AddSelectedAircraft(1);
+	//inputReader.AddSelectedAircraft("F-18");
+	inputReader.AddSelectedAircraft(3);
+	//inputReader.AddSelectedAircraft("Apache");
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
 
@@ -74,6 +77,7 @@ void InitializeAircraft()
 			/* Create the first instance of that particular aircraft type by copying from master map */
 			//Test count//
 			int count = 1;
+			int cal = 1;
 			//____________
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
 			//		cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
@@ -84,7 +88,7 @@ void InitializeAircraft()
 
 			while (myIter != firstAircraft->GetMyRJMapEnd())
 			{
-				if (myIter->second->GetSchedType() == "Calendar")
+				if (myIter->second->GetSchedType() == "Calendar" && cal == 1)
 				{
 					////// calendarsourceblock schedules calendar arrival at date 
 					cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
@@ -99,6 +103,7 @@ void InitializeAircraft()
 						"Calendar Arrival",
 						firstAircraft->GetCalendarObj(),
 						myIter->second);
+					cal++;
 				}
 
 				else if (myIter->second->GetSchedType() == "Recurring")
@@ -239,6 +244,17 @@ int main()
 		InitializeAircraft();
 		//SchedResourceFailure();
 		//InitalizeAircraft(GetScribe());
+		
+		//If System Seed is the same vs. Different --If Random Generate a new system seed. --If the same don't worry about it
+		if (Distribution::GetSystemSeedType() == "random") {
+			srand((unsigned)time(0));
+			int result = (rand() % INT_MAX);
+			Distribution::SetSystemSeed(result);
+		}
+		else if (Distribution::GetSystemSeedType() == "same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
+			Distribution::SetSystemSeed(Distribution::GetSystemSeed());
+		}
+
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		while (SimExec::GetSimulationFlag())

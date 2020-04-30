@@ -75,7 +75,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	Resource resource;
 	string line;
 
-	ifstream dataFile("SWASInputData_V1.csv");
+	ifstream dataFile("V1_complete.csv");
 	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
@@ -206,6 +206,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					int airPriority;
 					double airLength;
 					double airWingspan;
+					int aircraftNumber;
 
 					Aircraft* newAir = new Aircraft();
 
@@ -233,6 +234,10 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					newAir->SetBaySizeReq(row[4]);
 
+					istringstream iss5(row[5]);
+					iss5 >> aircraftNumber;
+
+					_addedAircraft.insert(pair<int, string>(aircraftNumber, airType));
 					_masterMap.insert(pair<string, Aircraft*>(airType, newAir));
 
 				}
@@ -1059,6 +1064,10 @@ void InputReader::AddAirCount()
 	_airCount++;
 }
 
+void InputReader::CalAirFix() {
+	_airCount--;
+}
+
 map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
 {
 	return _masterResourceMap.begin();
@@ -1104,9 +1113,12 @@ CalConverter* InputReader::GetCalConverter()
 	return calConvert;
 }
 
-void InputReader::AddSelectedAircraft(string aircraftName)
+//void InputReader::AddSelectedAircraft(string aircraftName)
+void InputReader::AddSelectedAircraft(int aircraftNumber)
 {
-	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
+	map<int, string>::const_iterator iter = _addedAircraft.find(aircraftNumber);
+	GUISelectedAircraft* newAircraft = new GUISelectedAircraft(iter->second);
+	//GUISelectedAircraft* newAircraft = new GUISelectedAircraft(aircraftName);
 
 	if (_GUIListHead == NULL) {
 		_GUIListHead = newAircraft;

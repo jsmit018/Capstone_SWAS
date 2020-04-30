@@ -20,7 +20,8 @@ public:
 	void ReadInputData();
 	void PrintEverything();
 	void PrintMasterResMap();
-	void AddSelectedAircraft(string aircraftName);
+	//void AddSelectedAircraft(string aircraftName);
+	void AddSelectedAircraft(int aircraftNumber);
 	void SetNumRuns(int numRuns);
 	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();
@@ -39,12 +40,14 @@ public:
 	static int GetNumRuns();
 	static int GetAirCount();
 	static void AddAirCount();
+	static void CalAirFix();
 private:
 	static int _numRuns;
 	static int _airCount;
 	static map<string, Aircraft*>_masterMap;
 	static map<string, Resource*> _masterResourceMap;
 	static map<string, Parts*> _masterPartsMap;
+	map<int, string> _addedAircraft;
 	CalConverter* calConvert;
 	struct GUISelectedAircraft;
 	GUISelectedAircraft* _GUIListHead;
