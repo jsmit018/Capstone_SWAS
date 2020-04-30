@@ -577,7 +577,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 	}
 
 	_acquiredResources = acquiredResources;
-	Scribe::RecordRepairJob(aircraft->GetAircraftType(), aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+	Scribe::RecordRepairJob(aircraft->GetAircraftType(), aircraft->GetAircraftID(), _myRJ, _stepID, aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_stepID)->GetName(), SimExec::GetSimulationTime()._timeOfDay);
 	Scribe::RecordServiceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
 
 	bool hasResource = false;
@@ -963,6 +963,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			//cout << " heeere 2" << endl;
 
 			///////////
+			Scribe::RecordInspectionFailure(aircraft->GetAircraftID(), aircraft->GetAircraftType(), _myRJ, _stepID);
 			Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
 			cout << aircraft->GetAircraftID() <<" INSPECTION FAILED, RETURN STEP IS " << _returnStep << endl;
@@ -975,7 +976,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		else if (isFail == false)
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
@@ -1530,7 +1531,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 				cout << "ERROR \n";
 
 			//depart
-			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			this->SetNextTask(SimExec::GetSystemSink());
 			cout << "________________THIS AIRCRAFT IS DEPARTING: " << aircraft->GetAircraftID() << " " << aircraft->GetAircraftType() << endl;
 			Depart(aircraft);
@@ -1612,7 +1613,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 					cout << "ERROR \n";
 			}
 
-			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			SimExec::ScheduleEventAt(aircraft->GetNextRepairJob(_myRJ)->GetPriority(), new StartServiceEA(aircraft->GetNextRepairJob(_myRJ)->GetStep(nextID), aircraft, _acquiredResources), 0.0, "StartServiceEA");
 
 			string oldJob = _myRJ;
@@ -1717,7 +1718,7 @@ void Step::DoneResourceServiceEM(Resource* resource, map<string, int> acquiredRe
 			iter++;
 		}
 		_acquiredResources.clear();
-		Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+		Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 		if (_acquiredResources.size() != 0)
 			cout << "ERROR \n";
 

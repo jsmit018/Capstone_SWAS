@@ -143,13 +143,15 @@ struct repairJobNode
 public:
     //constructors
     repairJobNode();
-    repairJobNode(string, int, string, float);
+    repairJobNode(string, int, string, int, string, float);
     repairJobNode(const repairJobNode&);
     ~repairJobNode();
 
     string aircraftType;
     int aircraftID;
     string jobType;
+    int stepNumber;
+    string stepName;
     float timeStart;
     double dayStart;
     double monthStart;
@@ -212,6 +214,24 @@ public:
     restockNode* next;
 };
 
+struct InspectionFailureNode
+{
+public:
+    InspectionFailureNode();
+    InspectionFailureNode(int, string, string, int);
+    InspectionFailureNode(const InspectionFailureNode&);
+    ~InspectionFailureNode();
+
+    int craftID;
+    string craftType;
+    string repairJob;
+    int stepNum;
+    string date;
+    float time;
+
+    InspectionFailureNode* next;
+};
+
 //Node for a single simulation run with pointers to lists of aircraft, missions, resources, failures, resourcewaits, servicewaits, repairjobs, reworks, part requests and restocks
 struct runNode
 {
@@ -231,6 +251,7 @@ public:
     reworkNode* reworkHead;
     partRequestNode* requestsHead;
     restockNode* restockHead;
+    InspectionFailureNode* inspectionHead;
 
     //search pointers
     aircraftNode* aircraftRunner;
@@ -243,6 +264,7 @@ public:
     reworkNode* reworkRunner;
     partRequestNode* requestsRunner;
     restockNode* restockRunner;
+    InspectionFailureNode* inspectionRunner;
 
     //Tail Pointers
     aircraftNode* aircraftTail;
@@ -255,6 +277,7 @@ public:
     reworkNode* reworkTail;
     partRequestNode* requestsTail;
     restockNode* restockTail;
+    InspectionFailureNode* inspectionTail;
 
     runNode* next;
 };
@@ -282,11 +305,12 @@ public:
     static void RecordResourceWaitEnd(int, string, float);
     static void RecordServiceWait(string, int, string, float);
     static void RecordServiceWaitEnd(int, string, float);
-    static void RecordRepairJob(string, int, string, float);
-    static void RecordRepairEnd(int, string, float);
+    static void RecordRepairJob(string, int, string, int, string, float);
+    static void RecordRepairEnd(int, string, int, float);
     static void RecordRework(string, string, float);
     static void RecordPartRequest(string, int, bool);
     static void RecordRestock(string, float);
+    static void RecordInspectionFailure(int, string, string, int);
     static void AdvanceRun();
 
     //static void SetWarehousDims(string, string);

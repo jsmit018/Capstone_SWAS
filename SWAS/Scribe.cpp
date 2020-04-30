@@ -287,6 +287,8 @@ repairJobNode::repairJobNode()
 	aircraftType = "";
 	aircraftID = 0;
 	jobType = "";
+	stepNumber = 0;
+	stepName = "";
 	timeStart = 0;
 	dayStart = 0;
 	monthStart = 0;
@@ -300,11 +302,13 @@ repairJobNode::repairJobNode()
 	next = nullptr;
 }
 
-repairJobNode::repairJobNode(string aircraft, int id, string job, float time)
+repairJobNode::repairJobNode(string aircraft, int id, string job, int stepNum, string step, float time)
 {
 	aircraftType = aircraft;
 	aircraftID = id;
 	jobType = job;
+	stepNumber = stepNum;
+	stepName = step;
 	timeStart = time;
 	dayStart = SimExec::GetSimulationTime()._day + 1;
 	monthStart = SimExec::GetSimulationTime()._month + 1;
@@ -323,6 +327,8 @@ repairJobNode::repairJobNode(const repairJobNode& node2)
 	aircraftType = node2.aircraftType;
 	aircraftID = node2.aircraftID;
 	jobType = node2.jobType;
+	stepNumber = node2.stepNumber;
+	stepName = node2.stepName;
 	timeStart = node2.timeStart;
 	dayStart = node2.dayStart;
 	monthStart = node2.monthStart;
@@ -480,6 +486,10 @@ runNode::runNode()
 	restockRunner = nullptr;
 	restockTail = nullptr;
 
+	inspectionHead = nullptr;
+	inspectionRunner = nullptr;
+	inspectionTail = nullptr;
+
 	next = nullptr;
 }
 
@@ -495,6 +505,7 @@ runNode::runNode(const runNode& node2)
 	reworkHead = node2.reworkHead;
 	requestsHead = node2.requestsHead;
 	restockHead = node2.restockHead;
+	inspectionHead = node2.inspectionHead;
 
 	aircraftTail = node2.aircraftTail;
 	missionTail = node2.missionTail;
@@ -506,6 +517,7 @@ runNode::runNode(const runNode& node2)
 	reworkTail = node2.reworkTail;
 	requestsTail = node2.requestsTail;
 	restockTail = node2.restockTail;
+	inspectionTail = node2.inspectionTail;
 
 	aircraftRunner = nullptr;
 	missionRunner = nullptr;
@@ -517,6 +529,7 @@ runNode::runNode(const runNode& node2)
 	reworkRunner = nullptr;
 	requestsRunner = nullptr;
 	restockRunner = nullptr;
+	inspectionRunner = nullptr;
 
 	next = node2.next;
 }
@@ -1014,16 +1027,16 @@ void Scribe::RecordServiceWaitEnd(int id, string spot, float end)
 }
 
 //Create a node containing an aircraft type, a repair job, and a start time
-void Scribe::RecordRepairJob(string aircraft, int id, string job, float start)
+void Scribe::RecordRepairJob(string aircraft, int id, string job, int stepNum, string stepNme, float start)
 {
 	if (runCurrent->repairJobHead == nullptr)
 	{
-		runCurrent->repairJobHead = new repairJobNode(aircraft, id, job, start);
+		runCurrent->repairJobHead = new repairJobNode(aircraft, id, job, stepNum, stepNme, start);
 		runCurrent->repairJobTail = runCurrent->repairJobHead;
 	}
 	else
 	{
-		runCurrent->repairJobTail->next = new repairJobNode(aircraft, id, job, start);
+		runCurrent->repairJobTail->next = new repairJobNode(aircraft, id, job, stepNum, stepNme, start);
 		runCurrent->repairJobTail = runCurrent->repairJobTail->next;
 	}
 }
@@ -1031,7 +1044,7 @@ void Scribe::RecordRepairJob(string aircraft, int id, string job, float start)
 /*Search for an existing repair node with a specified aircraft id, repair job and duration of -1 to record
 	the end time of the node and calculate duration
 */
-void Scribe::RecordRepairEnd(int id, string job, float end)
+void Scribe::RecordRepairEnd(int id, string job, int step, float end)
 {
 	runCurrent->repairJobRunner = runCurrent->repairJobHead;
 	do
@@ -1040,68 +1053,72 @@ void Scribe::RecordRepairEnd(int id, string job, float end)
 		{
 			if (runCurrent->repairJobRunner->jobType == job)
 			{
-				if (runCurrent->repairJobRunner->ellapse == -1)
+				if (runCurrent->repairJobRunner->stepNumber == step)
 				{
-					runCurrent->repairJobRunner->timeEnd = end;
-					runCurrent->repairJobRunner->dayEnd = SimExec::GetSimulationTime()._day + 1;
-					runCurrent->repairJobRunner->monthEnd = SimExec::GetSimulationTime()._month + 1;
-					runCurrent->repairJobRunner->yearEnd = SimExec::GetSimulationTime()._year;
-					long double startDate = int((runCurrent->repairJobRunner->yearStart) * 365.25);
-					for (int i = 1; i < (runCurrent->repairJobRunner->monthStart); i++)
+					if (runCurrent->repairJobRunner->ellapse == -1)
 					{
-						if (i == 4 || i == 6 || i == 9 || i == 11)
+						runCurrent->repairJobRunner->timeEnd = end;
+						runCurrent->repairJobRunner->dayEnd = SimExec::GetSimulationTime()._day + 1;
+						runCurrent->repairJobRunner->monthEnd = SimExec::GetSimulationTime()._month + 1;
+						runCurrent->repairJobRunner->yearEnd = SimExec::GetSimulationTime()._year;
+						long double startDate = int((runCurrent->repairJobRunner->yearStart) * 365.25);
+						for (int i = 1; i < (runCurrent->repairJobRunner->monthStart); i++)
 						{
-							startDate += 30;
-						}
-						else if (i == 2)
-						{
-							if ((int(runCurrent->repairJobRunner->yearStart) % 4) == 0)
+							if (i == 4 || i == 6 || i == 9 || i == 11)
 							{
-								startDate += 29;
+								startDate += 30;
+							}
+							else if (i == 2)
+							{
+								if ((int(runCurrent->repairJobRunner->yearStart) % 4) == 0)
+								{
+									startDate += 29;
+								}
+								else
+								{
+									startDate += 28;
+								}
 							}
 							else
 							{
-								startDate += 28;
+								startDate += 30;
 							}
 						}
-						else
-						{
-							startDate += 30;
-						}
-					}
 
-					startDate += (runCurrent->repairJobRunner->dayStart);
+						startDate += (runCurrent->repairJobRunner->dayStart);
 
-					long double endDate = int((runCurrent->repairJobRunner->yearEnd) * 365.25);
-					for (int i = 1; i < (runCurrent->repairJobRunner->monthEnd); i++)
-					{
-						if (i == 4 || i == 6 || i == 9 || i == 11)
+						long double endDate = int((runCurrent->repairJobRunner->yearEnd) * 365.25);
+						for (int i = 1; i < (runCurrent->repairJobRunner->monthEnd); i++)
 						{
-							endDate += 30;
-						}
-						else if (i == 2)
-						{
-							if ((int(runCurrent->repairJobRunner->yearEnd) % 4) == 0)
+							if (i == 4 || i == 6 || i == 9 || i == 11)
 							{
-								endDate += 29;
+								endDate += 30;
+							}
+							else if (i == 2)
+							{
+								if ((int(runCurrent->repairJobRunner->yearEnd) % 4) == 0)
+								{
+									endDate += 29;
+								}
+								else
+								{
+									endDate += 28;
+								}
 							}
 							else
 							{
-								endDate += 28;
+								endDate += 30;
 							}
 						}
-						else
-						{
-							endDate += 30;
-						}
+						endDate += (runCurrent->repairJobRunner->dayEnd);
+
+						long double startTime = (startDate * 24) + runCurrent->repairJobRunner->timeStart;
+						long double endTime = (endDate * 24) + runCurrent->repairJobRunner->timeEnd;
+
+						runCurrent->repairJobRunner->ellapse = (endTime - startTime);
 					}
-					endDate += (runCurrent->repairJobRunner->dayEnd);
-
-					long double startTime = (startDate * 24) + runCurrent->repairJobRunner->timeStart;
-					long double endTime = (endDate * 24) + runCurrent->repairJobRunner->timeEnd;
-
-					runCurrent->repairJobRunner->ellapse = (endTime - startTime);
 				}
+				
 			}
 		}
 
@@ -1196,6 +1213,20 @@ void Scribe::RecordRestock(string resource, float time)
 	{
 		runCurrent->restockTail->next = new restockNode(resource, time);
 		runCurrent->restockTail = runCurrent->restockTail->next;
+	}
+}
+
+void Scribe::RecordInspectionFailure(int airID, string airType, string inspect, int stepNum)
+{
+	if (runCurrent->inspectionHead == nullptr)
+	{
+		runCurrent->inspectionHead = new InspectionFailureNode(airID, airType, inspect, stepNum);
+		runCurrent->inspectionTail = runCurrent->inspectionHead;
+	}
+	else
+	{
+		runCurrent->inspectionTail->next = new InspectionFailureNode(airID, airType, inspect, stepNum);
+		runCurrent->inspectionTail = runCurrent->inspectionTail->next;
 	}
 }
 
@@ -1646,7 +1677,7 @@ void Scribe::Archive()
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("ID,Type,Job,Date Start,Start,Date Finish,Finish,Duration,");
+		tempStr += ("ID,Type,Job,Step Number,Step Name,Date Start,Start,Date Finish,Finish,Duration,");
 	}
 	tempStr += "\n";
 	fileOut << tempStr;
@@ -1661,12 +1692,12 @@ void Scribe::Archive()
 		{
 			if (runCurrent->repairJobRunner == nullptr)
 			{
-				tempStr += (",,,,,,,,");
+				tempStr += (",,,,,,,,,,");
 				endCount++;
 			}
 			else
 			{
-				tempStr += (to_string(runCurrent->repairJobRunner->aircraftID) + "," + (runCurrent->repairJobRunner->aircraftType) + "," + (runCurrent->repairJobRunner->jobType) + "," +
+				tempStr += (to_string(runCurrent->repairJobRunner->aircraftID) + "," + (runCurrent->repairJobRunner->aircraftType) + "," + (runCurrent->repairJobRunner->jobType) + "," + (to_string(runCurrent->repairJobRunner->stepNumber)) + "," + (runCurrent->repairJobRunner->stepName) + "," +
 					to_string(runCurrent->repairJobRunner->monthStart) + "/" + to_string(runCurrent->repairJobRunner->dayStart) + "/" + to_string(runCurrent->repairJobRunner->yearStart) + "," + to_string(runCurrent->repairJobRunner->timeStart) + "," +
 					to_string(runCurrent->repairJobRunner->monthEnd) + "/" + to_string(runCurrent->repairJobRunner->dayEnd) + "/" + to_string(runCurrent->repairJobRunner->yearEnd) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," +
 					to_string(runCurrent->repairJobRunner->ellapse) + ",");
@@ -1677,6 +1708,54 @@ void Scribe::Archive()
 		tempStr += "\n";
 		fileOut << tempStr;
 
+	} while (endCount < runNumber);
+
+	//Inspection Data for each run
+	fileOut << "Inspection Failures\n";
+	tempStr = "";
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
+		runCurrent->inspectionRunner = runCurrent->inspectionHead;
+		runCurrent = runCurrent->next;
+	}
+
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	tempStr = "";
+	for (int i = 0; i < runNumber; i++)
+	{
+		tempStr += ("ID,Type,Job,Step,Date,Time,");
+	}
+	tempStr += "\n";
+	fileOut << tempStr;
+
+	do
+	{
+		endCount = 0;
+		tempStr = "";
+		runCurrent = runStart;
+
+		for (int i = 0; i < runNumber; i++)
+		{
+			if (runCurrent->inspectionRunner == nullptr)
+			{
+				tempStr += (",,,,,,");
+				endCount++;
+			}
+			else
+			{
+				tempStr += (to_string(runCurrent->inspectionRunner->craftID) + "," + (runCurrent->inspectionRunner->craftType) + "," + (runCurrent->inspectionRunner->repairJob) + "," + to_string(runCurrent->inspectionRunner->stepNum) + "," +
+					(runCurrent->inspectionRunner->date) + "," + to_string(runCurrent->inspectionRunner->time));
+				runCurrent->inspectionRunner = runCurrent->inspectionRunner->next;
+			}
+			runCurrent = runCurrent->next;
+		}
+		tempStr += "\n";
+		fileOut << tempStr;
 	} while (endCount < runNumber);
 
 	//Rework data for each run
@@ -1830,3 +1909,43 @@ runNode* Scribe::GetStart()
 	return runStart;
 }
 
+InspectionFailureNode::InspectionFailureNode()
+{
+	craftID = 0;
+	craftType = "";
+	repairJob = "";
+	stepNum = 0;
+	date = "";
+	time = 0;
+
+	next = nullptr;
+}
+
+InspectionFailureNode::InspectionFailureNode(int id, string aircraft, string inspectionName, int step)
+{
+	craftID = id;
+	craftType = aircraft;
+	repairJob = inspectionName;
+	stepNum = step;
+	date = (to_string(SimExec::GetSimulationTime()._month + 1) + "/" + to_string(SimExec::GetSimulationTime()._day) + "/" + to_string(SimExec::GetSimulationTime()._year));
+	time = SimExec::GetSimulationTime()._timeOfDay;
+
+	next = nullptr;
+}
+
+InspectionFailureNode::InspectionFailureNode(const InspectionFailureNode& node2)
+{
+	craftID = node2.craftID;
+	craftType = node2.craftType;
+	repairJob = node2.repairJob;
+	stepNum = node2.stepNum;
+	date = node2.date;
+	time = node2.time;
+
+	next = node2.next;
+}
+
+InspectionFailureNode::~InspectionFailureNode()
+{
+	delete this;
+}
