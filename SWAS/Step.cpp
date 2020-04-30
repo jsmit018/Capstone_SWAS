@@ -1294,7 +1294,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
 			Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
-			SimExec::ScheduleEventAt(1, new DoneRepairServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
+			SimExec::ScheduleEventAt(1, new DoneResourceServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
 }
