@@ -149,10 +149,10 @@ public:
 
 		cout << "EXECUTING WAIT FOR RESOURCE" << endl;
 
-			//cout << _aircraft->GetAircraftID() << " has resource "
-			//	<< " in step " << _step->GetName()
-			//	<< _acqResources[i].first << " in quantity "
-			//	<< _acqResources[i].second << endl;
+		//cout << _aircraft->GetAircraftID() << " has resource "
+		//	<< " in step " << _step->GetName()
+		//	<< _acqResources[i].first << " in quantity "
+		//	<< _acqResources[i].second << endl;
 
 		_aircraft->SetCELflag(1);
 		Scribe::RecordResourceWaitEnd(_aircraft->GetAircraftID(), _resource->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
@@ -399,10 +399,10 @@ private:
 	map<string, int> _acqResources;
 };
 
-class Step::DoneRepairServiceEA : public EventAction {
+class Step::DoneResourceServiceEA : public EventAction {
 public:
 	//DoneRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources)
-	DoneRepairServiceEA(Step* step, Resource* resource, map<string, int> acqResources)
+	DoneResourceServiceEA(Step* step, Resource* resource, map<string, int> acqResources)
 	{
 		_step = step;
 		_resource = resource;
@@ -411,7 +411,7 @@ public:
 
 	void Execute()
 	{
-		_step->DoneRepairServiceEM(_resource, _acqResources);
+		_step->DoneResourceServiceEM(_resource, _acqResources);
 	}
 private:
 	Step* _step;
@@ -565,8 +565,8 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		while (it != _acquiredResources.end())
 		{
 			cout << aircraft->GetAircraftID() << " in step " << _name << " has resource "
-						<< it->first << " in quantity "
-						<< it->second << endl;
+				<< it->first << " in quantity "
+				<< it->second << endl;
 			it++;
 		}
 		aircraft->SetCELflag(0);
@@ -611,19 +611,19 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			if (it != _resourcePool.end())
 			{
 				if (IsMyBaySizeAvailable(it->first)) {
-					_acquiredResources.insert(make_pair(it->first,1));
+					_acquiredResources.insert(make_pair(it->first, 1));
 					AcquireBay(it->second, 1);
 				}
 				else {
 					if (AreThereBaysAvailable()) {
 						string bay = AcquireBay(it->second, 1);
 						if (WasBayAcquired(bay)) {
-							_acquiredResources.insert(make_pair(bay,1));
+							_acquiredResources.insert(make_pair(bay, 1));
 						}
 						else {
 							SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedBaysEA(this, aircraft, _acquiredResources, it->second, 1),
 								"WaitForResourceEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID());
-							
+
 							Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), it->second->GetResourceName(), SimExec::GetSimulationTime()._timeOfDay);
 							Scribe::UpdateResourceRequests(it->second->GetResourceName(), false);
 							return;
@@ -815,7 +815,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 					return;
 				}
 				iterParts++;
-			}	
+			}
 		}
 
 		cout << aircraft->GetAircraftID() << " " << _myRJ << " IN START SERVICE " << _stepID << "- ACQUIRED VEC SIZE IS " << _acquiredResources.size() << endl;
@@ -835,7 +835,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		{
 			bool alreadyAcquired = false;
 
-			if(_acquiredResources.size() == 0)
+			if (_acquiredResources.size() == 0)
 			{
 				//if what i need is more than what's avail, wait
 				if (iter->second->GetNumResNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
@@ -865,7 +865,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			//compare key to acquired resources map
 			while (it != _acquiredResources.end())
 			{
-				if(iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
 					alreadyAcquired = true;
 					break;
 				}
@@ -892,7 +892,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 							//if i have some, my priority increases
 							if (_indoorReq == 'N' || (_indoorReq == 'Y' && _acquiredResources.size() > 1))
 							{
-								SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, iter->second, 
+								SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, iter->second,
 									aircraft, iter->second->GetNumResNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
 									iter->first, aircraft->GetAircraftID());
 							}
@@ -905,7 +905,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 							return;
 						}
 						//else if there are enough avail
-						else if(iter->second->GetNumResNeeded() - it->second < _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if (iter->second->GetNumResNeeded() - it->second < _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//acquire the difference
 							AcquireResourceEM(iter->second, (iter->second->GetNumResNeeded() - it->second));
@@ -932,7 +932,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			}
 			iter++;
 		}
-		
+
 		cout << aircraft->GetAircraftID() << " " << _myRJ << " IN START SERVICE " << _stepID << "- ACQUIRED VEC SIZE IS " << _acquiredResources.size() << endl;
 
 		bool isFail = IsInpectionFail(_inspecFailProb);
@@ -950,7 +950,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			///////////
 			Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
-			cout << aircraft->GetAircraftID() <<" INSPECTION FAILED, RETURN STEP IS " << _returnStep << endl;
+			cout << aircraft->GetAircraftID() << " INSPECTION FAILED, RETURN STEP IS " << _returnStep << endl;
 			//cout << aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep)->GetName();
 			//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 			//reschedule step of id = to return step id and all following steps
@@ -967,7 +967,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 }
 
 void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredResources)
-{ 
+{
 	if (isReturnStep == true)
 	{
 		cout << " is return step " << _name << " for " << resource->GetResourceName() << " return step is " << RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetMyReturnStep();
@@ -1025,8 +1025,8 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 				//if what i need is more than what's avail, wait
 				if (iter->second->GetNumResNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
-					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), 
-						new ResWaitForResEA(this, resource, iter->second, iter->second->GetNumResNeeded(), _acquiredResources), 
+					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(),
+						new ResWaitForResEA(this, resource, iter->second, iter->second->GetNumResNeeded(), _acquiredResources),
 						"ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7);
 
 					//record waits
@@ -1057,7 +1057,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 			{
 				if (iter->first == it->first) {
 					foundIt = true;
-					
+
 					alreadyAcquired = true;
 
 					//i've already acquired this resource - if i need more of it
@@ -1106,8 +1106,8 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumResNeeded()));
 				}
 				else
-					SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()), 
-						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumResNeeded(), _acquiredResources), 
+					SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()),
+						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumResNeeded(), _acquiredResources),
 						"WaitForResourceEA", resource->GetResourceName(), iter->first, resource->GetResourceID());
 			}
 			iter++;
@@ -1131,8 +1131,8 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 
 				else {
 					Scribe::RecordPartRequest(iterParts->first, iterParts->second->GetNumPartsNeeded(), false);
-					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority(), 
-						new ResNeedPartsEA(this, it->second, resource, it->second->GetNumPartsNeeded(), _acquiredResources), 
+					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority(),
+						new ResNeedPartsEA(this, it->second, resource, it->second->GetNumPartsNeeded(), _acquiredResources),
 						"NeedPartsEA", resource->GetResourceName(), it->first, resource->GetResourceID());
 					return;
 				}
@@ -1142,7 +1142,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 
 		cout << " IN START SERVICE - ACQUIRED VEC SIZE IS " << _acquiredResources.size() << endl;
 
-		DoneRepairServiceEA* doneEA = new DoneRepairServiceEA(this, resource, _acquiredResources);
+		DoneResourceServiceEA* doneEA = new DoneResourceServiceEA(this, resource, _acquiredResources);
 		SimExec::ScheduleEventAt(RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority(), doneEA, this->_servTime->GetRV(), "DoneServiceEA");
 		//what is this? does it mean waiting for a bay is ended? or service is ended? if either, needs to have an if statement for those cases
 
@@ -1265,7 +1265,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 			isReturnStep = true;
 			//Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
-			SimExec::ScheduleEventAt(_RJpriority, new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_returnStep), 
+			SimExec::ScheduleEventAt(_RJpriority, new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_returnStep),
 				resource, _acquiredResources), 0, "StartServiceEA");
 			//reschedule step of id = to return step id and all following steps
 			return;
@@ -1274,7 +1274,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
 			Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
-			SimExec::ScheduleEventAt(1, new DoneRepairServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
+			SimExec::ScheduleEventAt(1, new DoneResourceServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
 }
@@ -1397,7 +1397,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 		//check the next step's required resources against my acquired list
 		//for (int i = 0; i < _acquiredResources.size(); i++)
 		map<string, int>::iterator it = _acquiredResources.begin();
-		bool incremented = false; 
+		bool incremented = false;
 		while (it != _acquiredResources.end())
 		{
 			//if resource name is not found in next step's required vector, release
@@ -1418,7 +1418,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 					trash--;
 					it++;
 					_acquiredResources.erase(trash->first);
-					incremented = true; 
+					incremented = true;
 					//cout << " after release in 'not last step in job' " << endl;
 				}
 			}
@@ -1452,7 +1452,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 			if (incremented == false)
 				it++;
 			else
-				incremented = false; 
+				incremented = false;
 		}
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID), aircraft,
 			_acquiredResources), 0.0, "StartServiceEA");
@@ -1605,7 +1605,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 	}
 }
 
-void Step::DoneRepairServiceEM(Resource* resource, map<string, int> acquiredResources)
+void Step::DoneResourceServiceEM(Resource* resource, map<string, int> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
 
@@ -1765,9 +1765,9 @@ void Step::ReleaseResourceEM(Resource* resource, int numRelease)
 
 	resource->SetResourceCount(newCount);
 	SetResPoolCount(iter->first, newCount);
-	
+
 	cout << " pool count after release is: ";
-	cout << iter->second->GetResourceCount() << " "; 
+	cout << iter->second->GetResourceCount() << " ";
 
 	//cout << IsResourceReleased(iter, newCount) << "\n+++++++" << endl;
 
@@ -1795,9 +1795,9 @@ void Step::FailResourceEM(Resource* resource)
 	//resource->SetResourceCount(newCount);
 
 	//schedule first step of the repair job for this resource (at the end of which a restore resource will be scheduled)
-	SimExec::ScheduleEventAt(_RJpriority, 
-		new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetFirstStep(), resource, _acquiredResources), 
-		0.0, 
+	SimExec::ScheduleEventAt(_RJpriority,
+		new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetFirstStep(), resource, _acquiredResources),
+		0.0,
 		"StartServiceEA");
 
 	//schedule the next random failure of this resource -- happening in swas
