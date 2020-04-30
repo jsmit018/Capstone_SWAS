@@ -117,7 +117,7 @@ void InitializeAircraft()
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Recurring Arrival",
-						5);
+						10);
 				}
 
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
@@ -130,7 +130,7 @@ void InitializeAircraft()
 						firstAircraft,
 						"Unplanned Arrival",
 						myIter->second,
-						5);
+						10);
 					count++;
 
 				}
@@ -168,64 +168,64 @@ int main()
 	sqlStmtHandle = NULL;
 
 	//allocations
-	if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &sqlEnvHandle))
-		goto COMPLETED;
+	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &sqlEnvHandle))
+	//	goto COMPLETED;
 
-	if (SQL_SUCCESS != SQLSetEnvAttr(sqlEnvHandle, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0))
-		goto COMPLETED;
+	//if (SQL_SUCCESS != SQLSetEnvAttr(sqlEnvHandle, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0))
+	//	goto COMPLETED;
 
-	if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_DBC, sqlEnvHandle, &sqlConnHandle))
-		goto COMPLETED;
+	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_DBC, sqlEnvHandle, &sqlConnHandle))
+	//	goto COMPLETED;
 
-	//output
-	cout << "Attempting connection to SQL Server...";
-	cout << "\n";
+	////output
+	//cout << "Attempting connection to SQL Server...";
+	//cout << "\n";
 
-	//connect to SQL Server	
-	//Using a trusted connection and port 14808
-	//it does not matter if you are using default or named instance
-	//just make sure you define the server name and the port
-	//We have the option to use a username/password instead of a trusted connection
-	//but its more secure to use a trusted connection
-	switch (SQLDriverConnect(sqlConnHandle,
-		NULL,
-		//(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=master;UID=username;PWD=password;",
+	////connect to SQL Server	
+	////Using a trusted connection and port 14808
+	////it does not matter if you are using default or named instance
+	////just make sure you define the server name and the port
+	////We have the option to use a username/password instead of a trusted connection
+	////but its more secure to use a trusted connection
+	//switch (SQLDriverConnect(sqlConnHandle,
+	//	NULL,
+	//	//(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=master;UID=username;PWD=password;",
 
-		//********* Need to set server and database names -->automate this in GUI (if there is one)
-		(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=govasim-2;DATABASE=SWASTestDatabase;Trusted=true;",
-		SQL_NTS,
-		retconstring,
-		1024,
-		NULL,
-		SQL_DRIVER_NOPROMPT)) {
+	//	//********* Need to set server and database names -->automate this in GUI (if there is one)
+	//	(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=govasim-2;DATABASE=SWASTestDatabase;Trusted=true;",
+	//	SQL_NTS,
+	//	retconstring,
+	//	1024,
+	//	NULL,
+	//	SQL_DRIVER_NOPROMPT)) {
 
-	case SQL_SUCCESS:
-		cout << "Successfully connected to SQL Server";
-		cout << "\n";
-		break;
+	//case SQL_SUCCESS:
+	//	cout << "Successfully connected to SQL Server";
+	//	cout << "\n";
+	//	break;
 
-	case SQL_SUCCESS_WITH_INFO:
-		cout << "Successfully connected to SQL Server";
-		cout << "\n";
-		break;
+	//case SQL_SUCCESS_WITH_INFO:
+	//	cout << "Successfully connected to SQL Server";
+	//	cout << "\n";
+	//	break;
 
-	case SQL_INVALID_HANDLE:
-		cout << "Could not connect to SQL Server";
-		cout << "\n";
-		goto COMPLETED;
+	//case SQL_INVALID_HANDLE:
+	//	cout << "Could not connect to SQL Server";
+	//	cout << "\n";
+	//	goto COMPLETED;
 
-	case SQL_ERROR:
-		cout << "Could not connect to SQL Server";
-		cout << "\n";
-		goto COMPLETED;
+	//case SQL_ERROR:
+	//	cout << "Could not connect to SQL Server";
+	//	cout << "\n";
+	//	goto COMPLETED;
 
-	default:
-		break;
-	}
+	//default:
+	//	break;
+	//}
 
-	//if there is a problem connecting then exit application
-	if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_STMT, sqlConnHandle, &sqlStmtHandle))
-		goto COMPLETED;
+	////if there is a problem connecting then exit application
+	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_STMT, sqlConnHandle, &sqlStmtHandle))
+	//	goto COMPLETED;
 
 	/////////////////////////////////////
 
@@ -246,12 +246,12 @@ int main()
 		//InitalizeAircraft(GetScribe());
 		
 		//If System Seed is the same vs. Different --If Random Generate a new system seed. --If the same don't worry about it
-		if (Distribution::GetSystemSeedType() == "random") {
+		if (Distribution::GetSystemSeedType() == "random" || Distribution::GetSystemSeedType() == "Random") {
 			srand((unsigned)time(0));
 			int result = (rand() % INT_MAX);
 			Distribution::SetSystemSeed(result);
 		}
-		else if (Distribution::GetSystemSeedType() == "same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
+		else if (Distribution::GetSystemSeedType() == "same" || Distribution::GetSystemSeedType() == "Same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
 			Distribution::SetSystemSeed(Distribution::GetSystemSeed());
 		}
 
@@ -277,15 +277,15 @@ int main()
 	///////////////////////////////////////	
 	
 	//close connection and free resources
-	COMPLETED:
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
-		SQLDisconnect(sqlConnHandle);
-		SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
-		SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
+	//COMPLETED:
+	//	SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
+	//	SQLDisconnect(sqlConnHandle);
+	//	SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
+	//	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
 
-	//pause the console window - exit when key is pressed
-	cout << "\nPress enter key to exit...";
-	getchar();
+	////pause the console window - exit when key is pressed
+	//cout << "\nPress enter key to exit...";
+	//getchar();
 
 	////////////////////////////////////////
 
