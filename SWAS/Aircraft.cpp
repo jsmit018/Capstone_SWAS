@@ -14,7 +14,9 @@ Aircraft::Aircraft()
 //void Aircraft::CopyAircraftInfo(const Aircraft& mapAircraft)
 Aircraft::Aircraft(const Aircraft& mapAircraft)
 {
+	int _IDCount = InputReader::GetIDcount();
 	_aircraftID = ++_nextID;
+	_aircraftID = _aircraftID - _IDCount;
 
 	//cout << " IN AIRCRAFT COPY CONSTRUCTOR " << endl;
 	//cout << "AIRCRAT ID IS " << _aircraftID << endl;
