@@ -1292,8 +1292,8 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 		else if (IsInpectionFail(_inspecFailProb) == false)
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-			Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
-			SimExec::ScheduleEventAt(1, new DoneResourceServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
+			Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
+			SimExec::ScheduleEventAt(1, new DoneRepairServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
 }
