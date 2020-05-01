@@ -523,6 +523,7 @@ public:
 		//	cout << "Getting Event Action" << endl;
 		if (_numEvents > 0) {
 			while (_eventSet[_baseX][_baseY] == 0) {
+				
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
 					/*_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
@@ -537,6 +538,7 @@ public:
 					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
 					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;*/
 				}
+				//if (_eventSet[_overflow][0] > 0) {}
 			}
 			Event* next = _eventSet[_baseX][_baseY];
 			/*	if (GetTimeOfDay() >= 10)
@@ -692,12 +694,16 @@ private:
 			_baseX = 0;
 			_baseY = 0;
 			_totalDaysPassed++;
+			/*if (_year == 2021)
+				cout << "Bleh" << endl;*/
 		}
 		else {
 			_eventSet[_baseX][_baseY] = 0;
 			_baseX++;
 			_baseY = 0;
 			_totalDaysPassed++;
+			/*if (_year == 2022 && _baseX == 1)
+				cout << "stop" << endl;*/
 		}
 
 		int previousBase;
@@ -707,97 +713,272 @@ private:
 			previousBase = _baseX - 1;
 		if (_eventSet[_overflow][_baseY] == NULL)
 			return;
-		Event* currEvent = _eventSet[_overflow][_baseY];
+		bool tracker = true;
 		int eventDay = 0;
-		while (currEvent != 0) {
-			if (currEvent->_timeMonth == previousBase) {
-				eventDay = currEvent->_timeDay;
-				Event* nodeChecker = _eventSet[_overflow][_baseY];
-				int breaker = 0;
-				if (_eventSet[previousBase][eventDay] == 0) {
-					_eventSet[previousBase][eventDay] = currEvent;
-					if (_eventSet[_overflow][_baseY] == currEvent) {
-						_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
-					/*	Event* deletion = currEvent;
-						currEvent = currEvent->_nextEvent;
-						delete deletion;
-						continue;*/
-					}
-				}
-				else {
-					/*Sort it into the list of events*/
-					if (currEvent->_timeOfDay < _eventSet[previousBase][eventDay]->_timeOfDay) {
-						currEvent->_nextEvent = _eventSet[previousBase][eventDay];
-						_eventSet[previousBase][eventDay] = currEvent;
-						while (nodeChecker->_nextEvent != currEvent) {
-							if (nodeChecker == currEvent) {
-								_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
-								/*Event* deletion = currEvent;
-								currEvent = currEvent->_nextEvent;
-								delete deletion;
-								breaker++;
-								break;*/
+		Event* currEvent = _eventSet[_overflow][_baseY];
+		bool isSame = false;
+		if (previousBase == December) {
+			while (_eventSet[_overflow][_baseY] != 0) {
+				if (isSame) {}
+				else 
+					currEvent = _eventSet[_overflow][_baseY];
+				if (currEvent->_year == _year) {
+					Event* nodeChecker = _eventSet[_overflow][_baseY];
+					Event* hold = new Event(0, 0, 0, 0, 0, 0, "hold");
+						eventDay = currEvent->_timeDay;
+						previousBase = currEvent->_timeMonth;
+						int breaker = 0;
+						if (_eventSet[previousBase][eventDay] == 0) {
+							hold = currEvent->_nextEvent;
+							//currEvent->_nextEvent = 0;
+							_eventSet[previousBase][eventDay] = currEvent;
+							_eventSet[previousBase][eventDay]->_nextEvent = 0;
+							if (isSame == false) {
+								_eventSet[_overflow][_baseY] = hold;
+								continue;
 							}
-							else
-							nodeChecker = nodeChecker->_nextEvent;
-						}
-						/*if (breaker == 1)
-							continue;*/
-						/*nodeChecker->_nextEvent = currEvent->_nextEvent;
-						Event* deletion = currEvent;
-						currEvent = currEvent->_nextEvent;
-						delete deletion;
-						continue;*/
-					}
-					else {
-						Event* curr = _eventSet[previousBase][eventDay];
-						while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
-							if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
-								if (currEvent->_priority < curr->_nextEvent->_priority) {
-									break;
-								}
-							}
-							else
-								curr = curr->_nextEvent;
-						}
-						if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
-							curr->_nextEvent = currEvent;
+							//if (_eventSet[_overflow][_baseY] == currEvent) {
+							//	_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+							//	/*	Event* deletion = currEvent;
+							//		currEvent = currEvent->_nextEvent;
+							//		delete deletion;
+							//		continue;*/
+							//}
+							//continue;
 						}
 						else {
-							currEvent->_nextEvent = curr->_nextEvent;
-							curr->_nextEvent = currEvent;
-						}
-						/*while (nodeChecker->_nextEvent != currEvent) {
-							if (nodeChecker == currEvent) {
-								_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+							/*Sort it into the list of events*/
+							if (currEvent->_timeOfDay < _eventSet[previousBase][eventDay]->_timeOfDay) {
+								//breaker = 1;
+								hold = currEvent->_nextEvent;
+								currEvent->_nextEvent = _eventSet[previousBase][eventDay];
+								_eventSet[previousBase][eventDay] = currEvent;
+								if (isSame == false) {
+									_eventSet[_overflow][_baseY] = hold;
+									continue;
+								}
+								//while (nodeChecker->_nextEvent != currEvent) {
+								//	if (nodeChecker == currEvent) {
+								//		_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+								//		/*Event* deletion = currEvent;
+								//		currEvent = currEvent->_nextEvent;
+								//		delete deletion;
+								//		breaker++;
+								//		break;*/
+								//	}
+								//	else
+								//		nodeChecker = nodeChecker->_nextEvent;
+								//}
+								/*if (breaker == 1)
+									continue;*/
+									/*nodeChecker->_nextEvent = currEvent->_nextEvent;
+									Event* deletion = currEvent;
+									currEvent = currEvent->_nextEvent;
+									delete deletion;
+									continue;*/
+							}
+							else {
+								Event* curr = _eventSet[previousBase][eventDay];
+								while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
+									if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+										if (currEvent->_priority < curr->_nextEvent->_priority) {
+											break;
+										}
+										else
+											curr = curr->_nextEvent;
+									}
+									else
+										curr = curr->_nextEvent;
+								}
+								if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
+									hold = currEvent->_nextEvent;
+									currEvent->_nextEvent = 0;
+									curr->_nextEvent = currEvent;
+									if (isSame == false) {
+										_eventSet[_overflow][_baseY] = hold;
+										continue;
+									}
+								}
+								else {
+									hold = currEvent->_nextEvent;
+									currEvent->_nextEvent = curr->_nextEvent;
+									curr->_nextEvent = currEvent;
+									if (isSame == false) {
+										_eventSet[_overflow][_baseY] = hold;
+										continue;
+									}
+								}
+								/*while (nodeChecker->_nextEvent != currEvent) {
+									if (nodeChecker == currEvent) {
+										_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+										Event* deletion = currEvent;
+										currEvent = currEvent->_nextEvent;
+										delete deletion;
+										breaker++;
+										break;
+									}
+									else
+										nodeChecker = nodeChecker->_nextEvent;
+								}
+								if (breaker == 1)
+									continue;
+								nodeChecker->_nextEvent = currEvent->_nextEvent;
 								Event* deletion = currEvent;
 								currEvent = currEvent->_nextEvent;
 								delete deletion;
-								breaker++;
-								break;
+								continue;*/
 							}
-							else
-								nodeChecker = nodeChecker->_nextEvent;
 						}
-						if (breaker == 1)
-							continue;
-						nodeChecker->_nextEvent = currEvent->_nextEvent;
-						Event* deletion = currEvent;
-						currEvent = currEvent->_nextEvent;
-						delete deletion;
-						continue;*/
-					}
+						//currEvent = currEvent->_nextEvent;
+						//nodeChecker = nodeChecker->_nextEvent;
+						//Event* nodeChecker = _eventSet[_overflow][_baseY];
+						Event* checker = _eventSet[_overflow][_baseY];
+						if (checker == currEvent) {
+							_eventSet[_overflow][_baseY]->_nextEvent = hold;
+							_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+							//currEvent = _eventSet[_overflow][_baseY];
+							/*if (_eventSet[_overflow][_baseY] == NULL)
+								tracker = false;*/
+						}
+						else {
+							while (checker->_nextEvent != currEvent) {
+								checker = checker->_nextEvent;
+							}
+							checker->_nextEvent = hold;
+							isSame = false;
+							//currEvent = _eventSet[_overflow][_baseY];
+						}
 				}
+				else {
 				currEvent = currEvent->_nextEvent;
+				isSame = true;
+				}
 			}
 		}
-		if (_eventSet[_overflow][0] == NULL)
-			_eventSet[_overflow][0] = 0;
-		delete currEvent;
+		else {
+			while (tracker && currEvent != 0) {
+				//currEvent = nodeChecker;
+
+				Event* nodeChecker = _eventSet[_overflow][_baseY];
+				Event* hold = new Event(0, 0, 0, 0, 0, 0, "hold");
+				if (currEvent->_timeMonth == previousBase) {
+					eventDay = currEvent->_timeDay;
+					int breaker = 0;
+					if (_eventSet[previousBase][eventDay] == 0) {
+						hold = currEvent->_nextEvent;
+						_eventSet[previousBase][eventDay] = currEvent;
+						_eventSet[previousBase][eventDay]->_nextEvent = 0;
+						//if (_eventSet[_overflow][_baseY] == currEvent) {
+						//	_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+						//	/*	Event* deletion = currEvent;
+						//		currEvent = currEvent->_nextEvent;
+						//		delete deletion;
+						//		continue;*/
+						//}
+					}
+					else {
+						/*Sort it into the list of events*/
+						if (currEvent->_timeOfDay < _eventSet[previousBase][eventDay]->_timeOfDay) {
+							//breaker = 1;
+							hold = currEvent->_nextEvent;
+							currEvent->_nextEvent = _eventSet[previousBase][eventDay];
+							_eventSet[previousBase][eventDay] = currEvent;
+							//while (nodeChecker->_nextEvent != currEvent) {
+							//	if (nodeChecker == currEvent) {
+							//		_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+							//		/*Event* deletion = currEvent;
+							//		currEvent = currEvent->_nextEvent;
+							//		delete deletion;
+							//		breaker++;
+							//		break;*/
+							//	}
+							//	else
+							//		nodeChecker = nodeChecker->_nextEvent;
+							//}
+							/*if (breaker == 1)
+								continue;*/
+								/*nodeChecker->_nextEvent = currEvent->_nextEvent;
+								Event* deletion = currEvent;
+								currEvent = currEvent->_nextEvent;
+								delete deletion;
+								continue;*/
+						}
+						else {
+							Event* curr = _eventSet[previousBase][eventDay];
+							while ((curr->_nextEvent != 0) ? (currEvent->_timeOfDay >= curr->_timeOfDay && !(currEvent->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
+								if (currEvent->_timeOfDay == curr->_nextEvent->_timeOfDay) {
+									if (currEvent->_priority < curr->_nextEvent->_priority) {
+										break;
+									}
+									else
+										curr = curr->_nextEvent;
+								}
+								else
+									curr = curr->_nextEvent;
+							}
+							if (curr->_nextEvent == 0 && currEvent->_timeOfDay >= curr->_timeOfDay) {
+								hold = currEvent->_nextEvent;
+								curr->_nextEvent = currEvent;
+							}
+							else {
+								hold = currEvent->_nextEvent;
+								currEvent->_nextEvent = curr->_nextEvent;
+								curr->_nextEvent = currEvent;
+							}
+							/*while (nodeChecker->_nextEvent != currEvent) {
+								if (nodeChecker == currEvent) {
+									_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+									Event* deletion = currEvent;
+									currEvent = currEvent->_nextEvent;
+									delete deletion;
+									breaker++;
+									break;
+								}
+								else
+									nodeChecker = nodeChecker->_nextEvent;
+							}
+							if (breaker == 1)
+								continue;
+							nodeChecker->_nextEvent = currEvent->_nextEvent;
+							Event* deletion = currEvent;
+							currEvent = currEvent->_nextEvent;
+							delete deletion;
+							continue;*/
+						}
+					}
+					//currEvent = currEvent->_nextEvent;
+					//nodeChecker = nodeChecker->_nextEvent;
+					//Event* nodeChecker = _eventSet[_overflow][_baseY];
+					Event* checker = _eventSet[_overflow][_baseY];
+					if (checker == currEvent) {
+						_eventSet[_overflow][_baseY]->_nextEvent = hold;
+						_eventSet[_overflow][_baseY] = _eventSet[_overflow][_baseY]->_nextEvent;
+						currEvent = _eventSet[_overflow][_baseY];
+						if (_eventSet[_overflow][_baseY] == NULL)
+							tracker = false;
+					}
+					else {
+						while (checker->_nextEvent != currEvent) {
+							checker = checker->_nextEvent;
+						}
+						checker->_nextEvent = hold;
+						currEvent = _eventSet[_overflow][_baseY];
+					}
+				}
+				else if (currEvent == 0)
+					tracker = false;
+				else
+					currEvent = currEvent->_nextEvent;
+			}
+			/*if (_eventSet[_overflow][0] == NULL)
+				_eventSet[_overflow][0] = 0;
+			delete currEvent;*/
+		}
 	}
 
 	void AdvanceDay() {
 		//cout << "Advancing Day" << endl;
+		_eventSet[_baseX][_baseY] = 0;
 		_baseY++;
 		_totalDaysPassed++;
 	}

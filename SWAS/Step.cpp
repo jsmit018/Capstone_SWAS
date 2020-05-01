@@ -133,6 +133,8 @@ public:
 		_acqResources = acqResources;
 		//_outputRecorder = outputRecorder;
 		cout << aircraft->GetAircraftType() << ", ID: " << aircraft->GetAircraftID() << " is moving to CEL" << " For resource: " << resource->GetResourceName() << ", amout needed " << amountNeeded << endl;
+		/*if (aircraft->GetAircraftID() == 5 && _resource->GetResourceName() == "M Bay")
+			cout << "Oogly Boogly" << endl;*/
 	}
 
 	bool Condition(Resource* resource, Parts* parts) {
@@ -288,7 +290,7 @@ public:
 			if (_bay->GetResourceCount() >= _numNeeded)
 				return true;
 			else {
-				if (_step->AreThereBaysAvailable())
+				if (_step->AreThereBaysAvailable(_bay->GetResourceName()))
 					return true;
 				else
 					return false;
@@ -619,7 +621,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 					AcquireBay(it->second, 1);
 				}
 				else {
-					if (AreThereBaysAvailable()) {
+					if (AreThereBaysAvailable(it->first)) {
 						string bay = AcquireBay(it->second, 1);
 						if (WasBayAcquired(bay)) {
 							_acquiredResources.insert(make_pair(bay,1));
@@ -1331,7 +1333,7 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 		if (iter->first == "S Bay") {
 			//Check up to Med
 			map<string, Resource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && miter->second->GetResourceCount() - ((double)numNeeded / 2.0) >= 0.0) {
+			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded / 2.0)) >= 0.0) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
 				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2.0);
@@ -1342,8 +1344,7 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 				//Check up to Large
 				map<string, Resource*>::const_iterator liter = _resourcePool.find("L Bay");
 				if (liter->second->GetResourceCount() > 0) {
-
-					if (liter->second->GetResourceCount() - ((double)numNeeded / 4.0) < 0.0) {
+					if ((liter->second->GetResourceCount() - ((double)numNeeded / 4.0)) < 0.0) {
 						Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
 						return "";
 					}
@@ -1366,12 +1367,18 @@ string Step::AcquireBay(Resource* bay, int numNeeded)
 
 			//Check up
 			map<string, Resource*>::const_iterator liter = _resourcePool.find("L Bay");
-			if (liter->second->GetResourceCount() > 0 && (liter->second->GetResourceCount() - ((double)numNeeded / 2.0)) >= 0.0) {
-				acquired = true;
-				Scribe::UpdateResourceRequests(liter->second->GetResourceName(), acquired);
-				newCount = liter->second->GetResourceCount() - ((double)numNeeded) / 2.0;
-				SetResPoolCount(liter->second->GetResourceName(), newCount);
-				return liter->second->GetResourceName();
+			if (liter->second->GetResourceCount() > 0){
+				if ((liter->second->GetResourceCount() - ((double)numNeeded / 2.0)) >= 0.0) {
+					acquired = true;
+					Scribe::UpdateResourceRequests(liter->second->GetResourceName(), acquired);
+					newCount = liter->second->GetResourceCount() - ((double)numNeeded) / 2.0;
+					SetResPoolCount(liter->second->GetResourceName(), newCount);
+					return liter->second->GetResourceName();
+				}
+				else {
+					Scribe::UpdateResourceRequests(bay->GetResourceName(), acquired);
+					return "";
+				}
 			}
 			else {
 
@@ -1888,15 +1895,34 @@ bool Step::IsMyBaySizeAvailable(string baySize)
 		return false;
 }
 
-bool Step::AreThereBaysAvailable()
+bool Step::AreThereBaysAvailable(string baySize)
 {
-	map<string, Resource*>::const_iterator sIt = _resourcePool.find("S Bay");
+	/*map<string, Resource*>::const_iterator sIt = _resourcePool.find("S Bay");
 	map<string, Resource*>::const_iterator mIt = _resourcePool.find("M Bay");
-	map<string, Resource*>::const_iterator lIt = _resourcePool.find("L Bay");
-	if (sIt->second->GetResourceCount() > 0 || mIt->second->GetResourceCount() > 0 || lIt->second->GetResourceCount() > 0)
-		return true;
-	else
-		return false;
+	map<string, Resource*>::const_iterator lIt = _resourcePool.find("L Bay");*/
+	map<string, Resource*>::const_iterator it = _resourcePool.find(baySize);
+	if (it->first == "S Bay") {
+		map<string, Resource*>::const_iterator mIt = _resourcePool.find("M Bay");
+		map<string, Resource*>::const_iterator lIt = _resourcePool.find("L Bay");
+		if (it->second->GetResourceCount() > 0 || mIt->second->GetResourceCount() > 0 || lIt->second->GetResourceCount() > 0)
+			return true;
+		else
+			return false;
+	}
+	else if (it->first == "M Bay") {
+		map<string, Resource*>::const_iterator lIt = _resourcePool.find("L Bay");
+		if (it->second->GetResourceCount() > 0 || lIt->second->GetResourceCount() > 0)
+			return true;
+		else
+			return false;
+	}
+	else if (it->first == "L Bay") {
+		if (it->second->GetResourceCount() > 0)
+			return true;
+		else
+			return false;
+	}
+	
 }
 
 bool Step::WasBayAcquired(string bayName)

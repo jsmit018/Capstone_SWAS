@@ -116,8 +116,8 @@ void InitializeAircraft()
 						firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
-						"Recurring Arrival",
-						5);
+						"Recurring Arrival"//,
+						/*5*/);
 				}
 
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
@@ -129,8 +129,8 @@ void InitializeAircraft()
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Unplanned Arrival",
-						myIter->second,
-						5);
+						myIter->second//,
+						/*5*/);
 					count++;
 
 				}
@@ -154,32 +154,32 @@ int main()
 	///// CONNECTING TO THE DATABASE /////
 	//////////////////////////////////////
 
-	#define SQL_RESULT_LEN 240
-	#define SQL_RETURN_CODE_LEN 1000
+	//#define SQL_RESULT_LEN 240
+	//#define SQL_RETURN_CODE_LEN 1000
 
-	//define handles and variables
-	SQLHANDLE sqlConnHandle;
-	SQLHANDLE sqlStmtHandle;
-	SQLHANDLE sqlEnvHandle;
-	SQLWCHAR retconstring[SQL_RETURN_CODE_LEN];
+	////define handles and variables
+	//SQLHANDLE sqlConnHandle;
+	//SQLHANDLE sqlStmtHandle;
+	//SQLHANDLE sqlEnvHandle;
+	//SQLWCHAR retconstring[SQL_RETURN_CODE_LEN];
 
-	//initializations
-	sqlConnHandle = NULL;
-	sqlStmtHandle = NULL;
+	////initializations
+	//sqlConnHandle = NULL;
+	//sqlStmtHandle = NULL;
 
-	//allocations
-	if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &sqlEnvHandle))
-		goto COMPLETED;
+	////allocations
+	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &sqlEnvHandle))
+	//	goto COMPLETED;
 
-	if (SQL_SUCCESS != SQLSetEnvAttr(sqlEnvHandle, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0))
-		goto COMPLETED;
+	//if (SQL_SUCCESS != SQLSetEnvAttr(sqlEnvHandle, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0))
+	//	goto COMPLETED;
 
-	if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_DBC, sqlEnvHandle, &sqlConnHandle))
-		goto COMPLETED;
+	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_DBC, sqlEnvHandle, &sqlConnHandle))
+	//	goto COMPLETED;
 
 	//output
-	cout << "Attempting connection to SQL Server...";
-	cout << "\n";
+	/*cout << "Attempting connection to SQL Server...";
+	cout << "\n";*/
 
 	//connect to SQL Server	
 	//Using a trusted connection and port 14808
@@ -187,45 +187,45 @@ int main()
 	//just make sure you define the server name and the port
 	//We have the option to use a username/password instead of a trusted connection
 	//but its more secure to use a trusted connection
-	switch (SQLDriverConnect(sqlConnHandle,
-		NULL,
-		//(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=master;UID=username;PWD=password;",
+	//switch (SQLDriverConnect(sqlConnHandle,
+	//	NULL,
+	//	//(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=master;UID=username;PWD=password;",
 
-		//********* Need to set server and database names -->automate this in GUI (if there is one)
-		(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=govasim-2;DATABASE=SWASTestDatabase;Trusted=true;",
-		SQL_NTS,
-		retconstring,
-		1024,
-		NULL,
-		SQL_DRIVER_NOPROMPT)) {
+	//	//********* Need to set server and database names -->automate this in GUI (if there is one)
+	//	(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=govasim-2;DATABASE=SWASTestDatabase;Trusted=true;",
+	//	SQL_NTS,
+	//	retconstring,
+	//	1024,
+	//	NULL,
+	//	SQL_DRIVER_NOPROMPT)) {
 
-	case SQL_SUCCESS:
-		cout << "Successfully connected to SQL Server";
-		cout << "\n";
-		break;
+	//case SQL_SUCCESS:
+	//	cout << "Successfully connected to SQL Server";
+	//	cout << "\n";
+	//	break;
 
-	case SQL_SUCCESS_WITH_INFO:
-		cout << "Successfully connected to SQL Server";
-		cout << "\n";
-		break;
+	//case SQL_SUCCESS_WITH_INFO:
+	//	cout << "Successfully connected to SQL Server";
+	//	cout << "\n";
+	//	break;
 
-	case SQL_INVALID_HANDLE:
-		cout << "Could not connect to SQL Server";
-		cout << "\n";
-		goto COMPLETED;
+	//case SQL_INVALID_HANDLE:
+	//	cout << "Could not connect to SQL Server";
+	//	cout << "\n";
+	//	goto COMPLETED;
 
-	case SQL_ERROR:
-		cout << "Could not connect to SQL Server";
-		cout << "\n";
-		goto COMPLETED;
+	//case SQL_ERROR:
+	//	cout << "Could not connect to SQL Server";
+	//	cout << "\n";
+	//	goto COMPLETED;
 
-	default:
-		break;
-	}
+	//default:
+	//	break;
+	//}
 
-	//if there is a problem connecting then exit application
-	if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_STMT, sqlConnHandle, &sqlStmtHandle))
-		goto COMPLETED;
+	////if there is a problem connecting then exit application
+	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_STMT, sqlConnHandle, &sqlStmtHandle))
+	//	goto COMPLETED;
 
 	/////////////////////////////////////
 
@@ -242,7 +242,7 @@ int main()
 			ScribeAdvanceRun();
 
 		InitializeAircraft();
-		//SchedResourceFailure();
+		SchedResourceFailure();
 		//InitalizeAircraft(GetScribe());
 		
 		//If System Seed is the same vs. Different --If Random Generate a new system seed. --If the same don't worry about it
@@ -258,7 +258,7 @@ int main()
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		while (SimExec::GetSimulationFlag())
-			SimExec::RunSimulation(0, 0, 2045);
+			SimExec::RunSimulation(0, 0, 2023);
 
 		cout << endl << endl << endl;
 
@@ -277,15 +277,15 @@ int main()
 	///////////////////////////////////////	
 	
 	//close connection and free resources
-	COMPLETED:
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
-		SQLDisconnect(sqlConnHandle);
-		SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
-		SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
+	//COMPLETED:
+	//	SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
+	//	SQLDisconnect(sqlConnHandle);
+	//	SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
+	//	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
 
-	//pause the console window - exit when key is pressed
-	cout << "\nPress enter key to exit...";
-	getchar();
+	////pause the console window - exit when key is pressed
+	//cout << "\nPress enter key to exit...";
+	//getchar();
 
 	////////////////////////////////////////
 

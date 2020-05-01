@@ -15,7 +15,7 @@ public:
 		Aircraft* aircraft,
 		string name,
 		RepairJob* repairJob,
-		int numberOfAircraftToGenerate = NULL);
+		int numberOfAircraftToGenerate = -1);
 
 	/*Constructor for Recurring Arrivals*/
 	/*SourceBlock(
@@ -32,7 +32,7 @@ public:
 		Aircraft* aircraft,
 		string name,
 		//string myRJ,
-		int numberOfAircraftToGenerate = NULL);
+		int numberOfAircraftToGenerate = -1);
 
 	/*Constructor for Calendar Arrivals*/
 	SourceBlock(

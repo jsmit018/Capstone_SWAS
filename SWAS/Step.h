@@ -56,7 +56,7 @@ public:
 	bool IsPartsMapEnd(map<string, Parts*>::iterator it);
 	bool IsResourceReleased(map<string, Resource*>::const_iterator iter, int newCount);
 	bool IsMyBaySizeAvailable(string baySize);
-	bool AreThereBaysAvailable();
+	bool AreThereBaysAvailable(string baySize);
 	bool WasBayAcquired(string bayName);
 	string GetName();
 	//Time GetServiceTime();
