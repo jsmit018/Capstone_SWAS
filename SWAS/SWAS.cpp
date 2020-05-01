@@ -154,18 +154,18 @@ int main()
 	///// CONNECTING TO THE DATABASE /////
 	//////////////////////////////////////
 
-	//#define SQL_RESULT_LEN 240
-	//#define SQL_RETURN_CODE_LEN 1000
+	#define SQL_RESULT_LEN 240
+	#define SQL_RETURN_CODE_LEN 1000
 
 	////define handles and variables
-	//SQLHANDLE sqlConnHandle;
-	//SQLHANDLE sqlStmtHandle;
-	//SQLHANDLE sqlEnvHandle;
-	//SQLWCHAR retconstring[SQL_RETURN_CODE_LEN];
+	SQLHANDLE sqlConnHandle;
+	SQLHANDLE sqlStmtHandle;
+	SQLHANDLE sqlEnvHandle;
+	SQLWCHAR retconstring[SQL_RETURN_CODE_LEN];
 
 	////initializations
-	//sqlConnHandle = NULL;
-	//sqlStmtHandle = NULL;
+	sqlConnHandle = NULL;
+	sqlStmtHandle = NULL;
 
 	////allocations
 	//if (SQL_SUCCESS != SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &sqlEnvHandle))
@@ -246,12 +246,12 @@ int main()
 		//InitalizeAircraft(GetScribe());
 		
 		//If System Seed is the same vs. Different --If Random Generate a new system seed. --If the same don't worry about it
-		if (Distribution::GetSystemSeedType() == "random") {
+		if (Distribution::GetSystemSeedType() == "random" || Distribution::GetSystemSeedType() == "Random") {
 			srand((unsigned)time(0));
 			int result = (rand() % INT_MAX);
 			Distribution::SetSystemSeed(result);
 		}
-		else if (Distribution::GetSystemSeedType() == "same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
+		else if (Distribution::GetSystemSeedType() == "same" || Distribution::GetSystemSeedType() == "Same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
 			Distribution::SetSystemSeed(Distribution::GetSystemSeed());
 		}
 
