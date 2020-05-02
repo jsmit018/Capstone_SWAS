@@ -5,11 +5,11 @@
 #include <string>
 #include <sstream>
 
-class Resource
+class StepResource
 {
 public:
-	Resource();
-	void CopyMapResource(const Resource& mapResource);
+	StepResource();
+	void CopyMapResource(const StepResource& mapResource);
 	void Acquire(int amountNeeded);
 	//virtual void Acquire() = 0;
 	void Release(int amountToRelease);
@@ -31,7 +31,7 @@ public:
 	void SetFailureDistr(string failureDistr);
 	void SetRepairProcess(string repairProc);
 
-	void ScheduleFirstFailures(Resource* resource);
+	void ScheduleFirstFailures(StepResource* resource);
 
 	double GetResourceCount();
 	string GetResourceName();
@@ -65,6 +65,6 @@ private:
 
 	Distribution* failureDistribution;
 
-	void FailResourceEM(Resource* resource);
-	void RestoreResourceEM(Resource* resource);
+	void FailResourceEM(StepResource* resource);
+	void RestoreResourceEM(StepResource* resource);
 };

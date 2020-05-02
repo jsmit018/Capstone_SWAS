@@ -37,7 +37,7 @@ void SchedResourceFailure()
 {
 	cout << " in sched resource fail " << endl;
 	//schedule resource failure logic
-	map<string, Resource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
+	map<string, StepResource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
 	while (iter != InputReader::GetMasterResMapEnd())
 	{
 		cout << "" << endl;

@@ -113,7 +113,7 @@ public:
 		}
 	}
 
-	bool CheckConditionalEvents(Resource* resource, Parts* parts) {
+	bool CheckConditionalEvents(StepResource* resource, Parts* parts) {
 		CondEvent* curr = _condSet;
 		while (curr != 0) {
 			//Check to see if the current nodes conditions are met
@@ -1054,7 +1054,7 @@ string SimExec::ConvertDate(Time month)
 	return _eventSet.ConvertMonth(month);
 }
 
-void SimExec::CheckConditionalEvents(Resource* resource, Parts* parts)
+void SimExec::CheckConditionalEvents(StepResource* resource, Parts* parts)
 {
 	while (_conditionalSet.CheckConditionalEvents(resource, parts));
 }

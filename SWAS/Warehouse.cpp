@@ -65,9 +65,9 @@ double Warehouse::GetWidth()
     return _hangarWidth;
 }
 
-Resource* Warehouse::GetResourceInformation(string resourceName)
+StepResource* Warehouse::GetResourceInformation(string resourceName)
 {
-	map<string, Resource*>::const_iterator resIter = _inputReader.GetMasterResourceMap().find(resourceName);
+	map<string, StepResource*>::const_iterator resIter = _inputReader.GetMasterResourceMap().find(resourceName);
 	return resIter->second;
 }
 

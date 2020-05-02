@@ -14,7 +14,7 @@ public:
 	void SetWidth(double hangarWidth);
 	double GetWidth();
 
-	Resource* GetResourceInformation(string resourceName);
+	StepResource* GetResourceInformation(string resourceName);
 private:
 	double _hangarLength;
 	double _hangarWidth;
