@@ -6,7 +6,7 @@ using namespace std;
 
 typedef double Time;
 
-class Resource;
+class StepResource;
 class Parts;
 
 class EventAction {
@@ -18,7 +18,7 @@ public:
 class CondEventAction : public EventAction {
 public:
 	CondEventAction() {};
-	virtual bool Condition(Resource* resource = 0, Parts* parts = 0) = 0;
+	virtual bool Condition(StepResource* resource = 0, Parts* parts = 0) = 0;
 };
 
 class SimObj {

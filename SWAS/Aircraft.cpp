@@ -470,7 +470,7 @@ void Aircraft::AddBayReqToRes()
 	{
 		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 		{
-			map<string, Resource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
+			map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
 			while (resIter != InputReader::GetMasterResMapEnd())
 			{
 				//cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl;

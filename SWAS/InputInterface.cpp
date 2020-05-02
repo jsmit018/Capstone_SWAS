@@ -10,11 +10,15 @@
 using namespace std;
 
 map<string, Aircraft*> InputReader::_masterMap;
-map<string, Resource*> InputReader::_masterResourceMap;
+map<string, StepResource*> InputReader::_masterResourceMap;
 map<string, Parts*> InputReader::_masterPartsMap;
 int InputReader::_numRuns;
 int InputReader::_airCount;
 int InputReader::_IDcount;
+double  InputReader::_shiftOneStartTime;
+double  InputReader::_shiftTwoStartTime;
+double  InputReader::_shiftThreeStartTime;
+
 
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
@@ -73,7 +77,7 @@ void InputReader::ReadInputData() //initialization for getting data
 {
 	//CalConverter calConvert;
 	//Step step;
-	Resource resource;
+	StepResource resource;
 	string line;
 
 	ifstream dataFile("V1_complete.csv");
@@ -106,11 +110,10 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				if (line != ",,,,,,,,,," && line.find("Number of Runs") != string::npos) {
 					dataFile >> numRuns >> c >> seedType;
-
 					SetNumRuns(numRuns);
 
 					//removed 10 commas from string
-					seedType = seedType.erase(seedType.length() - 10);
+					seedType = seedType.erase(seedType.length() - 9);
 
 					//cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
 
@@ -121,6 +124,49 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 			}
 
+			//////////////////////////////////////////
+			///////////    MISSION TYPE    ///////////
+			//////////////////////////////////////////
+			
+			//Find Mission Type (Wartime or Peacetime)
+			//get line
+				//if line = Wartime
+					//set IsWartTime = true;
+					//Find Wartime Shifts table
+						//set shift1startTime
+						//set shift2startTime
+				//else if line = Peacetime
+					//Find Peacetime Shifts table
+						//set shift1startTime
+						//set shift2startTime
+						//set shift3startTime
+
+			if (line.find("Mission Type (Wartime or Peacetime)") != string::npos) {
+				printf("got Mission Type table \n");
+				
+				string missionType;
+				int shift1start;
+				int shift2start;
+				int shift3start;
+
+				getline(dataFile, line);
+
+
+				line = line.erase(line.length() - 10);
+				cout << "LINE IS " << line << endl;
+
+				if (line == "Wartime" || line == "wartime")
+				{
+					_wartimeFlag = 1;
+
+				}
+				else
+				{
+					_wartimeFlag = 0;
+
+				}
+
+			}
 
 			//////////////////////////////////////////
 			//////////////   CALENDAR    /////////////
@@ -240,7 +286,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					_addedAircraft.insert(pair<int, string>(aircraftNumber, airType));
 					_masterMap.insert(pair<string, Aircraft*>(airType, newAir));
-
 				}
 			}
 
@@ -453,7 +498,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					repJobProb = row[2];
 					newJob->SetUnplannedProb(repJobProb);
 
-
 					istringstream unss(row[3]);
 					unss >> unIndoorReq;
 					newJob->SetIndoorReq(unIndoorReq);
@@ -554,7 +598,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					Step* newStep = new Step(stepDurTemp, stepNameTemp);
-					Resource* newRes = new Resource();
+					StepResource* newRes = new StepResource();
 					Parts* newParts = new Parts();
 
 					//if on the first line of the table, current job is first line, row[0] and job priority is first line, row[1]
@@ -708,7 +752,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					istringstream ssResource3(row[3]);
 					ssResource3 >> resourceFootprintY;
 
-					Resource* res = new Resource();
+					StepResource* res = new StepResource();
 					res->SetResourceName(resName);
 					res->SetResourceCount(resCount);
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
@@ -720,7 +764,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						Step::AddToResPool(res, resName);
 					}
 
-					_masterResourceMap.insert(pair<string, Resource*>(resName, res));
+					_masterResourceMap.insert(pair<string, StepResource*>(resName, res));
 
 					Scribe::RecordResource(resName, resCount);
 
@@ -737,7 +781,7 @@ void InputReader::ReadInputData() //initialization for getting data
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
-								map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(resName);
+								map<string, StepResource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(resName);
 
 								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 									continue;
@@ -797,7 +841,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						else
 							getline(ss, line);
 					}
-					Resource* newRes = new Resource();
+					StepResource* newRes = new StepResource();
 
 					resName = row[0];
 
@@ -820,7 +864,7 @@ void InputReader::ReadInputData() //initialization for getting data
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
 								//map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(row[0]);
-								map<string, Resource*>::iterator it = iter->second->GetStep(i + 1)->GetResourceMapBegin();
+								map<string, StepResource*>::iterator it = iter->second->GetStep(i + 1)->GetResourceMapBegin();
 								while (it != iter->second->GetStep(i + 1)->GetResourceMapEnd())
 									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 										continue;*/
@@ -837,7 +881,7 @@ void InputReader::ReadInputData() //initialization for getting data
 										it->second->SetRepairProcess(row[4]);
 									}
 
-									map<string, Resource*>::iterator masterResIt;
+									map<string, StepResource*>::iterator masterResIt;
 									masterResIt = _masterResourceMap.find(row[0]);
 									if (masterResIt != _masterResourceMap.end())
 									{
@@ -1010,14 +1054,14 @@ void InputReader::ReadInputData() //initialization for getting data
 	}
 
 
-	map<string, Resource*>::const_iterator resIter = _masterResourceMap.begin();
+	map<string, StepResource*>::const_iterator resIter = _masterResourceMap.begin();
 	while (resIter != _masterResourceMap.end())
 	{
-		map<string, Resource*> tempMap = Step::GetResPool();
+		map<string, StepResource*> tempMap = Step::GetResPool();
 		if (tempMap.find(resIter->first) == tempMap.end())
 		{
 			//cout << "in input inter for pools " << resIter->second->GetNumResNeeded() << endl;
-			Resource* resCopy = new Resource();
+			StepResource* resCopy = new StepResource();
 			resCopy->CopyMapResource(*resIter->second);
 			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumResNeeded() << endl;
 			Step::AddToResPool(resCopy, resIter->first);
@@ -1076,12 +1120,12 @@ void InputReader::CalAirFix() {
 	_airCount--;
 }
 
-map<string, Resource*>::iterator InputReader::GetMasterResMapBegin()
+map<string, StepResource*>::iterator InputReader::GetMasterResMapBegin()
 {
 	return _masterResourceMap.begin();
 }
 
-map<string, Resource*>::iterator  InputReader::GetMasterResMapEnd()
+map<string, StepResource*>::iterator  InputReader::GetMasterResMapEnd()
 {
 	return _masterResourceMap.end();
 }
@@ -1102,10 +1146,39 @@ void InputReader::PrintEverything()
 	}
 }
 
+void InputReader::SetShiftOneStartTime(int starttime)
+{
+	_shiftOneStartTime = starttime;
+}
+
+void InputReader::SetShiftTwoStartTime(int starttime)
+{
+	_shiftTwoStartTime = starttime;
+}
+
+void InputReader::SetShiftThreeStartTime(int starttime)
+{
+	_shiftThreeStartTime = starttime;
+}
+
+double InputReader::GetShiftOneStartTime()
+{
+	return _shiftOneStartTime;
+}
+
+double InputReader::GetShiftTwoStartTime()
+{
+	return _shiftTwoStartTime;
+}
+
+double InputReader::GetShiftThreeStartTime()
+{
+	return _shiftThreeStartTime;
+}
 
 void InputReader::PrintMasterResMap()
 {
-	map<string, Resource*>::const_iterator iter = _masterResourceMap.begin();
+	map<string, StepResource*>::const_iterator iter = _masterResourceMap.begin();
 
 	while (iter != _masterResourceMap.end())
 	{
@@ -1178,7 +1251,7 @@ Aircraft* InputReader::GetAircraft(string aircraftName)
 
 void InputReader::SetMasterResNum(string name, int num)
 {
-	map<string, Resource*>::const_iterator iter = _masterResourceMap.begin();
+	map<string, StepResource*>::const_iterator iter = _masterResourceMap.begin();
 	while (iter != _masterResourceMap.end())
 	{
 		_masterResourceMap.find(name)->second->SetNumResNeeded(num);
@@ -1201,7 +1274,7 @@ map<string, Aircraft*> InputReader::GetMasterMap()
 	return _masterMap;
 }
 
-map<string, Resource*> InputReader::GetMasterResourceMap()
+map<string, StepResource*> InputReader::GetMasterResourceMap()
 {
 	return _masterResourceMap;
 }
