@@ -15,6 +15,9 @@ map<string, Parts*> InputReader::_masterPartsMap;
 int InputReader::_numRuns;
 int InputReader::_airCount;
 int InputReader::_IDcount;
+double  InputReader::_shiftOneStartTime;
+double  InputReader::_shiftTwoStartTime;
+double  InputReader::_shiftThreeStartTime;
 
 
 struct InputReader::GUISelectedAircraft {
@@ -141,12 +144,20 @@ void InputReader::ReadInputData() //initialization for getting data
 			if (line.find("Mission Type (Wartime or Peacetime)") != string::npos) {
 				printf("got Mission Type table \n");
 				
+				string missionType;
+				int shift1start;
+				int shift2start;
+				int shift3start;
+
 				getline(dataFile, line);
+
+
+				line = line.erase(line.length() - 10);
 				cout << "LINE IS " << line << endl;
+
 				if (line == "Wartime" || line == "wartime")
 				{
 					_wartimeFlag = 1;
-
 
 				}
 				else
@@ -154,7 +165,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					_wartimeFlag = 0;
 
 				}
-			
+
 			}
 
 			//////////////////////////////////////////
@@ -1135,6 +1146,35 @@ void InputReader::PrintEverything()
 	}
 }
 
+void InputReader::SetShiftOneStartTime(int starttime)
+{
+	_shiftOneStartTime = starttime;
+}
+
+void InputReader::SetShiftTwoStartTime(int starttime)
+{
+	_shiftTwoStartTime = starttime;
+}
+
+void InputReader::SetShiftThreeStartTime(int starttime)
+{
+	_shiftThreeStartTime = starttime;
+}
+
+double InputReader::GetShiftOneStartTime()
+{
+	return _shiftOneStartTime;
+}
+
+double InputReader::GetShiftTwoStartTime()
+{
+	return _shiftTwoStartTime;
+}
+
+double InputReader::GetShiftThreeStartTime()
+{
+	return _shiftThreeStartTime;
+}
 
 void InputReader::PrintMasterResMap()
 {

@@ -1051,7 +1051,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 
 					//record waits
 					Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
-					Scribe::RecordResourceWait(resource->GetResourceName(), resource->GetResourceID(), iter->second->GetResourceName(),
+					Scribe::RecordResourceWait(resource->GetResourceName(), 0, iter->second->GetResourceName(),
 						SimExec::GetSimulationTime()._timeOfDay);
 					return;
 				}
@@ -1088,7 +1088,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 						{
 							SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()), new ResWaitForResEA(this, iter->second,
 								resource, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", resource->GetResourceName(),
-								iter->first, resource->GetResourceID(), _myRJ);
+								iter->first, 0, _myRJ);
 
 							return;
 						}
@@ -1128,7 +1128,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 				else {
 					SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()),
 						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumResNeeded(), _acquiredResources),
-						"ResWaitForResEA", resource->GetResourceName(), iter->first, resource->GetResourceID(), _myRJ);
+						"ResWaitForResEA", resource->GetResourceName(), iter->first, 0, _myRJ);
 					return;
 				}
 			}
@@ -1155,7 +1155,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 					Scribe::RecordPartRequest(iterParts->first, iterParts->second->GetNumPartsNeeded(), false);
 					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority(), 
 						new ResNeedPartsEA(this, it->second, resource, it->second->GetNumPartsNeeded(), _acquiredResources), 
-						"NeedPartsEA", resource->GetResourceName(), it->first, resource->GetResourceID(), _myRJ);
+						"NeedPartsEA", resource->GetResourceName(), it->first,0, _myRJ);
 					return;
 				}
 				iterParts++;
@@ -1200,14 +1200,14 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 
 					//record waits
 					Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
-					Scribe::RecordResourceWait(resource->GetResourceName(), resource->GetResourceID(), iter->second->GetResourceName(),
+					Scribe::RecordResourceWait(resource->GetResourceName(), 0, iter->second->GetResourceName(),
 						SimExec::GetSimulationTime()._timeOfDay);
 					return;
 				}
 				//else if what i need is less than or = what's avail
 				else if (iter->second->GetNumResNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
-					cout << resource->GetResourceID() << " " << _myRJ << " " << _name << " pushing back " << _acquiredResources.size() << endl;
+					cout << 0 << " " << _myRJ << " " << _name << " pushing back " << _acquiredResources.size() << endl;
 					//acquire them
 					AcquireResourceEM(iter->second, iter->second->GetNumResNeeded());
 					//cout << "in start service after acquire in 'what i need is less than or = what's avail' " << endl;
@@ -1237,7 +1237,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 						{
 							SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()), new ResWaitForResEA(this, iter->second,
 								resource, iter->second->GetNumResNeeded(), _acquiredResources), "ResWaitForResEA", resource->GetResourceName(),
-								iter->first, resource->GetResourceID(), _myRJ);
+								iter->first, 0, _myRJ);
 
 							return;
 						}
@@ -1277,7 +1277,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 				else {
 					SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()),
 						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumResNeeded(), _acquiredResources),
-						"ResWaitForResEA", resource->GetResourceName(), iter->first, resource->GetResourceID(), _myRJ);
+						"ResWaitForResEA", resource->GetResourceName(), iter->first, 0, _myRJ);
 					return;
 				}
 			}
@@ -1297,7 +1297,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 		else if (IsInpectionFail(_inspecFailProb) == false)
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-			Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
+			Scribe::RecordRepairEnd(0, _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			SimExec::ScheduleEventAt(1, new DoneResourceServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
@@ -1687,7 +1687,7 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 			//else if resource name is found in next step's required vector, keep it in the vector
 			else if (RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->ResourceInReqResource(it->first) == true)
 			{
-				cout << resource->GetResourceID() << " " << resource->GetResourceName() << " Retaining " << it->first << " for " << this->GetName() << endl;
+				cout << 0 << " " << resource->GetResourceName() << " Retaining " << it->first << " for " << this->GetName() << endl;
 
 				//Check next step's resources against this step's resources and release if I have more than i need			
 				map<string, StepResource*>::iterator futureMap = RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID)->GetResourceMapBegin();
@@ -1742,7 +1742,7 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 			iter++;
 		}
 		_acquiredResources.clear();
-		Scribe::RecordRepairEnd(resource->GetResourceID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
+		Scribe::RecordRepairEnd(0, _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 		if (_acquiredResources.size() != 0)
 			cout << "ERROR \n";
 

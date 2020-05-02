@@ -18,9 +18,8 @@ public:
 	void FailResource();
 	void RestoreResource();
 	void PrintResProperties();
-	void SetResourceID(int resourceID);
-	int GetResourceID();
-
+	//void SetResourceID(int resourceID);
+	//int GetResourceID();
 
 	void SetResourceCount(double resourceCount);
 	void SetResourceName(string resourceName);
@@ -44,10 +43,19 @@ public:
 	bool IsAfterCEL();
 	void SetCELflag(int CELflag);
 	
+	static void SetShiftOneCount();
+	static double GetShiftOneCount();
+	static void SetShiftTwoCount();
+	static double GetShiftTwoCount();
+	static void SetShiftThreeCount();
+	static double GetShiftThreeCount();
 
 private:
 	//int _resourceCount;
-	int _resourceID; // NOT SET YET
+	static int _shiftOneCount;
+	static int _shiftTwoCount;
+	static int _shiftThreeCount;
+	//int _resourceID; // NOT SET YET
 	double _resourceCount;
 	int _numNeeded;
 	int _CELflag;

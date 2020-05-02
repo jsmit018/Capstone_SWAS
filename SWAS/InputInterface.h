@@ -36,19 +36,12 @@ public:
 	static int GetIDcount();
 	static void AddAirCount();
 	static void CalAirFix();
-	static void SetShiftOneStartTime();
+	static void SetShiftOneStartTime(int starttime);
 	static double GetShiftOneStartTime();
-	static void SetShiftTwoStartTime();
+	static void SetShiftTwoStartTime(int starttime);
 	static double GetShiftTwoStartTime();
-	static void SetShiftThreeStartTime();
+	static void SetShiftThreeStartTime(int starttime);
 	static double GetShiftThreeStartTime();
-
-	static void SetShiftOneCounts();
-	static double GetShiftOneCounts();
-	static void SetShiftTwoCounts();
-	static double GetShiftTwoCounts();
-	static void SetShiftThreeCounts();
-	static double GetShiftThreeCounts();
 
 private:
 	int _wartimeFlag;

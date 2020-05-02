@@ -322,15 +322,15 @@ void StepResource::PrintResProperties()
 	cout << endl;
 }
 
-void StepResource::SetResourceID(int resourceID)
-{
-	_resourceID = resourceID;
-}
-
-int StepResource::GetResourceID()
-{
-	return _resourceID;
-}
+//void StepResource::SetResourceID(int resourceID)
+//{
+//	_resourceID = resourceID;
+//}
+//
+//int StepResource::GetResourceID()
+//{
+//	return _resourceID;
+//}
 
 void StepResource::FailResourceEM(StepResource* resource)
 {
