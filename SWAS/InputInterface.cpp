@@ -106,11 +106,10 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				if (line != ",,,,,,,,,," && line.find("Number of Runs") != string::npos) {
 					dataFile >> numRuns >> c >> seedType;
-
 					SetNumRuns(numRuns);
 
 					//removed 10 commas from string
-					seedType = seedType.erase(seedType.length() - 10);
+					seedType = seedType.erase(seedType.length() - 9);
 
 					//cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
 

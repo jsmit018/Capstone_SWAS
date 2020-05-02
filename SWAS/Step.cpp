@@ -1647,8 +1647,8 @@ void Step::DoneResourceServiceEM(Resource* resource, map<string, int> acquiredRe
 		int nextID;
 		if (_type == "Inspection" && isFail == true)
 		{
-			cout << " YO THIS STEP IS " << this->GetName() << endl;
-			cout << resource->GetResourceName() << " IN DONE OF RESOURCE FAILED INSPEC, job is " << _myRJ << "next step is " << this->GetReturnStep() << endl;
+			//cout << " YO THIS STEP IS " << this->GetName() << endl;
+			//cout << resource->GetResourceName() << " IN DONE OF RESOURCE FAILED INSPEC, job is " << _myRJ << "next step is " << this->GetReturnStep() << endl;
 			nextID = this->GetReturnStep();
 		}
 		else
