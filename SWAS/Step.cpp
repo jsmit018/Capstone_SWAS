@@ -8,7 +8,8 @@
 map<string, Resource*> Step::_resourcePool;
 map<string, Parts*> Step::_partsPool;
 map<string, RepairJob*> RepairJob::_resourceRepairMap;
-bool isReturnStep = false;
+bool isNextStepReturnStep = false;
+bool isFail = false;
 
 Step::Step(Distribution* serviceTime, string name) : Task(name)
 {
@@ -554,14 +555,14 @@ int Step::GetReturnStep()
 //void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
 void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 {
-	if (isReturnStep == true)
+	if (isNextStepReturnStep == true)
 	{
 		cout << aircraft->GetAircraftID() << " starting return step " << _name << endl;
 		//cout << aircraft->GetAircraftID() <<" is in return step " << this->GetID() << " "<<  this->GetName()<< endl;
 		//this->SetStepID(aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep());
 		//cout << aircraft->GetAircraftID() << " is in return step " << this->GetID() << " " << this->GetName() << endl;
 	}
-	isReturnStep = false;
+	isNextStepReturnStep = false;
 
 	if (aircraft->IsAfterCEL() == true)
 	{
@@ -952,13 +953,13 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		
 		cout << aircraft->GetAircraftID() << " " << _myRJ << " IN START SERVICE " << _stepID << "- ACQUIRED VEC SIZE IS " << _acquiredResources.size() << endl;
 
-		bool isFail = IsInpectionFail(_inspecFailProb);
+		/*bool */isFail = IsInpectionFail(_inspecFailProb);
 
 		//if (IsInpectionFail(_inspecFailProb) == true)
 		if (isFail == true)
 		{
 			//cout << " heeere " << endl;
-			isReturnStep = true;
+			isNextStepReturnStep = true;
 			////////////////////
 			SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 
@@ -972,6 +973,8 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			//cout << aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep)->GetName();
 			//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(_returnStep), aircraft, _acquiredResources), 0, "StartServiceEA");
 			//reschedule step of id = to return step id and all following steps
+			//isFail = false;
+
 			return;
 		}
 		//else if (IsInpectionFail(_inspecFailProb) == false)
@@ -986,7 +989,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 
 void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredResources)
 { 
-	if (isReturnStep == true)
+	if (isNextStepReturnStep == true)
 	{
 		cout << " is return step " << _name << " for " << resource->GetResourceName() << " return step is " << RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetMyReturnStep();
 		SetStepID(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetMyReturnStep());
@@ -995,7 +998,6 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 	{
 		Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetTotalSimulationTime());
 	}
-	isReturnStep = false;
 
 
 	if (resource->IsAfterCEL() == true)
@@ -1284,7 +1286,7 @@ void Step::StartRepairServiceEM(Resource* resource, map<string, int> acquiredRes
 
 		if (IsInpectionFail(_inspecFailProb) == true)
 		{
-			isReturnStep = true;
+			isNextStepReturnStep = true;
 			//Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
 			SimExec::ScheduleEventAt(_RJpriority, new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_returnStep), 
@@ -1409,9 +1411,11 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 		//int nextID = _stepID + 1;
 		int nextID;
 
-		if (isReturnStep == true)
+		//if (isNextStepReturnStep == true)
+		if (_type == "Inspection" && isFail == true)
 		{
-			cout << aircraft->GetAircraftID() << " IN DONE OF RETURN, nnext step is " << this->GetReturnStep() << endl;
+			cout << " YO THIS STEP IS " << this->GetName() << endl;
+			cout << aircraft->GetAircraftID() << " IN DONE OF RETURN, job is "<< _myRJ << "next step is " << this->GetReturnStep() << endl;
 			nextID = this->GetReturnStep();
 		}
 		else
@@ -1491,10 +1495,11 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 	{
 		int nextID;
 
-		if (isReturnStep == true)
+		if (isNextStepReturnStep == true)
 		{
-			cout << aircraft->GetAircraftID() << " IN DONE OF RETURN, nnext step is " << this->GetReturnStep() << endl;
+			cout << aircraft->GetAircraftID() << " IN DONE OF RETURN, " << " RJ is " << _myRJ << " next step is " << this->GetReturnStep() << endl;
 			nextID = this->GetReturnStep();
+			isNextStepReturnStep = false;
 		}
 
 		//if i have no more jobs after this one
@@ -1639,7 +1644,19 @@ void Step::DoneResourceServiceEM(Resource* resource, map<string, int> acquiredRe
 	//if there are more steps after this
 	if (_stepID < RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStepVecSize())
 	{
-		int nextID = _stepID + 1;
+		int nextID;
+		if (_type == "Inspection" && isFail == true)
+		{
+			cout << " YO THIS STEP IS " << this->GetName() << endl;
+			cout << resource->GetResourceName() << " IN DONE OF RESOURCE FAILED INSPEC, job is " << _myRJ << "next step is " << this->GetReturnStep() << endl;
+			nextID = this->GetReturnStep();
+		}
+		else
+		{
+			//cout << " NOT IN DONE OF RETURN" << endl;
+			nextID = _stepID + 1;
+
+		}
 
 		map<string, int>::iterator it = _acquiredResources.begin();
 		bool incremented = false;
@@ -2320,6 +2337,10 @@ void Step::SetReqParts(string reqParts, int numNeeded)
 void Step::SetReturnStep(/*int stepId*/ int returnStep)
 {
 	//_returnStep = stepId;
+	//if (_myRJ == "Heat Exchanger Temp Sensor - Replace")
+	//{
+		cout << "WOW return step is " << returnStep << endl;
+	//}
 	_returnStep = returnStep;
 }
 

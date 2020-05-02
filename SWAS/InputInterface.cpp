@@ -594,6 +594,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					istringstream ssSteps3(row[6]);
 					ssSteps3 >> returnStep;
+					//cout << "OH job is " << currentJob << " return step is " << row[6] << " TRANSLATED TO " << returnStep << endl;
 					newStep->SetReturnStep(returnStep);
 
 					newStep->SetServiceTime(row[7]);
