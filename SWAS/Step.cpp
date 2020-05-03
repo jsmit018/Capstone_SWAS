@@ -1195,7 +1195,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		else if (isFail == false)
 		{
 			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
+			//Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
@@ -1501,7 +1501,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 		if (IsInpectionFail(_inspecFailProb) == true)
 		{
 			isNextStepReturnStep = true;
-			//Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
+			Scribe::RecordInspectionFailure(0,resource->GetResourceName(), RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_stepID)->GetName(), _stepID);
 			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
 			SimExec::ScheduleEventAt(_RJpriority, new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_returnStep), 
 				resource, _acquiredResources), 0, "StartServiceEA");
@@ -1511,7 +1511,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 		else if (IsInpectionFail(_inspecFailProb) == false)
 		{
 			////cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
-			Scribe::RecordRepairEnd(0, _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
+			//Scribe::RecordRepairEnd(0, _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			SimExec::ScheduleEventAt(1, new DoneResourceServiceEA(this, resource, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
 	}
@@ -1699,6 +1699,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 			else
 				incremented = false; 
 		}
+		Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartServiceEA(aircraft->GetMyRepairJobObj(_myRJ)->GetStep(nextID), aircraft,
 			_acquiredResources), 0.0, "StartServiceEA");
 
@@ -1929,6 +1930,7 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 			else
 				incremented = false;
 		}
+		Scribe::RecordRepairEnd(0, _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 		SimExec::ScheduleEventAt(GetRJPriority(), new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(nextID), resource,
 			_acquiredResources), 0.0, "StartRepairServiceEA");
 
