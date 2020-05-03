@@ -54,6 +54,7 @@ Step* RepairJob::GetStep(int stepID)
 {
     if (_vecSteps.size() == 0)
     {
+        cout << this->GetName() << endl;
         cout << "NO STEPS!" << endl;
     }
 
@@ -270,7 +271,7 @@ void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
 
-    //  cout << "adding step" << _vecSteps.size() << endl; 
+   //  cout << "adding step" << _vecSteps.size() << endl; 
     step->SetStepID(_vecSteps.size());
     /*int stepID;
     for (int i = 0;i < _vecSteps.size();i++)
@@ -279,8 +280,8 @@ void RepairJob::AddStep(Step* step)
         cout << "step id from add step is " << stepID;
         step->SetStepID(stepID);
     }*/
-
-    //    cout << endl << "new size " << vecSteps.size() << endl; 
+   // cout << step->GetMyRJName() << "" << step->GetName();
+     //  cout << endl << "new size " << _vecSteps.size() << endl; 
 };
 
 //Step* RepairJob::GetSteps()
