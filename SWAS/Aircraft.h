@@ -29,12 +29,12 @@ public:
 	void PrintMyProperties(); 
 
 	void SetSource(int sourceID); 
-	//	void SetAircraftID(int aircraftID);  //may not need because handling it in constructor
+	//	void SetAircraftID(int aircraftID);//may not need because handling it in constructor
 	void SetAircraftFootprint(double length, double wingspan); 
 	void SetAircraftIAT(string iatUnplanned); 
 	void SetAircraftType(string aircraftType); 
 	void SetAircraftPriority(int priority); 
-	void AddRepairJob(RepairJob* repairJob, string repairJobName);  //map of aircraft's repair jobs
+	void AddRepairJob(RepairJob* repairJob, string repairJobName);//map of aircraft's repair jobs
 	void AddRecurIAT(string repairJobName, Distribution* iatRecurring); 
 	void AddMyRepairJob(string jobName, RepairJob* myJob); 
 	void AddMyUnplannedJob(string jobName, RepairJob* myJob); 
@@ -51,13 +51,13 @@ public:
 
 	//void SetRecurFlag(char flag); 
 
-	RepairJob* GetRepairJobObj(string name);  //used for searching 
-	RepairJob* GetMyRepairJobObj(string name);  //used for searching 
+	RepairJob* GetRepairJobObj(string name);//used for searching 
+	RepairJob* GetMyRepairJobObj(string name);//used for searching 
 	int GetAirCount(); 
 	int GetSource(); 
 	int GetAircraftID(); 
 	double GetAircraftFootprint(); 
-	Distribution* GetAircraftIAT();  //switch to distribution pointer
+	Distribution* GetAircraftIAT();//switch to distribution pointer
 	string GetAircraftType(); 
 	int GetAircraftPriority(); 
 	int GetNextAircraftID(); 
@@ -88,7 +88,7 @@ public:
 
 	map<string, Distribution*>::iterator  GetRecurMapBegin(); 
 	map<string, Distribution*>::iterator  GetRecurMapEnd(); 
-	Aircraft* New();  //new aircraft creation, need to add appropriate parameters
+	Aircraft* New();//new aircraft creation, need to add appropriate parameters
 	bool IsMapEnd(map<string, RepairJob*>::const_iterator iter); 
 	bool AreMoreJobs(); 
 	bool AreMoreSteps(); 

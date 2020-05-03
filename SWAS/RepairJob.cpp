@@ -20,11 +20,11 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
     _schedType = mapRj._schedType; 				        // Interarrival schedule type
     _indoorReq = mapRj._indoorReq; 				        // Y or N for indoor requirement of repair job
     _calendarDate = mapRj._calendarDate; 		    	// Calendar-schedule type repair jobs (date: mmddyyyy)
-    _recurringAmt = mapRj._recurringAmt->CopyThis();     // Number of months between Recurring-schedule type repair jobs
+    _recurringAmt = mapRj._recurringAmt->CopyThis(); // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis(); 	// Distribution for probability of certain repair job after random iat
 
 
-    for (int i = 0;  i < mapRj._vecSteps.size();  i++)
+    for (int i = 0;i < mapRj._vecSteps.size();i++)
     {
 
         //new step object is created
@@ -42,7 +42,7 @@ int RepairJob::GetMyReturnStep()
 {
     int returnStep; 
 
-    for (int i = 0;  i < GetStepVecSize();  i++)
+    for (int i = 0;i < GetStepVecSize();i++)
     {
         if (_vecSteps[i]->GetReturnStep() != 0)
             returnStep = _vecSteps[i]->GetReturnStep(); 
@@ -273,7 +273,7 @@ void RepairJob::AddStep(Step* step)
     //  cout << "adding step" << _vecSteps.size() << endl; 
     step->SetStepID(_vecSteps.size()); 
     /*int stepID; 
-    for (int i = 0;  i < _vecSteps.size();  i++)
+    for (int i = 0;i < _vecSteps.size();i++)
     {
         stepID = i + 1; 
         cout << "step id from add step is " << stepID; 
@@ -285,7 +285,7 @@ void RepairJob::AddStep(Step* step)
 
 //Step* RepairJob::GetSteps()
 //{
-//    for (int i = 0;  i < _vecSteps.size;  i++)
+//    for (int i = 0;i < _vecSteps.size;i++)
 //    {
 //        return _vecSteps[i]; 
 //    }
@@ -329,7 +329,7 @@ void RepairJob::PrintJobProperties()
     cout << "   Indoor Requirement? " << _indoorReq << endl; 
     cout << endl; 
 
-    for (int i = 0;  i < _vecSteps.size();  i++)
+    for (int i = 0;i < _vecSteps.size();i++)
     {
         _vecSteps[i]->Print(); 
         cout << endl; 

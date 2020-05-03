@@ -29,7 +29,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	_repairJobName = mapAircraft._repairJobName; 
 	_baySizeReq = mapAircraft._baySizeReq; 
 	_CELflag = mapAircraft._CELflag; 
-	//cout << "MY UNPLANNED IAT " << _aircraftType << endl;  
+	//cout << "MY UNPLANNED IAT " << _aircraftType << endl;
 	//mapAircraft._iatUnplanned->PrintDistribution(); 
 	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis(); 
 	//_myUnplannedJobsMap = mapAircraft._myUnplannedJobsMap; 
@@ -284,7 +284,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	}
 
 
-	return nextJob;  //set this??
+	return nextJob;//set this??
 
 
 }
@@ -336,7 +336,7 @@ Aircraft* Aircraft::New()
 	//_aircraftID = ++_nextID; 
 	Aircraft* newAircraft = new Aircraft(*this); 
 	InputReader::AddAirCount(); 
-	return newAircraft;  // add appropriate parameters
+	return newAircraft;// add appropriate parameters
 }
 
 void Aircraft::SetAircraftFootprint(double length, double wingspan)
@@ -468,7 +468,7 @@ void Aircraft::AddBayReqToRes()
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin(); 
 	while (iter != _myRepairJobs.end())
 	{
-		for (int i = 0;  i < iter->second->GetStepVecSize();  i++)
+		for (int i = 0;i < iter->second->GetStepVecSize();i++)
 		{
 			map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin(); 
 			while (resIter != InputReader::GetMasterResMapEnd())
@@ -588,7 +588,7 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 
 Distribution* Aircraft::GetAircraftIAT()
 {
-	return _iatUnplanned;  //check if this works?
+	return _iatUnplanned;//check if this works?
 	//_iatUnplanned->PrintDistribution(); 
 }
 map<string, Distribution*> Aircraft::GetRecurIatMap()
@@ -619,7 +619,7 @@ void Aircraft::PrintProperties()
 	}
 
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.begin(); 
-	//cout << "After creating the iterator to the map " << std::endl;  
+	//cout << "After creating the iterator to the map " << std::endl;
 	while (it != _allRepairJobsMap.end())
 	{
 		cout << "in the loop \n"; 
@@ -653,7 +653,7 @@ void Aircraft::PrintMyProperties()
 
 	cout << "MY JOB LIST SIZE IS " << _myRepairJobs.size() << endl; 
 	map<string, RepairJob*>::iterator it = _myRepairJobs.begin(); 
-	//cout << "After creating the iterator to the map " << std::endl;  
+	//cout << "After creating the iterator to the map " << std::endl;
 	while (it != _myRepairJobs.end())
 	{
 		//		it->second->PrintJobProperties(); 

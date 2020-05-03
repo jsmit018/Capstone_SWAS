@@ -73,8 +73,8 @@ public:
 		return(_head->t); 
 	}
 
-	bool IsEmpty() { return (_size == 0);  }
-	int GetSize() { return _size;  }
+	bool IsEmpty() { return (_size == 0);}
+	int GetSize() { return _size;}
 private:
 	struct Node
 	{

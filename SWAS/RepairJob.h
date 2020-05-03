@@ -21,7 +21,7 @@ public:
 	void SetIndoorReq(char indoorReq); 
 	void SetCalendarDate(string calendarDate); 
 	void SetRecurringAmt(double recurringAmt); 
-	void SetUnplannedProb(string unplannedProb);  //switch to distribution pointer
+	void SetUnplannedProb(string unplannedProb);//switch to distribution pointer
 	void PrintJobProperties(); 
 
 	static RepairJob* GetMyResRepairJobObj(string name); 
