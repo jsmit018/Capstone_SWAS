@@ -2070,6 +2070,7 @@ void Step::RestoreResourceEM(StepResource* resource)
 {
 	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;
 	resource->RestoreResource();
+	Scribe::RecordRestore(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 	SimExec::CheckConditionalEvents(resource, 0);
 }
 
