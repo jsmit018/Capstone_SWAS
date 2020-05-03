@@ -148,9 +148,9 @@ Electronic Brake Control - Replace,1,1,Troubleshoot,Process,,,Uniform(0.20 0.40)
 ,,3,Remove/Replace,Process,,,Uniform(0.75 0.85),Mechanic(1)&Small Toolbox(1),Brake Control Unit,1
 ,,4,Verify,Inspection,Fixed(0.001),3,Uniform(0.20 0.40),Mechanic(1)&Small Toolbox(1)&Generator(1),,
 ,,5,Close,Process,,,Uniform(0.25 0.35),Apprentice(1)&Small Toolbox(1),,
-ICP #1 Power Supply - Repalce,1,1,Troubleshoot,Process,,,Uniform(0.20 0.40),Mechanic(1)&Small Toolbox(1)&Generator(1),,
+ICP #1 Power Supply - Replace,1,1,Troubleshoot,Process,,,Uniform(0.20 0.40),Mechanic(1)&Small Toolbox(1)&Generator(1),,
 ,,2,Access,Process,,,Uniform(0.40 0.65),Apprentice(1)&Small Toolbox(1),,
-,,3,Remove/Replace,Process,,,Uniform(0.80 0.95),Mechanic(1)&Small Toolbox(1),ICP Power Supply,
+,,3,Remove/Replace,Process,,,Uniform(0.80 0.95),Mechanic(1)&Small Toolbox(1),ICP Power Supply,1
 ,,4,Verify,Inspection,Fixed(0.001),3,Uniform(0.30 0.50),Mechanic(1)&Small Toolbox(1)&Generator(1),,
 ,,5,Close,Process,,,Uniform(0.45 0.65),Apprentice(1)&Small Toolbox(1),,
 GPS Antenna - Replace,1,1,Troubleshoot,Process,,,Uniform(0.60 0.70),Mechanic(2)&Generator(1),,

@@ -152,11 +152,11 @@ void InitializeAircraft()
 void ScheduleFirstShiftChange()
 {
 
-	cout << "in schedule first shift change()" << endl;
+	//cout << "in schedule first shift change()" << endl;
 	//if wartime, schedule at 0600 and 1800
 	if (InputReader::IsWartime() == true)
 	{
-		cout << "scheduling first wartime shift" << endl;
+		//cout << "scheduling first wartime shift" << endl;
 		Step::ScheduleFirstWartimeShifts();
 		return;
 	}
@@ -190,7 +190,6 @@ int main()
 
 		InitializeAircraft();
 		SchedResourceFailure();
-		cout << " before first call" << endl;
 		ScheduleFirstShiftChange();
 
 		//InitalizeAircraft(GetScribe());
@@ -220,7 +219,7 @@ int main()
 	}
 
 	inputReader.GetAirCount();
-	Scribe::Archive();
+	//Scribe::Archive();
 
 	///////////////////////////////////////
 	/// DISCONNECTING FROM THE DATABASE ///
