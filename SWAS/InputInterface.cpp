@@ -18,7 +18,7 @@ int InputReader::_IDcount;
 double  InputReader::_shiftOneStartTime;
 double  InputReader::_shiftTwoStartTime;
 double  InputReader::_shiftThreeStartTime;
-
+int InputReader::_wartimeFlag;
 
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
@@ -80,7 +80,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	StepResource resource;
 	string line;
 
-	ifstream dataFile("V1_complete.csv");
+	ifstream dataFile("V1_completeNEW.csv");
 	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
@@ -141,16 +141,11 @@ void InputReader::ReadInputData() //initialization for getting data
 						//set shift2startTime
 						//set shift3startTime
 
-			if (line.find("Mission Type (Wartime or Peacetime)") != string::npos) {
+			if (line.find("Mission Type Table (Wartime or Peacetime)") != string::npos)
+			{
 				printf("got Mission Type table \n");
-				
-				string missionType;
-				int shift1start;
-				int shift2start;
-				int shift3start;
 
 				getline(dataFile, line);
-
 
 				line = line.erase(line.length() - 10);
 				cout << "LINE IS " << line << endl;
@@ -158,15 +153,204 @@ void InputReader::ReadInputData() //initialization for getting data
 				if (line == "Wartime" || line == "wartime")
 				{
 					_wartimeFlag = 1;
-
 				}
 				else
 				{
 					_wartimeFlag = 0;
-
 				}
+				//}
 
+				//if (line.find("Shifts Table") != string::npos)
+				//{
+				//	printf("got Shifts table \n");
+
+					//getline(dataFile, line);
+					//getline(dataFile, line);
+
+					//vector<string> row;
+					//while (line != ",,,,,,,,,,")
+					//{
+					//	row.clear();
+
+					//	istringstream ss(line);
+
+					//	while (ss)
+					//	{
+					//		if (!getline(ss, line, ','))
+					//			break;
+
+					//		row.push_back(line);
+
+					//		getline(dataFile, line);
+
+					//		if (!getline(ss, line, ','))
+					//			break;
+
+					//		row.push_back(line);
+					//	}
+
+					//	double shift1start;
+					//	double shift2start;
+					//	double shift3start;
+
+					//	if (IsWartime() == true)
+					//	{
+					//		istringstream ss(row[0]);
+					//		ss >> shift1start;
+					//		cout << "shift 1 starts at ";
+					//		SetShiftOneStartTime(shift1start);
+					//		cout << GetShiftOneStartTime() << endl;
+					//	}
+					//	else
+					//	{
+
+					//	}
+
+
+					//	getline(dataFile, line);
+					//}
+
+
+				double shift1start;
+				double shift2start;
+				double shift3start;
+
+				if (IsWartime() == true)
+				{
+
+					cout << "war time!" << endl;
+					while (dataFile)
+					{
+						if (line.find("Wartime Shifts Table") != string::npos)
+						{
+							printf("got Wartime Shifts table \n");
+							
+							getline(dataFile, line);
+
+							istringstream ss(line);
+							ss >> shift1start;
+							cout << "shift 1 starts at ";
+							SetShiftOneStartTime(shift1start);
+							cout << GetShiftOneStartTime() << endl;
+
+							getline(dataFile, line);
+
+							istringstream ss2(line);
+							ss2 >> shift2start;
+							cout << "shift 2 starts at ";
+							SetShiftTwoStartTime(shift2start);
+							cout << GetShiftTwoStartTime() << endl;
+							break;
+						}
+						else
+							getline(dataFile, line);
+					}
+				}
+				else
+				{
+					cout << "peace time!" << endl;
+					while (dataFile)
+					{
+						if (line.find("Peacetime Shifts Table") != string::npos)
+						{
+							printf("got Peacetime Shifts table \n");
+
+							getline(dataFile, line);
+
+							stringstream ss(line);
+							ss >> shift1start;
+							cout << "shift 1 starts at ";
+							SetShiftOneStartTime(shift1start);
+							cout << GetShiftOneStartTime() << endl;
+
+							getline(dataFile, line);
+
+							stringstream ss2(line);
+							ss2 >> shift2start;
+							cout << "shift 2 starts at ";
+							SetShiftTwoStartTime(shift2start);
+							cout << GetShiftTwoStartTime() << endl;
+
+							getline(dataFile, line);
+
+							stringstream ss3(line);
+							ss3 >> shift3start;
+							cout << "shift 3 starts at ";
+							SetShiftThreeStartTime(shift3start);
+							cout << GetShiftThreeStartTime() << endl;
+							break;
+						}
+						else
+							getline(dataFile, line);
+
+					}
+				}
 			}
+			//}
+
+
+
+
+			/*if (_wartimeFlag == 1)
+			{
+				getline(dataFile, line);
+				getline(dataFile, line);
+
+				if (line.find("Shifts Table") != string::npos) 
+				{
+					printf("got Shifts table \n");
+						
+					getline(dataFile, line);
+					getline(dataFile, line);
+
+					stringstream ss(line);
+					ss >> shift1start;
+					cout << "shift 1 starts at " ;
+					SetShiftOneStartTime(shift1start);
+					cout << GetShiftOneStartTime() << endl;
+
+					getline(dataFile, line);
+
+					stringstream ss2(line);
+					ss2 >> shift2start;
+					cout << "shift 2 starts at ";
+					SetShiftTwoStartTime(shift2start);
+					cout << GetShiftTwoStartTime() << endl;
+				}
+			}
+			else
+			{					
+				if (line.find("Peacetime Shifts") != string::npos) 
+				{
+					printf("got Peacetime Shifts table \n");
+
+					getline(dataFile, line);
+					getline(dataFile, line);
+
+					stringstream ss(line);
+					ss >> shift1start;
+					cout << "shift 1 starts at ";
+					SetShiftOneStartTime(shift1start);
+					cout << GetShiftOneStartTime() << endl;
+
+					getline(dataFile, line);
+
+					stringstream ss2(line);
+					ss2 >> shift2start;
+					cout << "shift 2 starts at ";
+					SetShiftTwoStartTime(shift2start);
+					cout << GetShiftTwoStartTime() << endl;
+
+					getline(dataFile, line);
+
+					stringstream ss3(line);
+					ss2 >> shift3start;
+					cout << "shift 3 starts at ";
+					SetShiftThreeStartTime(shift3start);
+					cout << GetShiftThreeStartTime() << endl;
+				}
+			}*/
+			
 
 			//////////////////////////////////////////
 			//////////////   CALENDAR    /////////////
@@ -218,7 +402,8 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				getline(dataFile, line);
 				vector <string> row;
-
+				
+				//while not the end of the table
 				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
@@ -227,8 +412,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-					//	cout << "another line " << line << endl;
-						////parsing the whole file and storing individual strings
+					
+					////parsing the whole row and storing individual strings
 					while (ss)
 					{
 						//csv empty cell has 11 commas
@@ -1174,6 +1359,14 @@ double InputReader::GetShiftTwoStartTime()
 double InputReader::GetShiftThreeStartTime()
 {
 	return _shiftThreeStartTime;
+}
+
+bool InputReader::IsWartime()
+{
+	if (_wartimeFlag == 1)
+		return true;
+	else
+		return false;
 }
 
 void InputReader::PrintMasterResMap()

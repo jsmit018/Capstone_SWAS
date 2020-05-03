@@ -2336,11 +2336,7 @@ void Step::SetReqParts(string reqParts, int numNeeded)
 
 void Step::SetReturnStep(/*int stepId*/ int returnStep)
 {
-	//_returnStep = stepId;
-	//if (_myRJ == "Heat Exchanger Temp Sensor - Replace")
-	//{
-		cout << "WOW return step is " << returnStep << endl;
-	//}
+
 	_returnStep = returnStep;
 }
 
