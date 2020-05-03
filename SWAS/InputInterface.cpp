@@ -149,7 +149,6 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 
 				line = line.erase(line.length() - 10);
-				cout << "LINE IS " << line << endl;
 
 				if (line == "Wartime" || line == "wartime")
 				{
@@ -159,59 +158,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				{
 					_wartimeFlag = 0;
 				}
-				//}
-
-				//if (line.find("Shifts Table") != string::npos)
-				//{
-				//	printf("got Shifts table \n");
-
-					//getline(dataFile, line);
-					//getline(dataFile, line);
-
-					//vector<string> row;
-					//while (line != ",,,,,,,,,,")
-					//{
-					//	row.clear();
-
-					//	istringstream ss(line);
-
-					//	while (ss)
-					//	{
-					//		if (!getline(ss, line, ','))
-					//			break;
-
-					//		row.push_back(line);
-
-					//		getline(dataFile, line);
-
-					//		if (!getline(ss, line, ','))
-					//			break;
-
-					//		row.push_back(line);
-					//	}
-
-					//	double shift1start;
-					//	double shift2start;
-					//	double shift3start;
-
-					//	if (IsWartime() == true)
-					//	{
-					//		istringstream ss(row[0]);
-					//		ss >> shift1start;
-					//		cout << "shift 1 starts at ";
-					//		SetShiftOneStartTime(shift1start);
-					//		cout << GetShiftOneStartTime() << endl;
-					//	}
-					//	else
-					//	{
-
-					//	}
-
-
-					//	getline(dataFile, line);
-					//}
-
-
+	
 				double shift1start;
 				double shift2start;
 				double shift3start;
@@ -219,7 +166,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				if (IsWartime() == true)
 				{
 
-					cout << "war time!" << endl;
+					//cout << "war time!" << endl;
 					while (dataFile)
 					{
 						if (line.find("Wartime Shifts Table") != string::npos)
@@ -230,17 +177,17 @@ void InputReader::ReadInputData() //initialization for getting data
 
 							istringstream ss(line);
 							ss >> shift1start;
-							cout << "shift 1 starts at ";
+							//cout << "shift 1 starts at ";
 							SetShiftOneStartTime(shift1start);
-							cout << GetShiftOneStartTime() << endl;
+							//cout << GetShiftOneStartTime() << endl;
 
 							getline(dataFile, line);
 
 							istringstream ss2(line);
 							ss2 >> shift2start;
-							cout << "shift 2 starts at ";
+							//cout << "shift 2 starts at ";
 							SetShiftTwoStartTime(shift2start);
-							cout << GetShiftTwoStartTime() << endl;
+							//cout << GetShiftTwoStartTime() << endl;
 							break;
 						}
 						else
@@ -249,7 +196,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				}
 				else
 				{
-					cout << "peace time!" << endl;
+					//cout << "peace time!" << endl;
 					while (dataFile)
 					{
 						if (line.find("Peacetime Shifts Table") != string::npos)
@@ -260,30 +207,29 @@ void InputReader::ReadInputData() //initialization for getting data
 
 							stringstream ss(line);
 							ss >> shift1start;
-							cout << "shift 1 starts at ";
+							//cout << "shift 1 starts at ";
 							SetShiftOneStartTime(shift1start);
-							cout << GetShiftOneStartTime() << endl;
+							//cout << GetShiftOneStartTime() << endl;
 
 							getline(dataFile, line);
 
 							stringstream ss2(line);
 							ss2 >> shift2start;
-							cout << "shift 2 starts at ";
+							//cout << "shift 2 starts at ";
 							SetShiftTwoStartTime(shift2start);
-							cout << GetShiftTwoStartTime() << endl;
+							//cout << GetShiftTwoStartTime() << endl;
 
 							getline(dataFile, line);
 
 							stringstream ss3(line);
 							ss3 >> shift3start;
-							cout << "shift 3 starts at ";
+							//cout << "shift 3 starts at ";
 							SetShiftThreeStartTime(shift3start);
-							cout << GetShiftThreeStartTime() << endl;
+							//cout << GetShiftThreeStartTime() << endl;
 							break;
 						}
 						else
 							getline(dataFile, line);
-
 					}
 				}
 			}
@@ -1023,9 +969,9 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 								//it->second->PrintResProperties();
 								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
-								cout << it->second->GetResourceName() << " count 1 " << it->second->GetShiftOneCount() << endl;
+								/*cout << it->second->GetResourceName() << " count 1 " << it->second->GetShiftOneCount() << endl;
 								cout << it->second->GetResourceName() << " count 2 " << it->second->GetShiftTwoCount() << endl;
-								cout << it->second->GetResourceName() << " count 3 " << it->second->GetShiftThreeCount() << endl;
+								cout << it->second->GetResourceName() << " count 3 " << it->second->GetShiftThreeCount() << endl;*/
 
 							}
 

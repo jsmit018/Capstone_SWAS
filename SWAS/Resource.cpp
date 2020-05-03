@@ -79,6 +79,10 @@ void StepResource::CopyMapResource(const StepResource& mapResource)
 	_failureName = mapResource._failureName;
 	_failureType = mapResource._failureType;
 	_repairProc = mapResource._repairProc;
+	_shiftOneCount = mapResource._shiftOneCount;
+	_shiftTwoCount = mapResource._shiftTwoCount;
+	_shiftThreeCount = mapResource._shiftThreeCount;
+
 	if (mapResource._failureDist == nullptr)
 		_failureDist = nullptr; 
 	else

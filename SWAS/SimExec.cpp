@@ -411,7 +411,7 @@ public:
 		else {
 			Event* curr = _eventSet[binX][binY];
 			if (_year == 2022)
-				cout << "Bleh";
+				//cout << "Bleh";
 			//	cout << "Searching the list on where to place the event based on time and priority" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
@@ -598,7 +598,7 @@ public:
 			//}
 			EventAction* ea = next->_ea;
 			_numEvents--;
-			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA")
+			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA" || next->_eventActionName == "ShiftChangeEA")
 				_numEvents++;
 			delete next;
 			return ea;
@@ -1026,6 +1026,7 @@ void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int 
 	//	cout << "Scheduling Calendar Event" << endl;
 	_eventSet.AddEventCalendar(Month, Day, timeOfDay, year, priority, ea, eaName);
 }
+
 
 void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring)
 {

@@ -276,7 +276,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 {
 	if (_numberGenerated != _numberOfAircraftToGenerate)
 	{
-		cout << "--------------------Scheduling " << " unplanned arrival for " << _aircraft->GetAircraftType() << endl;
+		//cout << "--------------------Scheduling unplanned arrival for " << _aircraft->GetAircraftType() << endl;
 
 		//cout << "Unplanned Aircraft has arrived, ";
 		//cout << "Scheduling next Unplanned Aircraft Arrival" << endl;
@@ -335,7 +335,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		
 		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->
 		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
-		cout << " THIS IS AIR ID " << newAircraft->GetAircraftID() << " scheduling first step of " << job << endl;
+		//cout << " THIS IS AIR ID " << newAircraft->GetAircraftID() << " scheduling first step of " << job << endl;
 		/*if (newAircraft->GetAircraftID() == 384)
 			cout << "Bleh" << endl;*/
 
