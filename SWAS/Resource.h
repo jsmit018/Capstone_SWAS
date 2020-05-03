@@ -35,7 +35,7 @@ public:
 	double GetResourceCount();
 	string GetResourceName();
 	double GetResourceFootprint();
-	int GetNumberOfResroucesNeeded();
+	int GetNumberOfResourcesNeeded();
 	string GetFailureName();
 	string GetFailureType();
 	Distribution* GetFailureDistr();
