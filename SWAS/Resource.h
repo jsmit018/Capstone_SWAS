@@ -8,71 +8,71 @@
 class StepResource
 {
 public:
-	StepResource();
-	void CopyMapResource(const StepResource& mapResource);
-	void Acquire(int amountNeeded);
-	//virtual void Acquire() = 0;
-	void Release(int amountToRelease);
-	//virtual void Release = 0;
-	bool IsAvailable(int amountNeeded);
-	void FailResource();
-	void RestoreResource();
-	void PrintResProperties();
-	//void SetResourceID(int resourceID);
-	//int GetResourceID();
+	StepResource() ;
+	void CopyMapResource(const StepResource& mapResource) ;
+	void Acquire(int amountNeeded) ;
+	//virtual void Acquire() = 0 ;
+	void Release(int amountToRelease) ;
+	//virtual void Release = 0 ;
+	bool IsAvailable(int amountNeeded) ;
+	void FailResource() ;
+	void RestoreResource() ;
+	void PrintResProperties() ;
+	//void SetResourceID(int resourceID) ;
+	//int GetResourceID() ;
 
-	void SetResourceCount(double resourceCount);
-	void SetResourceName(string resourceName);
-	void SetResourceFootprint(double length, double width);
-	void SetNumResNeeded(int numNeeded);
-	void SetFailureName(string failureName);
-	void SetFailureType(string failureType);
-	void SetFailureDistr(string failureDistr);
-	void SetRepairProcess(string repairProc);
+	void SetResourceCount(double resourceCount) ;
+	void SetResourceName(string resourceName) ;
+	void SetResourceFootprint(double length, double width) ;
+	void SetNumResNeeded(int numNeeded) ;
+	void SetFailureName(string failureName) ;
+	void SetFailureType(string failureType) ;
+	void SetFailureDistr(string failureDistr) ;
+	void SetRepairProcess(string repairProc) ;
 
-	void ScheduleFirstFailures(StepResource* resource);
+	void ScheduleFirstFailures(StepResource* resource) ;
 
-	double GetResourceCount();
-	string GetResourceName();
-	double GetResourceFootprint();
-	int GetNumberOfResroucesNeeded();
-	string GetFailureName();
-	string GetFailureType();
-	Distribution* GetFailureDistr();
-	string GetRepairProcess();
-	bool IsAfterCEL();
-	void SetCELflag(int CELflag);
+	double GetResourceCount() ;
+	string GetResourceName() ;
+	double GetResourceFootprint() ;
+	int GetNumberOfResroucesNeeded() ;
+	string GetFailureName() ;
+	string GetFailureType() ;
+	Distribution* GetFailureDistr() ;
+	string GetRepairProcess() ;
+	bool IsAfterCEL() ;
+	void SetCELflag(int CELflag) ;
 	
-	void SetShiftOneCount(int shiftcount);
-	double GetShiftOneCount();
-	void SetShiftTwoCount(int shiftcount);
-	double GetShiftTwoCount();
-	void SetShiftThreeCount(int shiftcount);
-	double GetShiftThreeCount();
+	void SetShiftOneCount(int shiftcount) ;
+	double GetShiftOneCount() ;
+	void SetShiftTwoCount(int shiftcount) ;
+	double GetShiftTwoCount() ;
+	void SetShiftThreeCount(int shiftcount) ;
+	double GetShiftThreeCount() ;
 
 private:
-	//int _resourceCount;
-	int _shiftOneCount;
-	int _shiftTwoCount;
-	int _shiftThreeCount;
-	//int _resourceID; // NOT SET YET
-	double _resourceCount;
-	int _numNeeded;
-	int _CELflag;
-	string _resourceName;
-	double _length;
-	double _width;
-	string _failureName;
-	string _failureType;
-	Distribution* _failureDist;
-	string _repairProc;
+	//int _resourceCount ;
+	int _shiftOneCount ;
+	int _shiftTwoCount ;
+	int _shiftThreeCount ;
+	//int _resourceID ; // NOT SET YET
+	double _resourceCount ;
+	int _numNeeded ;
+	int _CELflag ;
+	string _resourceName ;
+	double _length ;
+	double _width ;
+	string _failureName ;
+	string _failureType ;
+	Distribution* _failureDist ;
+	string _repairProc ;
 
-	class RestoreResourceEA;
-	class FailResourceEA;
-	class WaitForResourceEA;
+	class RestoreResourceEA ;
+	class FailResourceEA ;
+	class WaitForResourceEA ;
 
-	Distribution* failureDistribution;
+	Distribution* failureDistribution ;
 
-	void FailResourceEM(StepResource* resource);
-	void RestoreResourceEM(StepResource* resource);
-};
+	void FailResourceEM(StepResource* resource) ;
+	void RestoreResourceEM(StepResource* resource) ;
+} ;

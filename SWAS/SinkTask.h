@@ -6,13 +6,13 @@
 
 class SinkBlock : public Task {
 public:
-	SinkBlock(string name); 
-	void Execute(Aircraft* aircraft); 
-	string GetName(); 
-	void SetName(string name); 
-	int GetTerminatedAircraft(); 
+	SinkBlock(string name) ; 
+	void Execute(Aircraft* aircraft) ; 
+	string GetName() ; 
+	void SetName(string name) ; 
+	int GetTerminatedAircraft() ; 
 private:
-	string _name; 
-	int _terminatedAircraft; 
-	//Scribe* outputRecorder = new Scribe(); 
-}; 
+	string _name ; 
+	int _terminatedAircraft ; 
+	//Scribe* outputRecorder = new Scribe() ; 
+} ; 
