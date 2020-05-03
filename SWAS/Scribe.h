@@ -295,8 +295,7 @@ public:
     static void RecordAircraft(string);
     static void TallyAircraft(string);
     static void RecordMission(string);
-    //static void RecordResource(string, int);
-    static void RecordResource(string, double);
+    static void RecordResource(string, int);
     static void UpdateResourceUtilization(string, double, float);
     static void UpdateResourceUtilization();
     static void UpdateResourceRequests(string, bool);
