@@ -374,7 +374,7 @@ public:
 
 	void Execute() 
 	{
-		cout << "in shiftchange ea before updating shift" << endl;
+		//cout << "in shiftchange ea before updating shift" << endl;
 		UpdateShift();
 	}
 };
@@ -530,7 +530,7 @@ private:
 
 void Step::UpdateShift()
 { 
-	cout << "flag " << _firstShiftUpdateFlag << endl;
+	//cout << "flag " << _firstShiftUpdateFlag << endl;
 
 	double newCount;
 	double lastShiftsInitCount;
@@ -539,9 +539,9 @@ void Step::UpdateShift()
 	//we don't want to change the counts for the first 6am shift
 	if (isFirstShiftChange() == true)
 	{
-		cout << " Shifts Starting, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
-			<< " day is " << SimExec::GetSimulationTime()._day + 1
-			<< " time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
+		//cout << " Shifts Starting, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
+			//<< " day is " << SimExec::GetSimulationTime()._day + 1
+			//<< " time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
 		SetFirstShiftUpdateFlag(0);
 		////schedule this same shift change tomorrow at the same time
 		SimExec::ScheduleEventAt(-10, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
@@ -550,14 +550,14 @@ void Step::UpdateShift()
 	////if its a wartime simulation
 	if (InputReader::IsWartime() == true)
 	{
-		cout << " wartime, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
-			<< " day is " << SimExec::GetSimulationTime()._day + 1
-			<<" time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
+		//cout << " wartime, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
+			//<< " day is " << SimExec::GetSimulationTime()._day + 1
+			//<<" time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
 
 		////if i'm in shift one
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in war shift one " << endl;
+			//cout << "in war shift one " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -587,7 +587,7 @@ void Step::UpdateShift()
 		////else i'm in shift two
 		else if(InputReader::GetShiftTwoStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in war shift two " << endl;
+			//cout << "in war shift two " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -607,14 +607,14 @@ void Step::UpdateShift()
 					//cout << "adding to " << iter->second->GetResourceCount() << endl;
 
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					cout << "new  " << iter->first << " count is " << newCount << endl << endl;
+					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
 		
 					iter->second->SetResourceCount(newCount);
-					cout << "after setting " << endl;
+					//cout << "after setting " << endl;
 				}
 				iter++;
 			}
-			cout << "after loop" << endl;
+			//cout << "after loop" << endl;
 
 		}
 		else
@@ -624,12 +624,12 @@ void Step::UpdateShift()
 	////else its a peacetime simulation
 	else //if (InputReader::IsWartime() == false)
 	{
-		cout << " peacetime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
+		//cout << " peacetime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
 		////if i'm in shift one
 		//if (InputReader::GetShiftOneStartTime() <= SimExec::GetSimulationTime()._timeOfDay < InputReader::GetShiftTwoStartTime())
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in peace shift one " << endl;
+			//cout << "in peace shift one " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -662,7 +662,7 @@ void Step::UpdateShift()
 		else if (InputReader::GetShiftTwoStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
 
-			cout << "in peace shift two " << endl;
+			//cout << "in peace shift two " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -694,7 +694,7 @@ void Step::UpdateShift()
 		////else i'm in shift three
 		else if (InputReader::GetShiftThreeStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in shift three " << endl;
+			//cout << "in shift three " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -727,7 +727,7 @@ void Step::UpdateShift()
 
 	////schedule this same shift change tomorrow at the same time
 	SimExec::ScheduleEventAt(-10, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
-	cout << "ugh" << endl;
+	//cout << "ugh" << endl;
 }
 
 void Step::PlaceOrderEM(Parts* parts)
@@ -2302,7 +2302,7 @@ void Step::SetFirstShiftUpdateFlag(int flag)
 
 void Step::ScheduleFirstWartimeShifts()
 {
-	cout << "in sched first wartime - scheduling first wartime shifts " << endl;
+	//cout << "in sched first wartime - scheduling first wartime shifts " << endl;
 	//schedule 1st shift change
 	SimExec::ScheduleEventAtCalendar(0.0, 0.0, InputReader::GetShiftOneStartTime(),
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift1Change");

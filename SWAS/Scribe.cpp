@@ -1352,12 +1352,12 @@ void Scribe::Archive()
 	//integer to count end of list pointers
 	int endCount;
 
-	/*//////////////////////////////////
+	//////////////////////////////////
 	////// CONNECTING TO DATABASE //////
 	////////////////////////////////////
-	#define SQL_RESULT_LEN 240
-	#define SQL_RETURN_CODE_LEN 1000
-	//define handles and variables
+#define SQL_RESULT_LEN 240
+#define SQL_RETURN_CODE_LEN 1000
+//define handles and variables
 	SQLHANDLE sqlConnHandle;
 	SQLHANDLE sqlStmtHandle;
 	SQLHANDLE sqlEnvHandle;
@@ -1420,8 +1420,42 @@ void Scribe::Archive()
 	//if there is a problem executing the query then exit application
 	//else display query result
 	//////////////////////////////////////////////////////
-	//THIS IS WHERE THE CODE FOR INSERTING WILL GO:
-	if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT name FROM artists", SQL_NTS)) {   ///<<<<<<<<< THIS is an example of SQL Query code that finds the values from aircraft name and prints.
+	//THIS IS AN EXAMPE OF THE CODE (REPLACE SELECT STATEMENT WITH INSERT STATEMENT)
+	//if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT name FROM artists", SQL_NTS)) {   ///<<<<<<<<< THIS is an example of SQL Query code that finds the values from aircraft name and prints.
+	//	cout << "Error querying SQL Server";
+	//	cout << "\n";
+	//	goto COMPLETED;
+	//}
+	//else {
+	//	//declare output variable and pointer
+	//	SQLCHAR sqlValue[SQL_RESULT_LEN];
+	//	SQLINTEGER ptrSqlValue;
+	//	while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+	//		SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+	//		//display query result
+	//		cout << "\nQuery Result:\n\n";
+	//		cout << sqlValue << endl;
+	//	}
+	//}
+	//////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////
+
+	//Begin Archive
+	fileOut.open(fileName);
+	//Simulation data
+		//Include Seed value for later analysis
+	seedVal = Distribution::GetSystemSeed();
+		fileOut << (to_string(seedVal) + "\n");
+		fileOut << "\n";
+		fileOut << "Number of Runs," + to_string(runNumber) + "\n";
+		fileOut << "Warehouse Length," + warehouseL + "\n";
+		fileOut << "Warehouse Width," + warehouseW + "\n";
+		fileOut << "Runtime Duration," + to_string(totalRuntime) + "\n";
+		fileOut << "Number of Planned Repair Jobs," + to_string(planned) + "\n";
+		fileOut << "Number of Unplanned Repair Jobs," + to_string(unplanned) + "\n";
+		fileOut << "\n";
+
+	if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Simulation Info (Seed, Number of Runs, Warehouse Length, Warehouse Width, Runtime Duration, Number of Planned Repair Jobs, Number of Unplanned Repair Jobs) VALUES ( .('" + to_string(seedVal) + "')., '" + to_string(runNumber) + "')., '" + warehouseL + "')., '" + warehouseW + "')., '" + to_string(totalRuntime) + "')., '" + to_string(planned) + "')., '" + to_string(unplanned) + "')").c_str(), SQL_NTS)) {
 		cout << "Error querying SQL Server";
 		cout << "\n";
 		goto COMPLETED;
@@ -1437,25 +1471,6 @@ void Scribe::Archive()
 			cout << sqlValue << endl;
 		}
 	}
-	//////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////*/
-
-	//Begin Archive
-	fileOut.open(fileName);
-	//Simulation data
-		//Include Seed value for later analysis
-	seedVal = Distribution::GetSystemSeed();
-	fileOut << (to_string(seedVal) + "\n");
-
-	fileOut << "\n";
-	fileOut << "Number of Runs," + to_string(runNumber) + "\n";
-	fileOut << "Warehouse Length," + warehouseL + "\n";
-	fileOut << "Warehouse Width," + warehouseW + "\n";
-	fileOut << "Runtime Duration," + to_string(totalRuntime) + "\n";
-	fileOut << "Number of Planned Repair Jobs," + to_string(planned) + "\n";
-	fileOut << "Number of Unplanned Repair Jobs," + to_string(unplanned) + "\n";
-
-	fileOut << "\n";
 
 	//Aircraft data for each run
 	fileOut << "Aircraft\n";
@@ -1466,18 +1481,18 @@ void Scribe::Archive()
 		tempStr += ("Run " + to_string(i + 1) + ",,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
-	//Create field Headings
+		//Create field Headings
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
 	{
 		tempStr += ("Type,Number,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
-	//Initialize aircraft search pointers
+		//Initialize aircraft search pointers
 	runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
@@ -1505,9 +1520,23 @@ void Scribe::Archive()
 				//record both type and count
 				tempStr += ((runCurrent->aircraftRunner->type) + "," + to_string(runCurrent->aircraftRunner->count) + ",");
 
-
 				//Example Line
-				//SQLExecDirect( sqlStmtHandle,(SQLWCHAR*)("INSERT INTO Aircraft (Type, Number) VALUES ( .('" + (runCurrent->aircraftRunner->type) + "')., '" + to_string(runCurrent->aircraftRunner->count) + "')").c_str(), SQL_NTS);
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Aircraft (Type, Number) VALUES ( .('" + (runCurrent->aircraftRunner->type) + "')., '" + to_string(runCurrent->aircraftRunner->count) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 			}
 			//advance run
@@ -1532,9 +1561,9 @@ void Scribe::Archive()
 	}
 	tempStr += "\n";
 
-	fileOut << tempStr;
+		fileOut << tempStr;
 
-	//Initialize Mission Search pointers
+		//Initialize Mission Search pointers
 	runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
@@ -1557,12 +1586,29 @@ void Scribe::Archive()
 			else
 			{
 				tempStr += (runCurrent->missionRunner->type + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Missions (Type) VALUES ( .('" + runCurrent->missionRunner->type + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->missionRunner = runCurrent->missionRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+				fileOut << tempStr;
 	} while (endCount < runNumber);
 
 	//Resource data for each run
@@ -1577,7 +1623,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1585,7 +1631,7 @@ void Scribe::Archive()
 		tempStr += ("Resource, Initial Count, Utilization Hours, Utilization Percent, Number of Requests, Unsuccessful Requests,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1604,12 +1650,29 @@ void Scribe::Archive()
 			{
 				tempStr += ((runCurrent->resourceRunner->type) + "," + to_string(runCurrent->resourceRunner->initialCount) + "," + to_string(runCurrent->resourceRunner->utilizationHours) + "," + to_string(runCurrent->resourceRunner->utilizationPercent) +
 					"," + to_string(runCurrent->resourceRunner->requestNumber) + "," + to_string(runCurrent->resourceRunner->unsuccessfulRequests) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Resources (Resource, Initial Count, Utilization Hours, Utilization Percent, Number of Requests, Unsuccessful Requests) VALUES ( .('" + (runCurrent->resourceRunner->type) + "')., '" + to_string(runCurrent->resourceRunner->initialCount) + "')., '" + to_string(runCurrent->resourceRunner->utilizationHours) + "')., '" + to_string(runCurrent->resourceRunner->utilizationPercent) + "')., '" + to_string(runCurrent->resourceRunner->requestNumber) + "')., '" + to_string(runCurrent->resourceRunner->unsuccessfulRequests) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+		//		fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -1625,7 +1688,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1633,7 +1696,7 @@ void Scribe::Archive()
 		tempStr += ("Resource,Failure,Date,Downtime,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1651,12 +1714,29 @@ void Scribe::Archive()
 			else
 			{
 				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + (runCurrent->failureRunner->date) + "," + to_string(runCurrent->failureRunner->ellapse) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Resource Failure (Resource, Failure, Date, Downtime) VALUES ( .('" + (runCurrent->failureRunner->resourceType) + "')., '" + (runCurrent->failureRunner->failureType) + "')., '" + (runCurrent->failureRunner->date) + "')., '" + to_string(runCurrent->failureRunner->ellapse) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->failureRunner = runCurrent->failureRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+				fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -1672,7 +1752,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1680,7 +1760,7 @@ void Scribe::Archive()
 		tempStr += ("Aircraft Type,ID,Resource,Date Start,Start,Date End,End,Time,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1701,12 +1781,29 @@ void Scribe::Archive()
 					to_string(runCurrent->resourceWaitRunner->monthStart) + "/" + to_string(runCurrent->resourceWaitRunner->dayStart) + "/" + to_string(runCurrent->resourceWaitRunner->yearStart) + "," + to_string(runCurrent->resourceWaitRunner->timeStart) + "," +
 					to_string(runCurrent->resourceWaitRunner->monthEnd) + "/" + to_string(runCurrent->resourceWaitRunner->dayEnd) + "/" + to_string(runCurrent->resourceWaitRunner->yearEnd) + "," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," +
 					to_string(runCurrent->resourceWaitRunner->ellapse) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Resource Waits (Aircraft Type, ID, Resource, Month Start, Day Start, Year Start, Start, Month End, Day End, Year End, End, Time) VALUES ( .('" + (runCurrent->resourceWaitRunner->aircraftType) + "')., '" + to_string(runCurrent->resourceWaitRunner->aircraftID) + "')., '" + (runCurrent->resourceWaitRunner->resourceType) + "')., '" + to_string(runCurrent->resourceWaitRunner->monthStart) + "')., '" + to_string(runCurrent->resourceWaitRunner->dayStart) + "')., '" + to_string(runCurrent->resourceWaitRunner->yearStart) + "')., '" + to_string(runCurrent->resourceWaitRunner->timeStart) + "')., '" + to_string(runCurrent->resourceWaitRunner->monthEnd) + "')., '" + to_string(runCurrent->resourceWaitRunner->dayEnd) + "')., '" + to_string(runCurrent->resourceWaitRunner->yearEnd) + "')., '" + to_string(runCurrent->resourceWaitRunner->timeEnd) + "')., '" + to_string(runCurrent->resourceWaitRunner->ellapse) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+		//		fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -1722,7 +1819,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1730,7 +1827,7 @@ void Scribe::Archive()
 		tempStr += ("ID,Type,Location,Date Begin,Time Begin,Date End,Time End,Wait Time,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1751,12 +1848,29 @@ void Scribe::Archive()
 					to_string(runCurrent->serviceWaitRunner->monthStart) + "/" + to_string(runCurrent->serviceWaitRunner->dayStart) + "/" + to_string(runCurrent->serviceWaitRunner->yearStart) + "," + to_string(runCurrent->serviceWaitRunner->timeStart) + "," +
 					to_string(runCurrent->serviceWaitRunner->monthEnd) + "/" + to_string(runCurrent->serviceWaitRunner->dayEnd) + "/" + to_string(runCurrent->serviceWaitRunner->yearEnd) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," +
 					to_string(runCurrent->serviceWaitRunner->ellapse) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Aircraft Wait (ID, Type, Location, Month Begin, Day Begin, Year Begin, Time Begin, Month End, Day End, Year End, Time End, Wait Time) VALUES ( .('" + to_string(runCurrent->serviceWaitRunner->aircraftID) + "')., '" + (runCurrent->serviceWaitRunner->aircraftType) + "')., '" + (runCurrent->serviceWaitRunner->location) + "')., '" + to_string(runCurrent->serviceWaitRunner->monthStart) + "')., '" + to_string(runCurrent->serviceWaitRunner->dayStart) + "')., '" + to_string(runCurrent->serviceWaitRunner->yearStart) + "')., '" + to_string(runCurrent->serviceWaitRunner->timeStart) + "')., '" + to_string(runCurrent->serviceWaitRunner->monthEnd) + "')., '" + to_string(runCurrent->serviceWaitRunner->dayEnd) + "')., '" + to_string(runCurrent->serviceWaitRunner->yearEnd) + "')., '" + to_string(runCurrent->serviceWaitRunner->timeEnd) + "')., '" + to_string(runCurrent->serviceWaitRunner->ellapse) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->serviceWaitRunner = runCurrent->serviceWaitRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+				fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -1772,7 +1886,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1780,7 +1894,7 @@ void Scribe::Archive()
 		tempStr += ("ID,Type,Job,Step Number,Step Name,Date Start,Start,Date Finish,Finish,Duration,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1801,12 +1915,29 @@ void Scribe::Archive()
 					to_string(runCurrent->repairJobRunner->monthStart) + "/" + to_string(runCurrent->repairJobRunner->dayStart) + "/" + to_string(runCurrent->repairJobRunner->yearStart) + "," + to_string(runCurrent->repairJobRunner->timeStart) + "," +
 					to_string(runCurrent->repairJobRunner->monthEnd) + "/" + to_string(runCurrent->repairJobRunner->dayEnd) + "/" + to_string(runCurrent->repairJobRunner->yearEnd) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," +
 					to_string(runCurrent->repairJobRunner->ellapse) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Repair Jobs (ID, Type, Job, Step Number, Step Name, Month Start, Day Start, Year Start, Start, Month Finish, Day Finish, Year Finish, Finish, Duration) VALUES ( .('" + to_string(runCurrent->repairJobRunner->aircraftID) + "')., '" + (runCurrent->repairJobRunner->aircraftType) + "')., '" + (runCurrent->repairJobRunner->jobType) + "')., '" + to_string(runCurrent->repairJobRunner->stepNumber) + "')., '" + (runCurrent->repairJobRunner->stepName) + "')., '" + to_string(runCurrent->repairJobRunner->monthStart) + "')., '" + to_string(runCurrent->repairJobRunner->dayStart) + "')., '" + to_string(runCurrent->repairJobRunner->yearStart) + "')., '" + to_string(runCurrent->repairJobRunner->timeStart) + "')., '" + to_string(runCurrent->repairJobRunner->monthEnd) + "')., '" + to_string(runCurrent->repairJobRunner->dayEnd) + "')., '" + to_string(runCurrent->repairJobRunner->yearEnd) + "')., '" + to_string(runCurrent->repairJobRunner->timeEnd) + "')., '" + to_string(runCurrent->repairJobRunner->ellapse) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->repairJobRunner = runCurrent->repairJobRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+			fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -1823,7 +1954,7 @@ void Scribe::Archive()
 	}
 
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1831,7 +1962,7 @@ void Scribe::Archive()
 		tempStr += ("ID,Type,Job,Step,Date,Time,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1850,12 +1981,29 @@ void Scribe::Archive()
 			{
 				tempStr += (to_string(runCurrent->inspectionRunner->craftID) + "," + (runCurrent->inspectionRunner->craftType) + "," + (runCurrent->inspectionRunner->repairJob) + "," + to_string(runCurrent->inspectionRunner->stepNum) + "," +
 					(runCurrent->inspectionRunner->date) + "," + to_string(runCurrent->inspectionRunner->time));
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Inspection Failures (ID, Type, Job, Step, Date, Time) VALUES ( .('" + to_string(runCurrent->inspectionRunner->craftID) + "')., '" + (runCurrent->inspectionRunner->craftType) + "')., '" + (runCurrent->inspectionRunner->repairJob) + "')., '" + to_string(runCurrent->inspectionRunner->stepNum) + "')., '" + (runCurrent->inspectionRunner->date) + "')., '" + to_string(runCurrent->inspectionRunner->time) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->inspectionRunner = runCurrent->inspectionRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+			fileOut << tempStr;
 	} while (endCount < runNumber);
 
 	//Rework data for each run
@@ -1870,7 +2018,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1878,7 +2026,7 @@ void Scribe::Archive()
 		tempStr += ("Aircraft or Resource Type,Rework Event,Date,Duration,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+		fileOut << tempStr;
 
 	do
 	{
@@ -1896,12 +2044,29 @@ void Scribe::Archive()
 			else
 			{
 				tempStr += ((runCurrent->reworkRunner->objectType) + "," + (runCurrent->reworkRunner->reworkEvent) + "," + (runCurrent->reworkRunner->date) + "," + to_string(runCurrent->reworkRunner->ellapse) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Reworks (Aircraft or Resource Type, Rework Event, Date, Duration) VALUES ( .('" + (runCurrent->reworkRunner->objectType) + "')., '" + (runCurrent->reworkRunner->reworkEvent) + "')., '" + (runCurrent->reworkRunner->date) + "')., '" + to_string(runCurrent->reworkRunner->ellapse) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->reworkRunner = runCurrent->reworkRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+		//		fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -1917,7 +2082,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+	//	fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1925,7 +2090,7 @@ void Scribe::Archive()
 		tempStr += ("Part,Number Used,Times Requested,Unsuccessful Requests,");
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+	//	fileOut << tempStr;
 
 	do
 	{
@@ -1944,17 +2109,34 @@ void Scribe::Archive()
 			{
 				tempStr += ((runCurrent->requestsRunner->partType) + "," + to_string(runCurrent->requestsRunner->numberUsed) + "," + to_string(runCurrent->requestsRunner->requestNumber) + ","
 					+ to_string(runCurrent->requestsRunner->unsuccessfulRequests) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Parts Requests (Part, Number Used, Times Requested, Unsuccessful Requests) VALUES ( .('" + (runCurrent->requestsRunner->partType) + "')., '" + to_string(runCurrent->requestsRunner->numberUsed) + "')., '" + to_string(runCurrent->requestsRunner->requestNumber) + "')., '" + to_string(runCurrent->requestsRunner->unsuccessfulRequests) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
 				runCurrent->requestsRunner = runCurrent->requestsRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+		//		fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
 	//Restock data for each run
-	fileOut << "Restocking\n";
+//	fileOut << "Restocking\n";
 	tempStr = "";
 	runCurrent = runStart;
 
@@ -1965,7 +2147,7 @@ void Scribe::Archive()
 		runCurrent = runCurrent->next;
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+	//	fileOut << tempStr;
 
 	tempStr = "";
 	for (int i = 0; i < runNumber; i++)
@@ -1973,7 +2155,7 @@ void Scribe::Archive()
 		tempStr += "Part,Date Ordered,TUA,";
 	}
 	tempStr += "\n";
-	fileOut << tempStr;
+	//	fileOut << tempStr;
 
 	do
 	{
@@ -1991,12 +2173,30 @@ void Scribe::Archive()
 			else
 			{
 				tempStr += ((runCurrent->restockRunner->partType) + "," + (runCurrent->restockRunner->date) + "," + to_string(runCurrent->restockRunner->restockTime) + ",");
+
+				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Restocking (Part, Date Ordered, TUA (Time Until Arrival)) VALUES ( .('" + (runCurrent->restockRunner->partType) + "')., '" + (runCurrent->restockRunner->date) + "')., '" + to_string(runCurrent->restockRunner->restockTime) + "')").c_str(), SQL_NTS)) {
+					cout << "Error querying SQL Server";
+					cout << "\n";
+					goto COMPLETED;
+				}
+				else {
+					//declare output variable and pointer
+					SQLCHAR sqlValue[SQL_RESULT_LEN];
+					SQLINTEGER ptrSqlValue;
+					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+						//display query result
+						cout << "\nQuery Result:\n\n";
+						cout << sqlValue << endl;
+					}
+				}
+				runCurrent->requestsRunner = runCurrent->requestsRunner->next;
 				runCurrent->restockRunner = runCurrent->restockRunner->next;
 			}
 			runCurrent = runCurrent->next;
 		}
 		tempStr += "\n";
-		fileOut << tempStr;
+		//		fileOut << tempStr;
 
 	} while (endCount < runNumber);
 
@@ -2007,15 +2207,15 @@ void Scribe::Archive()
 	/////////////////////////////////////////
 
 	//close connection and free resources
-	//COMPLETED:
-	//	SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
-	//	SQLDisconnect(sqlConnHandle);
-	//	SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
-	//	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
+	COMPLETED:
+	SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
+	SQLDisconnect(sqlConnHandle);
+	SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
+	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
 
 	////pause the console window - exit when key is pressed
-	//cout << "\nPress enter key to exit...";
-	//getchar();
+	cout << "\nPress enter key to exit...";
+	getchar();
 
 
 	//////////////////////////////////////////////////////////
