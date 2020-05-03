@@ -767,13 +767,13 @@ int Step::GetReturnStep()
 //void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
 void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 {
-	if (isNextStepReturnStep == true)
-	{
-		//cout << aircraft->GetAircraftID() << " starting return step " << _name << endl;
-		////cout << aircraft->GetAircraftID() <<" is in return step " << this->GetID() << " "<<  this->GetName()<< endl;
-		//this->SetStepID(aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep());
-		////cout << aircraft->GetAircraftID() << " is in return step " << this->GetID() << " " << this->GetName() << endl;
-	}
+	//if (isNextStepReturnStep == true)
+	//{
+	//	//cout << aircraft->GetAircraftID() << " starting return step " << _name << endl;
+	//	////cout << aircraft->GetAircraftID() <<" is in return step " << this->GetID() << " "<<  this->GetName()<< endl;
+	//	//this->SetStepID(aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep());
+	//	////cout << aircraft->GetAircraftID() << " is in return step " << this->GetID() << " " << this->GetName() << endl;
+	//}
 	isNextStepReturnStep = false;
 
 	if (aircraft->IsAfterCEL() == true)
@@ -1191,7 +1191,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		//else if (IsInpectionFail(_inspecFailProb) == false)
 		else if (isFail == false)
 		{
-			////cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
+			//cout << "Aircraft maintenance passed inspection, scheduling DoneService." << endl;
 			Scribe::RecordRepairEnd(aircraft->GetAircraftID(), _myRJ, _stepID, SimExec::GetSimulationTime()._timeOfDay);
 			SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
 		}
