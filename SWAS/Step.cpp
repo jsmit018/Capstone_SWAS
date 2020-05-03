@@ -539,17 +539,20 @@ void Step::UpdateShift()
 	//we don't want to change the counts for the first 6am shift
 	if (isFirstShiftChange() == true)
 	{
+		cout << " Shifts Starting, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
+			<< " day is " << SimExec::GetSimulationTime()._day + 1
+			<< " time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
 		SetFirstShiftUpdateFlag(0);
 		////schedule this same shift change tomorrow at the same time
-		SimExec::ScheduleEventAt(-1, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
+		SimExec::ScheduleEventAt(-10, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
 		return;
 	}
 	////if its a wartime simulation
 	if (InputReader::IsWartime() == true)
 	{
-		cout << " wartime, month is " << SimExec::GetSimulationTime()._month
-			<< " day is " << SimExec::GetSimulationTime()._day
-			<<" time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
+		cout << " wartime, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
+			<< " day is " << SimExec::GetSimulationTime()._day + 1
+			<<" time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
 
 		////if i'm in shift one
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
@@ -723,7 +726,7 @@ void Step::UpdateShift()
 	}
 
 	////schedule this same shift change tomorrow at the same time
-	SimExec::ScheduleEventAt(-1, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
+	SimExec::ScheduleEventAt(-10, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
 	cout << "ugh" << endl;
 }
 

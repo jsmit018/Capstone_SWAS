@@ -382,6 +382,8 @@ public:
 			TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, GetSimulationTime()._timeOfDay, 1);
 
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
+		if (Month == 0 && Day == 0 && timeOfDay == 4)
+			cout << "bleh" << endl;
 		e->PrintEvent();
 		int binX;
 		int binY;
@@ -410,7 +412,7 @@ public:
 		}
 		else {
 			Event* curr = _eventSet[binX][binY];
-			if (_year == 2022)
+			//if (_year == 2022)
 				//cout << "Bleh";
 			//	cout << "Searching the list on where to place the event based on time and priority" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
