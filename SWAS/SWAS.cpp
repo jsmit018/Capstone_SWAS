@@ -150,17 +150,20 @@ void InitializeAircraft()
 
 void ScheduleFirstShiftChange()
 {
-	cout << InputReader::IsWartime() << endl;
+
+	cout << "in schedule first shift change()" << endl;
 	//if wartime, schedule at 0600 and 1800
 	if (InputReader::IsWartime() == true)
 	{
 		cout << "scheduling first wartime shift" << endl;
 		Step::ScheduleFirstWartimeShifts();
+		return;
 	}
 	//else if peacetime, schedule at 0600, 1400, and 2200
 	else
 	{
-		//Step::ScheduleFirstPeacetimeShifts();
+		Step::ScheduleFirstPeacetimeShifts();
+		return;
 	}
 }
 
@@ -186,6 +189,7 @@ int main()
 
 		InitializeAircraft();
 		SchedResourceFailure();
+		cout << " before first call" << endl;
 		ScheduleFirstShiftChange();
 
 		//InitalizeAircraft(GetScribe());

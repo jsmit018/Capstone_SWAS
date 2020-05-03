@@ -374,6 +374,7 @@ public:
 
 	void Execute() 
 	{
+		cout << "in shiftchange ea before updating shift" << endl;
 		UpdateShift();
 	}
 };
@@ -543,11 +544,12 @@ void Step::UpdateShift()
 		SimExec::ScheduleEventAt(-1, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
 		return;
 	}
-
 	////if its a wartime simulation
 	if (InputReader::IsWartime() == true)
 	{
-		cout << " wartime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
+		cout << " wartime, month is " << SimExec::GetSimulationTime()._month
+			<< " day is " << SimExec::GetSimulationTime()._day
+			<<" time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
 
 		////if i'm in shift one
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
@@ -602,16 +604,18 @@ void Step::UpdateShift()
 					//cout << "adding to " << iter->second->GetResourceCount() << endl;
 
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
+					cout << "new  " << iter->first << " count is " << newCount << endl << endl;
 		
 					iter->second->SetResourceCount(newCount);
+					cout << "after setting " << endl;
 				}
 				iter++;
 			}
+			cout << "after loop" << endl;
+
 		}
 		else
 			cout << "ERROR: trying to schedule in a shift that doesnt exist" << endl;
-		
 	}
 
 	////else its a peacetime simulation
@@ -720,6 +724,7 @@ void Step::UpdateShift()
 
 	////schedule this same shift change tomorrow at the same time
 	SimExec::ScheduleEventAt(-1, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
+	cout << "ugh" << endl;
 }
 
 void Step::PlaceOrderEM(Parts* parts)
@@ -2158,14 +2163,15 @@ bool Step::WasBayAcquired(string bayName)
 
 bool Step::isFirstShiftChange()
 {
+	cout << "is in first shift change" << endl;
 	if (_firstShiftUpdateFlag == 1)
 	{
-		//cout << "is first flag" << endl;
+		cout << "is first flag" << endl;
 		return true;
 	}
 	else
 	{
-		//cout << "is not first flag" << endl;
+		cout << "is not first flag" << endl;
 		return false;
 	}
 }
@@ -2293,7 +2299,7 @@ void Step::SetFirstShiftUpdateFlag(int flag)
 
 void Step::ScheduleFirstWartimeShifts()
 {
-	//cout << "scheduling first wartime shifts " << endl;
+	cout << "in sched first wartime - scheduling first wartime shifts " << endl;
 	//schedule 1st shift change
 	SimExec::ScheduleEventAtCalendar(0.0, 0.0, InputReader::GetShiftOneStartTime(),
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift1Change");

@@ -598,7 +598,8 @@ public:
 			//}
 			EventAction* ea = next->_ea;
 			_numEvents--;
-			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA" || next->_eventActionName == "ShiftChangeEA")
+			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA" || next->_eventActionName == "ShiftChangeEA" 
+				|| next->_eventActionName == "Shift1Change" || next->_eventActionName == "Shift2Change" || next->_eventActionName == "Shift3Change")
 				_numEvents++;
 			delete next;
 			return ea;
@@ -1018,12 +1019,12 @@ void SimExec::SetInputReader(InputReader inputReader)
 }
 
 void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours) {
-	//	cout << "Scheduling Event" << endl;
+		//cout << "Scheduling Event" << endl;
 	_eventSet.AddEvent(priority, ea, distributionValue, eaName, daysOrHours);
 }
 
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
-	//	cout << "Scheduling Calendar Event" << endl;
+		//cout << "Scheduling Calendar Event" << endl;
 	_eventSet.AddEventCalendar(Month, Day, timeOfDay, year, priority, ea, eaName);
 }
 

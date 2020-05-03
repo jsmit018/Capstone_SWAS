@@ -46,7 +46,6 @@ public:
 	static bool GetSimulationFlag();
 	static Time GetTotalSimulationTime();
 	static int PrintNumInCondES();
-	static void ScheduleShiftChange();
 private:
 	struct Event;
 	struct CondEvent;
