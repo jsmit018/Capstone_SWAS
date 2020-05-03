@@ -60,7 +60,6 @@ void InitializeAircraft()
 	inputReader.AddSelectedAircraft(1);
 	//inputReader.AddSelectedAircraft("F-18");
 	inputReader.AddSelectedAircraft(2);
-	inputReader.AddSelectedAircraft(3);
 	//inputReader.AddSelectedAircraft("Apache");
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
