@@ -150,15 +150,17 @@ void InitializeAircraft()
 
 void ScheduleFirstShiftChange()
 {
+	cout << InputReader::IsWartime() << endl;
 	//if wartime, schedule at 0600 and 1800
 	if (InputReader::IsWartime() == true)
 	{
+		cout << "scheduling first wartime shift" << endl;
 		Step::ScheduleFirstWartimeShifts();
 	}
 	//else if peacetime, schedule at 0600, 1400, and 2200
 	else
 	{
-		Step::ScheduleFirstPeacetimeShifts();
+		//Step::ScheduleFirstPeacetimeShifts();
 	}
 }
 

@@ -81,7 +81,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	StepResource resource;
 	string line;
 
-	ifstream dataFile("V1_completeNEW.csv");
+	ifstream dataFile("SWAS_Input_Final.csv");
 	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
@@ -152,11 +152,12 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				if (line == "Wartime" || line == "wartime")
 				{
-					_wartimeFlag = 1;
+					cout << "wartime!" << endl;
+					SetWartimeFlag(1);
 				}
 				else
 				{
-					_wartimeFlag = 0;
+					SetWartimeFlag(0);
 				}
 	
 				double shift1start;
@@ -956,6 +957,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetResourceCount(resCountShift1);
 								if (IsWartime() == true)
 								{
+									cout << "its true" << endl;
 									it->second->SetShiftOneCount(resCountShift1);
 									it->second->SetShiftTwoCount(resCountShift2);
 									it->second->SetShiftThreeCount(0);
@@ -1358,9 +1360,20 @@ double InputReader::GetShiftThreeStartTime()
 bool InputReader::IsWartime()
 {
 	if (_wartimeFlag == 1)
+	{
+		cout << "war time" << endl;
 		return true;
+	}
 	else
+	{
+		cout << "not war time" << endl;
 		return false;
+	}
+}
+
+void InputReader::SetWartimeFlag(int flag)
+{
+	_wartimeFlag = flag;
 }
 
 void InputReader::PrintMasterResMap()

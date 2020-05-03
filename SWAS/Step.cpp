@@ -529,7 +529,7 @@ private:
 
 void Step::UpdateShift()
 { 
-	//cout << "flag " << _firstShiftUpdateFlag << endl;
+	cout << "flag " << _firstShiftUpdateFlag << endl;
 
 	double newCount;
 	double lastShiftsInitCount;
@@ -552,7 +552,7 @@ void Step::UpdateShift()
 		////if i'm in shift one
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in shift one " << endl;
+			cout << "in war shift one " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -582,7 +582,7 @@ void Step::UpdateShift()
 		////else i'm in shift two
 		else if(InputReader::GetShiftTwoStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in shift two " << endl;
+			cout << "in war shift two " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -615,14 +615,14 @@ void Step::UpdateShift()
 	}
 
 	////else its a peacetime simulation
-	else
+	else //if (InputReader::IsWartime() == false)
 	{
 		cout << " peacetime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
 		////if i'm in shift one
 		//if (InputReader::GetShiftOneStartTime() <= SimExec::GetSimulationTime()._timeOfDay < InputReader::GetShiftTwoStartTime())
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			cout << "in shift one " << endl;
+			cout << "in peace shift one " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -655,7 +655,7 @@ void Step::UpdateShift()
 		else if (InputReader::GetShiftTwoStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
 
-			cout << "in shift two " << endl;
+			cout << "in peace shift two " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())

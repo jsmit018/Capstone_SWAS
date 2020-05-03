@@ -43,6 +43,7 @@ public:
 	static void SetShiftThreeStartTime(int starttime);
 	static double GetShiftThreeStartTime();
 	static bool IsWartime();
+	static void SetWartimeFlag(int flag);
 private:
 	static int _wartimeFlag;
 	static int _numRuns;
