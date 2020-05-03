@@ -8,41 +8,41 @@
 #include "Step.h"
 #include "Resource.h"
 
-class Step; 
+class Step;
 
 class RepairJob {
 public:
 	//RepairJob(string name); 
-	RepairJob(); 
-	void CopyRepairJob(const RepairJob& mapRj); 
-	void SetName(string name); 
-	void SetPriority(int priority); 
-	void SetSchedType(string schedType); 
-	void SetIndoorReq(char indoorReq); 
-	void SetCalendarDate(string calendarDate); 
-	void SetRecurringAmt(double recurringAmt); 
+	RepairJob();
+	void CopyRepairJob(const RepairJob& mapRj);
+	void SetName(string name);
+	void SetPriority(int priority);
+	void SetSchedType(string schedType);
+	void SetIndoorReq(char indoorReq);
+	void SetCalendarDate(string calendarDate);
+	void SetRecurringAmt(double recurringAmt);
 	void SetUnplannedProb(string unplannedProb);//switch to distribution pointer
-	void PrintJobProperties(); 
+	void PrintJobProperties();
 
-	static RepairJob* GetMyResRepairJobObj(string name); 
+	static RepairJob* GetMyResRepairJobObj(string name);
 
-	string GetName(); 
-	int GetPriority(); 
-	string GetSchedType(); 
-	char GetIndoorReq(); 
-	string GetCalendarDate(); 
-	Distribution* GetRecurringAmt(); 
-	Distribution* GetUnplannedProb(); 
+	string GetName();
+	int GetPriority();
+	string GetSchedType();
+	char GetIndoorReq();
+	string GetCalendarDate();
+	Distribution* GetRecurringAmt();
+	Distribution* GetUnplannedProb();
 	//void GetNextStep(string rjType); 
-	int GetStepVecSize(); 
-	int GetMyReturnStep(); 
-	Step* GetStep(int stepID); 
-	bool WillSchedule(); 
-	Step* GetFirstStep(); 
-	void AddStep(Step* step); 
-	void AddResourceRepair(RepairJob* repairJob, string resourceName); 
-	RepairJob* GetResourceRepair(string resourceName); 
-	void PrintResourceRepairs(); 
+	int GetStepVecSize();
+	int GetMyReturnStep();
+	Step* GetStep(int stepID);
+	bool WillSchedule();
+	Step* GetFirstStep();
+	void AddStep(Step* step);
+	void AddResourceRepair(RepairJob* repairJob, string resourceName);
+	RepairJob* GetResourceRepair(string resourceName);
+	void PrintResourceRepairs();
 
 private:
 	string	_name; 									// Repair job name
@@ -60,4 +60,4 @@ private:
 	//Step** _stepList; 
 	//RepairJob* _nextJob; 
 	//int _size; 
-}; 
+};

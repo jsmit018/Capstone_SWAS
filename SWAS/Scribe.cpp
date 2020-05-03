@@ -10,7 +10,7 @@
 
 
 //Scribe static initializers
-runNode * Scribe::runStart = nullptr;
+runNode* Scribe::runStart = nullptr;
 
 runNode* Scribe::runCurrent = nullptr;
 

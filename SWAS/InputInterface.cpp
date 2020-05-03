@@ -128,7 +128,7 @@ void InputReader::ReadInputData() //initialization for getting data
 			//////////////////////////////////////////
 			///////////    MISSION TYPE    ///////////
 			//////////////////////////////////////////
-			
+
 			//Find Mission Type (Wartime or Peacetime)
 			//get line
 				//if line = Wartime
@@ -159,7 +159,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				{
 					SetWartimeFlag(0);
 				}
-	
+
 				double shift1start;
 				double shift2start;
 				double shift3start;
@@ -173,7 +173,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						if (line.find("Wartime Shifts Table") != string::npos)
 						{
 							printf("got Wartime Shifts table \n");
-							
+
 							getline(dataFile, line);
 
 							istringstream ss(line);
@@ -244,10 +244,10 @@ void InputReader::ReadInputData() //initialization for getting data
 				getline(dataFile, line);
 				getline(dataFile, line);
 
-				if (line.find("Shifts Table") != string::npos) 
+				if (line.find("Shifts Table") != string::npos)
 				{
 					printf("got Shifts table \n");
-						
+
 					getline(dataFile, line);
 					getline(dataFile, line);
 
@@ -267,8 +267,8 @@ void InputReader::ReadInputData() //initialization for getting data
 				}
 			}
 			else
-			{					
-				if (line.find("Peacetime Shifts") != string::npos) 
+			{
+				if (line.find("Peacetime Shifts") != string::npos)
 				{
 					printf("got Peacetime Shifts table \n");
 
@@ -298,7 +298,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					cout << GetShiftThreeStartTime() << endl;
 				}
 			}*/
-			
+
 
 			//////////////////////////////////////////
 			//////////////   CALENDAR    /////////////
@@ -350,7 +350,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				getline(dataFile, line);
 				vector <string> row;
-				
+
 				//while not the end of the table
 				while (line != ",,,,,,,,,,")
 				{
@@ -360,7 +360,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-					
+
 					////parsing the whole row and storing individual strings
 					while (ss)
 					{
@@ -883,8 +883,8 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					istringstream ssResource2(row[2]);
 					ssResource2 >> resCountShift2;
-					
-					
+
+
 					//cout << row[2] << " " << resCountShift2 << endl;
 
 					if (row.size() == 6)
@@ -931,7 +931,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					_masterResourceMap.insert(pair<string, StepResource*>(resName, res));
 
-					
+
 					//TODO UPDATE SCRIBE FOR SHIFT COUNTS
 					Scribe::RecordResource(resName, resCountShift1);
 
@@ -962,7 +962,7 @@ void InputReader::ReadInputData() //initialization for getting data
 									it->second->SetShiftTwoCount(resCountShift2);
 									it->second->SetShiftThreeCount(0);
 								}
-								else 
+								else
 								{
 									it->second->SetShiftOneCount(resCountShift1);
 									it->second->SetShiftTwoCount(resCountShift2);
