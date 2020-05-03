@@ -99,14 +99,14 @@ APU Oil Filter - Replace,1,1,Troubleshoot,Process,,,Uniform(0.30 0.40),Mechanic(
 ,,3,Remove/Replace,Process,,,Uniform(0.40 0.50),Mechanic(1)&Ladder(1)&Small Toolbox(1),APU Oil Filter,1
 ,,4,Verify,Inspection,Fixed(0.01),3,Uniform(0.30 0.50),Mechanic(1)&Generator(1),,
 ,,5,Close,Process,,,Uniform(0.30 0.50),Apprentice(1)&Ladder(1)&Small Toolbox(1),,
-Cockpit Pressure Regulator - Replace,1,1,Troubleshoot,Process,,,Normal(0.50 0.15),Mechanic(2)&Cockpit Pressure  Tester(1)&Ladder(1)&Large Toolbox(1)&Generator(1),,
+Cockpit Pressure Regulator - Replace,1,1,Troubleshoot,Process,,,Normal(0.50 0.15),Mechanic(2)&Cockpit Pressure Tester(1)&Ladder(1)&Large Toolbox(1)&Generator(1),,
 ,,2,Access,Process,,,Normal(0.45 0.13),Apprentice(1)&Ladder(1)&Large Toolbox(1),,
 ,,3,Remove/Replace,Process,,,Normal(1.25 0.36),Mechanic(1)&Ladder(1)&Large Toolbox(1),Pressure Regulator Valve,1
-,,4,Verify,Inspection,Triangular(0.01 0.05 0.07),,Normal(0.75 0.22),Mechanic(2)&Cockpit Pressure  Tester(1)&Ladder(1)&Large Toolbox(1)&Generator(1),,
+,,4,Verify,Inspection,Triangular(0.01 0.05 0.07),,Normal(0.75 0.22),Mechanic(2)&Cockpit Pressure Tester(1)&Ladder(1)&Large Toolbox(1)&Generator(1),,
 ,,5,Close,Process,,,Normal(0.50 0.15),Apprentice(1)&Ladder(1)&Large Toolbox(1),,
 Battery Charger/Converter Unit - Replace,1,1,Troubleshoot,Process,,,Normal(0.25 0.073),Mechanic(1)&Small Toolbox(1)&Generator(1),,
 ,,2,Access,Process,,,Normal(0.15 0.044),Apprentice(1)&Small Toolbox(1),,
-,,3,Remove/Replace,Process,,,Normal(0.50 0.15),Mechanic(1)& Small Toolbox(1),Converter Control Unit,1
+,,3,Remove/Replace,Process,,,Normal(0.50 0.15),Mechanic(1)&Small Toolbox(1),Converter Control Unit,1
 ,,4,Verify,Inspection,Fixed(0.075),3,Normal(0.45 0.131),Mechanic(1)&Small Toolbox(1)&Generator(1),,
 ,,5,Close,Process,,,Normal(0.25 0.073),Apprentice(1)&Small Toolbox(1),,
 External Power Recepticle - Repair,1,1,Troubleshoot,Process,,,Normal(0.50 0.15),Mechanic(1)&Small Toolbox(1)&Generator(1),,
@@ -155,7 +155,7 @@ ICP #1 Power Supply - Replace,1,1,Troubleshoot,Process,,,Uniform(0.20 0.40),Mech
 ,,5,Close,Process,,,Uniform(0.45 0.65),Apprentice(1)&Small Toolbox(1),,
 GPS Antenna - Replace,1,1,Troubleshoot,Process,,,Uniform(0.60 0.70),Mechanic(2)&Generator(1),,
 ,,2,Access,Process,,,Uniform(0.60 0.85),Apprentice(2)&Large Toolbox(1),,
-,,3,Remove/Replace,Process,,,Uniform(2.80 3.15),Mechanic(2)&Large Toolbox(1)&Avionics Equipment lift(1),GPS Antenna,1
+,,3,Remove/Replace,Process,,,Uniform(2.80 3.15),Mechanic(2)&Large Toolbox(1)&Avionics Equipment Lift(1),GPS Antenna,1
 ,,4,Verify,Inspection,Fixed(0.01),3,Uniform(0.30 0.50),Mechanic(2)&Generator(1),,
 ,,5,Close,Process,,,Uniform(0.75 0.95),Apprentice(2)&Large Toolbox(1),,
 Radar Altimeter - Replace,1,1,Troubleshoot,Process,,,Normal(0.50 0.15),Mechanic(1)&Small Toolbox(1)&Generator(1),,
