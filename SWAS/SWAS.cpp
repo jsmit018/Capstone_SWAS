@@ -218,7 +218,7 @@ int main()
 	}
 
 	inputReader.GetAirCount();
-	Scribe::Archive();
+	//Scribe::Archive();
 
 	///////////////////////////////////////
 	/// DISCONNECTING FROM THE DATABASE ///
