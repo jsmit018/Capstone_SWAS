@@ -7,8 +7,6 @@
 #include <sqltypes.h>
 #include <sql.h>
 
-
-
 //Scribe static initializers
 runNode* Scribe::runStart = nullptr;
 
@@ -1421,22 +1419,22 @@ void Scribe::Archive()
 	//else display query result
 	//////////////////////////////////////////////////////
 	//THIS IS AN EXAMPE OF THE CODE (REPLACE SELECT STATEMENT WITH INSERT STATEMENT)
-	//if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT name FROM artists", SQL_NTS)) {   ///<<<<<<<<< THIS is an example of SQL Query code that finds the values from aircraft name and prints.
-	//	cout << "Error querying SQL Server";
-	//	cout << "\n";
-	//	goto COMPLETED;
-	//}
-	//else {
-	//	//declare output variable and pointer
-	//	SQLCHAR sqlValue[SQL_RESULT_LEN];
-	//	SQLINTEGER ptrSqlValue;
-	//	while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
-	//		SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
-	//		//display query result
-	//		cout << "\nQuery Result:\n\n";
-	//		cout << sqlValue << endl;
-	//	}
-	//}
+	if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT name FROM artists", SQL_NTS)) {   ///<<<<<<<<< THIS is an example of SQL Query code that finds the values from aircraft name and prints.
+		cout << "Error0 querying SQL Server";
+		cout << "\n";
+		goto COMPLETED;
+	}
+	else {
+		//declare output variable and pointer
+		SQLCHAR sqlValue[SQL_RESULT_LEN];
+		SQLINTEGER ptrSqlValue;
+		while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+			SQLGetData(sqlStmtHandle, 1, SQL_CHAR, sqlValue, SQL_RESULT_LEN, &ptrSqlValue);
+			//display query result
+			cout << "\nQuery Result:\n\n";
+			cout << sqlValue << endl;
+		}
+	}
 	//////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////
 
@@ -1456,7 +1454,7 @@ void Scribe::Archive()
 		fileOut << "\n";
 
 	if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Simulation Info (Seed, Number of Runs, Warehouse Length, Warehouse Width, Runtime Duration, Number of Planned Repair Jobs, Number of Unplanned Repair Jobs) VALUES ( .('" + to_string(seedVal) + "')., '" + to_string(runNumber) + "')., '" + warehouseL + "')., '" + warehouseW + "')., '" + to_string(totalRuntime) + "')., '" + to_string(planned) + "')., '" + to_string(unplanned) + "')").c_str(), SQL_NTS)) {
-		cout << "Error querying SQL Server";
+		cout << "Error11 querying SQL Server";
 		cout << "\n";
 		goto COMPLETED;
 	}
@@ -1520,7 +1518,6 @@ void Scribe::Archive()
 				//record both type and count
 				tempStr += ((runCurrent->aircraftRunner->type) + "," + to_string(runCurrent->aircraftRunner->count) + ",");
 
-				
 				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 			}
 			//advance run
@@ -1535,8 +1532,10 @@ void Scribe::Archive()
 	} while (endCount < runNumber);
 	//Above should result in a blank line separating above from missions below
 
-	//Export to SQL database
+		//Export to SQL database
 	runCurrent = runStart;
+
+
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->aircraftRunner = runCurrent->aircraftHead;
@@ -1600,7 +1599,6 @@ void Scribe::Archive()
 			{
 				tempStr += (runCurrent->missionRunner->type + ",");
 
-				
 				runCurrent->missionRunner = runCurrent->missionRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1676,7 +1674,6 @@ void Scribe::Archive()
 				tempStr += ((runCurrent->resourceRunner->type) + "," + to_string(runCurrent->resourceRunner->initialCount) + "," + to_string(runCurrent->resourceRunner->utilizationHours) + "," + to_string(runCurrent->resourceRunner->utilizationPercent) +
 					"," + to_string(runCurrent->resourceRunner->requestNumber) + "," + to_string(runCurrent->resourceRunner->unsuccessfulRequests) + ",");
 
-				
 				runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1752,7 +1749,6 @@ void Scribe::Archive()
 			{
 				tempStr += ((runCurrent->failureRunner->resourceType) + "," + (runCurrent->failureRunner->failureType) + "," + (runCurrent->failureRunner->date) + "," + to_string(runCurrent->failureRunner->ellapse) + ",");
 
-				
 				runCurrent->failureRunner = runCurrent->failureRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1831,7 +1827,6 @@ void Scribe::Archive()
 					to_string(runCurrent->resourceWaitRunner->monthEnd) + "/" + to_string(runCurrent->resourceWaitRunner->dayEnd) + "/" + to_string(runCurrent->resourceWaitRunner->yearEnd) + "," + to_string(runCurrent->resourceWaitRunner->timeEnd) + "," +
 					to_string(runCurrent->resourceWaitRunner->ellapse) + ",");
 
-				
 				runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1910,7 +1905,6 @@ void Scribe::Archive()
 					to_string(runCurrent->serviceWaitRunner->monthEnd) + "/" + to_string(runCurrent->serviceWaitRunner->dayEnd) + "/" + to_string(runCurrent->serviceWaitRunner->yearEnd) + "," + to_string(runCurrent->serviceWaitRunner->timeEnd) + "," +
 					to_string(runCurrent->serviceWaitRunner->ellapse) + ",");
 
-				
 				runCurrent->serviceWaitRunner = runCurrent->serviceWaitRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -1990,7 +1984,6 @@ void Scribe::Archive()
 					to_string(runCurrent->repairJobRunner->monthEnd) + "/" + to_string(runCurrent->repairJobRunner->dayEnd) + "/" + to_string(runCurrent->repairJobRunner->yearEnd) + "," + to_string(runCurrent->repairJobRunner->timeEnd) + "," +
 					to_string(runCurrent->repairJobRunner->ellapse) + ",");
 
-				
 				runCurrent->repairJobRunner = runCurrent->repairJobRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -2068,7 +2061,6 @@ void Scribe::Archive()
 				tempStr += (to_string(runCurrent->inspectionRunner->craftID) + "," + (runCurrent->inspectionRunner->craftType) + "," + (runCurrent->inspectionRunner->repairJob) + "," + to_string(runCurrent->inspectionRunner->stepNum) + "," +
 					(runCurrent->inspectionRunner->date) + "," + to_string(runCurrent->inspectionRunner->time));
 
-				
 				runCurrent->inspectionRunner = runCurrent->inspectionRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -2144,7 +2136,6 @@ void Scribe::Archive()
 			{
 				tempStr += ((runCurrent->reworkRunner->objectType) + "," + (runCurrent->reworkRunner->reworkEvent) + "," + (runCurrent->reworkRunner->date) + "," + to_string(runCurrent->reworkRunner->ellapse) + ",");
 
-				
 				runCurrent->reworkRunner = runCurrent->reworkRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -2221,7 +2212,6 @@ void Scribe::Archive()
 				tempStr += ((runCurrent->requestsRunner->partType) + "," + to_string(runCurrent->requestsRunner->numberUsed) + "," + to_string(runCurrent->requestsRunner->requestNumber) + ","
 					+ to_string(runCurrent->requestsRunner->unsuccessfulRequests) + ",");
 
-				
 				runCurrent->requestsRunner = runCurrent->requestsRunner->next;
 			}
 			runCurrent = runCurrent->next;
@@ -2297,7 +2287,6 @@ void Scribe::Archive()
 			{
 				tempStr += ((runCurrent->restockRunner->partType) + "," + (runCurrent->restockRunner->date) + "," + to_string(runCurrent->restockRunner->restockTime) + ",");
 
-				
 				runCurrent->restockRunner = runCurrent->restockRunner->next;
 			}
 			runCurrent = runCurrent->next;
