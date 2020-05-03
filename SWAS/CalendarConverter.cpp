@@ -2,7 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-using namespace std;
+using namespace std; 
 
 CalConverter::CalConverter()
 {
@@ -11,31 +11,31 @@ CalConverter::CalConverter()
 
 void CalConverter::InsertDays(int month, int numDays)
 {
-	_monthMap.insert(pair<int, int>(month, numDays));
+	_monthMap.insert(pair<int, int>(month, numDays)); 
 
 	//print map
-	for (map<int, int>::const_iterator it = _monthMap.begin(); it != _monthMap.end(); ++it)
+	for (map<int, int>::const_iterator it = _monthMap.begin();  it != _monthMap.end();  ++it)
 	{
-		//		cout << it->first << " " << it->second << "\n";
+		//		cout << it->first << " " << it->second << "\n"; 
 	}
 }
 
 int* CalConverter::GetCalArray() {
-	map<int, int>::const_iterator iter = _monthMap.begin();
-	_calArray = new int[_monthMap.size()];
+	map<int, int>::const_iterator iter = _monthMap.begin(); 
+	_calArray = new int[_monthMap.size()]; 
 	while (iter != _monthMap.end()) {
-		_calArray[iter->first - 1] = iter->second;
-		//	cout << "Month: " << iter->first << " Days: " << iter->second << endl;
-		iter++;
+		_calArray[iter->first - 1] = iter->second; 
+		//	cout << "Month: " << iter->first << " Days: " << iter->second << endl; 
+		iter++; 
 
 	}
 
-	return _calArray;
+	return _calArray; 
 }
 
 map<int, int> CalConverter::GetMonthMap()
 {
-	return _monthMap;
+	return _monthMap; 
 }
 
 TimeConverter::TimeConverter()
@@ -44,191 +44,191 @@ TimeConverter::TimeConverter()
 
 void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue,
 	int baseX, int baseY, int* endOfMonth, Time sTime, int dayOrHour, int recurring, Time simTime) {
-	div_t divresult; // Declaring div_t object to obtain quotient and remainder
-	divresult = div(ceil(distributionValue), 24); // Divide the distribution by 24 gives an amount of days + a time)
+	div_t divresult;  // Declaring div_t object to obtain quotient and remainder
+	divresult = div(ceil(distributionValue), 24);  // Divide the distribution by 24 gives an amount of days + a time)
 	//If there is recurrent scheduling
 	
 	if (recurring == 1) {
-		int remainder = 0;
+		int remainder = 0; 
 		if (baseX + ceil(distributionValue) > 11) {
 			do {
-				year++;
-				remainder = ((baseX + (int)distributionValue) % 12);
-			} while (remainder >= 12);
-			baseX = remainder;
+				year++; 
+				remainder = ((baseX + (int)distributionValue) % 12); 
+			} while (remainder >= 12); 
+			baseX = remainder; 
 			if (baseY > endOfMonth[baseX]) {
-				int rem = baseY % endOfMonth[baseX];
-				baseY = 0 + rem;
+				int rem = baseY % endOfMonth[baseX]; 
+				baseY = 0 + rem; 
 			}
-			Month = baseX;
-			Day = baseY;
-			timeOfDay = sTime;
+			Month = baseX; 
+			Day = baseY; 
+			timeOfDay = sTime; 
 		}
 		else {
-			baseX += (int)distributionValue;
-			Month = baseX;
-			Day = baseY;
-			timeOfDay = sTime;
+			baseX += (int)distributionValue; 
+			Month = baseX; 
+			Day = baseY; 
+			timeOfDay = sTime; 
 		}
 	}
 	else {
 		if (dayOrHour == 0) {
 			if (baseY + (int)divresult.quot > endOfMonth[baseX]) { // Checking to see if the added time will make it advance past a month
-				int remainder = 0;
-				remainder = (baseY + divresult.quot) % endOfMonth[baseX]; // Check to see how far into the next month to schedule
+				int remainder = 0; 
+				remainder = (baseY + divresult.quot) % endOfMonth[baseX];  // Check to see how far into the next month to schedule
 				if (baseY + divresult.quot % endOfMonth[baseX] > (endOfMonth[baseX] + endOfMonth[baseX + 1])) {
 					while (remainder > endOfMonth[baseX]) {
 						if (baseX == 11) {
-							baseX = 0;
-							year++;
+							baseX = 0; 
+							year++; 
 						}
 
 						else
-							baseX++;
-						remainder %= endOfMonth[baseX];
+							baseX++; 
+						remainder %= endOfMonth[baseX]; 
 					}
-					Month = baseX;
-					Day = remainder;
-					////div_t tRemainder;
-					//tRemainder = div(divresult.rem, 24);
+					Month = baseX; 
+					Day = remainder; 
+					////div_t tRemainder; 
+					//tRemainder = div(divresult.rem, 24); 
 					if (sTime + divresult.rem > 24) {
-						int dividend;
+						int dividend; 
 						do {
 							if (Day + 1 > endOfMonth[baseX])
-								Day = 0;
+								Day = 0; 
 							else
-								Day++;
-							dividend = ((int)sTime + divresult.rem) % 24;
-						} while (dividend >= 24);
-						//Day += 1;
-						timeOfDay = 0 + dividend;
+								Day++; 
+							dividend = ((int)sTime + divresult.rem) % 24; 
+						} while (dividend >= 24); 
+						//Day += 1; 
+						timeOfDay = 0 + dividend; 
 					}
 					else
 					{
-						timeOfDay = sTime + (int)divresult.rem;
+						timeOfDay = sTime + (int)divresult.rem; 
 					}
 				}
 				else
 				{
 					if (baseX == 11) { //If we are in december we need to go into January and update the year
-						baseX = 0;
-						year++;
-						Month = baseX;
-						Day = remainder;
+						baseX = 0; 
+						year++; 
+						Month = baseX; 
+						Day = remainder; 
 						if (sTime + divresult.rem > 24) {
-							int dividend;
+							int dividend; 
 							do {
 								if (Day + 1 > endOfMonth[baseX])
-									Day = 0;
+									Day = 0; 
 								else
-									Day++;
-								dividend = ((int)sTime + divresult.rem) % 24;
-							} while (dividend >= 24);
-							//Day += 1;
-							timeOfDay = 0 + dividend;
+									Day++; 
+								dividend = ((int)sTime + divresult.rem) % 24; 
+							} while (dividend >= 24); 
+							//Day += 1; 
+							timeOfDay = 0 + dividend; 
 						}
 						else
 						{
-							timeOfDay = sTime + (int)divresult.rem;
+							timeOfDay = sTime + (int)divresult.rem; 
 						}
-						//timeOfDay = divresult.rem;
+						//timeOfDay = divresult.rem; 
 					}
 					else { // Otherwise we just advance the month
-						baseX++;
-						Month = baseX;
-						Day = remainder;
+						baseX++; 
+						Month = baseX; 
+						Day = remainder; 
 						if (sTime + divresult.rem > 24) {
-							int dividend;
+							int dividend; 
 							do {
 								if (Day + 1 > endOfMonth[baseX])
-									Day = 0;
+									Day = 0; 
 								else
-									Day++;
-								dividend = ((int)sTime + divresult.rem) % 24;
-							} while (dividend >= 24);
-							//Day += 1;
-							timeOfDay = 0 + dividend;
+									Day++; 
+								dividend = ((int)sTime + divresult.rem) % 24; 
+							} while (dividend >= 24); 
+							//Day += 1; 
+							timeOfDay = 0 + dividend; 
 						}
 						else
 						{
-							timeOfDay = sTime + (int)divresult.rem;
+							timeOfDay = sTime + (int)divresult.rem; 
 						}
-						//timeOfDay = (int)divresult.rem;
+						//timeOfDay = (int)divresult.rem; 
 					}
 				}
 			}
 			else { // If the scheduling time doesn't advance us into the next month
-				Month = baseX;
-				Day = (baseY + divresult.quot);
+				Month = baseX; 
+				Day = (baseY + divresult.quot); 
 				if (sTime + divresult.rem >= 24) {
-					int dividend;
+					int dividend; 
 					do {
 						if (Day + 1 > endOfMonth[baseX])
-							Day = 0;
+							Day = 0; 
 						else
-							Day++;
-						dividend = ((int)sTime + divresult.rem) % 24;
-					} while (dividend >= 24);
-					//Day += 1;
-					timeOfDay = 0 + dividend;
+							Day++; 
+						dividend = ((int)sTime + divresult.rem) % 24; 
+					} while (dividend >= 24); 
+					//Day += 1; 
+					timeOfDay = 0 + dividend; 
 				}
 				else
 				{
-					timeOfDay = sTime + (int)divresult.rem;
+					timeOfDay = sTime + (int)divresult.rem; 
 				}
-				//timeOfDay = divresult.rem;
+				//timeOfDay = divresult.rem; 
 			}
 		}
 		else if (dayOrHour == 1) 
 		{ //This is days
-			int rem = (int)distributionValue;
+			int rem = (int)distributionValue; 
 			do{
 				if (baseY + 1 > endOfMonth[baseX]) {
 					if (baseX == 11) {
-						baseX = 0;
-						year++;
-						baseY = 0;
-						rem--;
+						baseX = 0; 
+						year++; 
+						baseY = 0; 
+						rem--; 
 					}
 					else {
-						baseX++;
-						baseY = 0;
-						rem -= 1;
+						baseX++; 
+						baseY = 0; 
+						rem -= 1; 
 					}
 				}
 				else {
-					baseY++;
-					rem -= 1;
+					baseY++; 
+					rem -= 1; 
 				}
-			} while (rem != 0);
-			Month = baseX;
-			Day = baseY;
-			timeOfDay = sTime;
+			} while (rem != 0); 
+			Month = baseX; 
+			Day = baseY; 
+			timeOfDay = sTime; 
 		}
 	}
 }
 
 /*CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years)
 {
-	for (int i = 0; i < numEvents; ++i) {
-		_months[i] = months[i];
-		_days[i] = days[i];
-		_timeOfDays[i] = timeOfDays[i];
-		_years[i] = years[i];
+	for (int i = 0;  i < numEvents;  ++i) {
+		_months[i] = months[i]; 
+		_days[i] = days[i]; 
+		_timeOfDays[i] = timeOfDays[i]; 
+		_years[i] = years[i]; 
 	}
 }*/
 
 CalendarObj::CalendarObj()
 {
-	_numEvents = 0;
+	_numEvents = 0; 
 }
 
 void CalendarObj::UpdateNumEvents()
 {
-	_numEvents++;
+	_numEvents++; 
 }
 
 int CalendarObj::GetNumEvents()
 {
-	return _numEvents;
+	return _numEvents; 
 }
