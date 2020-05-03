@@ -192,7 +192,7 @@ void StepResource::SetNumResNeeded(int numNeeded)
 	_numNeeded = numNeeded;
 }
 
-int StepResource::GetNumberOfResroucesNeeded()
+int StepResource::GetNumberOfResourcesNeeded()
 {
 	return _numNeeded;
 }

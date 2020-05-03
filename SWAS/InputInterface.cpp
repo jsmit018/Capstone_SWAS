@@ -953,7 +953,7 @@ void InputReader::ReadInputData() //initialization for getting data
 								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 									continue;
 								it->second->SetResourceName(resName);
-								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumberOfResroucesNeeded());
+								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumberOfResourcesNeeded());
 								it->second->SetResourceCount(resCountShift1);
 								if (IsWartime() == true)
 								{
@@ -1241,10 +1241,10 @@ void InputReader::ReadInputData() //initialization for getting data
 		map<string, StepResource*> tempMap = Step::GetResPool();
 		if (tempMap.find(resIter->first) == tempMap.end())
 		{
-			//cout << "in input inter for pools " << resIter->second->GetNumberOfResroucesNeeded() << endl;
+			//cout << "in input inter for pools " << resIter->second->GetNumberOfResourcesNeeded() << endl;
 			StepResource* resCopy = new StepResource();
 			resCopy->CopyMapResource(*resIter->second);
-			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumberOfResroucesNeeded() << endl;
+			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumberOfResourcesNeeded() << endl;
 			Step::AddToResPool(resCopy, resIter->first);
 		}
 		resIter++;
