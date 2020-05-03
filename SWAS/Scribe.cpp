@@ -1352,7 +1352,7 @@ void Scribe::Archive()
 	//integer to count end of list pointers
 	int endCount;
 
-	/*//////////////////////////////////
+	////////////////////////////////////
 	////// CONNECTING TO DATABASE //////
 	////////////////////////////////////
 	#define SQL_RESULT_LEN 240
@@ -1506,8 +1506,7 @@ void Scribe::Archive()
 				tempStr += ((runCurrent->aircraftRunner->type) + "," + to_string(runCurrent->aircraftRunner->count) + ",");
 
 
-				//Example Line
-				//SQLExecDirect( sqlStmtHandle,(SQLWCHAR*)("INSERT INTO Aircraft (Type, Number) VALUES ( .('" + (runCurrent->aircraftRunner->type) + "')., '" + to_string(runCurrent->aircraftRunner->count) + "')").c_str(), SQL_NTS);
+				
 				runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 			}
 			//advance run
@@ -1521,6 +1520,23 @@ void Scribe::Archive()
 		//check that all lists have ended
 	} while (endCount < runNumber);
 	//Above should result in a blank line separating above from missions below
+
+	//Export to SQL database
+	runCurrent = runStart;
+
+	for (int i = 0; i < runNumber; i++)
+	{
+		runCurrent->aircraftRunner = runCurrent->aircraftHead;
+		while (runCurrent->aircraftRunner != nullptr)
+		{
+			//Example Line
+			//SQLExecDirect( sqlStmtHandle,(SQLWCHAR*)("INSERT INTO Aircraft (Type, Number) VALUES ( .('" + (runCurrent->aircraftRunner->type) + "')., '" + to_string(runCurrent->aircraftRunner->count) + "')").c_str(), SQL_NTS);
+			runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
+		}
+		//Output blank line to separate runs
+		//SQLExecDirect( sqlStmtHandle,(SQLWCHAR*)("INSERT INTO Aircraft (Type, Number) VALUES ( .(' ')., ' ')"), SQL_NTS);
+		runCurrent = runCurrent->next;
+	}
 
 //Mission data for each run
 	fileOut << "Missions\n";
@@ -1564,6 +1580,8 @@ void Scribe::Archive()
 		tempStr += "\n";
 		fileOut << tempStr;
 	} while (endCount < runNumber);
+
+
 
 	//Resource data for each run
 	fileOut << "Resources\n";
@@ -2007,18 +2025,18 @@ void Scribe::Archive()
 	/////////////////////////////////////////
 
 	//close connection and free resources
-	//COMPLETED:
-	//	SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
-	//	SQLDisconnect(sqlConnHandle);
-	//	SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
-	//	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
+	COMPLETED:
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
+		SQLDisconnect(sqlConnHandle);
+		SQLFreeHandle(SQL_HANDLE_DBC, sqlConnHandle);
+		SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
 
 	////pause the console window - exit when key is pressed
-	//cout << "\nPress enter key to exit...";
-	//getchar();
+	cout << "\nPress enter key to exit...";
+	getchar();
 
 
-	//////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////*/
 
 
 	cout << "Archived to: " + fileName;
