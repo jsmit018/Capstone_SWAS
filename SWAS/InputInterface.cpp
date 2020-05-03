@@ -18,6 +18,7 @@ int InputReader::_IDcount;
 double  InputReader::_shiftOneStartTime;
 double  InputReader::_shiftTwoStartTime;
 double  InputReader::_shiftThreeStartTime;
+int InputReader::_wartimeFlag;
 
 
 struct InputReader::GUISelectedAircraft {
@@ -80,7 +81,7 @@ void InputReader::ReadInputData() //initialization for getting data
 	StepResource resource;
 	string line;
 
-	ifstream dataFile("V1_complete.csv");
+	ifstream dataFile("SWAS_Input_Final.csv");
 	//ifstream dataFile("SWASInputData_Chris.csv");
 	if (dataFile.is_open())
 	{
@@ -141,32 +142,163 @@ void InputReader::ReadInputData() //initialization for getting data
 						//set shift2startTime
 						//set shift3startTime
 
-			if (line.find("Mission Type (Wartime or Peacetime)") != string::npos) {
+			if (line.find("Mission Type Table (Wartime or Peacetime)") != string::npos)
+			{
 				printf("got Mission Type table \n");
-				
-				string missionType;
-				int shift1start;
-				int shift2start;
-				int shift3start;
 
 				getline(dataFile, line);
 
-
 				line = line.erase(line.length() - 10);
-				cout << "LINE IS " << line << endl;
 
 				if (line == "Wartime" || line == "wartime")
 				{
-					_wartimeFlag = 1;
-
+					cout << "wartime!" << endl;
+					SetWartimeFlag(1);
 				}
 				else
 				{
-					_wartimeFlag = 0;
-
+					SetWartimeFlag(0);
 				}
+	
+				double shift1start;
+				double shift2start;
+				double shift3start;
 
+				if (IsWartime() == true)
+				{
+
+					//cout << "war time!" << endl;
+					while (dataFile)
+					{
+						if (line.find("Wartime Shifts Table") != string::npos)
+						{
+							printf("got Wartime Shifts table \n");
+							
+							getline(dataFile, line);
+
+							istringstream ss(line);
+							ss >> shift1start;
+							//cout << "shift 1 starts at ";
+							SetShiftOneStartTime(shift1start);
+							//cout << GetShiftOneStartTime() << endl;
+
+							getline(dataFile, line);
+
+							istringstream ss2(line);
+							ss2 >> shift2start;
+							//cout << "shift 2 starts at ";
+							SetShiftTwoStartTime(shift2start);
+							//cout << GetShiftTwoStartTime() << endl;
+							break;
+						}
+						else
+							getline(dataFile, line);
+					}
+				}
+				else
+				{
+					//cout << "peace time!" << endl;
+					while (dataFile)
+					{
+						if (line.find("Peacetime Shifts Table") != string::npos)
+						{
+							printf("got Peacetime Shifts table \n");
+
+							getline(dataFile, line);
+
+							stringstream ss(line);
+							ss >> shift1start;
+							//cout << "shift 1 starts at ";
+							SetShiftOneStartTime(shift1start);
+							//cout << GetShiftOneStartTime() << endl;
+
+							getline(dataFile, line);
+
+							stringstream ss2(line);
+							ss2 >> shift2start;
+							//cout << "shift 2 starts at ";
+							SetShiftTwoStartTime(shift2start);
+							//cout << GetShiftTwoStartTime() << endl;
+
+							getline(dataFile, line);
+
+							stringstream ss3(line);
+							ss3 >> shift3start;
+							//cout << "shift 3 starts at ";
+							SetShiftThreeStartTime(shift3start);
+							//cout << GetShiftThreeStartTime() << endl;
+							break;
+						}
+						else
+							getline(dataFile, line);
+					}
+				}
 			}
+			//}
+
+
+
+
+			/*if (_wartimeFlag == 1)
+			{
+				getline(dataFile, line);
+				getline(dataFile, line);
+
+				if (line.find("Shifts Table") != string::npos) 
+				{
+					printf("got Shifts table \n");
+						
+					getline(dataFile, line);
+					getline(dataFile, line);
+
+					stringstream ss(line);
+					ss >> shift1start;
+					cout << "shift 1 starts at " ;
+					SetShiftOneStartTime(shift1start);
+					cout << GetShiftOneStartTime() << endl;
+
+					getline(dataFile, line);
+
+					stringstream ss2(line);
+					ss2 >> shift2start;
+					cout << "shift 2 starts at ";
+					SetShiftTwoStartTime(shift2start);
+					cout << GetShiftTwoStartTime() << endl;
+				}
+			}
+			else
+			{					
+				if (line.find("Peacetime Shifts") != string::npos) 
+				{
+					printf("got Peacetime Shifts table \n");
+
+					getline(dataFile, line);
+					getline(dataFile, line);
+
+					stringstream ss(line);
+					ss >> shift1start;
+					cout << "shift 1 starts at ";
+					SetShiftOneStartTime(shift1start);
+					cout << GetShiftOneStartTime() << endl;
+
+					getline(dataFile, line);
+
+					stringstream ss2(line);
+					ss2 >> shift2start;
+					cout << "shift 2 starts at ";
+					SetShiftTwoStartTime(shift2start);
+					cout << GetShiftTwoStartTime() << endl;
+
+					getline(dataFile, line);
+
+					stringstream ss3(line);
+					ss2 >> shift3start;
+					cout << "shift 3 starts at ";
+					SetShiftThreeStartTime(shift3start);
+					cout << GetShiftThreeStartTime() << endl;
+				}
+			}*/
+			
 
 			//////////////////////////////////////////
 			//////////////   CALENDAR    /////////////
@@ -218,7 +350,8 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				getline(dataFile, line);
 				vector <string> row;
-
+				
+				//while not the end of the table
 				while (line != ",,,,,,,,,,")
 				{
 					row.clear();
@@ -227,8 +360,8 @@ void InputReader::ReadInputData() //initialization for getting data
 					if (line == ",,,,,,,,,,")
 						break;
 					istringstream ss(line);
-					//	cout << "another line " << line << endl;
-						////parsing the whole file and storing individual strings
+					
+					////parsing the whole row and storing individual strings
 					while (ss)
 					{
 						//csv empty cell has 11 commas
@@ -706,7 +839,9 @@ void InputReader::ReadInputData() //initialization for getting data
 				printf("got Resource Table \n");
 
 				string resName;
-				int resCount;
+				double resCountShift1;
+				double resCountShift2;
+				double resCountShift3;
 				double resourceFootprintX;
 				double resourceFootprintY;
 
@@ -744,17 +879,47 @@ void InputReader::ReadInputData() //initialization for getting data
 					resName = row[0];
 
 					istringstream ssResource1(row[1]);
-					ssResource1 >> resCount;
+					ssResource1 >> resCountShift1;
 
 					istringstream ssResource2(row[2]);
-					ssResource2 >> resourceFootprintX;
+					ssResource2 >> resCountShift2;
+					
+					
+					//cout << row[2] << " " << resCountShift2 << endl;
 
-					istringstream ssResource3(row[3]);
-					ssResource3 >> resourceFootprintY;
+					if (row.size() == 6)
+					{
+						istringstream ssResource3(row[3]);
+						ssResource3 >> resCountShift3;
+
+						istringstream ssResource4(row[4]);
+						ssResource4 >> resourceFootprintX;
+
+						istringstream ssResource5(row[5]);
+						ssResource5 >> resourceFootprintY;
+					}
+					else
+					{
+						istringstream ssResource3(row[3]);
+						ssResource3 >> resourceFootprintX;
+
+						istringstream ssResource4(row[4]);
+						ssResource4 >> resourceFootprintY;
+					}
+
+					//istringstream ssResource2(row[2]);
+					//ssResource2 >> resourceFootprintX;
+
+					//istringstream ssResource3(row[3]);
+					//ssResource3 >> resourceFootprintY;
 
 					StepResource* res = new StepResource();
 					res->SetResourceName(resName);
-					res->SetResourceCount(resCount);
+					res->SetResourceCount(resCountShift1);
+
+					res->SetShiftOneCount(resCountShift1);
+					res->SetShiftTwoCount(resCountShift2);
+					res->SetShiftThreeCount(resCountShift3);
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 
 
@@ -766,7 +931,9 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					_masterResourceMap.insert(pair<string, StepResource*>(resName, res));
 
-					Scribe::RecordResource(resName, resCount);
+					
+					//TODO UPDATE SCRIBE FOR SHIFT COUNTS
+					Scribe::RecordResource(resName, resCountShift1);
 
 					//Step::AddToResPool(res, res->GetResourceName());
 
@@ -787,12 +954,26 @@ void InputReader::ReadInputData() //initialization for getting data
 									continue;
 								it->second->SetResourceName(resName);
 								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumResNeeded());
-								it->second->SetResourceCount(resCount);
-
+								it->second->SetResourceCount(resCountShift1);
+								if (IsWartime() == true)
+								{
+									cout << "its true" << endl;
+									it->second->SetShiftOneCount(resCountShift1);
+									it->second->SetShiftTwoCount(resCountShift2);
+									it->second->SetShiftThreeCount(0);
+								}
+								else 
+								{
+									it->second->SetShiftOneCount(resCountShift1);
+									it->second->SetShiftTwoCount(resCountShift2);
+									it->second->SetShiftThreeCount(resCountShift3);
+								}
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 								//it->second->PrintResProperties();
 								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
-
+								/*cout << it->second->GetResourceName() << " count 1 " << it->second->GetShiftOneCount() << endl;
+								cout << it->second->GetResourceName() << " count 2 " << it->second->GetShiftTwoCount() << endl;
+								cout << it->second->GetResourceName() << " count 3 " << it->second->GetShiftThreeCount() << endl;*/
 
 							}
 
@@ -1174,6 +1355,25 @@ double InputReader::GetShiftTwoStartTime()
 double InputReader::GetShiftThreeStartTime()
 {
 	return _shiftThreeStartTime;
+}
+
+bool InputReader::IsWartime()
+{
+	if (_wartimeFlag == 1)
+	{
+		cout << "war time" << endl;
+		return true;
+	}
+	else
+	{
+		cout << "not war time" << endl;
+		return false;
+	}
+}
+
+void InputReader::SetWartimeFlag(int flag)
+{
+	_wartimeFlag = flag;
 }
 
 void InputReader::PrintMasterResMap()

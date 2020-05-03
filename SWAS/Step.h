@@ -58,6 +58,8 @@ public:
 	bool IsMyBaySizeAvailable(string baySize);
 	bool AreThereBaysAvailable(string baySize);
 	bool WasBayAcquired(string bayName);
+	static bool isFirstShiftChange();
+
 	string GetName();
 	//Time GetServiceTime();
 	int GetNumberInQueue();
@@ -67,6 +69,10 @@ public:
 	int GetResMapSize();
 	int GetPartsMapSize();
 	int GetReturnStep();
+	static void UpdateShift();
+	static void ScheduleFirstWartimeShifts();
+	static void ScheduleFirstPeacetimeShifts();
+	static void SetFirstShiftUpdateFlag(int flag);
 	Distribution* GetServiceTime();
 	StepResource* GetResourceObj(string name);
 	Parts* GetPartsObj(string name);
@@ -91,6 +97,7 @@ public:
 	void ScheduleDoneStepEM();*/			// if done with step, see if there's another step, if there is, check resources. if any same, keep, if not, release. if next step in, keep bay, if out, release bay
 	void Print();
 private:
+	static int _firstShiftUpdateFlag;
 	string _myRJ;
 	Distribution* _serviceTime;
 	//map<int, Aircraft*, greater<int>> _PriorityQueue;	//priority queue map -- maybe vector if priorities are same
@@ -146,6 +153,7 @@ private:
 	class NeedPartsEA;
 	class ResNeedPartsEA;
 	class NeedBaysEA;
+	class ShiftChangeEA;
 
 	void PlaceOrderEM(Parts* parts);
 	void OrderArrivalEM(Parts* parts);
@@ -158,6 +166,6 @@ private:
 	void ReleaseResourceEM(StepResource* resource, int numRelease);
 	void FailResourceEM(StepResource* resource);
 	void RestoreResourceEM(StepResource* resource);
-
+	//void ShiftChangeEM();
 	void AcquireParts(Parts* parts, int newCount);
 };

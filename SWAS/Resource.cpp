@@ -2,6 +2,7 @@
 #include "SimExec.h"
 #include "Scribe.h"
 
+
 StepResource::StepResource()
 {
 	//_failureName = "none specified yet";
@@ -78,6 +79,10 @@ void StepResource::CopyMapResource(const StepResource& mapResource)
 	_failureName = mapResource._failureName;
 	_failureType = mapResource._failureType;
 	_repairProc = mapResource._repairProc;
+	_shiftOneCount = mapResource._shiftOneCount;
+	_shiftTwoCount = mapResource._shiftTwoCount;
+	_shiftThreeCount = mapResource._shiftThreeCount;
+
 	if (mapResource._failureDist == nullptr)
 		_failureDist = nullptr; 
 	else
@@ -129,6 +134,37 @@ void StepResource::RestoreResource()
 ///////////////////////////////
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
+
+void StepResource::SetShiftOneCount(int shiftcount)
+{
+	_shiftOneCount = shiftcount;
+};
+
+double StepResource::GetShiftOneCount()
+{
+	return _shiftOneCount;
+};
+
+void StepResource::SetShiftTwoCount(int shiftcount)
+{
+	_shiftTwoCount = shiftcount;
+};
+
+double StepResource::GetShiftTwoCount()
+{
+	return _shiftTwoCount;
+};
+
+void StepResource::SetShiftThreeCount(int shiftcount)
+{
+	_shiftThreeCount = shiftcount;
+};
+
+double StepResource::GetShiftThreeCount()
+{
+	return _shiftThreeCount;
+}
+
 
 void StepResource::SetResourceCount(double resourceCount)
 {

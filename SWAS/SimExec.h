@@ -46,7 +46,6 @@ public:
 	static bool GetSimulationFlag();
 	static Time GetTotalSimulationTime();
 	static int PrintNumInCondES();
-
 private:
 	struct Event;
 	struct CondEvent;

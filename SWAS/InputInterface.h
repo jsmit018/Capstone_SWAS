@@ -42,9 +42,10 @@ public:
 	static double GetShiftTwoStartTime();
 	static void SetShiftThreeStartTime(int starttime);
 	static double GetShiftThreeStartTime();
-
+	static bool IsWartime();
+	static void SetWartimeFlag(int flag);
 private:
-	int _wartimeFlag;
+	static int _wartimeFlag;
 	static int _numRuns;
 	static int _airCount;
 	static int _IDcount;
