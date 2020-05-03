@@ -707,7 +707,8 @@ void Scribe::RecordMission(string mission)
 }
 
 //Create a node containing a resource and an initial availability
-void Scribe::RecordResource(string resource, int count)
+//void Scribe::RecordResource(string resource, int count)
+void Scribe::RecordResource(string resource, double count)
 {
 	if (runCurrent->resourceHead == nullptr)
 	{

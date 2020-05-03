@@ -20,6 +20,7 @@ double  InputReader::_shiftTwoStartTime;
 double  InputReader::_shiftThreeStartTime;
 int InputReader::_wartimeFlag;
 
+
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
 		_aircraftName = aircraftName;
@@ -891,7 +892,9 @@ void InputReader::ReadInputData() //initialization for getting data
 				printf("got Resource Table \n");
 
 				string resName;
-				int resCount;
+				double resCountShift1;
+				double resCountShift2;
+				double resCountShift3;
 				double resourceFootprintX;
 				double resourceFootprintY;
 
@@ -929,17 +932,47 @@ void InputReader::ReadInputData() //initialization for getting data
 					resName = row[0];
 
 					istringstream ssResource1(row[1]);
-					ssResource1 >> resCount;
+					ssResource1 >> resCountShift1;
 
 					istringstream ssResource2(row[2]);
-					ssResource2 >> resourceFootprintX;
+					ssResource2 >> resCountShift2;
+					
+					
+					//cout << row[2] << " " << resCountShift2 << endl;
 
-					istringstream ssResource3(row[3]);
-					ssResource3 >> resourceFootprintY;
+					if (row.size() == 6)
+					{
+						istringstream ssResource3(row[3]);
+						ssResource3 >> resCountShift3;
+
+						istringstream ssResource4(row[4]);
+						ssResource4 >> resourceFootprintX;
+
+						istringstream ssResource5(row[5]);
+						ssResource5 >> resourceFootprintY;
+					}
+					else
+					{
+						istringstream ssResource3(row[3]);
+						ssResource3 >> resourceFootprintX;
+
+						istringstream ssResource4(row[4]);
+						ssResource4 >> resourceFootprintY;
+					}
+
+					//istringstream ssResource2(row[2]);
+					//ssResource2 >> resourceFootprintX;
+
+					//istringstream ssResource3(row[3]);
+					//ssResource3 >> resourceFootprintY;
 
 					StepResource* res = new StepResource();
 					res->SetResourceName(resName);
-					res->SetResourceCount(resCount);
+					res->SetResourceCount(resCountShift1);
+
+					res->SetShiftOneCount(resCountShift1);
+					res->SetShiftTwoCount(resCountShift2);
+					res->SetShiftThreeCount(resCountShift3);
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 
 
@@ -951,7 +984,9 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					_masterResourceMap.insert(pair<string, StepResource*>(resName, res));
 
-					Scribe::RecordResource(resName, resCount);
+					
+					//TODO UPDATE SCRIBE FOR SHIFT COUNTS
+					Scribe::RecordResource(resName, resCountShift1);
 
 					//Step::AddToResPool(res, res->GetResourceName());
 
@@ -972,12 +1007,25 @@ void InputReader::ReadInputData() //initialization for getting data
 									continue;
 								it->second->SetResourceName(resName);
 								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumResNeeded());
-								it->second->SetResourceCount(resCount);
-
+								it->second->SetResourceCount(resCountShift1);
+								if (IsWartime() == true)
+								{
+									it->second->SetShiftOneCount(resCountShift1);
+									it->second->SetShiftTwoCount(resCountShift2);
+									it->second->SetShiftThreeCount(0);
+								}
+								else 
+								{
+									it->second->SetShiftOneCount(resCountShift1);
+									it->second->SetShiftTwoCount(resCountShift2);
+									it->second->SetShiftThreeCount(resCountShift3);
+								}
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 								//it->second->PrintResProperties();
 								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
-
+								cout << it->second->GetResourceName() << " count 1 " << it->second->GetShiftOneCount() << endl;
+								cout << it->second->GetResourceName() << " count 2 " << it->second->GetShiftTwoCount() << endl;
+								cout << it->second->GetResourceName() << " count 3 " << it->second->GetShiftThreeCount() << endl;
 
 							}
 

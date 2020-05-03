@@ -43,18 +43,18 @@ public:
 	bool IsAfterCEL();
 	void SetCELflag(int CELflag);
 	
-	static void SetShiftOneCount();
-	static double GetShiftOneCount();
-	static void SetShiftTwoCount();
-	static double GetShiftTwoCount();
-	static void SetShiftThreeCount();
-	static double GetShiftThreeCount();
+	void SetShiftOneCount(int shiftcount);
+	double GetShiftOneCount();
+	void SetShiftTwoCount(int shiftcount);
+	double GetShiftTwoCount();
+	void SetShiftThreeCount(int shiftcount);
+	double GetShiftThreeCount();
 
 private:
 	//int _resourceCount;
-	static int _shiftOneCount;
-	static int _shiftTwoCount;
-	static int _shiftThreeCount;
+	int _shiftOneCount;
+	int _shiftTwoCount;
+	int _shiftThreeCount;
 	//int _resourceID; // NOT SET YET
 	double _resourceCount;
 	int _numNeeded;
