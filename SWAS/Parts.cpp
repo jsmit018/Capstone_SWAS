@@ -2,9 +2,9 @@
 
 Parts::Parts()
 {
-	//_partsName = "none needed";
-	//_partsCount = 0;
-	//_orderThreshold = 0;
+	//_partsName = "none needed"; 
+	//_partsCount = 0; 
+	//_orderThreshold = 0; 
 }
 
 void Parts::CopyMapParts(const Parts& mapParts)
@@ -116,8 +116,8 @@ void Parts::SetLeadTime(string leadTime)
 	//they're split based on the ( and ) symbols. The parenthesis are treated as a delimiter.
 	getline(leadDist, firstHalf, '(');
 	getline(leadDist, secHalf, ')');
-	//	cout << "first: " << firstHalf << endl;
-	//	cout << "sec: " << secHalf << endl;
+	//	cout << "first: " << firstHalf << endl; 
+	//	cout << "sec: " << secHalf << endl; 
 
 		//this is used for the second half to turn the numbers into the doubles
 	istringstream nums(secHalf);
@@ -183,8 +183,8 @@ void Parts::SetLeadTime(string leadTime)
 
 
 	//Calls the print function added to each distribution - Determines correct distribution and prints
-//	cout << "LEAD TIME ";
-//	_leadTime->PrintDistribution();
+//	cout << "LEAD TIME "; 
+//	_leadTime->PrintDistribution(); 
 }
 
 Distribution* Parts::GetLeadTime()

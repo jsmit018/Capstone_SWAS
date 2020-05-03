@@ -22,56 +22,56 @@
 	//***SimExec does this by returning a Flag 0 for sim is still running returns a 3 if the simulation is terminated.
     //calls output functions to print values [ ]
 
-InputReader Warehouse::_inputReader;
-Scribe* Warehouse::_scribe = new Scribe();
+InputReader Warehouse::_inputReader; 
+Scribe* Warehouse::_scribe = new Scribe(); 
 
 Warehouse::Warehouse(double length, double width) {
-    _hangarLength = length;
-    _hangarWidth = width;
-    _index = 0;
+    _hangarLength = length; 
+    _hangarWidth = width; 
+    _index = 0; 
 }
 
 void Warehouse::SetMasterMaps(InputReader inputReader)
 {
-	_inputReader = inputReader;
+	_inputReader = inputReader; 
 }
 
 void Warehouse::SetScribe(Scribe* scribe)
 {
-	_scribe = scribe;
+	_scribe = scribe; 
 }
 
 double Warehouse::GetLength()
 {
-    cout << "Returning Hangar Length" << endl;
-    return _hangarLength;
+    cout << "Returning Hangar Length" << endl; 
+    return _hangarLength; 
 }
 
 void Warehouse::SetLength(double hangarLength)
 {
-    cout << "Updating Hangar length" << endl;
-    _hangarLength = hangarLength;
+    cout << "Updating Hangar length" << endl; 
+    _hangarLength = hangarLength; 
 }
 
 void Warehouse::SetWidth(double warehouseWidth)
 {
-    cout << "Updating Hangar Width" << endl;
-    _hangarWidth = warehouseWidth;
+    cout << "Updating Hangar Width" << endl; 
+    _hangarWidth = warehouseWidth; 
 }
 
 double Warehouse::GetWidth()
 {
-    cout << "Returning Hangar Width" << endl;
-    return _hangarWidth;
+    cout << "Returning Hangar Width" << endl; 
+    return _hangarWidth; 
 }
 
-Resource* Warehouse::GetResourceInformation(string resourceName)
+StepResource* Warehouse::GetResourceInformation(string resourceName)
 {
-	map<string, Resource*>::const_iterator resIter = _inputReader.GetMasterResourceMap().find(resourceName);
-	return resIter->second;
+	map<string, StepResource*>::const_iterator resIter = _inputReader.GetMasterResourceMap().find(resourceName); 
+	return resIter->second; 
 }
 
 void Warehouse::UpdateListOfObjects(string objectName){
-    _listOfObjects[_index] = objectName;
-    _index++;
+    _listOfObjects[_index] = objectName; 
+    _index++; 
 }

@@ -2,21 +2,22 @@
 #include "SimExec.h"
 #include "Scribe.h"
 
-Resource::Resource()
+
+StepResource::StepResource()
 {
 	//_failureName = "none specified yet";
 	//_failureType = "none specified yet";
 	//_repairProc = "none specified yet";
 }
 
-class Resource::WaitForResourceEA : public CondEventAction {
+class StepResource::WaitForResourceEA : public CondEventAction {
 public:
-	WaitForResourceEA(Resource* resource, int amountNeeded) {
+	WaitForResourceEA(StepResource* resource, int amountNeeded) {
 		_resource = resource;
 		_amountNeeded = amountNeeded;
 	}
 
-	bool Condition(Resource* resource, Parts* parts) {
+	bool Condition(StepResource* resource, Parts* parts) {
 		if (resource == _resource) {
 			if (_resource->GetResourceCount() >= _amountNeeded)
 				return true;
@@ -33,13 +34,13 @@ public:
 	}
 
 private:
-	Resource* _resource;
+	StepResource* _resource;
 	int _amountNeeded;
 };
 
-class Resource::FailResourceEA : public EventAction {
+class StepResource::FailResourceEA : public EventAction {
 public:
-	FailResourceEA(Resource* resource) {
+	FailResourceEA(StepResource* resource) {
 		//_step = step;
 		_resource = resource;
 	}
@@ -49,12 +50,12 @@ public:
 	}
 private:
 	//Step* _step;
-	Resource* _resource;
+	StepResource* _resource;
 };
 
-class Resource::RestoreResourceEA : public EventAction {
+class StepResource::RestoreResourceEA : public EventAction {
 public:
-	RestoreResourceEA( Resource* resource) {
+	RestoreResourceEA(StepResource* resource) {
 		//_step = step;
 		_resource = resource;
 	}
@@ -65,10 +66,10 @@ public:
 
 private:
 	//Step* _step;
-	Resource* _resource;
+	StepResource* _resource;
 };
 
-void Resource::CopyMapResource(const Resource& mapResource)
+void StepResource::CopyMapResource(const StepResource& mapResource)
 {
 	_resourceCount = mapResource._resourceCount;
 	_numNeeded = mapResource._numNeeded;
@@ -78,6 +79,10 @@ void Resource::CopyMapResource(const Resource& mapResource)
 	_failureName = mapResource._failureName;
 	_failureType = mapResource._failureType;
 	_repairProc = mapResource._repairProc;
+	_shiftOneCount = mapResource._shiftOneCount;
+	_shiftTwoCount = mapResource._shiftTwoCount;
+	_shiftThreeCount = mapResource._shiftThreeCount;
+
 	if (mapResource._failureDist == nullptr)
 		_failureDist = nullptr; 
 	else
@@ -85,7 +90,7 @@ void Resource::CopyMapResource(const Resource& mapResource)
 }
 
 //@TODO will need to figure out logic for what happens if amount needed is greater
-void Resource::Acquire(int amountNeeded)
+void StepResource::Acquire(int amountNeeded)
 {
 	//if there aren't enough resources for this step
 	if (amountNeeded > _resourceCount) {
@@ -99,12 +104,12 @@ void Resource::Acquire(int amountNeeded)
 	_resourceCount -= amountNeeded;
 }
 
-void Resource::Release(int amountToRelease)
+void StepResource::Release(int amountToRelease)
 {
 	_resourceCount += amountToRelease;
 }
 
-bool Resource::IsAvailable(int amountNeeded)
+bool StepResource::IsAvailable(int amountNeeded)
 {
 	if (amountNeeded > _resourceCount)
 		return false;
@@ -113,14 +118,14 @@ bool Resource::IsAvailable(int amountNeeded)
 	}
 }
 
-void Resource::FailResource()
+void StepResource::FailResource()
 {
 	//@TODO write the algorithm for a resource failure essentially is just scheduling an event
 	//so needed EA and EM
 	_resourceCount--;
 }
 
-void Resource::RestoreResource()
+void StepResource::RestoreResource()
 {
 	//May probably need an associated Event to Execute function call. 
 	_resourceCount++;
@@ -130,69 +135,100 @@ void Resource::RestoreResource()
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
 
-void Resource::SetResourceCount(double resourceCount)
+void StepResource::SetShiftOneCount(int shiftcount)
+{
+	_shiftOneCount = shiftcount;
+};
+
+double StepResource::GetShiftOneCount()
+{
+	return _shiftOneCount;
+};
+
+void StepResource::SetShiftTwoCount(int shiftcount)
+{
+	_shiftTwoCount = shiftcount;
+};
+
+double StepResource::GetShiftTwoCount()
+{
+	return _shiftTwoCount;
+};
+
+void StepResource::SetShiftThreeCount(int shiftcount)
+{
+	_shiftThreeCount = shiftcount;
+};
+
+double StepResource::GetShiftThreeCount()
+{
+	return _shiftThreeCount;
+}
+
+
+void StepResource::SetResourceCount(double resourceCount)
 {
 	_resourceCount = resourceCount;
 }
 
-double Resource::GetResourceCount()
+double StepResource::GetResourceCount()
 {
 	return _resourceCount;
 }
 
-void Resource::SetResourceName(string resourceName)
+void StepResource::SetResourceName(string resourceName)
 {
 	_resourceName = resourceName;
 }
 
-string Resource::GetResourceName()
+string StepResource::GetResourceName()
 {
 	return _resourceName;
 }
 
-void Resource::SetNumResNeeded(int numNeeded)
+void StepResource::SetNumResNeeded(int numNeeded)
 {
 	//get from step table values 
 	_numNeeded = numNeeded;
 }
 
-int Resource::GetNumResNeeded()
+int StepResource::GetNumberOfResroucesNeeded()
 {
 	return _numNeeded;
 }
 
-void Resource::SetResourceFootprint(double length, double width)
+void StepResource::SetResourceFootprint(double length, double width)
 {
 	_length = length;
 	_width = width;
 }
 
-double Resource::GetResourceFootprint()
+double StepResource::GetResourceFootprint()
 {
 	return _length, _width;
 }
 
-void Resource::SetFailureName(string failureName)
+void StepResource::SetFailureName(string failureName)
 {
 	_failureName = failureName;
 }
 
-string Resource::GetFailureName()
+string StepResource::GetFailureName()
 {
 	return _failureName;
 }
 
-void Resource::SetFailureType(string failureType)
+void StepResource::SetFailureType(string failureType)
 {
 	_failureType = failureType;
 }
 
-string Resource::GetFailureType()
+string StepResource::GetFailureType()
 {
 	return _failureType;
 }
 
-void Resource::SetFailureDistr(string failureDistr)
+void StepResource::SetFailureDistr(string failureDistr)
 {
 	//turn failure distr from string into distributions
 	istringstream failDist(failureDistr);
@@ -267,28 +303,28 @@ void Resource::SetFailureDistr(string failureDistr)
 
 }
 
-Distribution* Resource::GetFailureDistr()
+Distribution* StepResource::GetFailureDistr()
 {
 	return _failureDist; //check if this works
 }
 
-void Resource::SetRepairProcess(string repairProc)
+void StepResource::SetRepairProcess(string repairProc)
 {
 	_repairProc = repairProc;
 }
 
-void Resource::ScheduleFirstFailures(Resource* resource)
+void StepResource::ScheduleFirstFailures(StepResource* resource)
 {
 	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 2, "FailResourceEA");
 	SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 1, "FailResourceEA");
 }
 
-string Resource::GetRepairProcess()
+string StepResource::GetRepairProcess()
 {
 	return _repairProc;
 }
 
-bool Resource::IsAfterCEL()
+bool StepResource::IsAfterCEL()
 {
 	if (_CELflag == 1)
 		return true;
@@ -296,13 +332,13 @@ bool Resource::IsAfterCEL()
 		return false;
 }
 
-void Resource::SetCELflag(int CELflag)
+void StepResource::SetCELflag(int CELflag)
 {
 	_CELflag = CELflag;
 }
 
 
-void Resource::PrintResProperties()
+void StepResource::PrintResProperties()
 {
 	cout << "			Resource name: " << _resourceName << endl;
 	cout << "			Initial count: " << _resourceCount << endl;
@@ -322,17 +358,17 @@ void Resource::PrintResProperties()
 	cout << endl;
 }
 
-void Resource::SetResourceID(int resourceID)
-{
-	_resourceID = resourceID;
-}
+//void StepResource::SetResourceID(int resourceID)
+//{
+//	_resourceID = resourceID;
+//}
+//
+//int StepResource::GetResourceID()
+//{
+//	return _resourceID;
+//}
 
-int Resource::GetResourceID()
-{
-	return _resourceID;
-}
-
-void Resource::FailResourceEM(Resource* resource)
+void StepResource::FailResourceEM(StepResource* resource)
 {
 	//int newCount;
 	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
@@ -363,7 +399,7 @@ void Resource::FailResourceEM(Resource* resource)
 	//}
 }
 
-void Resource::RestoreResourceEM(Resource* resource)
+void StepResource::RestoreResourceEM(StepResource* resource)
 {
 	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;
 	resource->RestoreResource();

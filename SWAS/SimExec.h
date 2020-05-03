@@ -35,7 +35,7 @@ public:
 	static void SetSystemSink(SinkBlock* sinkBlock);
 	static SinkBlock* GetSystemSink();
 	static string ConvertDate(Time month);
-	static void CheckConditionalEvents(Resource* resource = 0, Parts* parts = 0);
+	static void CheckConditionalEvents(StepResource* resource = 0, Parts* parts = 0);
 	static void PrintEventSet();
 	static void InitializeSimulation(int numBins, int* days);
 	//static void RunSimulation();
@@ -46,7 +46,6 @@ public:
 	static bool GetSimulationFlag();
 	static Time GetTotalSimulationTime();
 	static int PrintNumInCondES();
-
 private:
 	struct Event;
 	struct CondEvent;
