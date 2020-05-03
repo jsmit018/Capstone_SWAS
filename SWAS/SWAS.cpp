@@ -59,6 +59,7 @@ void InitializeAircraft()
 	//inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft(1);
 	//inputReader.AddSelectedAircraft("F-18");
+	inputReader.AddSelectedAircraft(2);
 	inputReader.AddSelectedAircraft(3);
 	//inputReader.AddSelectedAircraft("Apache");
 
