@@ -4,11 +4,17 @@
 
 using namespace std; 
 
+/**
+ *CalConverter constructor
+ */
 CalConverter::CalConverter()
 {
 
 }
 
+/**
+ * This function inserts days into the month map and prints the map
+ */
 void CalConverter::InsertDays(int month, int numDays)
 {
 	_monthMap.insert(pair<int, int>(month, numDays)); 
@@ -20,6 +26,9 @@ void CalConverter::InsertDays(int month, int numDays)
 	}
 }
 
+/**
+ *  Returns Calendar Array
+ */
 int* CalConverter::GetCalArray() {
 	map<int, int>::const_iterator iter = _monthMap.begin(); 
 	_calArray = new int[_monthMap.size()]; 
@@ -33,15 +42,24 @@ int* CalConverter::GetCalArray() {
 	return _calArray; 
 }
 
+/**
+ * Returns the Month Map
+ */
 map<int, int> CalConverter::GetMonthMap()
 {
 	return _monthMap; 
 }
 
+/**
+ * TimeConverter constructor
+ */
 TimeConverter::TimeConverter()
 {
 }
 
+/**
+ * Algorithm to covert distribution value to month and day
+ */
 void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& timeOfDay, int& year, double distributionValue,
 	int baseX, int baseY, int* endOfMonth, Time sTime, int dayOrHour, int recurring, Time simTime) {
 	div_t divresult;// Declaring div_t object to obtain quotient and remainder
@@ -218,16 +236,25 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 	}
 }*/
 
+/**
+ * Constructor of CalendarObj that sets _numEvents to zero
+ */
 CalendarObj::CalendarObj()
 {
 	_numEvents = 0; 
 }
 
+/**
+ * Updates _numEvents by incrementing _numEvents by one
+ */
 void CalendarObj::UpdateNumEvents()
 {
 	_numEvents++; 
 }
 
+/**
+ * This function returns _numEvents
+ */
 int CalendarObj::GetNumEvents()
 {
 	return _numEvents; 
