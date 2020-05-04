@@ -1245,7 +1245,7 @@ void Scribe::AdvanceRun()
 	// No further runs
 	else
 	{
-		Archive();
+		//Archive();
 	}
 }
 

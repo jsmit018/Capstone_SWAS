@@ -1989,14 +1989,16 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		////cout << "--------------\n" <<
+		//cout << "--------------\n" <<
 		//	"Resource: " << iter->first << ", Initial Count: " << resource->GetResourceCount() << ", current count: " << iter->second->GetResourceCount() <<
-		//	", new count: " << newCount << ", after updating through ResPoolFunc: ";
+		//	", new count: " << newCount; 
 		//resource->SetResourceCount(newCount);
-		////cout << iter->second->GetResourceCount() << "\n----------" << endl;
 		//resource->SetResourceCount(newCount);
 		//SetResPoolCount(resource->GetResourceName(),newCount);
 		SetResPoolCount(iter->second->GetResourceName(), newCount);
+		//cout << ", after updating through ResPoolFunc: ";
+		//cout << iter->second->GetResourceCount() << "\n----------" << endl;
+		//system("PAUSE");
 	}
 
 	//iter->second->SetResourceCount(newCount);
@@ -2015,12 +2017,12 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 
-	//cout << "+++++++\n" <<
-		//_myRJ <<
-		//" Resource: " << iter->first <<
-		//", Count before release: " << iter->second->GetResourceCount() <<
-		//", count expected after release: " << newCount;
-	//}
+	cout << "+++++++\n" <<
+		_myRJ <<
+		" Resource: " << iter->first <<
+		", Count before release: " << iter->second->GetResourceCount() <<
+		", count expected after release: " << newCount << "\n+++++++" << endl;
+	//system("PAUSE");
 
 
 	resource->SetResourceCount(newCount);
@@ -2169,15 +2171,15 @@ bool Step::WasBayAcquired(string bayName)
 
 bool Step::isFirstShiftChange()
 {
-	cout << "is in first shift change" << endl;
+	//cout << "is in first shift change" << endl;
 	if (_firstShiftUpdateFlag == 1)
 	{
-		cout << "is first flag" << endl;
+		//cout << "is first flag" << endl;
 		return true;
 	}
 	else
 	{
-		cout << "is not first flag" << endl;
+		//cout << "is not first flag" << endl;
 		return false;
 	}
 }

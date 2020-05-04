@@ -238,6 +238,8 @@ public:
 		//	cout << "***********************************************************************" << endl;
 		//	cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
+		if (eaName == "ShiftChangeEA" || eaName == "Shift1Change" || eaName == "Shift2Change" || eaName == "Shift3Change")
+			_numEvents--;
 		//	cout << "Number of Events increased to " << _numEvents << endl;
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
@@ -339,7 +341,7 @@ public:
 			Event* curr = _eventSet[binX][binY];
 			//		cout << "Searching the list on where to place the event based on time and priority" << endl;
 			if (year == 2022)
-				//cout << "Bleh" << endl;
+				////cout << "Bleh" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority < curr->_nextEvent->_priority) {
@@ -374,6 +376,8 @@ public:
 		int year = _year;
 		//	cout << "Adding Event to the Event List" << endl;
 		_numEvents++;
+		if (eaName == "ShiftChangeEA" || eaName == "Shift1Change" || eaName == "Shift2Change" || eaName == "Shift3Change")
+			_numEvents--;
 		//	cout << "Number of Events increased to " << _numEvents << endl;
 		//	cout << "Converting Distribution to Appropriate Time" << endl;
 		if (daysOrHours == 0)
@@ -383,7 +387,7 @@ public:
 
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		if (Month == 0 && Day == 0 && timeOfDay == 4)
-			cout << "bleh" << endl;
+			//cout << "Bleh" << endl;
 		e->PrintEvent();
 		int binX;
 		int binY;
@@ -413,7 +417,7 @@ public:
 		else {
 			Event* curr = _eventSet[binX][binY];
 			//if (_year == 2022)
-				//cout << "Bleh";
+				////cout << "Bleh";
 			//	cout << "Searching the list on where to place the event based on time and priority" << endl;
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
@@ -474,7 +478,11 @@ public:
 	}
 
 	int GetNumEvents() {
+		/*if (_numEvents == 2196) {
+			PrintCalendar();
+		}*/
 		return _numEvents;
+		
 	}
 
 	string ConvertMonth(Time month) {
@@ -698,7 +706,7 @@ private:
 			_baseY = 0;
 			_totalDaysPassed++;
 			/*if (_year == 2021)
-				cout << "Bleh" << endl;*/
+				//cout << "Bleh" << endl;*/
 		}
 		else {
 			_eventSet[_baseX][_baseY] = 0;
@@ -1120,11 +1128,12 @@ int SimExec::RunSimulation(Time month, Time day, int year) {
 			if (_simulationTime._timeOfDay >= 10) {
 			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
 				<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
-		}
+			}
 		else {
 			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
 				<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
 		}
+			//system("PAUSE");
 			return 3;
 			//break;
 		}
