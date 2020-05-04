@@ -24,8 +24,8 @@ struct aircraftNode
 public:
     //constructors
     aircraftNode();
-    aircraftNode(string);
-    aircraftNode(const aircraftNode&);
+    aircraftNode(string aircraftType);
+    aircraftNode(const aircraftNode& node2);
     ~aircraftNode();
 
     string type;
@@ -39,8 +39,8 @@ struct missionNode
 public:
     //constructors
     missionNode();
-    missionNode(string);
-    missionNode(const missionNode&);
+    missionNode(string missionName);
+    missionNode(const missionNode& node2);
     ~missionNode();
 
     string type;
@@ -53,8 +53,8 @@ struct resourceNode
 public:
     //constructors
     resourceNode();
-    resourceNode(string, int);
-    resourceNode(const resourceNode&);
+    resourceNode(string resourceName, int initialization);
+    resourceNode(const resourceNode& node2);
     ~resourceNode();
 
     string type;
@@ -74,8 +74,8 @@ struct failureNode
 public:
     //constructors
     failureNode();
-    failureNode(string, string, float);
-    failureNode(const failureNode&);
+    failureNode(string resource, string failure, float time);
+    failureNode(const failureNode& node2);
     ~failureNode();
 
     string resourceType;
@@ -93,8 +93,8 @@ struct resourceWaitNode
 public:
     //constructors
     resourceWaitNode();
-    resourceWaitNode(string, int, string, float);
-    resourceWaitNode(const resourceWaitNode&);
+    resourceWaitNode(string aircraft, int ID, string resource, float time);
+    resourceWaitNode(const resourceWaitNode& node2);
     ~resourceWaitNode();
 
     string aircraftType;
@@ -118,8 +118,8 @@ struct serviceWaitNode
 public:
     //constructors
     serviceWaitNode();
-    serviceWaitNode(string, int, string, float);
-    serviceWaitNode(const serviceWaitNode&);
+    serviceWaitNode(string aircraft, int ID, string spot, float time);
+    serviceWaitNode(const serviceWaitNode& node2);
     ~serviceWaitNode();
 
     string aircraftType;
@@ -143,8 +143,8 @@ struct repairJobNode
 public:
     //constructors
     repairJobNode();
-    repairJobNode(string, int, string, int, string, float);
-    repairJobNode(const repairJobNode&);
+    repairJobNode(string aircraft, int id, string job, int stepNum, string step, float time);
+    repairJobNode(const repairJobNode& node2);
     ~repairJobNode();
 
     string aircraftType;
@@ -170,8 +170,8 @@ struct reworkNode
 public:
     //constructors
     reworkNode();
-    reworkNode(string, string, float);
-    reworkNode(const reworkNode&);
+    reworkNode(string object, string rework, float time);
+    reworkNode(const reworkNode& node2);
     ~reworkNode();
 
     string objectType;
@@ -187,8 +187,8 @@ struct partRequestNode
 public:
     //constructors
     partRequestNode();
-    partRequestNode(string);
-    partRequestNode(const partRequestNode&);
+    partRequestNode(string part);
+    partRequestNode(const partRequestNode& node2);
     ~partRequestNode();
 
     string partType;
@@ -203,8 +203,8 @@ struct restockNode
 {
 public:
     restockNode();
-    restockNode(string, float);
-    restockNode(const restockNode&);
+    restockNode(string part, float time);
+    restockNode(const restockNode& node2);
     ~restockNode();
 
     string partType;
@@ -218,8 +218,8 @@ struct InspectionFailureNode
 {
 public:
     InspectionFailureNode();
-    InspectionFailureNode(int, string, string, int);
-    InspectionFailureNode(const InspectionFailureNode&);
+    InspectionFailureNode(int id, string aircraft, string inspectionName, int step);
+    InspectionFailureNode(const InspectionFailureNode& node2);
     ~InspectionFailureNode();
 
     int craftID;
@@ -237,7 +237,7 @@ struct runNode
 {
 public:
     runNode();
-    runNode(const runNode&);
+    runNode(const runNode& node2);
     ~runNode();
 
     //pointers to start of branches
@@ -287,40 +287,40 @@ class Scribe
 public:
 
     Scribe();
-    Scribe(int);
-    Scribe(const Scribe&);
+    Scribe(int runs);
+    Scribe(const Scribe& node2);
     ~Scribe();
 
     //Record methods
-    static void RecordAircraft(string);
-    static void TallyAircraft(string);
-    static void RecordMission(string);
-    static void RecordResource(string, int);
-    static void UpdateResourceUtilization(string, double, float);
+    static void RecordAircraft(string aircraft);
+    static void TallyAircraft(string aircraft);
+    static void RecordMission(string mission);
+    static void RecordResource(string resource, int count);
+    static void UpdateResourceUtilization(string resource, double usage, float currentTime);
     static void UpdateResourceUtilization();
-    static void UpdateResourceRequests(string, bool);
-    static void RecordFailure(string, string, float);
-    static void RecordRestore(string, string, float);
-    static void RecordResourceWait(string, int, string, float);
-    static void RecordResourceWaitEnd(int, string, float);
-    static void RecordServiceWait(string, int, string, float);
-    static void RecordServiceWaitEnd(int, string, float);
-    static void RecordRepairJob(string, int, string, int, string, float);
-    static void RecordRepairEnd(int, string, int, float);
-    static void RecordRework(string, string, float);
-    static void RecordPartRequest(string, int, bool);
-    static void RecordRestock(string, float);
-    static void RecordInspectionFailure(int, string, string, int);
+    static void UpdateResourceRequests(string resource, bool successful);
+    static void RecordFailure(string resource, string failure, float time);
+    static void RecordRestore(string resource, string failure, float time);
+    static void RecordResourceWait(string aircraft, int id, string resource, float start);
+    static void RecordResourceWaitEnd(int id, string resource, float end);
+    static void RecordServiceWait(string aircraft, int id, string spot, float start);
+    static void RecordServiceWaitEnd(int id, string spot, float end);
+    static void RecordRepairJob(string aircraft, int id, string job, int stepNum, string stepNme, float start);
+    static void RecordRepairEnd(int id, string job, int step, float end);
+    static void RecordRework(string object, string rework, float time);
+    static void RecordPartRequest(string resource, int usage, bool success);
+    static void RecordRestock(string resource, float time);
+    static void RecordInspectionFailure(int airID, string airType, string inspect, int stepNum);
     static void AdvanceRun();
 
     //static void SetWarehousDims(string, string);
-    static void SetWarehousDims(double, double);
-    static void SetRunTime(float);
-    static void SetPlanned(int);
-    static void SetRuns(int);
-    static void TallyUnplanned(int);
-    static void SetSeed(double);
-    static void SetSaveFile(string);
+    static void SetWarehousDims(double length, double width);
+    static void SetRunTime(float runT);
+    static void SetPlanned(int known);
+    static void SetRuns(int runs);
+    static void TallyUnplanned(int unplannedSet);
+    static void SetSeed(double value);
+    static void SetSaveFile(string file);
 
 
     //Output methods
