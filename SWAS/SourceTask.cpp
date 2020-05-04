@@ -337,7 +337,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
 		//cout << " THIS IS AIR ID " << newAircraft->GetAircraftID() << " scheduling first step of " << job << endl;
 		/*if (newAircraft->GetAircraftID() == 384)
-			cout << "Bleh" << endl;*/
+			//cout << "Bleh" << endl;*/
 
 		jobCounter++;
 
