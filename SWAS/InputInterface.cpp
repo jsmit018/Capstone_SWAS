@@ -167,7 +167,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				if (IsWartime() == true)
 				{
 
-					//cout << "war time!" << endl;
+				//	//cout << "war time!" << endl;
 					while (dataFile)
 					{
 						if (line.find("Wartime Shifts Table") != string::npos)
@@ -756,7 +756,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 
 					newStep->SetMyRJName(currentJob);
-
+					//cout << "WOw MY JOB IS  " << currentJob << endl;
 					newStep->SetRJPriority(jobPriority);
 
 					//compare jobname to insert priority to correct map location
@@ -764,7 +764,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					ssSteps2 >> stepID;
 
 					newStep->SetName(row[3]);
-
+					
 					newStep->SetType(row[4]);
 
 					newStep->SetInspecFailProb(row[5]);
@@ -786,6 +786,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 						while (it != iter->second->GetRJMapEnd())
 						{
+							//cout << "WOW JOB IS" << currentJob << endl;
 							if (it->second->GetName() == currentJob)
 							{
 								newStep->SetReqResource(row[8]);
@@ -878,16 +879,63 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					resName = row[0];
 
+					//shift 1 count
 					istringstream ssResource1(row[1]);
 					ssResource1 >> resCountShift1;
 
-					istringstream ssResource2(row[2]);
-					ssResource2 >> resCountShift2;
+					if (InputReader::IsWartime() == true)
+					{
+						//shift 2 count
+						istringstream ssResource2(row[2]);
+						ssResource2 >> resCountShift2;
+						//cout << "shift 2 count " << resCountShift2 << endl;
 
+						//shift 3 count is 0
+						resCountShift3 = 0.0;
+						//cout << "shift 3 count " << resCountShift3 << endl;
+
+						//footprint x
+						istringstream ssResource3(row[3]);
+						ssResource3 >> resourceFootprintX;
+						//cout << "footprint  x" << resourceFootprintX << endl;
+
+						//footprint y
+						istringstream ssResource4(row[4]);
+						ssResource4 >> resourceFootprintY;
+						//cout << "footprint  y" << resourceFootprintY << endl;
+
+					}
+					else
+					{
+						//shift 2 count
+						istringstream ssResource2(row[2]);
+						ssResource2 >> resCountShift2;
+						//cout << "shift 2 count " << resCountShift2 << endl;
+
+						//shift 3 count
+						istringstream ssResource3(row[3]);
+						ssResource3 >> resCountShift3;
+
+						//footprint x
+						istringstream ssResource4(row[4]);
+						ssResource4 >> resourceFootprintX;
+						//cout << "footprint  x" << resourceFootprintX << endl;
+
+						//footprint y
+						istringstream ssResource5(row[5]);
+						ssResource5 >> resourceFootprintY;
+						//cout << "footprint  y" << resourceFootprintY << endl;
+					}
+					//resource count
+					//istringstream ssResource1(row[1]);
+					//ssResource1 >> resCountShift1;
+
+					//istringstream ssResource2(row[2]);
+					//ssResource2 >> resCountShift2;
 
 					//cout << row[2] << " " << resCountShift2 << endl;
 
-					if (row.size() == 6)
+				/*	if (row.size() == 6)
 					{
 						istringstream ssResource3(row[3]);
 						ssResource3 >> resCountShift3;
@@ -899,27 +947,30 @@ void InputReader::ReadInputData() //initialization for getting data
 						ssResource5 >> resourceFootprintY;
 					}
 					else
-					{
-						istringstream ssResource3(row[3]);
+					{*/
+					/*	istringstream ssResource3(row[3]);
 						ssResource3 >> resourceFootprintX;
 
 						istringstream ssResource4(row[4]);
-						ssResource4 >> resourceFootprintY;
-					}
+						ssResource4 >> resourceFootprintY;*/	
 
-					//istringstream ssResource2(row[2]);
-					//ssResource2 >> resourceFootprintX;
+					//}
 
-					//istringstream ssResource3(row[3]);
-					//ssResource3 >> resourceFootprintY;
+				/*	istringstream ssResource2(row[2]);
+					ssResource2 >> resourceFootprintX;
+
+					istringstream ssResource3(row[3]);
+					ssResource3 >> resourceFootprintY;*/
 
 					StepResource* res = new StepResource();
 					res->SetResourceName(resName);
+					//count we start with
 					res->SetResourceCount(resCountShift1);
-
+					//all shift counts
 					res->SetShiftOneCount(resCountShift1);
 					res->SetShiftTwoCount(resCountShift2);
 					res->SetShiftThreeCount(resCountShift3);
+					//footprint
 					res->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 
 
@@ -945,15 +996,18 @@ void InputReader::ReadInputData() //initialization for getting data
 						map<string, RepairJob*>::const_iterator iter = masterIter->second->GetRJMapBegin();
 						while (iter != masterIter->second->GetRJMapEnd())
 						{
+							//cout << " job " << iter->first << " step ";
+
 							//ITERATE THROUGH THEIR STEPS
 							for (int i = 0; i < iter->second->GetStepVecSize(); i++)
 							{
 								map<string, StepResource*>::iterator it = iter->second->GetStep(i + 1)->FindResource(resName);
 
+								cout << iter->second->GetStep(i + 1)->GetName()<< endl;
 								if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 									continue;
 								it->second->SetResourceName(resName);
-								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumberOfResroucesNeeded());
+								SetMasterResNum(resName, iter->second->GetStep(i + 1)->GetResourceObj(resName)->GetNumberOfResourcesNeeded());
 								it->second->SetResourceCount(resCountShift1);
 								if (IsWartime() == true)
 								{
@@ -971,9 +1025,9 @@ void InputReader::ReadInputData() //initialization for getting data
 								it->second->SetResourceFootprint(resourceFootprintX, resourceFootprintY);
 								//it->second->PrintResProperties();
 								//cout << "RES MAP SIZE " << iter->second->GetStep(i + 1)->GetResMapSize() << endl;
-								/*cout << it->second->GetResourceName() << " count 1 " << it->second->GetShiftOneCount() << endl;
-								cout << it->second->GetResourceName() << " count 2 " << it->second->GetShiftTwoCount() << endl;
-								cout << it->second->GetResourceName() << " count 3 " << it->second->GetShiftThreeCount() << endl;*/
+								//cout << it->second->GetResourceName() << " count 1 " << it->second->GetShiftOneCount() << endl;
+								//cout << it->second->GetResourceName() << " count 2 " << it->second->GetShiftTwoCount() << endl;
+								//cout << it->second->GetResourceName() << " count 3 " << it->second->GetShiftThreeCount() << endl;*/
 
 							}
 
@@ -1241,10 +1295,10 @@ void InputReader::ReadInputData() //initialization for getting data
 		map<string, StepResource*> tempMap = Step::GetResPool();
 		if (tempMap.find(resIter->first) == tempMap.end())
 		{
-			//cout << "in input inter for pools " << resIter->second->GetNumberOfResroucesNeeded() << endl;
+			//cout << "in input inter for pools " << resIter->second->GetNumberOfResourcesNeeded() << endl;
 			StepResource* resCopy = new StepResource();
 			resCopy->CopyMapResource(*resIter->second);
-			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumberOfResroucesNeeded() << endl;
+			//cout << "IN RES COPY, NUM NEEDED IS " << resCopy->GetNumberOfResourcesNeeded() << endl;
 			Step::AddToResPool(resCopy, resIter->first);
 		}
 		resIter++;

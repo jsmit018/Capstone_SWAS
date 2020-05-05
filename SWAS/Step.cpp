@@ -879,7 +879,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 				////cout << "we have to wait for an outspot \n";
 			// WAITING
 			////cout << "Outspot unavailable, Adding Plane Step to Conditional Event List until it is." << endl;
-			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumberOfResroucesNeeded(), _acquiredResources));
+			SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, it->second, aircraft, it->second->GetNumberOfResourcesNeeded(), _acquiredResources));
 		}
 	*/
 	}
@@ -888,7 +888,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 	{
 		map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
 		//cout << endl << endl << endl;
-		////cout << " IN START SERVICE _ NEED " << iter->second->GetResourceName() << " OF COUNT " << iter->second->GetNumberOfResroucesNeeded() << endl;
+		////cout << " IN START SERVICE _ NEED " << iter->second->GetResourceName() << " OF COUNT " << iter->second->GetNumberOfResourcesNeeded() << endl;
 		////cout << " I currently have  " << _acquiredResources.size() << " types of resources " << endl;
 
 		if (_acquiredResources.size() > 0)
@@ -910,10 +910,10 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			if (_acquiredResources.size() == 0 /*(_indoorReq == 'N' && _acquiredResources.size() == 0) || (_indoorReq == 'Y' && _acquiredResources.size() == 1)*/)
 			{
 				//if what i need is more than what's avail, wait
-				if (iter->second->GetNumberOfResroucesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, iter->second, aircraft,
-						iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), iter->first,
+						iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), iter->first,
 						aircraft->GetAircraftID(), _myRJ);
 
 					//record waits
@@ -923,15 +923,15 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 					return;
 				}
 				//else if what i need is less than or = what's avail
-				else if (iter->second->GetNumberOfResroucesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
+				else if (iter->second->GetNumberOfResourcesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					//cout << aircraft->GetAircraftID() << " " << _myRJ << " " << _name << " pushing back " << _acquiredResources.size() << endl;
 					//acquire them
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					////cout << "in start service after acquire in 'what i need is less than or = what's avail' " << endl;
 					////cout << "these should match " << iter->first << " " << _resourcePool.find(iter->first)->second->GetResourceName() << endl;
-					////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 					////cout << aircraft->GetAircraftID() << " " << _myRJ << " " << _name << " after push back " << _acquiredResources.size() << endl;
 				}
 				continue;
@@ -952,22 +952,22 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 					alreadyAcquired = true;
 
 					//i've already acquired this resource - if i need more of it
-					if (it->second < iter->second->GetNumberOfResroucesNeeded())
+					if (it->second < iter->second->GetNumberOfResourcesNeeded())
 					{
 						//i've already acquired this resource - if i need more than are avail, wait
-						if ((iter->second->GetNumberOfResroucesNeeded() - it->second) > _resourcePool.find(iter->first)->second->GetResourceCount())
+						if ((iter->second->GetNumberOfResourcesNeeded() - it->second) > _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//if i have any resource and i need to wait, my priority increases
 							if (_indoorReq == 'N' || (_indoorReq == 'Y' && _acquiredResources.size() > 1))
 							{
 								SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, iter->second,
-									aircraft, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
+									aircraft, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
 									iter->first, aircraft->GetAircraftID(), _myRJ);
 							}
 							else
 							{
 								SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, iter->second,
-									aircraft, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
+									aircraft, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
 									iter->first, aircraft->GetAircraftID(), _myRJ);
 							}
 							Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
@@ -976,24 +976,24 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 							return;
 						}
 						//i've already acquired this resource - if i need more of it, & there are enough avail
-						else if ((iter->second->GetNumberOfResroucesNeeded() - it->second) < _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if ((iter->second->GetNumberOfResourcesNeeded() - it->second) < _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//acquire the difference
-							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResroucesNeeded() - it->second));
+							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResourcesNeeded() - it->second));
 							////cout << "in start service after acquire in 'i need more of it, & there are enough avail' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() - it->second << endl;
-							it->second += (iter->second->GetNumberOfResroucesNeeded() - it->second);
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() - it->second << endl;
+							it->second += (iter->second->GetNumberOfResourcesNeeded() - it->second);
 							////cout << " new size of resource " << it->second << " new size of vector " << _acquiredResources.size() << endl;
 
 							//}
 						}
-						else if ((iter->second->GetNumberOfResroucesNeeded() - it->second) == _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if ((iter->second->GetNumberOfResourcesNeeded() - it->second) == _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
-							AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+							AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 							////cout << "in start service after acquire in ' theres an equal amount to what i need' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
 						}
 					}
 				}
@@ -1002,17 +1002,17 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			//didn't find this resource
 			if (foundIt == false)
 			{
-				if (iter->second->GetNumberOfResroucesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					////cout << "in start service after acquire in 'i don't have it yet' " << endl;
 					////cout << "these should match " << iter->first << " " << it->first << endl;
-					////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 				}
 				else {
 					SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, iter->second,
-						aircraft, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
+						aircraft, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
 						iter->first, aircraft->GetAircraftID(), _myRJ);
 					Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
 					Scribe::RecordResourceWait(aircraft->GetAircraftType(), aircraft->GetAircraftID(), iter->second->GetResourceName(),
@@ -1068,10 +1068,10 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			if(_acquiredResources.size() == 0)
 			{
 				//if what i need is more than what's avail, wait
-				if (iter->second->GetNumberOfResroucesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, iter->second, aircraft,
-						iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), iter->first,
+						iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(), iter->first,
 						aircraft->GetAircraftID(), _myRJ);
 
 					//record waits
@@ -1084,11 +1084,11 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 				else
 				{
 					//acquire them
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					////cout << "in start service after acquire in 'i have nothing yet, ' " << endl;
 					////cout << "these should match " << iter->first << " " << it->first << endl;
-					////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 				}
 				continue;
 			}
@@ -1104,32 +1104,32 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 
 					//Compare what i have (acquired) with what i need (reqresourceneed)
 					//if what i have is greater, release the difference
-					if (it->second > iter->second->GetNumberOfResroucesNeeded())
+					if (it->second > iter->second->GetNumberOfResourcesNeeded())
 					{
-						ReleaseResourceEM(iter->second, it->second - iter->second->GetNumberOfResroucesNeeded());
+						ReleaseResourceEM(iter->second, it->second - iter->second->GetNumberOfResourcesNeeded());
 						////cout << "after release resource 'what i have is greater'" << endl;
 						////cout << "these should match " << iter->first << " " << it->first << endl;
-						////cout << "num to release " << it->second - iter->second->GetNumberOfResroucesNeeded() << endl;
+						////cout << "num to release " << it->second - iter->second->GetNumberOfResourcesNeeded() << endl;
 
-						it->second -= it->second - iter->second->GetNumberOfResroucesNeeded();
+						it->second -= it->second - iter->second->GetNumberOfResourcesNeeded();
 					}
 					//if what i have is less, acquire the difference
-					else if (it->second < iter->second->GetNumberOfResroucesNeeded())
+					else if (it->second < iter->second->GetNumberOfResourcesNeeded())
 					{
 						//if i need more than are avail
-						if (iter->second->GetNumberOfResroucesNeeded() - it->second > _resourcePool.find(iter->first)->second->GetResourceCount())
+						if (iter->second->GetNumberOfResourcesNeeded() - it->second > _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//if i have some, my priority increases
 							if (_indoorReq == 'N' || (_indoorReq == 'Y' && _acquiredResources.size() > 1))
 							{
 								SimExec::ScheduleConditionalEvent((-1 * _acquiredResources.size()), new WaitForResourceEA(this, iter->second, 
-									aircraft, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
+									aircraft, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
 									iter->first, aircraft->GetAircraftID(), _myRJ);
 							}
 							else
 							{
 								SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new WaitForResourceEA(this, iter->second,
-									aircraft, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
+									aircraft, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "WaitForResourceEA", aircraft->GetAircraftType(),
 									iter->first, aircraft->GetAircraftID(), _myRJ);
 							}
 							Scribe::UpdateResourceRequests(iter->second->GetResourceName(), false);
@@ -1138,26 +1138,26 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 							return;
 						}
 						//else if there are enough avail
-						else if(iter->second->GetNumberOfResroucesNeeded() - it->second < _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if(iter->second->GetNumberOfResourcesNeeded() - it->second < _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//acquire the difference
-							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResroucesNeeded() - it->second));
+							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResourcesNeeded() - it->second));
 							////cout << "in start service after acquire in 'there are more than enough, acquire the diff' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() - it->second << endl;
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() - it->second << endl;
 
 							//pushback the difference so we know the number acquired
 							if (it->first == iter->first)
 							{
-								it->second += (iter->second->GetNumberOfResroucesNeeded() - it->second);
+								it->second += (iter->second->GetNumberOfResourcesNeeded() - it->second);
 							}
 						}
-						else if (iter->second->GetNumberOfResroucesNeeded() - it->second == _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if (iter->second->GetNumberOfResourcesNeeded() - it->second == _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
-							AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+							AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 							////cout << "in start service after acquire in 'what i need is less than or = what's avail' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
 						}
 					}
 				}
@@ -1257,10 +1257,10 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 			if (_acquiredResources.size() == 0 /*(_indoorReq == 'N' && _acquiredResources.size() == 0) || (_indoorReq == 'Y' && _acquiredResources.size() == 1)*/)
 			{
 				//if what i need is more than what's avail, wait
-				if (iter->second->GetNumberOfResroucesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(), 
-						new ResWaitForResEA(this, resource, iter->second, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), 
+						new ResWaitForResEA(this, resource, iter->second, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), 
 						"ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7, _myRJ);
 
 					//record waits
@@ -1270,15 +1270,15 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 					return;
 				}
 				//else if what i need is less than or = what's avail
-				else if (iter->second->GetNumberOfResroucesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
+				else if (iter->second->GetNumberOfResourcesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					////cout << resource->GetResourceID() << " " << _myRJ << " " << _name << " pushing back " << _acquiredResources.size() << endl;
 					//acquire them
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					////cout << "in start service after acquire in 'what i need is less than or = what's avail' " << endl;
 					////cout << "these should match " << iter->first << " " << _resourcePool.find(iter->first)->second->GetResourceName() << endl;
-					////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 					////cout << resource->GetResourceID() << " " << _myRJ << " " << _name << " after push back " << _acquiredResources.size() << endl;
 				}
 				continue;
@@ -1295,34 +1295,34 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 					alreadyAcquired = true;
 
 					//i've already acquired this resource - if i need more of it
-					if (it->second < iter->second->GetNumberOfResroucesNeeded())
+					if (it->second < iter->second->GetNumberOfResourcesNeeded())
 					{
 						//i've already acquired this resource - if i need more than are avail, wait
-						if ((iter->second->GetNumberOfResroucesNeeded() - it->second) > _resourcePool.find(iter->first)->second->GetResourceCount())
+						if ((iter->second->GetNumberOfResourcesNeeded() - it->second) > _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()), new ResWaitForResEA(this, iter->second,
-								resource, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "ResWaitForResEA", resource->GetResourceName(),
+								resource, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "ResWaitForResEA", resource->GetResourceName(),
 								iter->first, 0, _myRJ);
 
 							return;
 						}
 						//i've already acquired this resource - if i need more of it, & there are enough avail
-						else if ((iter->second->GetNumberOfResroucesNeeded() - it->second) < _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if ((iter->second->GetNumberOfResourcesNeeded() - it->second) < _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//acquire the difference
-							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResroucesNeeded() - it->second));
+							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResourcesNeeded() - it->second));
 							////cout << "in start service after acquire in 'i need more of it, & there are enough avail' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() - it->second << endl;
-							it->second += (iter->second->GetNumberOfResroucesNeeded() - it->second);
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() - it->second << endl;
+							it->second += (iter->second->GetNumberOfResourcesNeeded() - it->second);
 							////cout << " new size of resource " << it->second << " new size of vector " << _acquiredResources.size() << endl;
 						}
-						else if ((iter->second->GetNumberOfResroucesNeeded() - it->second) == _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if ((iter->second->GetNumberOfResourcesNeeded() - it->second) == _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
-							AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+							AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 							////cout << "in start service after acquire in ' theres an equal amount to what i need' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
 						}
 					}
 				}
@@ -1331,17 +1331,17 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 			//didn't find this resource
 			if (foundIt == false)
 			{
-				if (iter->second->GetNumberOfResroucesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					//cout << "in start service after acquire in 'i don't have it yet' " << endl;
 					////cout << "these should match " << iter->first << " " << it->first << endl;
-					//cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					//cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 				}
 				else {
 					SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()),
-						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources),
+						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources),
 						"ResWaitForResEA", resource->GetResourceName(), iter->first, 0, _myRJ);
 					return;
 				}
@@ -1406,10 +1406,10 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 			if (_acquiredResources.size() == 0 /*(_indoorReq == 'N' && _acquiredResources.size() == 0) || (_indoorReq == 'Y' && _acquiredResources.size() == 1)*/)
 			{
 				//if what i need is more than what's avail, wait
-				if (iter->second->GetNumberOfResroucesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() > _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					SimExec::ScheduleConditionalEvent(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetPriority(),
-						new ResWaitForResEA(this, resource, iter->second, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources),
+						new ResWaitForResEA(this, resource, iter->second, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources),
 						"ResWaitForResEA", iter->first, resource->GetResourceName(), 77.7, _myRJ);
 
 					//record waits
@@ -1419,15 +1419,15 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 					return;
 				}
 				//else if what i need is less than or = what's avail
-				else if (iter->second->GetNumberOfResroucesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
+				else if (iter->second->GetNumberOfResourcesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
 					//cout << 0 << " " << _myRJ << " " << _name << " pushing back " << _acquiredResources.size() << endl;
 					//acquire them
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					////cout << "in start service after acquire in 'what i need is less than or = what's avail' " << endl;
 					////cout << "these should match " << iter->first << " " << _resourcePool.find(iter->first)->second->GetResourceName() << endl;
-					////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 					////cout << resource->GetResourceID() << " " << _myRJ << " " << _name << " after push back " << _acquiredResources.size() << endl;
 				}
 				continue;
@@ -1444,34 +1444,34 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 					alreadyAcquired = true;
 
 					//i've already acquired this resource - if i need more of it
-					if (it->second < iter->second->GetNumberOfResroucesNeeded())
+					if (it->second < iter->second->GetNumberOfResourcesNeeded())
 					{
 						//i've already acquired this resource - if i need more than are avail, wait
-						if ((iter->second->GetNumberOfResroucesNeeded() - it->second) > _resourcePool.find(iter->first)->second->GetResourceCount())
+						if ((iter->second->GetNumberOfResourcesNeeded() - it->second) > _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()), new ResWaitForResEA(this, iter->second,
-								resource, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources), "ResWaitForResEA", resource->GetResourceName(),
+								resource, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources), "ResWaitForResEA", resource->GetResourceName(),
 								iter->first, 0, _myRJ);
 
 							return;
 						}
 						//i've already acquired this resource - if i need more of it, & there are enough avail
-						else if ((iter->second->GetNumberOfResroucesNeeded() - it->second) < _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if ((iter->second->GetNumberOfResourcesNeeded() - it->second) < _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
 							//acquire the difference
-							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResroucesNeeded() - it->second));
+							AcquireResourceEM(iter->second, (iter->second->GetNumberOfResourcesNeeded() - it->second));
 							////cout << "in start service after acquire in 'i need more of it, & there are enough avail' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() - it->second << endl;
-							it->second += (iter->second->GetNumberOfResroucesNeeded() - it->second);
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() - it->second << endl;
+							it->second += (iter->second->GetNumberOfResourcesNeeded() - it->second);
 							////cout << " new size of resource " << it->second << " new size of vector " << _acquiredResources.size() << endl;
 						}
-						else if ((iter->second->GetNumberOfResroucesNeeded() - it->second) == _resourcePool.find(iter->first)->second->GetResourceCount())
+						else if ((iter->second->GetNumberOfResourcesNeeded() - it->second) == _resourcePool.find(iter->first)->second->GetResourceCount())
 						{
-							AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+							AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 							////cout << "in start service after acquire in ' theres an equal amount to what i need' " << endl;
 							////cout << "these should match " << iter->first << " " << it->first << endl;
-							////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
+							////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
 						}
 					}
 				}
@@ -1480,17 +1480,17 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 			//didn't find this resource
 			if (foundIt == false)
 			{
-				if (iter->second->GetNumberOfResroucesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
+				if (iter->second->GetNumberOfResourcesNeeded() <= _resourcePool.find(iter->first)->second->GetResourceCount())
 				{
-					AcquireResourceEM(iter->second, iter->second->GetNumberOfResroucesNeeded());
+					AcquireResourceEM(iter->second, iter->second->GetNumberOfResourcesNeeded());
 					////cout << "in start service after acquire in 'i don't have it yet' " << endl;
 					////cout << "these should match " << iter->first << " " << it->first << endl;
-					////cout << "num to acquire " << iter->second->GetNumberOfResroucesNeeded() << endl;
-					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResroucesNeeded()));
+					////cout << "num to acquire " << iter->second->GetNumberOfResourcesNeeded() << endl;
+					_acquiredResources.insert(make_pair(iter->first, iter->second->GetNumberOfResourcesNeeded()));
 				}
 				else {
 					SimExec::ScheduleConditionalEvent((RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority()),
-						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumberOfResroucesNeeded(), _acquiredResources),
+						new ResWaitForResEA(this, iter->second, resource, iter->second->GetNumberOfResourcesNeeded(), _acquiredResources),
 						"ResWaitForResEA", resource->GetResourceName(), iter->first, 0, _myRJ);
 					return;
 				}
@@ -1680,15 +1680,15 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 					//if i have more of this resource than i need, release
 					if (it->first == futureMap->first)
 					{
-						if (it->second > futureMap->second->GetNumberOfResroucesNeeded())
+						if (it->second > futureMap->second->GetNumberOfResourcesNeeded())
 						{
 							//release the difference
-							ReleaseResourceEM(futureMap->second, it->second - futureMap->second->GetNumberOfResroucesNeeded());
+							ReleaseResourceEM(futureMap->second, it->second - futureMap->second->GetNumberOfResourcesNeeded());
 							////cout << "in done service after release in 'release the difference' " << endl;
 							////cout << "these should match " << futureMap->first << " " << it->first << endl;
-							////cout << "num to release " << it->second - futureMap->second->GetNumberOfResroucesNeeded() << endl;
+							////cout << "num to release " << it->second - futureMap->second->GetNumberOfResourcesNeeded() << endl;
 
-							it->second -= (it->second - futureMap->second->GetNumberOfResroucesNeeded());
+							it->second -= (it->second - futureMap->second->GetNumberOfResourcesNeeded());
 						}
 					}
 					futureMap++;
@@ -1731,7 +1731,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 					while (it != _acquiredResources.end())
 					{
 						if (it->first == iter->first) {
-							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, iter->second->GetNumberOfResroucesNeeded());
+							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, iter->second->GetNumberOfResourcesNeeded());
 							//cout << " in done service after release in 'no more jobs after this step - bay' " << endl;
 						}
 						it++;
@@ -1808,10 +1808,10 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 						while (it != _acquiredResources.end())
 						{
 							if (it->first == iter->first) {
-								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, iter->second->GetNumberOfResroucesNeeded());
+								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, iter->second->GetNumberOfResourcesNeeded());
 								////cout << "in done service after release in 'next job doesn't need bay - bay' " << endl;
 								////cout << "these should match: " << iter->first << " " << it->first << endl;
-								////cout << "num to release " << iter->second->GetNumberOfResroucesNeeded() << endl;
+								////cout << "num to release " << iter->second->GetNumberOfResourcesNeeded() << endl;
 
 							}
 							it++;
@@ -1911,15 +1911,15 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 					//if i have more of this resource than i need, release
 					if (it->first == futureMap->first)
 					{
-						if (it->second > futureMap->second->GetNumberOfResroucesNeeded())
+						if (it->second > futureMap->second->GetNumberOfResourcesNeeded())
 						{
 							//release the difference
-							ReleaseResourceEM(futureMap->second, it->second - futureMap->second->GetNumberOfResroucesNeeded());
+							ReleaseResourceEM(futureMap->second, it->second - futureMap->second->GetNumberOfResourcesNeeded());
 							////cout << "in done resource service after release in 'release the difference' " << endl;
 							////cout << "these should match " << futureMap->first << " " << it->first << endl;
-							////cout << "num to release " << it->second - futureMap->second->GetNumberOfResroucesNeeded() << endl;
+							////cout << "num to release " << it->second - futureMap->second->GetNumberOfResourcesNeeded() << endl;
 
-							it->second -= (it->second - futureMap->second->GetNumberOfResroucesNeeded());
+							it->second -= (it->second - futureMap->second->GetNumberOfResourcesNeeded());
 						}
 					}
 					futureMap++;
@@ -1989,14 +1989,16 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		////cout << "--------------\n" <<
+		//cout << "--------------\n" <<
 		//	"Resource: " << iter->first << ", Initial Count: " << resource->GetResourceCount() << ", current count: " << iter->second->GetResourceCount() <<
-		//	", new count: " << newCount << ", after updating through ResPoolFunc: ";
+		//	", new count: " << newCount; 
 		//resource->SetResourceCount(newCount);
-		////cout << iter->second->GetResourceCount() << "\n----------" << endl;
 		//resource->SetResourceCount(newCount);
 		//SetResPoolCount(resource->GetResourceName(),newCount);
 		SetResPoolCount(iter->second->GetResourceName(), newCount);
+		//cout << ", after updating through ResPoolFunc: ";
+		//cout << iter->second->GetResourceCount() << "\n----------" << endl;
+		//system("PAUSE");
 	}
 
 	//iter->second->SetResourceCount(newCount);
@@ -2015,12 +2017,12 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 
-	//cout << "+++++++\n" <<
-		//_myRJ <<
-		//" Resource: " << iter->first <<
-		//", Count before release: " << iter->second->GetResourceCount() <<
-		//", count expected after release: " << newCount;
-	//}
+	cout << "+++++++\n" <<
+		_myRJ <<
+		" Resource: " << iter->first <<
+		", Count before release: " << iter->second->GetResourceCount() <<
+		", count expected after release: " << newCount << "\n+++++++" << endl;
+	//system("PAUSE");
 
 
 	resource->SetResourceCount(newCount);
@@ -2169,15 +2171,15 @@ bool Step::WasBayAcquired(string bayName)
 
 bool Step::isFirstShiftChange()
 {
-	cout << "is in first shift change" << endl;
+	//cout << "is in first shift change" << endl;
 	if (_firstShiftUpdateFlag == 1)
 	{
-		cout << "is first flag" << endl;
+		//cout << "is first flag" << endl;
 		return true;
 	}
 	else
 	{
-		cout << "is not first flag" << endl;
+		//cout << "is not first flag" << endl;
 		return false;
 	}
 }
