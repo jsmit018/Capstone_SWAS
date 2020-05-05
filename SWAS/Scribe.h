@@ -14,10 +14,11 @@
 #include<iostream>
 #include<fstream>
 #include "SimExec.h"
+//#include "InputInterface.h"
 
 using namespace std;
 
-
+class InputReader;
 //Branch nodes
 struct aircraftNode
 {
@@ -292,6 +293,7 @@ public:
     ~Scribe();
 
     //Record methods
+	static void SetNumRuns(int numRuns);
     static void RecordAircraft(string aircraft);
     static void TallyAircraft(string aircraft);
     static void RecordMission(string mission);
@@ -344,4 +346,5 @@ private:
     static int runNumber;
     static double seedVal;
     static float totalRuntime;
+	static int _numRuns;	
 };
