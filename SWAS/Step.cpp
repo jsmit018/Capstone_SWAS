@@ -722,12 +722,9 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 	if (_type == "process" || _type == "Process")
 	{
 		map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
-		cout << " YO I AM A JOB STEP " << _myRJ << " " << _name << " INDOOR REQ IS " << _indoorReq << " TYPE " << _type << endl;
 		//for all resources listed in required map (if it has any)
 		while (iter != _reqResourceMap.end())
 		{
-			cout << "MY RESOURCES ARE: ";
-				cout << iter->first << endl;
 
 			bool alreadyAcquired = false;
 			//compare key to acquired resources vector
