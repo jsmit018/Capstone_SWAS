@@ -1549,7 +1549,7 @@ string Step::AcquireBay(StepResource* bay, int numNeeded)
 		if (iter->first == "S Bay") {
 			//Check up to Med
 			map<string, StepResource*>::const_iterator miter = _resourcePool.find("M Bay");
-			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded / 2.0)) >= 0.0) {
+			if (miter->second->GetResourceCount() > 0 && (miter->second->GetResourceCount() - ((double)numNeeded / 2.0) >= 0.0)) {
 				acquired = true;
 				Scribe::UpdateResourceRequests(miter->second->GetResourceName(), acquired);
 				newCount = miter->second->GetResourceCount() - ((double)numNeeded / 2.0);

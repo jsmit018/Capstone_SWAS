@@ -1955,7 +1955,7 @@ void Scribe::Archive()
 
 	for (int i = 0; i < runNumber; i++)
 	{
-		tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
+		tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,,,");
 		runCurrent->repairJobRunner = runCurrent->repairJobHead;
 		runCurrent = runCurrent->next;
 	}
