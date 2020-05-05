@@ -178,6 +178,7 @@ int main()
 	inputReader.ReadInputData();
 
 	Scribe::SetSaveFile("Output.csv");
+	Scribe::SetRuns(inputReader.GetNumRuns());
 	//Step::PrintPools();
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
 	//*Note: Let tyler know this function name so he can add it to his unity logic
