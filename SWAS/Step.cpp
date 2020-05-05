@@ -2017,11 +2017,11 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 	newCount = iter->second->GetResourceCount() + numRelease;
 
 
-	cout << "+++++++\n" <<
+	/*cout << "+++++++\n" <<
 		_myRJ <<
 		" Resource: " << iter->first <<
 		", Count before release: " << iter->second->GetResourceCount() <<
-		", count expected after release: " << newCount << "\n+++++++" << endl;
+		", count expected after release: " << newCount << "\n+++++++" << endl;*/
 	//system("PAUSE");
 
 
