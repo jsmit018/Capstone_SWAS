@@ -138,9 +138,12 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 			SetCalendarObj(currJob->GetCalendarDate());
 
-			AddBayReqToRes();
+			//AddBayReqToRes();
 		}
+		AddBayReqToRes();
+
 		iter++;
+
 	}
 
 }
@@ -476,10 +479,14 @@ void Aircraft::AddBayReqToRes()
 				//cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
 				if (resIter->first == _baySizeReq)
 				{
-					resIter->second->SetNumResNeeded(1);
-					iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
+					if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y')
+					{
+						resIter->second->SetNumResNeeded(1);
+						iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
 
-					//cout << "adding" << resIter->first << endl; 
+						//cout << "JOB IS " << iter->first << " INDOOR REQ IS " << iter->second->GetIndoorReq() << endl;
+						//cout << "adding" << resIter->first << endl;
+					}
 				}
 				resIter++;
 			}
