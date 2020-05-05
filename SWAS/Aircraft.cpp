@@ -394,6 +394,18 @@ RepairJob* Aircraft::GetRepairJobObj(string name)
 	return it->second;
 }
 
+map<string,RepairJob*>::iterator Aircraft::FindMyUnRepairJob(string name)
+{
+	map<string, RepairJob*>::iterator it = _myUnplannedJobsMap.find(name);
+	return it;
+}
+
+map<string, RepairJob*>::iterator Aircraft::FindMyAllRepairJob(string name)
+{
+	map<string, RepairJob*>::iterator it = _allRepairJobsMap.find(name);
+	return it;
+}
+
 map<string, RepairJob*> Aircraft::GetUnplanJobMap()
 {
 	return _myUnplannedJobsMap;
@@ -460,11 +472,15 @@ map<string, Distribution*>::iterator  Aircraft::GetRecurMapEnd()
 
 string Aircraft::GetRandomElement()
 {
-
-	random_device random_device;
-	mt19937 engine{ random_device() };
-	uniform_int_distribution<int> dist(0, GetUnplanVecSize() - 1);
-	string random_element = _unplannedRjVec[dist(engine)];
+	int key;
+	cout << "size " << GetUnplanVecSize() - 1 << endl; 
+	//random_device random_device;
+	//mt19937 engine{ random_device() };
+	//uniform_int_distribution<int> dist(0, GetUnplanVecSize() - 1);
+	string random_element;// = _unplannedRjVec[dist(engine)];
+	Uniform prob(0, GetUnplanVecSize());
+	key = prob.GetRV();
+	random_element = _unplannedRjVec[key];
 
 	return random_element;
 }
