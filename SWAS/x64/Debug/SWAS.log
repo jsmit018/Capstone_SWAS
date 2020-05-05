@@ -97,7 +97,7 @@ G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Warehouse.h(24,25): mes
   Generating Code...
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1611): warning C4715: 'Step::AcquireBay': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2162): warning C4715: 'Step::AreThereBaysAvailable': not all control paths return a value
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.h(135): warning C4715: 'Step::ResourceInReqResource': not all control paths return a value
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.h(136): warning C4715: 'Step::ResourceInReqResource': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SimExec.cpp(1117): warning C4715: 'SimExec::RunSimulation': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SimExec.cpp(1171): warning C4715: 'SimExec::RunSimulation': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Aircraft.cpp(220): warning C4715: 'Aircraft::IsAfterCEL': not all control paths return a value
