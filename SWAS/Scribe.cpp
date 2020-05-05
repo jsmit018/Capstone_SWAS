@@ -1352,7 +1352,7 @@ void Scribe::Archive()
 	//integer to count end of list pointers
 	int endCount;
 
-	//////////////////////////////////
+	/*//////////////////////////////////
 	////// CONNECTING TO DATABASE //////
 	////////////////////////////////////
 #define SQL_RESULT_LEN 240
@@ -1438,7 +1438,7 @@ void Scribe::Archive()
 	//	}
 	//}
 	//////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////*/
 
 	//Begin Archive
 	fileOut.open(fileName);
@@ -1455,7 +1455,7 @@ void Scribe::Archive()
 		fileOut << "Number of Unplanned Repair Jobs," + to_string(unplanned) + "\n";
 		fileOut << "\n";
 
-	if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Simulation Info (Seed, Number of Runs, Warehouse Length, Warehouse Width, Runtime Duration, Number of Planned Repair Jobs, Number of Unplanned Repair Jobs) VALUES ( .('" + to_string(seedVal) + "')., '" + to_string(runNumber) + "')., '" + warehouseL + "')., '" + warehouseW + "')., '" + to_string(totalRuntime) + "')., '" + to_string(planned) + "')., '" + to_string(unplanned) + "')").c_str(), SQL_NTS)) {
+	/*if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Simulation Info (Seed, Number of Runs, Warehouse Length, Warehouse Width, Runtime Duration, Number of Planned Repair Jobs, Number of Unplanned Repair Jobs) VALUES ( .('" + to_string(seedVal) + "')., '" + to_string(runNumber) + "')., '" + warehouseL + "')., '" + warehouseW + "')., '" + to_string(totalRuntime) + "')., '" + to_string(planned) + "')., '" + to_string(unplanned) + "')").c_str(), SQL_NTS)) {
 		cout << "Error querying SQL Server";
 		cout << "\n";
 		goto COMPLETED;
@@ -1470,7 +1470,7 @@ void Scribe::Archive()
 			cout << "\nQuery Result:\n\n";
 			cout << sqlValue << endl;
 		}
-	}
+	}*/
 
 	//Aircraft data for each run
 	fileOut << "Aircraft\n";
@@ -1536,7 +1536,7 @@ void Scribe::Archive()
 	//Above should result in a blank line separating above from missions below
 
 	//Export to SQL database
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->aircraftRunner = runCurrent->aircraftHead;
@@ -1562,7 +1562,7 @@ void Scribe::Archive()
 			runCurrent->aircraftRunner = runCurrent->aircraftRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Mission data for each run
 	fileOut << "Missions\n";
@@ -1609,7 +1609,7 @@ void Scribe::Archive()
 		fileOut << tempStr;
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->missionRunner = runCurrent->missionHead;
@@ -1634,7 +1634,7 @@ void Scribe::Archive()
 			runCurrent->missionRunner = runCurrent->missionRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Resource data for each run
 	fileOut << "Resources\n";
@@ -1686,7 +1686,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->resourceRunner = runCurrent->resourceHead;
@@ -1711,7 +1711,7 @@ void Scribe::Archive()
 			runCurrent->resourceRunner = runCurrent->resourceRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Failure data for each run
 	fileOut << "Resource Failure\n";
@@ -1762,7 +1762,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->failureRunner = runCurrent->failureHead;
@@ -1787,7 +1787,7 @@ void Scribe::Archive()
 			runCurrent->failureRunner = runCurrent->failureRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Resource wait data for each run
 	fileOut << "Resource Waits\n";
@@ -1841,7 +1841,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->resourceWaitRunner = runCurrent->resourceWaitHead;
@@ -1866,7 +1866,7 @@ void Scribe::Archive()
 			runCurrent->resourceWaitRunner = runCurrent->resourceWaitRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Service wait data for each run
 	fileOut << "Aircraft Wait\n";
@@ -1920,7 +1920,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->serviceWaitRunner = runCurrent->serviceWaitHead;
@@ -1946,7 +1946,7 @@ void Scribe::Archive()
 		}
 		//SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)("INSERT INTO Aircraft Wait (ID, Type, Location, Month Begin, Day Begin, Year Begin, Time Begin, Month End, Day End, Year End, Time End, Wait Time) VALUES ( .('')., '', '', '', '', '', '', '', '', '', '', '')"), SQL_NTS);
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Repair job data for each run
 	fileOut << "Repair Jobs\n";
@@ -2000,7 +2000,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->repairJobRunner = runCurrent->repairJobHead;
@@ -2025,7 +2025,7 @@ void Scribe::Archive()
 			runCurrent->repairJobRunner = runCurrent->repairJobRunner->next;
 		}
 		runCurrent->repairJobRunner = runCurrent->repairJobRunner->next;
-	}
+	}*/
 
 	//Inspection Data for each run
 	fileOut << "Inspection Failures\n";
@@ -2077,8 +2077,7 @@ void Scribe::Archive()
 		fileOut << tempStr;
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
-
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->inspectionRunner = runCurrent->inspectionHead;
@@ -2103,7 +2102,7 @@ void Scribe::Archive()
 			runCurrent->inspectionRunner = runCurrent->inspectionRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Rework data for each run
 	fileOut << "Reworks\n";
@@ -2154,7 +2153,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->reworkRunner = runCurrent->reworkHead;
@@ -2179,7 +2178,7 @@ void Scribe::Archive()
 			runCurrent->reworkRunner = runCurrent->reworkRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Part Request data for each run
 	fileOut << "Parts Requests\n";
@@ -2231,7 +2230,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->requestsRunner = runCurrent->requestsHead;
@@ -2256,7 +2255,7 @@ void Scribe::Archive()
 			runCurrent->requestsRunner = runCurrent->requestsRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 	//Restock data for each run
 	fileOut << "Restocking\n";
@@ -2307,7 +2306,7 @@ void Scribe::Archive()
 
 	} while (endCount < runNumber);
 
-	runCurrent = runStart;
+	/*runCurrent = runStart;
 	for (int i = 0; i < runNumber; i++)
 	{
 		runCurrent->restockRunner = runCurrent->restockHead;
@@ -2332,14 +2331,14 @@ void Scribe::Archive()
 			runCurrent->restockRunner = runCurrent->restockRunner->next;
 		}
 		runCurrent = runCurrent->next;
-	}
+	}*/
 
 
 
 	/////////////////////////////////////////
 	////// DISCONNECTING FROM DATABASE //////
 	/////////////////////////////////////////
-
+/*
 	//close connection and free resources
 	COMPLETED:
 	SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
@@ -2351,7 +2350,7 @@ void Scribe::Archive()
 	cout << "\nPress enter key to exit...";
 	getchar();
 
-
+*/
 	//////////////////////////////////////////////////////////
 
 
