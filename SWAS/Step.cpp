@@ -2937,6 +2937,16 @@ void Step::PrintResources()
 	}
 }
 
+void Step::ReadResources()
+{
+	map<string, StepResource*>::const_iterator it = _resourcePool.begin();
+	while (it != _resourcePool.end())
+	{
+		Scribe::RecordResource(it->second->GetResourceName(), it->second->GetResourceCount());
+		it++;
+	}
+}
+
 void Step::PrintPools()
 {
 	////cout << "RESOURCE POOL" << endl;

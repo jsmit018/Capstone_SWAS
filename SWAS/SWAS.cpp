@@ -30,6 +30,10 @@ void ScribeSetTerminationTime(double termTime) {
 	Scribe::SetRunTime(termTime);
 }
 
+void ScribeReadResources(){
+	Step::ReadResources();
+}
+
 //had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
 InputReader inputReader;
 
@@ -186,7 +190,11 @@ int main()
 	{
 
 		if (i > 0)
+		{
 			ScribeAdvanceRun();
+			ScribeReadResources();
+		}
+			
 
 		InitializeAircraft();
 		SchedResourceFailure();

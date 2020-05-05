@@ -46,6 +46,7 @@ public:
 	void AddParts(Parts* parts, string partsName, int numNeeded);
 	void PrintParts();
 	void PrintResources();
+	static void ReadResources();
 	static void PrintPools();
 	//void PrintEvent();
 	void InitialArrivalBayCheck();
