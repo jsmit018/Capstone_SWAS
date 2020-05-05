@@ -40,6 +40,13 @@ void ScribeSetTerminationTime(double termTime) {
 }
 
 /**
+ * Read Resources
+ */
+void ScribeReadResources() {
+	Step::ReadResources();
+}
+
+/**
  * Global Variable so that information is not duplicated
  */
 //had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
@@ -82,6 +89,7 @@ void InitializeAircraft()
 	//inputReader.AddSelectedAircraft("F-18");
 	inputReader.AddSelectedAircraft(2);
 	//inputReader.AddSelectedAircraft("Apache");
+	inputReader.AddSelectedAircraft(3);
 
 	SinkBlock* depart = new SinkBlock("SWAS System Sink");
 
@@ -207,14 +215,18 @@ int main()
 	inputReader.ReadInputData();
 
 	Scribe::SetSaveFile("Output.csv");
+	Scribe::SetRuns(inputReader.GetNumRuns());
+	Scribe::SetNumRuns(inputReader.GetNumRuns());
 	//Step::PrintPools();
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
 	//*Note: Let tyler know this function name so he can add it to his unity logic
 	for (int i = 0; i < inputReader.GetNumRuns(); i++)
 	{
 
-		if (i > 0)
+		if (i > 0) {
 			ScribeAdvanceRun();
+			ScribeReadResources();
+		}
 
 		InitializeAircraft();
 		SchedResourceFailure();
@@ -249,12 +261,23 @@ int main()
 			cout << "Name: " << it->first << ", count: " << it->second->GetResourceCount() << endl;
 			it++;
 		}
-		SimExec::ReinitalizeSimulation();
+		if (inputReader.GetNumRuns() > 1) {
+			if (i == inputReader.GetNumRuns() - 1)
+				break;
+			else {
+				inputReader.GetAirCount();
+				SimExec::ReinitalizeSimulation();
+				Step::ResetPools();
+				cout << "Prepping and Starting Next Run" << endl << endl << endl;
+				inputReader.ResetAirCount();
+				Aircraft::ResetAircraftIDs();
+			}
+		}
 
 	}
 
 	inputReader.GetAirCount();
-	//Scribe::Archive();
+	Scribe::Archive();
 
 	///////////////////////////////////////
 	/// DISCONNECTING FROM THE DATABASE ///

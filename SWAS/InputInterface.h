@@ -33,6 +33,7 @@ public:
 	static int GetMapSize();
 	static int GetNumRuns();
 	static int GetAirCount();
+    void ResetAirCount();
 	static int GetIDcount();
 	static void AddAirCount();
 	static void CalAirFix();

@@ -5,6 +5,7 @@
 int Aircraft::_nextID = 0;
 int _airCount = 0;
 int _CELflag = 0;
+int Aircraft::_aircraftID = 0;
 
 Aircraft::Aircraft()
 {
@@ -329,6 +330,11 @@ void Aircraft::UpdateList(const Aircraft& mapAircraft)
 {
 	ClearMyMap();
 	_myRepairJobs = mapAircraft._myRepairJobs;
+}
+
+void Aircraft::ResetAircraftIDs()
+{
+	_aircraftID = 0;
 }
 
 

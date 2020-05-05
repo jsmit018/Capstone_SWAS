@@ -2815,6 +2815,33 @@ void Step::PrintResources()
 	}
 }
 
+void Step::ReadResources()
+{
+	map<string, StepResource*>::const_iterator it = _resourcePool.begin();
+	while (it != _resourcePool.end())
+	{
+		Scribe::RecordResource(it->second->GetResourceName(), it->second->GetResourceCount());
+		it++;
+	}
+}
+
+void Step::ResetPools()
+{
+	map<string, StepResource*>::iterator it = _resourcePool.begin();
+	while (it != _resourcePool.end())
+	{
+		SetResPoolCount(it->first, it->second->GetShiftOneCount());
+		it++;
+	}
+
+	map<string, Parts*>::iterator iter = _partsPool.begin();
+	while (iter != _partsPool.end())
+	{
+		SetPartPoolCount(iter->first, iter->second->GetInitPartsCount());
+		iter++;
+	}
+}
+
 void Step::PrintPools()
 {
 	////cout << "RESOURCE POOL" << endl;
