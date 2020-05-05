@@ -1,5 +1,3 @@
-//InputInterface.cpp: Andrea Robey
-
 #include "InputInterface.h"
 #include <string>
 #include <vector>
@@ -12,13 +10,15 @@ using namespace std;
 map<string, Aircraft*> InputReader::_masterMap;
 map<string, StepResource*> InputReader::_masterResourceMap;
 map<string, Parts*> InputReader::_masterPartsMap;
+
+int InputReader::_wartimeFlag;
 int InputReader::_numRuns;
 int InputReader::_airCount;
 int InputReader::_IDcount;
+
 double  InputReader::_shiftOneStartTime;
 double  InputReader::_shiftTwoStartTime;
 double  InputReader::_shiftThreeStartTime;
-int InputReader::_wartimeFlag;
 
 
 struct InputReader::GUISelectedAircraft {
@@ -36,56 +36,20 @@ InputReader::InputReader()
 }
 
 InputReader::~InputReader()
-{/*
-	// Iterate through the whole map and deallocate all pointer objects
-	map <string, Aircraft*>::const_iterator airIt = _masterMap.begin();
-	// for each aircraft element
-	while (airIt != _masterMap.end())
-	{
-		//for each repairjob element
-		map <string, RepairJob*>::const_iterator rjIt = airIt->second->GetRJMapBegin();
-		while (rjIt != airIt->second->GetRJMapEnd())
-		{
-			//for each step element
-			for (int i = 0; i < rjIt->second->GetStepVecSize(); i++)
-			{
-				//for each resource element
-				map <string, Resource*>::const_iterator resIt = rjIt->second->GetStep(i+1)->GetResourceMapBegin();
-				while (resIt != rjIt->second->GetStep(i+1)->GetResourceMapEnd())
-				{
-					Resource* toDelete = resIt->second;
-					delete toDelete;
-				}
-				//for each part element
-				map <string, Parts*>::const_iterator partsIt = rjIt->second->GetStep(i+1)->GetPartsMapBegin();
-				while (partsIt != rjIt->second->GetStep(i+1)->GetPartsMapEnd())
-				{
-					Parts* toDelete = partsIt->second;
-					delete toDelete;
-				}
-				Step* toDelete = rjIt->second->GetStep(i+1);
-				delete toDelete;
-			}
-			RepairJob* toDelete = rjIt->second;
-			delete toDelete;
-		}
-		Aircraft* toDelete = airIt->second;
-		delete toDelete;*/
-		//}
+{
 }
 
 void InputReader::ReadInputData() //initialization for getting data
 {
-	//CalConverter calConvert;
-	//Step step;
+
 	StepResource resource;
 	string line;
 
+	//csv input file
 	ifstream dataFile("SWAS_Input_Final.csv");
-	//ifstream dataFile("SWASInputData_Chris.csv");
+
 	if (dataFile.is_open())
 	{
-
 		while (getline(dataFile, line)) {
 			//	cout << line << endl; 
 			char c;
@@ -95,11 +59,9 @@ void InputReader::ReadInputData() //initialization for getting data
 			//////////////   RUN INFO    /////////////
 			//////////////////////////////////////////
 
-			//Find Run Information Table [Done]
-			//Get seed type value [Done]
-				//Give to Distribution [Errors]
-			//Get number of runs [Done]
-				//Make loop for main[Done]
+			//Find Run Information Table
+			//Get seed type value
+			//Get number of runs
 
 			if (line.find("Run Info Table") != string::npos) {
 				printf("got Run Info table \n");
@@ -116,7 +78,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					//removed 10 commas from string
 					seedType = seedType.erase(seedType.length() - 9);
 
-					//cout << "num of runs: " << numRuns << " seed type: " << seedType << endl;
 
 					Distribution::SetSystemSeedType(seedType);
 					//in distribution file, there will be an if statement that determines whether 
@@ -166,8 +127,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 				if (IsWartime() == true)
 				{
-
-				//	//cout << "war time!" << endl;
 					while (dataFile)
 					{
 						if (line.find("Wartime Shifts Table") != string::npos)
@@ -178,17 +137,13 @@ void InputReader::ReadInputData() //initialization for getting data
 
 							istringstream ss(line);
 							ss >> shift1start;
-							//cout << "shift 1 starts at ";
 							SetShiftOneStartTime(shift1start);
-							//cout << GetShiftOneStartTime() << endl;
 
 							getline(dataFile, line);
 
 							istringstream ss2(line);
 							ss2 >> shift2start;
-							//cout << "shift 2 starts at ";
 							SetShiftTwoStartTime(shift2start);
-							//cout << GetShiftTwoStartTime() << endl;
 							break;
 						}
 						else
@@ -197,7 +152,6 @@ void InputReader::ReadInputData() //initialization for getting data
 				}
 				else
 				{
-					//cout << "peace time!" << endl;
 					while (dataFile)
 					{
 						if (line.find("Peacetime Shifts Table") != string::npos)
@@ -208,25 +162,19 @@ void InputReader::ReadInputData() //initialization for getting data
 
 							stringstream ss(line);
 							ss >> shift1start;
-							//cout << "shift 1 starts at ";
 							SetShiftOneStartTime(shift1start);
-							//cout << GetShiftOneStartTime() << endl;
 
 							getline(dataFile, line);
 
 							stringstream ss2(line);
 							ss2 >> shift2start;
-							//cout << "shift 2 starts at ";
 							SetShiftTwoStartTime(shift2start);
-							//cout << GetShiftTwoStartTime() << endl;
 
 							getline(dataFile, line);
 
 							stringstream ss3(line);
 							ss3 >> shift3start;
-							//cout << "shift 3 starts at ";
 							SetShiftThreeStartTime(shift3start);
-							//cout << GetShiftThreeStartTime() << endl;
 							break;
 						}
 						else
@@ -234,76 +182,12 @@ void InputReader::ReadInputData() //initialization for getting data
 					}
 				}
 			}
-			//}
-
-
-
-
-			/*if (_wartimeFlag == 1)
-			{
-				getline(dataFile, line);
-				getline(dataFile, line);
-
-				if (line.find("Shifts Table") != string::npos)
-				{
-					printf("got Shifts table \n");
-
-					getline(dataFile, line);
-					getline(dataFile, line);
-
-					stringstream ss(line);
-					ss >> shift1start;
-					cout << "shift 1 starts at " ;
-					SetShiftOneStartTime(shift1start);
-					cout << GetShiftOneStartTime() << endl;
-
-					getline(dataFile, line);
-
-					stringstream ss2(line);
-					ss2 >> shift2start;
-					cout << "shift 2 starts at ";
-					SetShiftTwoStartTime(shift2start);
-					cout << GetShiftTwoStartTime() << endl;
-				}
-			}
-			else
-			{
-				if (line.find("Peacetime Shifts") != string::npos)
-				{
-					printf("got Peacetime Shifts table \n");
-
-					getline(dataFile, line);
-					getline(dataFile, line);
-
-					stringstream ss(line);
-					ss >> shift1start;
-					cout << "shift 1 starts at ";
-					SetShiftOneStartTime(shift1start);
-					cout << GetShiftOneStartTime() << endl;
-
-					getline(dataFile, line);
-
-					stringstream ss2(line);
-					ss2 >> shift2start;
-					cout << "shift 2 starts at ";
-					SetShiftTwoStartTime(shift2start);
-					cout << GetShiftTwoStartTime() << endl;
-
-					getline(dataFile, line);
-
-					stringstream ss3(line);
-					ss2 >> shift3start;
-					cout << "shift 3 starts at ";
-					SetShiftThreeStartTime(shift3start);
-					cout << GetShiftThreeStartTime() << endl;
-				}
-			}*/
-
 
 			//////////////////////////////////////////
 			//////////////   CALENDAR    /////////////
 			//////////////////////////////////////////
 
+			//Getting values from the calendar tables and setting them to months/days
 			if (line.find("Calendar Table") != string::npos) {
 				printf("got Calendar table \n");
 
@@ -323,8 +207,6 @@ void InputReader::ReadInputData() //initialization for getting data
 						break;
 					str >> numDays;
 
-					//	cout << "month " << month << " days, " << numDays << endl; 
-
 					calConvert->InsertDays(month, numDays);
 					getline(dataFile, line);
 				}
@@ -337,13 +219,13 @@ void InputReader::ReadInputData() //initialization for getting data
 
 			// Read in from tables:
 			// Aircraft Info - 
-				//Type [done]
-				//Priority [done]
-				//Footprint [done]
+				//Type
+				//Priority
+				//Footprint
 			// Unplanned Arrivals -
 				// Compare type strings to find:
-					//Unplanned iat [done]
-			//Store new aircraft object into map with type string as key [done]
+					//Unplanned iat
+			//Store new aircraft object into map with type string as key
 
 			if (line.find("Aircraft Info Table") != string::npos) {
 				printf("got Aircraft Info table \n");
@@ -374,13 +256,10 @@ void InputReader::ReadInputData() //initialization for getting data
 								break;
 
 							row.push_back(line);
-							//							cout << line << endl;
 						}
 						else
 							getline(ss, line);
 					}
-
-					//					cout << "vector size: " << row.size() << endl;
 
 					string airType;
 					int airPriority;
@@ -390,14 +269,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 					Aircraft* newAir = new Aircraft();
 
-					//	for (int i = 0; i < row.size(); ++i) {
-						//	cout << "line " << i << ": " << row[i] << endl;
-					//	}
-
-						//for each index, set each variable
-						//	istringstream iss0(row[0]);
 					airType = row[0];
-					//cout << "ROW " << row[0];
 					newAir->SetAircraftType(airType);
 
 					istringstream iss1(row[1]);
@@ -481,10 +353,10 @@ void InputReader::ReadInputData() //initialization for getting data
 
 			//Planned Maintenance Table - 
 				// For loop: Compare aircraft type string with string in table to find:
-					//Repair Job Name [done]
-					//Schedule Type [done]
-					//Calendar Schedule Date [done]
-					//Recurring Sched Amount [done]
+					//Repair Job Name
+					//Schedule Type
+					//Calendar Schedule Date
+					//Recurring Sched Amount
 					//Indoor Requirement [done]
 				//Create object of repair job
 				//Store object in allrepairjobmap with appropriate aircraft type	
