@@ -4,12 +4,30 @@
 #include "SimExec.h"
 #include "Scribe.h"
 
+/**
+ * Class for SinkTask that inherits from Task
+ */
 class SinkBlock : public Task {
 public:
-	SinkBlock(string name); 
+	/**
+	 * Constructor for sink
+	 */
+	SinkBlock(string name);
+	/**
+	 * Deletes aircraft
+	 */
 	void Execute(Aircraft* aircraft); 
-	string GetName(); 
+	/**
+	 * Returns the sink name
+	 */
+	string GetName();
+	/**
+	 * Sets the sink name
+	 */
 	void SetName(string name); 
+	/**
+	 * Returns the terminated aircraft
+	 */
 	int GetTerminatedAircraft(); 
 private:
 	string _name; 
