@@ -28,14 +28,14 @@ public:
 	static SimulationTime GetSimulationTime();
 	static InputReader GetInputReader();
 	static void SetInputReader(InputReader inputReader);
-	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName);
+	static void ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours = 0);
 	static void ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName);
 	static void ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring = 1);
-	static void ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID);
+	static void ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID, string repairJobName);
 	static void SetSystemSink(SinkBlock* sinkBlock);
 	static SinkBlock* GetSystemSink();
 	static string ConvertDate(Time month);
-	static void CheckConditionalEvents(Resource* resource = 0, Parts* parts = 0);
+	static void CheckConditionalEvents(StepResource* resource = 0, Parts* parts = 0);
 	static void PrintEventSet();
 	static void InitializeSimulation(int numBins, int* days);
 	//static void RunSimulation();
@@ -46,7 +46,6 @@ public:
 	static bool GetSimulationFlag();
 	static Time GetTotalSimulationTime();
 	static int PrintNumInCondES();
-
 private:
 	struct Event;
 	struct CondEvent;

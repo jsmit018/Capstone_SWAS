@@ -1,0 +1,2 @@
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\x64\Debug\SWAS.exe
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\x64\Debug\SWAS.pdb

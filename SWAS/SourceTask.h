@@ -15,7 +15,7 @@ public:
 		Aircraft* aircraft,
 		string name,
 		RepairJob* repairJob,
-		int numberOfAircraftToGenerate = NULL);
+		int numberOfAircraftToGenerate = -1); 
 
 	/*Constructor for Recurring Arrivals*/
 	/*SourceBlock(
@@ -23,7 +23,7 @@ public:
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
-		int numberOfAircraftToGenerate = NULL);*/
+		int numberOfAircraftToGenerate = NULL); */
 	SourceBlock(
 		//vector<Distribution*> recurringIATs,
 		map<string, Distribution*> recurringIATS,
@@ -32,7 +32,7 @@ public:
 		Aircraft* aircraft,
 		string name,
 		//string myRJ,
-		int numberOfAircraftToGenerate = NULL);
+		int numberOfAircraftToGenerate = -1); 
 
 	/*Constructor for Calendar Arrivals*/
 	SourceBlock(
@@ -41,9 +41,9 @@ public:
 		string name,
 		//int numCalEventsToSched,
 		CalendarObj* calobj,
-		RepairJob* repairJob);
+		RepairJob* repairJob); 
 	//Removing the below line, as this is set through numCalEvents
-	//int numberOfAircraftToGenerate = NULL);
+	//int numberOfAircraftToGenerate = NULL); 
 
 /*Old Constructor*/
 /*SourceBlock(Distribution* iat,
@@ -52,30 +52,30 @@ public:
 	string name,
 	int numOfCalendarEventsToSchedule,
 	CalendarObj* calobj,
-	int numberOfAircraftToGenerate = NULL);*/
+	int numberOfAircraftToGenerate = NULL); */
 
-	string GetAircraftType();
-	void SetAircraftType(string aircraftType);
-	string GetName();
-	int GetNumberGenerated();
-	void Execute(Aircraft* aircraft);
-	void AddToPriorityMap(int priority, string job);
+	string GetAircraftType(); 
+	void SetAircraftType(string aircraftType); 
+	string GetName(); 
+	int GetNumberGenerated(); 
+	void Execute(Aircraft* aircraft); 
+	void AddToPriorityMap(int priority, string job); 
 private:
-	//vector<Distribution*> _interarrivalTimeRecurring;
-	map<string, Distribution*> _recurringIATs;
-	map<int, string> _jobPriority;
-	Distribution* _interarrivalTimeRND;
-	Aircraft* _aircraft;
-	string _aircraftType;
-	int _numberOfAircraftToGenerate;
-	string _name;
-	int _numberGenerated;
-	class ScheduleNextCalendarAircraftEA;
-	class ScheduleNextUnplannedAircraftEA;
-	class ScheduleNextRecurringAircraftEA;
-	void ScheduleNextUnplannedAircraftEM(RepairJob* repairJob);
-	void ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calobj);
-	//void ScheduleNextRecurringAircraftEM();
-	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob);
-	//Scribe* outputRecorder = new Scribe();
-};
+	//vector<Distribution*> _interarrivalTimeRecurring; 
+	map<string, Distribution*> _recurringIATs; 
+	map<int, string> _jobPriority; 
+	Distribution* _interarrivalTimeRND; 
+	Aircraft* _aircraft; 
+	string _aircraftType; 
+	int _numberOfAircraftToGenerate; 
+	string _name; 
+	int _numberGenerated; 
+	class ScheduleNextCalendarAircraftEA; 
+	class ScheduleNextUnplannedAircraftEA; 
+	class ScheduleNextRecurringAircraftEA; 
+	void ScheduleNextUnplannedAircraftEM(RepairJob* repairJob); 
+	void ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calobj); 
+	//void ScheduleNextRecurringAircraftEM(); 
+	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob); 
+	//Scribe* outputRecorder = new Scribe(); 
+}; 

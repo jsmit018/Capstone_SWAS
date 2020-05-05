@@ -5,11 +5,11 @@
 #include <string>
 #include <sstream>
 
-class Resource
+class StepResource
 {
 public:
-	Resource();
-	void CopyMapResource(const Resource& mapResource);
+	StepResource();
+	void CopyMapResource(const StepResource& mapResource);
 	void Acquire(int amountNeeded);
 	//virtual void Acquire() = 0;
 	void Release(int amountToRelease);
@@ -18,6 +18,8 @@ public:
 	void FailResource();
 	void RestoreResource();
 	void PrintResProperties();
+	//void SetResourceID(int resourceID);
+	//int GetResourceID();
 
 	void SetResourceCount(double resourceCount);
 	void SetResourceName(string resourceName);
@@ -28,23 +30,35 @@ public:
 	void SetFailureDistr(string failureDistr);
 	void SetRepairProcess(string repairProc);
 
-	void ScheduleFirstFailures(Resource* resource);
+	void ScheduleFirstFailures(StepResource* resource);
 
 	double GetResourceCount();
 	string GetResourceName();
 	double GetResourceFootprint();
-	int GetNumResNeeded();
+	int GetNumberOfResourcesNeeded();
 	string GetFailureName();
 	string GetFailureType();
 	Distribution* GetFailureDistr();
 	string GetRepairProcess();
-
+	bool IsAfterCEL();
+	void SetCELflag(int CELflag);
 	
+	void SetShiftOneCount(int shiftcount);
+	double GetShiftOneCount();
+	void SetShiftTwoCount(int shiftcount);
+	double GetShiftTwoCount();
+	void SetShiftThreeCount(int shiftcount);
+	double GetShiftThreeCount();
 
 private:
 	//int _resourceCount;
+	int _shiftOneCount;
+	int _shiftTwoCount;
+	int _shiftThreeCount;
+	//int _resourceID; // NOT SET YET
 	double _resourceCount;
 	int _numNeeded;
+	int _CELflag;
 	string _resourceName;
 	double _length;
 	double _width;
@@ -59,6 +73,6 @@ private:
 
 	Distribution* failureDistribution;
 
-	void FailResourceEM(Resource* resource);
-	void RestoreResourceEM(Resource* resource);
+	void FailResourceEM(StepResource* resource);
+	void RestoreResourceEM(StepResource* resource);
 };

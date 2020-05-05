@@ -176,7 +176,7 @@
     <ClInclude Include="PriorityQueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SWASInputData_V1.xlsx" />
+    <None Include="V1_complete.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

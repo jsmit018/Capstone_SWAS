@@ -217,6 +217,7 @@ int SourceBlock::GetNumberGenerated() {
 void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calObj) {
 	//cout << "****************** IN CALENDAR EM" << endl;
 	Aircraft* newAircraft = _aircraft->New();
+	InputReader::CalAirFix();
 
 	map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
 	//cout << "FOR AICRAFT "<< this->GetAircraftType() << " ID " << this->GetAircraftID() << endl;
@@ -241,11 +242,31 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 			it++;
 	}
 	//cout << newAircraft->GetAircraftType() << " ----------------CALENDAR MAP SIZE " << newAircraft->GetMyRJMapSize() << endl;
-
+	it = newAircraft->GetMyRJMapBegin();
 	//cout << "Scheduling Calendar Aircraft to Arrive" << endl;
-	repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
-	_numberGenerated++;
-	Scribe::RecordAircraft(_aircraft->GetAircraftType());
+	
+	for (int i = 0; i < calObj->GetNumEvents() / 2; ++i) {
+		Aircraft* firstStep = new Aircraft(*newAircraft);
+		firstStep->UpdateList(*newAircraft);
+		map<string, RepairJob*>::const_iterator iter = newAircraft->GetMyRJMapBegin();
+		while (iter != newAircraft->GetMyRJMapEnd()) {
+			if (iter->first == it->first) {}
+			else
+			{
+				firstStep->DeleteJob(iter->first);
+			}
+			iter++;
+		}
+		repairJob = it->second;
+		InputReader::AddAirCount();
+		//repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), newAircraft, calObj);
+		repairJob->GetFirstStep()->ScheduleCalendarStep(repairJob->GetFirstStep(), firstStep, calObj, i);
+		_numberGenerated++;
+		
+		it++;
+		Scribe::RecordAircraft(_aircraft->GetAircraftType());
+	}
+	
 
 	//}
 }
@@ -255,6 +276,8 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 {
 	if (_numberGenerated != _numberOfAircraftToGenerate)
 	{
+		//cout << "--------------------Scheduling unplanned arrival for " << _aircraft->GetAircraftType() << endl;
+
 		//cout << "Unplanned Aircraft has arrived, ";
 		//cout << "Scheduling next Unplanned Aircraft Arrival" << endl;
 		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this, repairJob), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
@@ -288,6 +311,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			else if (iter->second->WillSchedule() == true)
 			{  
 				//cout << "************* " << newAircraft->GetAircraftType() << " WILL SCHEDULE " << iter->first << endl;
+
 				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
 				//cout << "*********** ADDING " << iter->first << " IT TO THE MAP " << endl;
@@ -308,8 +332,14 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		job = _jobPriority.begin()->second;
 
 		//schedule that high priority job
-		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
-		jobCounter++; 
+		
+		newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep()->
+		ScheduleFirstStep(newAircraft->GetMyJobsMap().find(job)->second->GetFirstStep(), newAircraft);
+		//cout << " THIS IS AIR ID " << newAircraft->GetAircraftID() << " scheduling first step of " << job << endl;
+		/*if (newAircraft->GetAircraftID() == 384)
+			//cout << "Bleh" << endl;*/
+
+		jobCounter++;
 
 		
 
