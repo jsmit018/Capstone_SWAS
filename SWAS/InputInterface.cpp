@@ -7,6 +7,9 @@
 
 using namespace std;
 
+/**
+ * Creation and instantiations of Static Maps and Variables
+ */
 map<string, Aircraft*> InputReader::_masterMap;
 map<string, StepResource*> InputReader::_masterResourceMap;
 map<string, Parts*> InputReader::_masterPartsMap;
@@ -20,7 +23,9 @@ double  InputReader::_shiftOneStartTime;
 double  InputReader::_shiftTwoStartTime;
 double  InputReader::_shiftThreeStartTime;
 
-
+/**
+ * A struct that holds a selected airccraft based off of the aircrafts name
+ */
 struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft(string aircraftName) {
 		_aircraftName = aircraftName;
@@ -30,15 +35,27 @@ struct InputReader::GUISelectedAircraft {
 	GUISelectedAircraft* _nextAircraft;
 };
 
+/**
+ * InputReader Constructor, initializes CalendarConveter
+ */
 InputReader::InputReader()
 {
 	calConvert = new CalConverter();
 }
 
+/**
+ * InputReader Destructore
+ */
 InputReader::~InputReader()
 {
 }
 
+ /**
+  * Reads in the input data via the steps:
+	 1. Gets seed type and number of runs
+	 2. Reads in calender information reading in month, number of days, and inputiing them into the calnder conversion method
+	 3. Reads in aircraft information
+  */
 void InputReader::ReadInputData() //initialization for getting data
 {
 
@@ -1142,58 +1159,90 @@ void InputReader::ReadInputData() //initialization for getting data
 
 }
 
-
+/**
+ * Returns the head index of the master map containing the aircraft
+ */
 map<string, Aircraft*>::iterator InputReader::GetMasterMapBegin()
 {
 	return _masterMap.begin();
 }
 
+/**
+ * Returns the end index of the master map containing the aircraft
+ */
 map<string, Aircraft*>::iterator InputReader::GetMasterMapEnd()
 {
 	return _masterMap.end();
 }
 
+/**
+ * Sets the number of times the simulation will run
+ */
 void InputReader::SetNumRuns(int numRuns)
 {
 	_numRuns = numRuns;
 }
 
+/**
+ * Returns the number of times the simulation will run
+ */
 int InputReader::GetNumRuns()
 {
 	return _numRuns;
 }
 
+/**
+ * Returns the number of aircraft that have entered the simulation
+ */
 int InputReader::GetAirCount()
 {
 	cout << " AIRCRAFT COUNT IS " << _airCount << endl;
 	return _airCount;
 }
 
+/**
+ * Increments the number of aircraft that entered the simulation
+ */
 void InputReader::AddAirCount()
 {
 	_airCount++;
 }
 
+/**
+ * Returns the number of Aircraft ID's read in
+ */
 int InputReader::GetIDcount()
 {
 	//cout << "****Number of 'read in' Aircraft IDs " << _IDcount << endl;
 	return _IDcount;
 }
 
+/**
+ * Function that offsets Aircraft count for calendar scheduling
+ */
 void InputReader::CalAirFix() {
 	_airCount--;
 }
 
+/**
+ * Returns an iterator to the beginning of the master resource map
+ */
 map<string, StepResource*>::iterator InputReader::GetMasterResMapBegin()
 {
 	return _masterResourceMap.begin();
 }
 
+/**
+ * Returns an iterator to the end of the master resource map
+ */
 map<string, StepResource*>::iterator  InputReader::GetMasterResMapEnd()
 {
 	return _masterResourceMap.end();
 }
 
+/**
+ * Prints everything in the master map
+ */
 void InputReader::PrintEverything()
 {
 	//Aircraft
@@ -1210,36 +1259,58 @@ void InputReader::PrintEverything()
 	}
 }
 
+/**
+ * Sets the time for the start of the first shift
+ */
 void InputReader::SetShiftOneStartTime(int starttime)
 {
 	_shiftOneStartTime = starttime;
 }
 
+/**
+ * Sets the time for the start of the second shift
+ */
 void InputReader::SetShiftTwoStartTime(int starttime)
 {
 	_shiftTwoStartTime = starttime;
 }
 
+/**
+ * Sets the time for the start of the third shift
+ */
 void InputReader::SetShiftThreeStartTime(int starttime)
 {
 	_shiftThreeStartTime = starttime;
 }
 
+/**
+ * Gets the time for the start of the first shift
+ */
 double InputReader::GetShiftOneStartTime()
 {
 	return _shiftOneStartTime;
 }
 
+/**
+ * Gets the time for the start of the second shift
+ */
 double InputReader::GetShiftTwoStartTime()
 {
 	return _shiftTwoStartTime;
 }
 
+/**
+ * Gets the time for the start of the third shift
+ */
 double InputReader::GetShiftThreeStartTime()
 {
 	return _shiftThreeStartTime;
 }
 
+/**
+ * Boolean function to determine whether or not the simulation is in
+ * wartime or peace time
+ */
 bool InputReader::IsWartime()
 {
 	if (_wartimeFlag == 1)
@@ -1254,11 +1325,17 @@ bool InputReader::IsWartime()
 	}
 }
 
+/**
+ * Sets Wartime flag
+ */
 void InputReader::SetWartimeFlag(int flag)
 {
 	_wartimeFlag = flag;
 }
 
+/**
+ * Prints everything in the master resource map
+ */
 void InputReader::PrintMasterResMap()
 {
 	map<string, StepResource*>::const_iterator iter = _masterResourceMap.begin();
@@ -1272,11 +1349,17 @@ void InputReader::PrintMasterResMap()
 	}
 }
 
+/**
+ * Returns CalendarConverter object
+ */
 CalConverter* InputReader::GetCalConverter()
 {
 	return calConvert;
 }
 
+/**
+ * Function to add aircraft into the simulation that will be utilized.
+ */
 //void InputReader::AddSelectedAircraft(string aircraftName)
 void InputReader::AddSelectedAircraft(int aircraftNumber)
 {
@@ -1299,6 +1382,9 @@ void InputReader::AddSelectedAircraft(int aircraftNumber)
 
 }
 
+/**
+ * Find the selected aircraft in the list
+ */
 bool InputReader::FindSelectedAircraft(string aircraftName)
 {
 	GUISelectedAircraft* iter = _GUIListHead;
@@ -1315,11 +1401,17 @@ bool InputReader::FindSelectedAircraft(string aircraftName)
 	return false;
 }
 
+/**
+ * Returns the size of the master map
+ */
 int InputReader::GetMapSize()
 {
 	return _masterMap.size();
 }
 
+/**
+ * Returns aircraft Object
+ */
 Aircraft* InputReader::GetAircraft(string aircraftName)
 {
 
@@ -1332,6 +1424,9 @@ Aircraft* InputReader::GetAircraft(string aircraftName)
 		return nullptr;
 }
 
+/**
+ * Update resource numbers in master resource map
+ */
 void InputReader::SetMasterResNum(string name, int num)
 {
 	map<string, StepResource*>::const_iterator iter = _masterResourceMap.begin();
@@ -1342,6 +1437,9 @@ void InputReader::SetMasterResNum(string name, int num)
 	}
 }
 
+/**
+ * Update part numbers in master parts map
+ */
 void InputReader::SetMasterPartsNum(string name, int num)
 {
 	map<string, Parts*>::const_iterator iter = _masterPartsMap.begin();
@@ -1352,16 +1450,25 @@ void InputReader::SetMasterPartsNum(string name, int num)
 	}
 }
 
+/**
+ * Return Master Map
+ */
 map<string, Aircraft*> InputReader::GetMasterMap()
 {
 	return _masterMap;
 }
 
+/**
+ * Return Master Resource Map
+ */
 map<string, StepResource*> InputReader::GetMasterResourceMap()
 {
 	return _masterResourceMap;
 }
 
+/**
+ * Return Master Parts Map
+ */
 map<string, Parts*> InputReader::GetMasterPartsMap()
 {
 	return _masterPartsMap;

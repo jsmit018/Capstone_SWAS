@@ -18,21 +18,36 @@
 
 using namespace std;
 
+/**
+ * Function for GUI, allows the setting of dimensions of warehouse into database
+ */
 void ScribeSetDimension(double length, double width) {
 	Scribe::SetWarehousDims(length, width);
 }
 
+/**
+ * Function that advances simulation run to the next for tables
+ */
 void ScribeAdvanceRun() {
 	Scribe::AdvanceRun();
 }
 
+/**
+ * Function that sets the time at which the simulation terminated
+ */
 void ScribeSetTerminationTime(double termTime) {
 	Scribe::SetRunTime(termTime);
 }
 
+/**
+ * Global Variable so that information is not duplicated
+ */
 //had to make global to isolate ReadInputData() so that it's not repeated in multiple runs.
 InputReader inputReader;
 
+/**
+ * Schedules the initial recurring resource failures for the duration of the simulation
+ */
 void SchedResourceFailure()
 {
 	//cout << " in sched resource fail " << endl;
@@ -48,6 +63,12 @@ void SchedResourceFailure()
 	}
 }
 
+/**
+ * Reads in information from the SQL database, intializes then simulation executive
+ * and based on the Associated Aircraft that have been selected it then schedules the
+ * one unplanned repair job with the highest priority, each indivdual calendar repair job,
+ * and the Recurring RepairJobs
+ */
 void InitializeAircraft()
 {
 	cout << "reading is finished" << endl;
@@ -148,6 +169,9 @@ void InitializeAircraft()
 
 }
 
+/**
+ * Schedules the initialization of shift changes at the beginning of the simulation
+ */
 void ScheduleFirstShiftChange()
 {
 
@@ -167,6 +191,11 @@ void ScheduleFirstShiftChange()
 	}
 }
 
+/**
+ * Main: Links to the SQL Database, calls InitializeAircraft, ScheduleResourceFailures, and ScheduleFirstShiftChange(),
+ * It compares and evaluates the system seeds and updates this information as necessary
+ * Runs the simulation, and then archives all of the relevant simulation information at the end of the Simulation run.
+ */
 int main()
 {
 	//////////////////////////////////////
@@ -214,6 +243,7 @@ int main()
 
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetTotalSimulationTime());
+		SimExec::ReinitalizeSimulation();
 
 	}
 

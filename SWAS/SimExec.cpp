@@ -507,6 +507,32 @@ public:
 		}
 	}
 
+	void ReinitializeSim() {
+		while (true) {
+			_eventSet[_baseX][_baseY] = 0;
+			if (_baseY == _endOfMonth[_baseX]) {
+				_baseX++;
+				_baseY = 0;
+			}
+			else
+				_baseY++;
+
+			if (_baseX == December && _baseY == _endOfMonth[_baseX]) {
+				_eventSet[_overflow][0] = 0;
+				_baseX = 0;
+				_baseY = 0;
+				_simulationTime._day = 0;
+				_simulationTime._month = 0;
+				_simulationTime._year = 2020;
+				_simulationTime._timeOfDay = 6.0;
+				CondEvent* ces = _conditionalSet.GetConditionalSet();
+				ces = 0;
+				break;
+			}
+
+		}
+	}
+
 	EventAction* GetEventAction() {
 		//	Getting Event Action" 
 		if (_numEvents > 0) {
@@ -925,13 +951,21 @@ int SimExec::_totalDaysPassed = 0;
 
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
+
 	//	Setting Simulation time to 0" 
-	_simulationTime._timeOfDay = 0;
+
+	_simulationTime._timeOfDay = 6.0;
+
 	_simulationTime._month = 0;
 	_simulationTime._day = 0;
 	_simulationTime._year = 2020;
 	_simulationFlag = true;
 	_eventSet.InitEventSet(numBins, days);
+}
+
+void SimExec::ReinitalizeSimulation()
+{
+	_eventSet.ReinitializeSim();
 }
 
 SimulationTime SimExec::GetSimulationTime() {
