@@ -2,16 +2,34 @@
 
 #include "Aircraft.h"
 
+/**
+ * Sets nextID equal to zero
+ */
 int Aircraft::_nextID = 0;
+
+/**
+ * Sets airCount equal to zero
+ */
 int _airCount = 0;
+
+/**
+ * Sets CELflag equal to zero
+ */
 int _CELflag = 0;
 
+/**
+ * Aircraft constructor
+ */
 Aircraft::Aircraft()
 {
 
 }
 
 //void Aircraft::CopyAircraftInfo(const Aircraft& mapAircraft)
+
+/**
+ * Aircraft constructor that sets _aircraftType, _priority, _numCalEvents, _length, _wingspan, _repairJobName, and _iatUnplanned are set to according mapAircraft. CalendarObj is initialized. Iterates through old recurring iat map, inserting its first and second into the new recurring iat map.
+ */
 Aircraft::Aircraft(const Aircraft& mapAircraft)
 {
 	int _IDCount = InputReader::GetIDcount();
@@ -90,6 +108,10 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 //}
 
 //Copy all repair jobs
+
+/**
+ * Copies Job list from Master map to aircraft's myrepairjobs list logic.
+ */
 void Aircraft::CopyMyJobList(string aircraftType)
 {
 	_aircraftType = aircraftType;
@@ -145,7 +167,9 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 }
 
-
+/**
+ * Adds a recurring IAT for a repair job to an aircrafts myRecurIATmap
+ */
 void Aircraft::AddRecurIAT(string repairJobName, Distribution* iatRecurring)
 {
 	_myRecurIATmap[repairJobName] = iatRecurring;
@@ -153,6 +177,9 @@ void Aircraft::AddRecurIAT(string repairJobName, Distribution* iatRecurring)
 
 }
 
+/**
+ * Sets the CalendarObj for an aircraft and declares date variables
+ */
 void Aircraft::SetCalendarObj(string date)
 {
 	Time month;
@@ -186,11 +213,17 @@ void Aircraft::SetCalendarObj(string date)
 	_myCalObj->UpdateNumEvents();
 }
 
+/**
+ * Function that inserts the job name to the repair job. 
+ */
 void Aircraft::InsertJobName(string jobName)
 {
 	_unplannedRjVec.push_back(jobName);
 }
 
+/**
+ * Bool function that states whether or not an aircraft is at the end of its RepairJobsMap.
+ */
 bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
 {
 	if (iter != _allRepairJobsMap.end())
@@ -198,6 +231,9 @@ bool Aircraft::IsMapEnd(map<string, RepairJob*>::const_iterator iter)
 	return false;
 }
 
+/**
+ * Bool function that states whether or not an aircraft has more repair jobs.
+ */
 bool Aircraft::AreMoreJobs()
 {
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
@@ -206,11 +242,17 @@ bool Aircraft::AreMoreJobs()
 	return false;
 }
 
+/**
+ * Sets the CEL flag.
+ */
 void Aircraft::SetCELflag(int CELflag)
 {
 	_CELflag = CELflag;
 }
 
+/**
+ * Bool function that returns true or false if after CEL.
+ */
 bool Aircraft::IsAfterCEL()
 {
 	if (_CELflag == 1)
@@ -219,31 +261,49 @@ bool Aircraft::IsAfterCEL()
 		return false;
 }
 
+/**
+ * Bool function that returns true that there are more steps to an aircrafts repair job.
+ */
 bool Aircraft::AreMoreSteps()
 {
 	return true;
 }
 
+/**
+ * Sets the aircrafts required bay size.
+ */
 void Aircraft::SetBaySizeReq(string baySizeReq)
 {
 	_baySizeReq = baySizeReq;
 }
 
+/**
+ * Gets the aircrafts required bay size.
+ */
 string Aircraft::GetBaySizeReq()
 {
 	return _baySizeReq;
 }
 
+/**
+ * Sets numCalEvents
+ */
 void Aircraft::SetNumCalEvents(int numCalEvents)
 {
 	_numCalEvents = numCalEvents;
 }
 
+/**
+ * Returns _myCalObj
+ */
 CalendarObj* Aircraft::GetCalendarObj()
 {
 	return _myCalObj;
 }
 
+/**
+ * Logic to iterate to the appropriate next repair job based off of priority.
+ */
 RepairJob* Aircraft::GetNextRepairJob(string rjName)
 {
 	//receives current repair job name
@@ -289,48 +349,74 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 
 }
 
+/**
+ * Returns the next step to an aircrafts repair job.
+ */
 Step* Aircraft::GetNextStep()
 {
 	return _nextStep;
 }
 
+/**
+ * Sets the source ID.
+ */
 void Aircraft::SetSource(int sourceID)
 {
 	_sourceID = sourceID;
 }
 
+/**
+ * Returns the source ID.
+ */
 int Aircraft::GetSource()
 {
 	return _sourceID;
 }
 
+/**
+ * Returns the aircraft ID.
+ */
 int Aircraft::GetAircraftID()
 {
 	return _aircraftID;
 }
 
+/**
+ * Sets the aircraft ID.
+ */
 void Aircraft::SetAircraftID(int id)
 {
 	_aircraftID = id;
 }
 
+/**
+ * Returns the next aircraft ID.
+ */
 int Aircraft::GetNextAircraftID()
 {
 	return _nextID;
 }
 
+/**
+ * Clears the map of an aircraft.
+ */
 void Aircraft::ClearMyMap()
 {
 	_myRepairJobs.clear();
 }
 
+/**
+ * Clears and starts a new repair job list.
+ */
 void Aircraft::UpdateList(const Aircraft& mapAircraft)
 {
 	ClearMyMap();
 	_myRepairJobs = mapAircraft._myRepairJobs;
 }
 
-
+/**
+ * Returns the new Aircraft
+ */
 Aircraft* Aircraft::New()
 {
 	//_aircraftID = ++_nextID; 
@@ -339,46 +425,68 @@ Aircraft* Aircraft::New()
 	return newAircraft;// add appropriate parameters
 }
 
+/**
+ * Sets the aircraft footprint--length and wingspan.
+ */
 void Aircraft::SetAircraftFootprint(double length, double wingspan)
 {
 	_length = length;
 	_wingspan = wingspan;
 }
 
+/**
+ *Returns the length and wingspan of an aircraft.
+ */
 double Aircraft::GetAircraftFootprint()
 {
 	return _length, _wingspan;
 }
 
+/**
+ * Sets the Aircraft Type.
+ */
 void Aircraft::SetAircraftType(string aircraftType)
 {
 	_aircraftType = aircraftType;
 	//	cout << "Aircraft Type: " << aircraftType << endl; 
 }
 
-
+/**
+ * Returns the aircraft type.
+ */
 string Aircraft::GetAircraftType()
 {
 	//cout << " in get aircraft type " << _aircraftType << endl; 
 	return _aircraftType;
 }
 
-
+/**
+ * Adds a repair job and its name to the allRepairJobsMap.
+ */
 void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 {
 	_allRepairJobsMap[repairJobName] = repairJob;
 }
 
+/**
+ * Adds a repair job to an aircrafts myRepairJobs
+ */
 void Aircraft::AddMyRepairJob(string jobName, RepairJob* myJob)
 {
 	_myRepairJobs.insert(pair<string, RepairJob*>(jobName, myJob));
 }
 
+/**
+ * Adds a repair job to an aircrafts myUnplannedJobsMap
+ */
 void Aircraft::AddMyUnplannedJob(string jobName, RepairJob* myJob)
 {
 	_myUnplannedJobsMap.insert(pair<string, RepairJob*>(jobName, myJob));
 }
 
+/**
+ * Iterates through allRepairJobsMap to find the repair job's name and returns it.
+ */
 RepairJob* Aircraft::GetRepairJobObj(string name)
 {
 
@@ -388,11 +496,17 @@ RepairJob* Aircraft::GetRepairJobObj(string name)
 	return it->second;
 }
 
+/**
+ * Iterates throught an aircraft's myRepairJobs to find a repair job's name and returns it.
+ */
 map<string, RepairJob*> Aircraft::GetUnplanJobMap()
 {
 	return _myUnplannedJobsMap;
 }
 
+/**
+ * Returns the repair job.
+ */
 RepairJob* Aircraft::GetMyRepairJobObj(string name)
 {
 	map<string, RepairJob*>::iterator it = _myRepairJobs.find(name);
@@ -402,56 +516,90 @@ RepairJob* Aircraft::GetMyRepairJobObj(string name)
 	return it->second;
 }
 
+/**
+ * Sets an aircraft's priority.
+ */
 void Aircraft::SetAircraftPriority(int priority)
 {
 	_priority = priority;
 }
 
+/**
+ * Returns an aircrafts priority
+ */
 int Aircraft::GetAircraftPriority()
 {
 	return _priority;
 }
 
+/**
+ * Returns the beginning of _allRepairJobsMap.
+ */
 map<string, RepairJob*>::iterator Aircraft::GetRJMapBegin()
 {
 	return _allRepairJobsMap.begin();
 }
 
+/**
+ * Returns the end of _allRepairJobsMap.
+ */
 map<string, RepairJob*>::iterator  Aircraft::GetRJMapEnd()
 {
 	return _allRepairJobsMap.end();
 }
 
+/**
+ * Returns the beginning of an aircrafts repair jobs map.
+ */
 map<string, RepairJob*>::iterator Aircraft::GetMyRJMapBegin()
 {
 	return _myRepairJobs.begin();
 }
 
+/**
+ * Returns the end of an aircrafts repair jobs map.
+ */
 map<string, RepairJob*>::iterator  Aircraft::GetMyRJMapEnd()
 {
 	return _myRepairJobs.end();
 }
 
+/**
+ * Returns the beginning of an aircrafts unplanned repair jobs map.
+ */
 map<string, RepairJob*>::iterator Aircraft::GetMyUnplannedMapBegin()
 {
 	return _myUnplannedJobsMap.begin();
 }
 
+/**
+ * Returns the end of an aircrafts unplanned repair jobs map.
+ */
 map<string, RepairJob*>::iterator  Aircraft::GetMyUnplannedMapEnd()
 {
 	return _myUnplannedJobsMap.end();
 }
 
+/**
+ * Returns an aircrafts beginning Recurring IAT map.
+ */
 map<string, Distribution*>::iterator Aircraft::GetRecurMapBegin()
 {
 	return _myRecurIATmap.begin();
 }
 
+/**
+ * Returns an aircrafts end Recurring IAT map.
+ */
 map<string, Distribution*>::iterator  Aircraft::GetRecurMapEnd()
 {
 	return _myRecurIATmap.end();
 }
 
+
+/**
+ * Returns a reandom element for unplanned repair jobs.
+ */
 string Aircraft::GetRandomElement()
 {
 
@@ -489,32 +637,49 @@ void Aircraft::AddBayReqToRes()
 
 }
 
+/**
+ * Returns the size of the vector for unplanned repair jobs.
+ */
 int Aircraft::GetUnplanVecSize()
 {
 	return _unplannedRjVec.size();
 }
 
+/**
+ * Returns the size of the map for all repair jobs.
+ */
 int Aircraft::GetAllRJMapSize()
 {
 	return _allRepairJobsMap.size();
 }
 
+/**
+ * Returns the size of the map for an aircrafts repair jobs.
+ */
 int Aircraft::GetMyRJMapSize()
 {
 	return _myRepairJobs.size();
 }
 
+/**
+ * Returns the size of the map for an aircrafts unplanned repair jobs.
+ */
 int Aircraft::GetMyUnplannedMapSize()
 {
 	return _myUnplannedJobsMap.size();
 }
 
+/**
+ * Erases the repair job from an aircraft
+ */
 void Aircraft::DeleteJob(string repairJob)
 {
 	_myRepairJobs.erase(repairJob);
 }
 
-
+/**
+ * Logic to set an aircraft's unplanned IATs based off of a distribution.
+ */
 void Aircraft::SetAircraftIAT(string iatUnplanned)
 {
 	istringstream iatUn(iatUnplanned);
@@ -586,21 +751,34 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 //	_iatUnplanned->PrintDistribution(); 
 }
 
+/**
+ * Returns the unplanned IAT of an aircraft.
+ */
 Distribution* Aircraft::GetAircraftIAT()
 {
 	return _iatUnplanned;//check if this works?
 	//_iatUnplanned->PrintDistribution(); 
 }
+
+/**
+ * Returns an aircrafts recurring IAT map.
+ */
 map<string, Distribution*> Aircraft::GetRecurIatMap()
 {
 	return _myRecurIATmap;
 }
 
+/**
+ * Returns an aircrafts job map.
+ */
 map<string, RepairJob*> Aircraft::GetMyJobsMap()
 {
 	return _myRepairJobs;
 }
 
+/**
+ * Returns the print properties of aircrafts.
+ */
 void Aircraft::PrintProperties()
 {
 	cout << "AIRCRAFT:" << endl;
@@ -629,6 +807,9 @@ void Aircraft::PrintProperties()
 	}
 }
 
+/**
+ * Returns print properties for an individual aircraft.
+ */
 void Aircraft::PrintMyProperties()
 {
 	cout << "AIRCRAFT:" << endl;

@@ -2,7 +2,9 @@
 #include "SimExec.h"
 #include "Scribe.h"
 
-
+/**
+* Sets the failure name, failure type, and repair process to "none specified yet"
+*/
 StepResource::StepResource()
 {
 	//_failureName = "none specified yet";
@@ -10,6 +12,9 @@ StepResource::StepResource()
 	//_repairProc = "none specified yet";
 }
 
+/**
+ * A class that inherits from the step resource block that schedules the aircraft to wait for resource event action.
+ */
 class StepResource::WaitForResourceEA : public CondEventAction {
 public:
 	WaitForResourceEA(StepResource* resource, int amountNeeded) {
@@ -38,6 +43,9 @@ private:
 	int _amountNeeded;
 };
 
+/**
+ * A class that inherits from the step resource block that schedules the failure of a resource.
+ */
 class StepResource::FailResourceEA : public EventAction {
 public:
 	FailResourceEA(StepResource* resource) {
@@ -53,6 +61,9 @@ private:
 	StepResource* _resource;
 };
 
+/**
+ * A class that inherits from the step resource block that schedules the restore of a resource.
+ */
 class StepResource::RestoreResourceEA : public EventAction {
 public:
 	RestoreResourceEA(StepResource* resource) {
@@ -69,6 +80,9 @@ private:
 	StepResource* _resource;
 };
 
+/**
+* Sets the resource count, number of resources needed, resource name, resource length, resource width, failure name, failure type, failure distribution, and repair process to default values
+*/
 void StepResource::CopyMapResource(const StepResource& mapResource)
 {
 	_resourceCount = mapResource._resourceCount;
@@ -89,7 +103,9 @@ void StepResource::CopyMapResource(const StepResource& mapResource)
 		_failureDist = mapResource._failureDist->CopyThis();
 }
 
-//@TODO will need to figure out logic for what happens if amount needed is greater
+/**
+* Acquires resources by subtracting the amount of resources needed from the resource count
+*/
 void StepResource::Acquire(int amountNeeded)
 {
 	//if there aren't enough resources for this step
@@ -104,11 +120,17 @@ void StepResource::Acquire(int amountNeeded)
 	_resourceCount -= amountNeeded;
 }
 
+/**
+* Adds the amount of resources to release to the resource count; increases the resource count by the amount of resources to release
+*/
 void StepResource::Release(int amountToRelease)
 {
 	_resourceCount += amountToRelease;
 }
 
+/**
+* Checks if the amount of resources needed is greater than the resource count; if so, returns false; else, returns true
+*/
 bool StepResource::IsAvailable(int amountNeeded)
 {
 	if (amountNeeded > _resourceCount)
@@ -118,6 +140,9 @@ bool StepResource::IsAvailable(int amountNeeded)
 	}
 }
 
+/**
+* Schedules a resource failure event
+*/
 void StepResource::FailResource()
 {
 	//@TODO write the algorithm for a resource failure essentially is just scheduling an event
@@ -125,6 +150,9 @@ void StepResource::FailResource()
 	_resourceCount--;
 }
 
+/**
+* Increases the resource count
+*/
 void StepResource::RestoreResource()
 {
 	//May probably need an associated Event to Execute function call. 
@@ -135,99 +163,156 @@ void StepResource::RestoreResource()
 ////  GETTERS AND SETTERS  ////
 ///////////////////////////////
 
+
+/**
+* Sets the first shift count.
+*/
 void StepResource::SetShiftOneCount(int shiftcount)
 {
 	_shiftOneCount = shiftcount;
 };
 
+/**
+* Returns the first shift count
+*/
 double StepResource::GetShiftOneCount()
 {
 	return _shiftOneCount;
 };
 
+/**
+* Sets the second shift count.
+*/
 void StepResource::SetShiftTwoCount(int shiftcount)
 {
 	_shiftTwoCount = shiftcount;
 };
 
+/**
+* Returns the second shift count.
+*/
 double StepResource::GetShiftTwoCount()
 {
 	return _shiftTwoCount;
 };
 
+/**
+* Sets the third shift count.
+*/
 void StepResource::SetShiftThreeCount(int shiftcount)
 {
 	_shiftThreeCount = shiftcount;
 };
 
+/**
+* Returns the third shift count.
+*/
 double StepResource::GetShiftThreeCount()
 {
 	return _shiftThreeCount;
 }
 
-
+/**
+* Sets the resource count
+*/
 void StepResource::SetResourceCount(double resourceCount)
 {
 	_resourceCount = resourceCount;
 }
 
+/**
+* Returns the resource count
+*/
 double StepResource::GetResourceCount()
 {
 	return _resourceCount;
 }
 
+/**
+* Sets the resource name
+*/
 void StepResource::SetResourceName(string resourceName)
 {
 	_resourceName = resourceName;
 }
 
+/**
+* Returns the resource name
+*/
 string StepResource::GetResourceName()
 {
 	return _resourceName;
 }
 
+/**
+* Sets the number of resources needed
+*/
 void StepResource::SetNumResNeeded(int numNeeded)
 {
 	//get from step table values 
 	_numNeeded = numNeeded;
 }
 
+/**
+* Returns the number of resources needed
+*/
 int StepResource::GetNumberOfResourcesNeeded()
 {
 	return _numNeeded;
 }
 
+/**
+* Sets the resource length and width
+*/
 void StepResource::SetResourceFootprint(double length, double width)
 {
 	_length = length;
 	_width = width;
 }
 
+/**
+* Returns the resource length and width
+*/
 double StepResource::GetResourceFootprint()
 {
 	return _length, _width;
 }
 
+/**
+* Sets the resource failure name
+*/
 void StepResource::SetFailureName(string failureName)
 {
 	_failureName = failureName;
 }
 
+/**
+* Returns the resource failure name
+*/
 string StepResource::GetFailureName()
 {
 	return _failureName;
 }
 
+/**
+* Sets the resource failure type
+*/
 void StepResource::SetFailureType(string failureType)
 {
 	_failureType = failureType;
 }
 
+/**
+* Returns the resource failure type
+*/
 string StepResource::GetFailureType()
 {
 	return _failureType;
 }
 
+/**
+* Turns the failure distribution from a string into the correct distribution, either triangular, exponential, uniform, normal, poisson, constant, or Weibull; prints the distribution
+*/
 void StepResource::SetFailureDistr(string failureDistr)
 {
 	//turn failure distr from string into distributions
@@ -303,27 +388,42 @@ void StepResource::SetFailureDistr(string failureDistr)
 
 }
 
+/**
+* Returns the resource failure distribution
+*/
 Distribution* StepResource::GetFailureDistr()
 {
 	return _failureDist; //check if this works
 }
 
+/**
+* Sets the repair process
+*/
 void StepResource::SetRepairProcess(string repairProc)
 {
 	_repairProc = repairProc;
 }
 
+/**
+* Schedules the first failure of each reasource.
+*/
 void StepResource::ScheduleFirstFailures(StepResource* resource)
 {
 	//SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 2, "FailResourceEA");
 	SimExec::ScheduleEventAtRecurring(0, new FailResourceEA(resource), 1, "FailResourceEA");
 }
 
+/**
+* Returns the repair process
+*/
 string StepResource::GetRepairProcess()
 {
 	return _repairProc;
 }
 
+/**
+* Sets true or false if after CEL.
+*/
 bool StepResource::IsAfterCEL()
 {
 	if (_CELflag == 1)
@@ -332,12 +432,17 @@ bool StepResource::IsAfterCEL()
 		return false;
 }
 
+/**
+* Sets the CEL flag.
+*/
 void StepResource::SetCELflag(int CELflag)
 {
 	_CELflag = CELflag;
 }
 
-
+/**
+* Prints the resource name, initial count, resource footprint X, resource footprint Y, failure name, failure type, and repair process
+*/
 void StepResource::PrintResProperties()
 {
 	cout << "			Resource name: " << _resourceName << endl;
@@ -368,6 +473,9 @@ void StepResource::PrintResProperties()
 //	return _resourceID;
 //}
 
+/**
+* Function that calls the recousrce failure.
+*/
 void StepResource::FailResourceEM(StepResource* resource)
 {
 	//int newCount;
@@ -399,6 +507,9 @@ void StepResource::FailResourceEM(StepResource* resource)
 	//}
 }
 
+/**
+* Function that restores the resource after a failure.
+*/
 void StepResource::RestoreResourceEM(StepResource* resource)
 {
 	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;

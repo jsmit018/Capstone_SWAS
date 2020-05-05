@@ -1,6 +1,10 @@
 #include "SourceTask.h"
 //#include "SimExec.h"
 
+
+/**
+ * A class that inherits from the source block that schedules the next calendar aircraft event action.
+ */
 class SourceBlock::ScheduleNextCalendarAircraftEA : public EventAction {
 public:
 	ScheduleNextCalendarAircraftEA(SourceBlock* source, RepairJob* repairJob, CalendarObj* calObj) {
@@ -30,6 +34,10 @@ private:
 //	SourceBlock* _source;
 //};
 
+
+/**
+ * A class that inherits from the source block and schedules the next recurring aircraft event action.
+ */
 class SourceBlock::ScheduleNextRecurringAircraftEA : public EventAction {
 public:
 	ScheduleNextRecurringAircraftEA(SourceBlock* source, Distribution* recurringiAT, RepairJob* repairJob) {
@@ -46,6 +54,10 @@ private:
 	Distribution* _recurringIAT;
 };
 
+
+/**
+ * A class inherited by the source block and schedules the next unplanned aircraft event action.
+ */
 class SourceBlock::ScheduleNextUnplannedAircraftEA : public EventAction {
 public:
 	ScheduleNextUnplannedAircraftEA(SourceBlock* source, RepairJob* repairJob) {
@@ -64,6 +76,10 @@ private:
 };
 
 /*Constructor for Unplanned*/
+
+/**
+ * Source block Constructor for an unplanned source block that initializes the aircraft and schedules the next unplanned aircraft event action.
+ */
 SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircraft, string name, RepairJob* repairJob,
 	int numberOfAircraftToGenerate) : Task(name)
 {
@@ -119,6 +135,10 @@ SourceBlock::SourceBlock(Distribution* iat, string aircraftType, Aircraft* aircr
 
 
 //recurring constructor
+
+/**
+ * Source block constructor for recurring events.
+ */
 SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, string aircraftType, Aircraft* aircraft, string name,
 	int numberOfAircraftToGenerate) : Task(name)
 {
@@ -163,6 +183,10 @@ SourceBlock::SourceBlock(map<string, Distribution*> recurringIATS, string aircra
 
 /*Constructor for Calendar*/
 //scheduling aircraft arrival
+
+/**
+ * Source block constructor for calendar.
+ */
 SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
 	/*int numCalEventsToSched,*/ CalendarObj* calobj, RepairJob* repairJob) : Task(name)
 {
@@ -198,22 +222,37 @@ SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
 //	SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this), _interarrivalTimeRecurring->GetRV(), "ScheduleNextRecurringAircraftEA");
 //}
 
+/**
+ * Returns the aircraft type.
+ */
 string SourceBlock::GetAircraftType() {
 	return _aircraftType;
 }
 
+/**
+ * Sets the aircraft type.
+ */
 void  SourceBlock::SetAircraftType(string aircraftType) {
 	_aircraftType = aircraftType;
 }
 
+/**
+ * Returns the name.
+ */
 string SourceBlock::GetName() {
 	return _name;
 }
 
+/**
+ * Returns the number of generated aircrafts.
+ */
 int SourceBlock::GetNumberGenerated() {
 	return _numberGenerated;
 }
 
+/**
+ * Schedules the next calendar aircraft event method of source and increments number generated for the source block.
+ */
 void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calObj) {
 	//cout << "****************** IN CALENDAR EM" << endl;
 	Aircraft* newAircraft = _aircraft->New();
@@ -271,7 +310,9 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 	//}
 }
 
-
+/**
+ * Schedules the next unplanned aircraft event method and increments number generated for the source block.
+ */
 void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 {
 	if (_numberGenerated != _numberOfAircraftToGenerate)
@@ -386,12 +427,17 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 	}
 }
 
-
+/**
+ * Add a job to the priority map.
+ */
 void SourceBlock::AddToPriorityMap(int priority, string job)
 {
 	_jobPriority[priority] = job;
 }
 
+/**
+ * Schedules the next recurring aircraft event method and increments the number generated of the source block.
+ */
 void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob) {
 
 	if (_numberGenerated != _numberOfAircraftToGenerate) {
@@ -437,6 +483,9 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 	}
 }
 
+/**
+ * Decleration of the virtual function.
+ */
 void SourceBlock::Execute(Aircraft* aircraft) {
 	//This is just a declaration of the virtual function doesn't do anything
 }

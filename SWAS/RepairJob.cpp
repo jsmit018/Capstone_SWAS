@@ -1,7 +1,9 @@
 #include "RepairJob.h"
 
 
-
+/**
+ * Repair Job constructor that initializes the schedule type to "unplanned", the calendar date to "n/a", and the unplanned probability and recurring amount to constant(0.0).
+ */
 RepairJob::RepairJob()
 {
     _schedType = "Unplanned";
@@ -11,6 +13,9 @@ RepairJob::RepairJob()
     _recurringAmt = new Constant(0.0);
 }
 
+/**
+ * Sets _name, _priority, _schedType, _indoorReq, _calendarDate, _recurringAmt, and _unplannedProb equal to the appropriate repair job map variables. For number of steps in mapRj._vecSteps, new step object is created and for each index of the old vector, copy the old step object (which catalyzes the sequence of copying objects within step). Store new step copy into new step vector.
+ */
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
     //   cout << "       Copying " << mapRj._name << " repair job."<< endl; 
@@ -38,6 +43,9 @@ void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 
 }
 
+/**
+ * Returns the step that the aircraft needs to return back to.
+ */
 int RepairJob::GetMyReturnStep()
 {
     int returnStep;
@@ -50,6 +58,9 @@ int RepairJob::GetMyReturnStep()
     return returnStep;
 }
 
+/**
+ * Returns the step ID of the repair job from vecSteps if vecSteps does not equal zero.
+ */
 Step* RepairJob::GetStep(int stepID)
 {
     if (_vecSteps.size() == 0)
@@ -66,6 +77,9 @@ Step* RepairJob::GetStep(int stepID)
 
 }
 
+/**
+ * Returns the first step of a repair job from vecSteps.
+ */
 Step* RepairJob::GetFirstStep()
 {
     return _vecSteps[0];
@@ -73,6 +87,9 @@ Step* RepairJob::GetFirstStep()
 
 }
 
+/**
+ * Bool function that states whether or not an unplanned event will be scheduled.
+ */
 bool RepairJob::WillSchedule()
 {
     //if (_unplannedProb->GetRV() >= 0.51)
@@ -83,11 +100,17 @@ bool RepairJob::WillSchedule()
     //    return false; 
 }
 
+/**
+ * Returns the probablity of unplanned repair job.
+ */
 Distribution* RepairJob::GetUnplannedProb()
 {
     return _unplannedProb;
 }
 
+/**
+ * Returns the size of vecSteps.
+ */
 int RepairJob::GetStepVecSize()
 {
     /*   cout << " xxxxxx IN GET STEP VEC SIZE " <<
@@ -96,16 +119,25 @@ int RepairJob::GetStepVecSize()
     */   return _vecSteps.size();
 }
 
+/**
+ * Sets the name of a repair job.
+ */
 void RepairJob::SetName(string name)
 {
     _name = name;
 }
 
+/**
+ * Returns the name of a repair job.
+ */
 string RepairJob::GetName()
 {
     return _name;
 }
 
+/**
+ * Sets the priority of a repair job.
+ */
 //void RepairJob::SetPriority(int priority)
 //{
 //    _priority = this->GetStep(1)->GetRJPriority(); 
@@ -116,6 +148,9 @@ string RepairJob::GetName()
 //    //_priority = priority; 
 //}
 
+/**
+ * Returns the priority of a repair job.
+ */
 int RepairJob::GetPriority()
 {
     _priority = this->GetStep(1)->GetRJPriority();
@@ -126,6 +161,9 @@ int RepairJob::GetPriority()
     return _priority;
 }
 
+/**
+ * Sets the schedule type.
+ */
 void RepairJob::SetSchedType(string schedType)
 {
     _schedType = schedType;
@@ -133,6 +171,9 @@ void RepairJob::SetSchedType(string schedType)
     // cout << " ++++++++++++++++++IN SET SCHED TYPE TYPE IS " << _schedType << endl; 
 }
 
+/**
+ * Returns the schedule type of a repair job.
+ */
 string RepairJob::GetSchedType()
 {
     /*   cout << endl;
@@ -151,28 +192,43 @@ string RepairJob::GetSchedType()
 
 }
 
+/**
+ * Sets indoor requirement of a repair job.
+ */
 void RepairJob::SetIndoorReq(char indoorReq)
 {
     _indoorReq = indoorReq;
 }
 
+/**
+ * Returns the indoor requirement of a repair job.
+ */
 char RepairJob::GetIndoorReq()
 {
     // cout << "INDOOR REQ IS " << _indoorReq << endl; 
     return _indoorReq;
 }
 
+/**
+ * Sets the calendar date.
+ */
 void RepairJob::SetCalendarDate(string calendarDate)
 {
     _calendarDate = calendarDate;
 }
 
+/**
+ * Returns the calendar date.
+ */
 string RepairJob::GetCalendarDate()
 {
     //return tuple
     return _calendarDate;
 }
 
+/**
+ * Sets the recurring amount of a repair job.
+ */
 void RepairJob::SetRecurringAmt(double recurringAmt)
 {
     _recurringAmt = new Constant(recurringAmt);
@@ -184,13 +240,18 @@ void RepairJob::SetRecurringAmt(double recurringAmt)
 
 }
 
-
+/**
+ * Returns the recurring amount of a repair job.
+ */
 Distribution* RepairJob::GetRecurringAmt()
 {
     //  _recurringAmt->PrintDistribution(); 
     return _recurringAmt;
 }
 
+/**
+ * Logic to set the probability of an unplanned repair job.
+ */
 void RepairJob::SetUnplannedProb(string unplannedProb)
 {
     istringstream unProb(unplannedProb);
@@ -266,7 +327,9 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
   //  cout << endl; 
 }
 
-
+/**
+ * Adds a step to vecSteps of a repair job.
+ */
 void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
@@ -292,11 +355,17 @@ void RepairJob::AddStep(Step* step)
 //    }
 //}
 
+/**
+ * Sets a resource within the resource repair map that needs repair to a repair job.
+ */
 void RepairJob::AddResourceRepair(RepairJob* repairJob, string resourceName)
 {
     _resourceRepairMap[resourceName] = repairJob;
 }
 
+/**
+ * Iterates througth resourceRepairMap and prints resource repairs.
+ */
 void RepairJob::PrintResourceRepairs()
 {
     map<string, RepairJob*>::iterator iter = _resourceRepairMap.begin();
@@ -308,6 +377,9 @@ void RepairJob::PrintResourceRepairs()
     }
 }
 
+/**
+ * Returns the resource within the resource repair map.
+ */
 RepairJob* RepairJob::GetResourceRepair(string resourceName)
 {
     map<string, RepairJob*>::iterator it = _resourceRepairMap.find(resourceName);
@@ -316,6 +388,9 @@ RepairJob* RepairJob::GetResourceRepair(string resourceName)
     return it->second;
 }
 
+/**
+ * Returns the print job properties of a repair job
+ */
 void RepairJob::PrintJobProperties()
 {
 
@@ -339,6 +414,9 @@ void RepairJob::PrintJobProperties()
     cout << endl;
 }
 
+/**
+ * Returns the resource for the resource repair.
+ */
 RepairJob* RepairJob::GetMyResRepairJobObj(string name)
 {
     map<string, RepairJob*>::iterator it = _resourceRepairMap.find(name);
