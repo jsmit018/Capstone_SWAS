@@ -24,23 +24,11 @@ G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\InputInterface.cpp(1491
   RepairJob.cpp
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\RepairJob.cpp(96,33): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\RepairJob.cpp(275,37): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  Resource.cpp
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Resource.cpp(394,110): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Resource.cpp(407,112): warning C4244: 'argument': conversion from 'Time' to 'float', possible loss of data
   SWAS.cpp
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Warehouse.h(24,25): warning C4200: nonstandard extension used: zero-sized array in struct/union
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Warehouse.h(24,25): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SWAS.cpp(30,21): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SWAS.cpp(56,129): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  Scribe.cpp
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(151,42): warning C4244: '=': conversion from 'Time' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(754,53): warning C4244: '-=': conversion from 'double' to 'int', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(755,76): warning C4244: '=': conversion from 'Time' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(828,71): warning C4244: '=': conversion from 'Time' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(935,56): warning C4244: '=': conversion from 'long double' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(1027,54): warning C4244: '=': conversion from 'long double' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(1124,55): warning C4244: '=': conversion from 'long double' to 'float', possible loss of data
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Scribe.cpp(2385,37): warning C4244: '=': conversion from 'Time' to 'float', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SWAS.cpp(60,129): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   SimExec.cpp
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SimExec.cpp(256,11): warning C4244: '=': conversion from 'Time' to 'int', possible loss of data
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SimExec.cpp(257,11): warning C4244: '=': conversion from 'Time' to 'int', possible loss of data
@@ -101,6 +89,7 @@ G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2741,26): warn
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2746,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2816,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2821,28): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2945,85): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   Task.cpp
   Warehouse.cpp
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Warehouse.h(24,25): warning C4200: nonstandard extension used: zero-sized array in struct/union
@@ -108,10 +97,8 @@ G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Warehouse.h(24,25): mes
   Generating Code...
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(1611): warning C4715: 'Step::AcquireBay': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.cpp(2162): warning C4715: 'Step::AreThereBaysAvailable': not all control paths return a value
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.h(134): warning C4715: 'Step::ResourceInReqResource': not all control paths return a value
+G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Step.h(135): warning C4715: 'Step::ResourceInReqResource': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SimExec.cpp(1117): warning C4715: 'SimExec::RunSimulation': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\SimExec.cpp(1171): warning C4715: 'SimExec::RunSimulation': not all control paths return a value
-G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Resource.cpp(333): warning C4715: 'StepResource::IsAfterCEL': not all control paths return a value
 G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\Aircraft.cpp(220): warning C4715: 'Aircraft::IsAfterCEL': not all control paths return a value
-  LINK : G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\x64\Debug\SWAS.exe not found or not built by the last incremental link; performing full link
   SWAS.vcxproj -> G:\School\ODU\2020\MSIM 488\SWASClone\Capstone_SWAS\SWAS\x64\Debug\SWAS.exe
