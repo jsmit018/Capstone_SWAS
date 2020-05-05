@@ -90,10 +90,7 @@ Distribution* RepairJob::GetUnplannedProb()
 
 int RepairJob::GetStepVecSize()
 {
-    /*   cout << " xxxxxx IN GET STEP VEC SIZE " <<
-           this->GetName() << " STEP VEC SIZE IS " <<
-           _vecSteps.size() << endl;
-    */   return _vecSteps.size();
+   return _vecSteps.size();
 }
 
 void RepairJob::SetName(string name)
@@ -106,49 +103,22 @@ string RepairJob::GetName()
     return _name;
 }
 
-//void RepairJob::SetPriority(int priority)
-//{
-//    _priority = this->GetStep(1)->GetRJPriority(); 
-//    cout << endl; 
-//    cout << endl; 
-//    cout << "&%&%&%&%&%&%& SETTER PRIORITY " << _priority << endl; 
-//
-//    //_priority = priority; 
-//}
 
 int RepairJob::GetPriority()
 {
-    _priority = this->GetStep(1)->GetRJPriority();
-    // cout << endl; 
-     //cout << endl; 
-   //  cout << "&%&%&%&%&%&%& GETTER PRIORITY " << _priority << endl; 
-     //system("PAUSE"); 
+    _priority = this->GetStep(1)->GetRJPriority();; 
     return _priority;
 }
 
 void RepairJob::SetSchedType(string schedType)
 {
     _schedType = schedType;
-    // cout << " ++++++++++++++++++IN SET SCHED TYPE PRIORITY IS " << _priority << endl; 
-    // cout << " ++++++++++++++++++IN SET SCHED TYPE TYPE IS " << _schedType << endl; 
+ 
 }
 
 string RepairJob::GetSchedType()
 {
-    /*   cout << endl;
-       cout << endl;
-       cout << endl;
-       cout << endl;
-       cout << endl;
-       cout << endl;
-       cout << "*************#*#*#*#*#**#*##" << endl;
-      cout << "TYPE: " << _schedType << endl; */
-      // cout << "********" << _name << " " << _priority << endl; 
-
-       //cout << "*************IN GET SCHED TYPE: " << _name << " " << _schedType << endl; 
     return _schedType;
-
-
 }
 
 void RepairJob::SetIndoorReq(char indoorReq)
@@ -158,7 +128,6 @@ void RepairJob::SetIndoorReq(char indoorReq)
 
 char RepairJob::GetIndoorReq()
 {
-    // cout << "INDOOR REQ IS " << _indoorReq << endl; 
     return _indoorReq;
 }
 
@@ -169,25 +138,17 @@ void RepairJob::SetCalendarDate(string calendarDate)
 
 string RepairJob::GetCalendarDate()
 {
-    //return tuple
     return _calendarDate;
 }
 
 void RepairJob::SetRecurringAmt(double recurringAmt)
 {
     _recurringAmt = new Constant(recurringAmt);
-
-
-    /*  cout << "*****************************IAT RECURRING IS: ";
-          _recurringAmt->PrintDistribution();
-       cout << endl; */
-
 }
 
 
 Distribution* RepairJob::GetRecurringAmt()
 {
-    //  _recurringAmt->PrintDistribution(); 
     return _recurringAmt;
 }
 
@@ -199,8 +160,6 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
 
     getline(unProb, firstHalf, '(');
     getline(unProb, secHalf, ')');
-    //	cout << "first: " << firstHalf << endl; 
-    //	cout << "sec: " << secHalf << endl; 
 
     istringstream nums(secHalf);
     if (firstHalf == "Triangular" || firstHalf == "Tri")
@@ -260,10 +219,6 @@ void RepairJob::SetUnplannedProb(string unplannedProb)
         _unplannedProb = new Weibull(scale, shape);
     }
 
-    //Determines correct distribution and prints
-  //  cout << " 99(3(#((##( "; 
-  //  _unplannedProb->PrintDistribution(); 
-  //  cout << endl; 
 }
 
 
@@ -271,26 +226,8 @@ void RepairJob::AddStep(Step* step)
 {
     _vecSteps.push_back(step);
 
-   //  cout << "adding step" << _vecSteps.size() << endl; 
     step->SetStepID(_vecSteps.size());
-    /*int stepID;
-    for (int i = 0;i < _vecSteps.size();i++)
-    {
-        stepID = i + 1;
-        cout << "step id from add step is " << stepID;
-        step->SetStepID(stepID);
-    }*/
-   // cout << step->GetMyRJName() << "" << step->GetName();
-     //  cout << endl << "new size " << _vecSteps.size() << endl; 
 };
-
-//Step* RepairJob::GetSteps()
-//{
-//    for (int i = 0;i < _vecSteps.size;i++)
-//    {
-//        return _vecSteps[i]; 
-//    }
-//}
 
 void RepairJob::AddResourceRepair(RepairJob* repairJob, string resourceName)
 {
@@ -325,8 +262,6 @@ void RepairJob::PrintJobProperties()
     cout << "   Unplanned Probability: ";
     _unplannedProb->PrintDistribution();
     cout << endl;
-    //cout << "   Calendar Occurrence: " << _calendarDate << endl; 
-    //cout << "   Reccuring Amount: " << _recurringAmt << endl; 
     cout << "   Indoor Requirement? " << _indoorReq << endl;
     cout << endl;
 
@@ -334,7 +269,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-        //_vecSteps[1]->PrintPools(); 
+        _vecSteps[1]->PrintPools(); 
     }
     cout << endl;
 }
