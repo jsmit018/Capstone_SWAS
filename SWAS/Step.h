@@ -22,6 +22,8 @@ public:
 
 	static map<string, Parts*> GetPartsPool();
 	static map<string, StepResource*> GetResPool();
+	static map<string, StepResource*>::iterator GetResourcePoolBegin();
+	static map<string, StepResource*>::iterator GetResourcePoolEnd();
 	static int GetPartsPoolSize();
 	static int GetResPoolSize();
 

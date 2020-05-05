@@ -1973,23 +1973,10 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 	SimExec::ScheduleEventAt(-1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
 }
 
-
-
-void Step::AddQueueEM(Aircraft* aircraft)
-{
-	//_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
-	//_numInQueue++;
-	//InitialArrivalBayCheck();
-}
-
 void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 {
 	double newCount;
 	bool acquired = false;
-
-	/*if (resource->GetResourceName() == "M Bay" || resource->GetResourceName() == "L Bay")
-		cout << "bleh" << endl;*/
-
 	map<string, StepResource*>::iterator iter = _resourcePool.find(resource->GetResourceName());
 	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
 	if (numNeeded <= iter->second->GetResourceCount())
@@ -1997,20 +1984,8 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		//cout << "--------------\n" <<
-		//	"Resource: " << iter->first << ", Initial Count: " << resource->GetResourceCount() << ", current count: " << iter->second->GetResourceCount() <<
-		//	", new count: " << newCount; 
-		//resource->SetResourceCount(newCount);
-		//resource->SetResourceCount(newCount);
-		//SetResPoolCount(resource->GetResourceName(),newCount);
 		SetResPoolCount(iter->second->GetResourceName(), newCount);
-		//cout << ", after updating through ResPoolFunc: ";
-		//cout << iter->second->GetResourceCount() << "\n----------" << endl;
-		//system("PAUSE");
 	}
-
-	//iter->second->SetResourceCount(newCount);
-	//numIt->second->SetResourceCount(newCount);
 
 	Scribe::UpdateResourceRequests(resource->GetResourceName(), acquired);
 }
@@ -2018,37 +1993,13 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 {
 	int newCount;
-
-	//if (resource->GetResourceName() == "M Bay" || resource->GetResourceName() == "L Bay")
-	//	//cout << "bleh" << endl;
 	map<string, StepResource*>::iterator iter = _resourcePool.find(resource->GetResourceName());
-	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
-
 	newCount = iter->second->GetResourceCount() + numRelease;
-
-
-	/*cout << "+++++++\n" <<
-		_myRJ <<
-		" Resource: " << iter->first <<
-		", Count before release: " << iter->second->GetResourceCount() <<
-		", count expected after release: " << newCount << "\n+++++++" << endl;*/
-	//system("PAUSE");
-
-
-	//resource->SetResourceCount(newCount);
 	SetResPoolCount(iter->first, newCount);
-	
-	//cout << " pool count after release is: ";
-	//cout << iter->second->GetResourceCount() << " "; 
-
-	////cout << IsResourceReleased(iter, newCount) << "\n+++++++" << endl;
-
-
 	int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
 
 	Scribe::UpdateResourceUtilization(resource->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-	/////////******For Andrea is this where we want to put this? I feel it may be best!
-	//SimExec::CheckConditionalEvents(resource, 0);
+
 	SimExec::CheckConditionalEvents(iter->second, 0);
 }
 
@@ -2057,23 +2008,16 @@ void Step::FailResourceEM(StepResource* resource)
 {
 	//cout << "resource " << resource->GetResourceName() << " just failed" << endl;
 	int newCount;
-	//Mark added this i'm not sure we need to create a new instance, but i'm just going to put a priority of 1 - Jordan
-	//RepairJob* newJob;
-
 	map<string, StepResource*>::const_iterator iter = _resourcePool.find(resource->GetResourceName());
 
 	newCount = iter->second->GetResourceCount() - 1;
 	SetResPoolCount(iter->first, newCount);
-	//resource->SetResourceCount(newCount);
 
 	//schedule first step of the repair job for this resource (at the end of which a restore resource will be scheduled)
-	SimExec::ScheduleEventAt(_RJpriority, 
-		new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetFirstStep(), resource, _acquiredResources), 
-		0.0, 
+	SimExec::ScheduleEventAt(_RJpriority,
+		new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetFirstStep(), resource, _acquiredResources),
+		0.0,
 		"StartServiceEA");
-
-	//schedule the next random failure of this resource -- happening in swas
-	//SimExec::ScheduleEventAt(1, new FailResourceEA(this, resource), iter->second->GetFailureDistr()->GetRV(), "Resource Failure");
 
 	Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 }
@@ -2143,9 +2087,6 @@ bool Step::IsMyBaySizeAvailable(string baySize)
 
 bool Step::AreThereBaysAvailable(string baySize)
 {
-	/*map<string, Resource*>::const_iterator sIt = _resourcePool.find("S Bay");
-	map<string, Resource*>::const_iterator mIt = _resourcePool.find("M Bay");
-	map<string, Resource*>::const_iterator lIt = _resourcePool.find("L Bay");*/
 	map<string, StepResource*>::const_iterator it = _resourcePool.find(baySize);
 	if (it->first == "S Bay") {
 		map<string, StepResource*>::const_iterator mIt = _resourcePool.find("M Bay");
@@ -2248,11 +2189,6 @@ map<string, StepResource*>::iterator Step::FindResourceinReqResMap(string resour
 	return _reqResourceMap.find(resource);
 }
 
-//map<string, StepResource*> Step::GetResourcePool()
-//{
-//	return _resourcePool;
-//}
-
 map<string, StepResource*>::iterator Step::GetResourcePoolBegin()
 {
 	return _resourcePool.begin();
@@ -2266,26 +2202,14 @@ map<string, StepResource*>::iterator Step::GetResourcePoolEnd()
 void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 {
 	// Testing //
-	//vector<string> test;
 	map<string, int> test;
 	SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
-	//SimExec::ScheduleEventAtRecurring(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
-	////cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
 void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i)
 {
-	//vector<string> test;
 	map<string, int> test;
-	//for (int i = 0; i < 1; ++i) {
-	//for (int i = 0; i < calobj->GetNumEvents()/2; ++i) {
-		//Test//
-
-		//________
-		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, test), "StartServiceEA");
-		//SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), "StartServiceEA");
-//	}
-	////cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
+	SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _RJpriority, new StartServiceEA(step, aircraft, test), "StartServiceEA");
 }
 
 map<string, Parts*>::iterator Step::GetPartsMapBegin()
@@ -2633,17 +2557,6 @@ void Step::SetReturnStep(/*int stepId*/ int returnStep)
 	_returnStep = returnStep;
 }
 
-//we're also checking bays in the startstepservice so i just want to differentiate them clearly
-void Step::InitialArrivalBayCheck()
-{
-	/////***Discontinued logic - Opted instead for Virtual Queue
-	/*vector<string> resourceList;
-	map<string, Resource*>::iterator it = _resourcePool.find("bay");
-	if (it->second->GetResourceCount() > 0)
-		SimExec::ScheduleEventAt(1, new StartServiceEA(this, _priorityQueue->GetEntity(), resourceList), 0.0, "StartServiceEA");*/
-}
-
-
 ////////////////////////////////////////////
 /////////////     OTHER      ///////////////
 ////////////////////////////////////////////
@@ -2651,12 +2564,9 @@ void Step::InitialArrivalBayCheck()
 //now exclusive to unplanned
 void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
-	//vector<string> test;
 	map<string, int> test;
 	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
-	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
-	////cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
-	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
+
 }
 
 void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySizeIHave, int numRelease)
@@ -2666,19 +2576,11 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 
 	if (myOriginalBaySize == baySizeIHave) {
 		newCount = iter->second->GetResourceCount() + numRelease;
-		//cout << "Current Counter, " << iter->second->GetResourceCount() << ", New Count" << newCount << ", Bay Size: " << iter->first << endl;
-		//system("PAUSE");
-		//resource->SetResourceCount(newCount);
 		SetResPoolCount(iter->first, newCount);
-		//iter->second->SetResourceCount(newCount);
-		//numIt->second->SetResourceCount(newCount);
 		IsResourceReleased(iter, newCount);
 
 		int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
 		Scribe::UpdateResourceUtilization(bay->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-
-		/////////******For Andrea is this where we want to put this? I feel it may be best!
-		//SimExec::CheckConditionalEvents(bay, 0);
 		SimExec::CheckConditionalEvents(iter->second, 0);
 	}
 	else {
@@ -2687,7 +2589,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 				map<string, StepResource*>::iterator it = _resourcePool.find("M Bay");
 				newCount = it->second->GetResourceCount() + ((double)numRelease / 2.0);
 				SetResPoolCount(it->first, newCount);
-				//numIt->second->SetResourceCount(newCount);
 				IsResourceReleased(it, newCount);
 
 				int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
@@ -2697,7 +2598,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 				map<string, StepResource*>::iterator it = _resourcePool.find("L Bay");
 				newCount = it->second->GetResourceCount() + ((double)numRelease / 4.0);
 				SetResPoolCount(it->first, newCount);
-				//numIt->second->SetResourceCount(newCount);
 				IsResourceReleased(it, newCount);
 
 				int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
@@ -2705,16 +2605,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 			}
 		}
 		else if (myOriginalBaySize == "M Bay") {
-			//if (baySizeIHave == "S Bay") {
-			//	map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
-			//	newCount = it->second->GetResourceCount() + (numRelease * 2);
-			//	SetResPoolCount(it->first, newCount);
-			//	//numIt->second->SetResourceCount(newCount);
-			//	IsResourceReleased(it, newCount);
-
-			//	int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
-			//	Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-			//}
 			if (baySizeIHave == "L Bay") {
 				map<string, StepResource*>::const_iterator it = _resourcePool.find("L Bay");
 				newCount = it->second->GetResourceCount() + ((double)numRelease / 2.0);
@@ -2726,28 +2616,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 			}
 		}
-		//else if (myOriginalBaySize == "L Bay") {
-		//	if (baySizeIHave == "S Bay") {
-		//		map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
-		//		newCount = it->second->GetResourceCount() + (numRelease * 4);
-		//		SetResPoolCount(it->first, newCount);
-		//		//numIt->second->SetResourceCount(newCount);
-		//		IsResourceReleased(it, newCount);
-
-		//		int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
-		//		Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-		//	}
-		//	else if (baySizeIHave == "M Bay") {
-		//		map<string, Resource*>::const_iterator it = _resourcePool.find("M Bay");
-		//		newCount = it->second->GetResourceCount() + (numRelease * 2);
-		//		SetResPoolCount(it->first, newCount);
-		//		//numIt->second->SetResourceCount(newCount);
-		//		IsResourceReleased(it, newCount);
-
-		//		int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
-		//		Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-		//	}
-		//}
 	}
 }
 
@@ -2808,8 +2676,7 @@ map<string, Parts*>::iterator Step::FindParts(string resource)
 }
 
 void Step::Execute(Aircraft* aircraft) {
-	////****Discontinued Logic
-	//SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AddQueueEA(this, aircraft), 0.0, "AddQueueEA");
+
 }
 
 void Step::AddResource(StepResource* resource, string resourceName, int numNeeded)
@@ -2821,21 +2688,6 @@ void Step::AddResource(StepResource* resource, string resourceName, int numNeede
 
 
 }
-
-
-//void SchedResourceFailure()
-//{
-//	//schedule resource failure logic
-//	map<string, Resource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
-//	while (iter != InputReader::GetMasterResMapEnd())
-//	{
-//		////cout << "" << endl;
-//		//schedule iter's first failure in iter->second->GetFailureDistr()
-//
-//		iter++;
-//	}
-//
-//}
 
 int Step::GetResMapSize()
 {
