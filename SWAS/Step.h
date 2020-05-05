@@ -50,6 +50,10 @@ public:
 	void PrintParts();
 	void PrintResources();
 
+	static void ReadResources();
+
+	static void ResetPools();
+
 	map<string, StepResource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
 

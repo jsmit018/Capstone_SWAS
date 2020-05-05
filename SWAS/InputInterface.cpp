@@ -1243,6 +1243,11 @@ int InputReader::GetAirCount()
 	return _airCount;
 }
 
+void InputReader::ResetAirCount()
+{
+	_airCount = 0;
+}
+
 /**
  * Increments the number of aircraft that entered the simulation
  */

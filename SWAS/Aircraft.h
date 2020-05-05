@@ -48,6 +48,7 @@ public:
 	void ClearMyMap(); 
 	void DeleteAircraft(Aircraft*& aircraft); 
 	void UpdateList(const Aircraft& mapAircraft); 
+	static void ResetAircraftIDs();
 
 	//void SetRecurFlag(char flag); 
 
@@ -98,7 +99,7 @@ public:
 private:
 	string	_aircraftType; 								//	Aircraft name: i.e. F35
 	int _CELflag; 
-	int		_aircraftID; 								//	Aircraft id: unique to individual aircraft
+	static int	_aircraftID; 								//	Aircraft id: unique to individual aircraft
 	static int _nextID; 
 	int _sourceID; 
 	int		_priority; 									//	Aircraft priority: helps determine first to be served in queues
