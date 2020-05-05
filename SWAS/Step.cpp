@@ -624,12 +624,9 @@ void Step::UpdateShift()
 	////else its a peacetime simulation
 	else //if (InputReader::IsWartime() == false)
 	{
-		//cout << " peacetime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
 		////if i'm in shift one
-		//if (InputReader::GetShiftOneStartTime() <= SimExec::GetSimulationTime()._timeOfDay < InputReader::GetShiftTwoStartTime())
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			//cout << "in peace shift one " << endl;
 			////for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
@@ -638,9 +635,8 @@ void Step::UpdateShift()
 				if (iter->second->GetShiftThreeCount() != iter->second->GetShiftOneCount())
 				{
 					////new count is =
-					////current count + the difference between last shift's intitial count and this shift's initial count
+					//current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftThreeCount();
-					//cout << "shift three  " << iter->first << " had init count of " << lastShiftsInitCount << endl;
 
 					thisShiftsInitCount = iter->second->GetShiftOneCount();
 					//cout << "shift one will have init count of " << thisShiftsInitCount << endl;
@@ -1989,9 +1985,9 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(resource->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
-		//cout << "--------------\n" <<
-		//	"Resource: " << iter->first << ", Initial Count: " << resource->GetResourceCount() << ", current count: " << iter->second->GetResourceCount() <<
-		//	", new count: " << newCount; 
+		cout << "--------------\n" <<
+			"Resource: " << iter->first << ", Initial Count: " << resource->GetResourceCount() << ", current count: " << iter->second->GetResourceCount() <<
+			", new count: " << newCount; 
 		//resource->SetResourceCount(newCount);
 		//resource->SetResourceCount(newCount);
 		//SetResPoolCount(resource->GetResourceName(),newCount);
@@ -2025,7 +2021,7 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 	//system("PAUSE");
 
 
-	resource->SetResourceCount(newCount);
+	//resource->SetResourceCount(newCount);
 	SetResPoolCount(iter->first, newCount);
 	
 	//cout << " pool count after release is: ";
@@ -2629,9 +2625,7 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 	//vector<string> test;
 	map<string, int> test;
 	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, test), 0.0, "StartServiceEA");
-	//SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "StartServiceEA");
-	////cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
-	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
+
 }
 
 void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySizeIHave, int numRelease)
@@ -2642,17 +2636,13 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 	if (myOriginalBaySize == baySizeIHave) {
 		newCount = iter->second->GetResourceCount() + numRelease;
 
-		//resource->SetResourceCount(newCount);
 		SetResPoolCount(iter->first, newCount);
-		//iter->second->SetResourceCount(newCount);
-		//numIt->second->SetResourceCount(newCount);
+
 		IsResourceReleased(iter, newCount);
 
 		int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
 		Scribe::UpdateResourceUtilization(bay->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 
-		/////////******For Andrea is this where we want to put this? I feel it may be best!
-		//SimExec::CheckConditionalEvents(bay, 0);
 		SimExec::CheckConditionalEvents(iter->second, 0);
 	}
 	else {
@@ -2679,16 +2669,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 			}
 		}
 		else if (myOriginalBaySize == "M Bay") {
-			//if (baySizeIHave == "S Bay") {
-			//	map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
-			//	newCount = it->second->GetResourceCount() + (numRelease * 2);
-			//	SetResPoolCount(it->first, newCount);
-			//	//numIt->second->SetResourceCount(newCount);
-			//	IsResourceReleased(it, newCount);
-
-			//	int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
-			//	Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-			//}
 			if (baySizeIHave == "L Bay") {
 				map<string, StepResource*>::const_iterator it = _resourcePool.find("L Bay");
 				newCount = it->second->GetResourceCount() + ((double)numRelease / 2.0);
@@ -2700,28 +2680,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 				Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 			}
 		}
-		//else if (myOriginalBaySize == "L Bay") {
-		//	if (baySizeIHave == "S Bay") {
-		//		map<string, Resource*>::const_iterator it = _resourcePool.find("S Bay");
-		//		newCount = it->second->GetResourceCount() + (numRelease * 4);
-		//		SetResPoolCount(it->first, newCount);
-		//		//numIt->second->SetResourceCount(newCount);
-		//		IsResourceReleased(it, newCount);
-
-		//		int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
-		//		Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-		//	}
-		//	else if (baySizeIHave == "M Bay") {
-		//		map<string, Resource*>::const_iterator it = _resourcePool.find("M Bay");
-		//		newCount = it->second->GetResourceCount() + (numRelease * 2);
-		//		SetResPoolCount(it->first, newCount);
-		//		//numIt->second->SetResourceCount(newCount);
-		//		IsResourceReleased(it, newCount);
-
-		//		int negativeCount = numRelease * (-1);//Used to increment utilization for scribe
-		//		Scribe::UpdateResourceUtilization(it->second->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
-		//	}
-		//}
 	}
 }
 

@@ -6,9 +6,6 @@
 
 SinkBlock* SimExec::_systemSink = new SinkBlock("System Sink");
 
-/*SimExec::SimExec() : SimObj(){
-}*/
-
 void PlayButton()
 {
 	SimExec::RunSimulation();
@@ -31,6 +28,7 @@ struct SimExec::Event {
 		_eventActionName = eaName;
 	}
 
+	//for testing
 	void PrintEvent() {
 		//cout << "_________________________________________________________________________________" << endl;
 		//cout << "Event Action: " << _eventActionName << endl;
@@ -93,7 +91,6 @@ public:
 		}
 		else {
 			CondEvent* curr = _condSet;
-			//while ((curr->_nextCondEvent != 0) ? (c->_priority <= curr->_priority) : false) {
 			while (curr->_nextCondEvent != 0) {
 				if (c->_priority < curr->_priority)
 					break;
@@ -113,35 +110,45 @@ public:
 		}
 	}
 
-	bool CheckConditionalEvents(StepResource* resource, Parts* parts) {
+	bool CheckConditionalEvents(StepResource* resource, Parts* parts) 
+	{
 		CondEvent* curr = _condSet;
-		while (curr != 0) {
+		while (curr != 0) 
+		{
 			//Check to see if the current nodes conditions are met
-			if (curr->_cea->Condition(resource, parts)) {
+			if (curr->_cea->Condition(resource, parts)) 
+			{
 				//If met Execute the associated Event Method
 				cout << "Executed from CES, ID: " << curr->_aID <<endl;
 				curr->_cea->Execute();
-				//curr = curr->_nextCondEvent;
+
 				//Event has Executed, see if the current node is the head node
-				if (curr == _condSet) {
+				if (curr == _condSet) 
+				{
+
 					//If it is advance the head node to the next node
 					_condSet = _condSet->_nextCondEvent;
+
 					//If there is no next node and head node is now null
-					if (_condSet == NULL) {
+					if (_condSet == NULL) 
+					{
 						//reinitialize it to 0 and delete the placeholder
 						_condSet = 0;
 						//delete curr;
 					}
-					else {
+					else 
+					{
 						//Set the previous node to 0 as there is no other node infront of head and delete the placeholder
 						_condSet->_prevCondEvent = 0;
 						//delete curr;
 					}
 				}
-				else {
+				else 
+				{
 					//Curr is not head node so connect the last node to the next node and then delete placeholder
 					curr->_prevCondEvent->_nextCondEvent = curr->_nextCondEvent;
-					if (curr->_nextCondEvent == NULL) {
+					if (curr->_nextCondEvent == NULL) 
+					{
 						curr->_prevCondEvent->_nextCondEvent = 0;
 						//continue;
 					}
@@ -181,26 +188,17 @@ public:
 	}
 
 	void InitEventSet(int numBins, int* days) {
-		//	cout << "Initializing Event Set" << endl;
-		//	cout << "Setting the initial number of events to 0" << endl;
+
 		_numEvents = 0;
-		//	cout << "Setting the number of Bins" << endl;
 		_numBins = numBins;
-		//	cout << "Initialzing the Month to January and the Day to the 1st" << endl;
 		_baseX = 0;
 		_baseY = 0;
-		//	cout << "Initializing the year to the current year" << endl;
 		_year = 2020;
-		//	cout << "Initializing the extra bin for the Calendar Queue" << endl;
 		_overflow = 12;
-		//	cout << "Creating the Event List" << endl;
 		_eventSet = new Event * *[numBins + 1];
-		//	cout << "Creating the End Of the Month dates array" << endl;
 		_endOfMonth = new int[numBins];
-		//	cout << "Initializing the size of each month" << endl;
 		for (int i = 0; i < numBins + 1; ++i) {
 			if (_year % 4 == 0 && i == February) {
-				//			cout << "February is a leap year in " << _year << endl;
 				_eventSet[i] = new Event * [days[i] + 1];
 			}
 			else if (i == 12)
@@ -209,69 +207,69 @@ public:
 				_eventSet[i] = new Event * [days[i]];
 
 		}
-		//		cout << "Initializing the linked list of each Month & Day" << endl;
+		//Initializing the linked list of each Month & Day
 		for (int i = 0; i < numBins + 1; ++i) {
 			if (i == 12) {
-				//				cout << "Overflow Initialzed" << endl;
+				//Overflow Initialzed
 				_eventSet[i][0] = 0;
 			}
 			for (int j = 0; j < days[i]; ++j) {
-				//				cout << ConvertMonth(i) << " " << j + 1 << " initialized" << endl;
+				//ConvertMonth(i)
 				if (i == February && j == 27 && _year % 4 == 0) {
-					//					cout << ConvertMonth(i) << " " << j + 2 << " initialized" << endl;
+
 					_eventSet[i][j + 1] = 0;
 				}
 				_eventSet[i][j] = 0;
 				if (i == 12 && j == 1) {
-					//					cout << "Overflow Initialzed breaking initialization loop" << endl;
+					//"Overflow Initialzed breaking initialization loop"
 					break;
 				}
 			}
 		}
-		//	cout << "Setting the end of month dates" << endl;
+		//Setting the end of month dates" 
 		for (int i = 0; i < numBins; ++i) {
 			_endOfMonth[i] = days[i] - 1;
 		}
 	}
 
 	void AddEventCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
-		//	cout << "***********************************************************************" << endl;
-		//	cout << "Adding Event to the Event List" << endl;
+
+		//Adding Event to the Event List
 		_numEvents++;
 		if (eaName == "ShiftChangeEA" || eaName == "Shift1Change" || eaName == "Shift2Change" || eaName == "Shift3Change")
 			_numEvents--;
-		//	cout << "Number of Events increased to " << _numEvents << endl;
+		//Number of Events increased to numevents
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
 		int binY;
-		//	cout << "Hashing year to see the appopriate place to add the event" << endl;
+		//Hashing year to see the appopriate place to add the event
 		if (e->_year > _year) {
-			//		cout << "Event isn't in this calendar year, adding it to the overflow bin" << endl;
+			//Event isn't in this calendar year, adding it to the overflow bin
 			binX = _overflow;
 			binY = 0;
 		}
 		else {
-			//		cout << "Setting the bins to the appopriate month & day" << endl;
+			//Setting the bins to the appopriate month & day
 			binX = Month;
 			binY = Day;
 		}
-		//	cout << "Checking to see where to place the new event" << endl;
-			//cout << "Checking to see if Month and Day tuple is 0" << endl;
-			//cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
-			//cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;
+		//Checking to see where to place the new event
+		//Checking to see if Month and Day tuple is 0
+		//If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head
+		//If either of those conditions aren't met then we cycle through the list to find the appopriate place to put the new event
 		if (_eventSet[binX][binY] == 0) {
-			//		cout << "Tuple is 0, adding the event to the head of the list" << endl;
+			//Tuple is 0, adding the event to the head of the list
 			_eventSet[binX][binY] = e;
 		}
 		else if (timeOfDay < _eventSet[binX][binY]->_timeOfDay) {
-			//		cout << "New event has an earlier time than the head updating the list" << endl;
+			//New event has an earlier time than the head updating the list
 			e->_nextEvent = _eventSet[binX][binY];
 			_eventSet[binX][binY] = e;
 		}
 		else {
 			Event* curr = _eventSet[binX][binY];
-			//		cout << "Searching the list on where to place the event based on time and priority" << endl;
+			//Searching the list on where to place the event based on time and priority
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority < curr->_nextEvent->_priority) {
@@ -291,15 +289,9 @@ public:
 				curr->_nextEvent = e;
 			}
 		}
-		//if (timeOfDay >= 10)
-		//	cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day + 1 << " at " << timeOfDay << "00 in " << e->_year << endl;
-		//else
-		//	cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day + 1 << " at 0" << timeOfDay << "00 in " << e->_year << endl;
-		//cout << "***********************************************************************" << endl;
 	}
 
 	void AddEventRecurring(int priority, EventAction* ea, double distributionValue, int recurring, string eaName) {
-		//	cout << "***********************************************************************" << endl;
 		Time Month = 0.0;
 		Time Day = 0.0;
 		Time timeOfDay = 0.0;
@@ -307,41 +299,41 @@ public:
 		_numEvents++;
 		if (eaName == "FailResourceEA" || eaName == "RestoreResourceEA")
 			_numEvents--;
-		//	cout << "Number of Events increased to " << _numEvents << endl;
-		//	cout << "Converting Distribution to Appropriate Time" << endl;
+
+		//Converting Distribution to Appropriate Time
 		TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, _simulationTime._timeOfDay, 0, recurring);
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		e->PrintEvent();
 		int binX;
 		int binY;
-		//	cout << "Hashing year to see the appopriate place to add the event" << endl;
+		//Hashing year to see the appopriate place to add the event
 		if (e->_year > _year) {
-			//		cout << "Event isn't in this calendar year, adding it to the overflow bin" << endl;
+			//Event isn't in this calendar year, adding it to the overflow bin
 			binX = _overflow;
 			binY = 0;
 		}
 		else {
-			//		cout << "Setting the bins to the appopriate month & day" << endl;
+			//Setting the bins to the appopriate month & day
 			binX = Month;
 			binY = Day;
 		}
-		/*cout << "Checking to see if Month and Day tuple is 0" << endl;
-		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
-		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;*/
+		//Checking to see if Month and Day tuple is 0
+		//If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head
+		//If either of those conditions aren't met then we cycle through the list to find the appopriate place to put the new event
 		if (_eventSet[binX][binY] == 0) {
-			//		cout << "Tuple is 0, adding the event to the head of the list" << endl;
+			//		Tuple is 0, adding the event to the head of the list
 			_eventSet[binX][binY] = e;
 		}
 		else if (timeOfDay < _eventSet[binX][binY]->_timeOfDay) {
-			//		cout << "New event has an earlier time than the head updating the list" << endl;
+			//		New event has an earlier time than the head updating the list
 			e->_nextEvent = _eventSet[binX][binY];
 			_eventSet[binX][binY] = e;
 		}
 		else {
 			Event* curr = _eventSet[binX][binY];
-			//		cout << "Searching the list on where to place the event based on time and priority" << endl;
+			//		Searching the list on where to place the event based on time and priority" ;
 			if (year == 2022)
-				////cout << "Bleh" << endl;
+
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority < curr->_nextEvent->_priority) {
@@ -361,25 +353,19 @@ public:
 				curr->_nextEvent = e;
 			}
 		}
-		/*	if (timeOfDay >= 10)
-				cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day + 1 << " at " << timeOfDay << "00 in " << e->_year << endl;
-			else
-				cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day + 1 << " at 0" << timeOfDay << "00 in " << e->_year << endl;
-			cout << "***********************************************************************" << endl;*/
 	}
 
 	void AddEvent(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours) {
-		//	cout << "***********************************************************************" << endl;
 		Time Month = 0.0;
 		Time Day = 0.0;
 		Time timeOfDay = 0.0;
 		int year = _year;
-		//	cout << "Adding Event to the Event List" << endl;
+		//	Adding Event to the Event List" 
 		_numEvents++;
 		if (eaName == "ShiftChangeEA" || eaName == "Shift1Change" || eaName == "Shift2Change" || eaName == "Shift3Change")
 			_numEvents--;
-		//	cout << "Number of Events increased to " << _numEvents << endl;
-		//	cout << "Converting Distribution to Appropriate Time" << endl;
+		//	Number of Events increased to " << _numEvents 
+		//	Converting Distribution to Appropriate Time" 
 		if (daysOrHours == 0)
 			TimeConverter::ConvertDistributionToMonthDay(Month, Day, timeOfDay, year, distributionValue, _baseX, _baseY, _endOfMonth, GetSimulationTime()._timeOfDay);
 		else
@@ -387,38 +373,38 @@ public:
 
 		Event* e = new Event(ea, Month, Day, timeOfDay, priority, year, eaName);
 		if (Month == 0 && Day == 0 && timeOfDay == 4)
-			//cout << "Bleh" << endl;
+			//Bleh" 
 		e->PrintEvent();
 		int binX;
 		int binY;
-		//	cout << "Hashing year to see the appopriate place to add the event" << endl;
+		//	Hashing year to see the appopriate place to add the event" 
 		if (e->_year > _year) {
-			//		cout << "Event isn't in this calendar year, adding it to the overflow bin" << endl;
+			//		Event isn't in this calendar year, adding it to the overflow bin" 
 			binX = _overflow;
 			binY = 0;
 		}
 		else {
-			//		cout << "Setting the bins to the appopriate month & day" << endl;
+			//		Setting the bins to the appopriate month & day" 
 			binX = Month;
 			binY = Day;
 		}
-		/*cout << "Checking to see if Month and Day tuple is 0" << endl;
-		cout << "If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" << endl;
-		cout << "If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" << endl;*/
+		/*Checking to see if Month and Day tuple is 0" 
+		If tuple isn't 0 then we check to see if the new event has a higher priority or an earlier time than the head" 
+		If either of those conditions aren't met then we cycle through the list to find the appopriate	place to put the new event" */
 		if (_eventSet[binX][binY] == 0) {
-			//	cout << "Tuple is 0, adding the event to the head of the list" << endl;
+			//	Tuple is 0, adding the event to the head of the list" 
 			_eventSet[binX][binY] = e;
 		}
 		else if (timeOfDay < _eventSet[binX][binY]->_timeOfDay) {
-			//	cout << "New event has an earlier time than the head updating the list" << endl;
+			//	New event has an earlier time than the head updating the list" 
 			e->_nextEvent = _eventSet[binX][binY];
 			_eventSet[binX][binY] = e;
 		}
 		else {
 			Event* curr = _eventSet[binX][binY];
 			//if (_year == 2022)
-				////cout << "Bleh";
-			//	cout << "Searching the list on where to place the event based on time and priority" << endl;
+				////Bleh";
+			//	Searching the list on where to place the event based on time and priority" 
 			while ((curr->_nextEvent != 0) ? (e->_timeOfDay >= curr->_timeOfDay && !(e->_timeOfDay < curr->_nextEvent->_timeOfDay)) : false) {
 				if (e->_timeOfDay == curr->_nextEvent->_timeOfDay) {
 					if (e->_priority < curr->_nextEvent->_priority) {
@@ -438,23 +424,15 @@ public:
 				curr->_nextEvent = e;
 			}
 		}
-		//if (timeOfDay >= 10)
-		//	cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day + 1 << " at " << timeOfDay << "00 in " << e->_year << endl;
-		//else
-		//	cout << "Added Event to the Event Set on " << ConvertMonth(Month) << " " << Day + 1 << " at 0" << timeOfDay << "00 in " << e->_year << endl;
-		//cout << "***********************************************************************" << endl;
 	}
 
 	Time GetTimeOfDay() {
-		//	cout << "Returning time of day" << endl;
-		/*if (_eventSet[_baseX][_baseY]->_timeOfDay == NULL)
-			return 0;
-		else*/
+		//Returning time of day" 
 		return _eventSet[_baseX][_baseY]->_timeOfDay;
 	}
 
 	Time GetMonth() {
-		//	cout << "Returning Month" << endl;
+		//	Returning Month" 
 		/*if (_eventSet[_baseX][_baseY]->_timeMonth == NULL)
 			return 0;
 		else*/
@@ -462,7 +440,7 @@ public:
 	}
 
 	Time GetDay() {
-		//	cout << "Returning Day of the Month" << endl;
+		//	Returning Day of the Month" 
 		/*if (_eventSet[_baseX][_baseY]->_timeDay == NULL)
 			return 0;*/
 			/*	else*/
@@ -470,7 +448,7 @@ public:
 	}
 
 	int GetYear() {
-		//	cout << "Returning Year" << endl;
+		//	Returning Year" 
 		/*i*//*f (_eventSet[_baseX][_baseY]->_year == NULL)
 			return 0;
 		else*/
@@ -486,7 +464,7 @@ public:
 	}
 
 	string ConvertMonth(Time month) {
-		//	cout << "Converting month into a string" << endl;
+		//	Converting month into a string" 
 		switch ((int)month) {
 		case 0:
 			return "January";
@@ -556,82 +534,27 @@ public:
 	}
 
 	EventAction* GetEventAction() {
-		//	cout << "Getting Event Action" << endl;
+		//	Getting Event Action" 
 		if (_numEvents > 0) {
 			while (_eventSet[_baseX][_baseY] == 0) {
 				
 				if (_baseY == _endOfMonth[_baseX]) {
 					AdvanceMonth();
-					/*_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
-					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
-					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
-					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;*/
 				}
 				else {
 					AdvanceDay();
-					/*_simulationTime._timeOfDay = _eventSet[_baseX][_baseY]->_timeOfDay;
-					_simulationTime._month = _eventSet[_baseX][_baseY]->_timeMonth;
-					_simulationTime._day = _eventSet[_baseX][_baseY]->_timeDay;
-					_simulationTime._year = _eventSet[_baseX][_baseY]->_year;*/
 				}
-				//if (_eventSet[_overflow][0] > 0) {}
+
 			}
 			Event* next = _eventSet[_baseX][_baseY];
-			/*	if (GetTimeOfDay() >= 10)
-					cout << "Executing event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at " << GetTimeOfDay() << "00 in " << GetYear() << endl;
-				else
-					cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() + 1 << " at 0" << GetTimeOfDay() << "00 in " << GetYear() << endl;*/
-					//cout << "Executing Event on " << ConvertMonth(GetMonth()) << " " << GetDay() << " at " << GetTimeOfDay();
-			/*if (_eventSet[_baseX][_baseY]->_nextEvent == NULL) {
-				while (_eventSet[_baseX][_baseY] == NULL) {
-					if (_baseY == _endOfMonth[_baseX])
-						AdvanceMonth();
-					else
-						AdvanceDay();
-				}
-			}
-			else*/
-			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
-			//if (_eventSet[_baseX][_baseY] == 0)
-			//{
-			//	if (_baseY == _endOfMonth[_baseX]) {
-			//		AdvanceMonth();
-			//		while (_eventSet[_baseX][_baseY] == 0) {
-			//			if (_baseY == _endOfMonth[_baseX])
-			//				AdvanceMonth();
-			//			else
-			//				AdvanceDay();
-			//		}
-			//		_simulationTime._timeOfDay = next->_timeOfDay;
-			//		_simulationTime._month = next->_timeMonth;
-			//		_simulationTime._day = next->_timeDay;
-			//		_simulationTime._year = next->_year;
-			//	}
-			//	else {
-			//		while (_eventSet[_baseX][_baseY] == 0) {
-			//			if (_numEvents == 1)
-			//				break;
-			//			if (_baseY == _endOfMonth[_baseX])
-			//				AdvanceMonth();
-			//			else
-			//				AdvanceDay();
 
-			//			/*if (_year == 2025 && ConvertMonth(GetSimulationTime()._month) == "July")
-			//				while (_eventSet[_overflow][0] != 0)
-			//					cout << _eventSet[_overflow][0]->_eventActionName << ", " << ConvertMonth(_eventSet[_overflow][0]->_timeMonth) << ", " << _eventSet[_overflow][0]->_year << endl;*/
-			//		}
-			//		_simulationTime._timeOfDay = next->_timeOfDay;
-			//		_simulationTime._month = next->_timeMonth;
-			//		_simulationTime._day = next->_timeDay;
-			//		_simulationTime._year = next->_year;
-			//	}
-			//}
-			//else {
+			_eventSet[_baseX][_baseY] = _eventSet[_baseX][_baseY]->_nextEvent;
+			
 				_simulationTime._timeOfDay = next->_timeOfDay;
 				_simulationTime._month = next->_timeMonth;
 				_simulationTime._day = next->_timeDay;
 				_simulationTime._year = next->_year;
-			//}
+
 			EventAction* ea = next->_ea;
 			_numEvents--;
 			if (next->_eventActionName == "FailResourceEA" || next->_eventActionName == "RestoreResourceEA" || next->_eventActionName == "ShiftChangeEA" 
@@ -688,7 +611,7 @@ public:
 	}
 
 	bool HasEvent() {
-		//	cout << "Checking to see if number of events is greater than 0" << endl;
+		//	Checking to see if number of events is greater than 0" 
 		return _numEvents > 0;
 	}
 
@@ -724,23 +647,21 @@ private:
 	//
 	//	//Will add an if statement on December 31 to increment the year by 1.
 	void AdvanceMonth() {
-		//	cout << "Advancing Month, and updating overflow bin" << endl;
+		//	Advancing Month, and updating overflow bin" 
 		if (_baseX == December && _baseY == 30) {
 			_eventSet[_baseX][_baseY] = 0;
 			_year++;
 			_baseX = 0;
 			_baseY = 0;
 			_totalDaysPassed++;
-			/*if (_year == 2021)
-				//cout << "Bleh" << endl;*/
+			
 		}
 		else {
 			_eventSet[_baseX][_baseY] = 0;
 			_baseX++;
 			_baseY = 0;
 			_totalDaysPassed++;
-			/*if (_year == 2022 && _baseX == 1)
-				cout << "stop" << endl;*/
+			
 		}
 
 		int previousBase;
@@ -1014,7 +935,7 @@ private:
 	}
 
 	void AdvanceDay() {
-		//cout << "Advancing Day" << endl;
+		//Advancing Day" 
 		_eventSet[_baseX][_baseY] = 0;
 		_baseY++;
 		_totalDaysPassed++;
@@ -1030,11 +951,11 @@ int SimExec::_totalDaysPassed = 0;
 
 
 void SimExec::InitializeSimulation(int numBins, int* days) {
-	//	cout << "Setting Simulation time to 0" << endl;
-	//_simulationTime._timeOfDay = 0.0;
-	//Was this ^
-	//Needs to be this v
+
+	//	Setting Simulation time to 0" 
+
 	_simulationTime._timeOfDay = 6.0;
+
 	_simulationTime._month = 0;
 	_simulationTime._day = 0;
 	_simulationTime._year = 2020;
@@ -1048,7 +969,7 @@ void SimExec::ReinitalizeSimulation()
 }
 
 SimulationTime SimExec::GetSimulationTime() {
-	//	cout << "Returning Simulation Time" << endl;
+	//	Returning Simulation Time" 
 	return _simulationTime;
 }
 
@@ -1063,25 +984,25 @@ void SimExec::SetInputReader(InputReader inputReader)
 }
 
 void SimExec::ScheduleEventAt(int priority, EventAction* ea, double distributionValue, string eaName, int daysOrHours) {
-		//cout << "Scheduling Event" << endl;
+		//Scheduling Event" 
 	_eventSet.AddEvent(priority, ea, distributionValue, eaName, daysOrHours);
 }
 
 void SimExec::ScheduleEventAtCalendar(Time Month, Time Day, Time timeOfDay, int year, int priority, EventAction* ea, string eaName) {
-		//cout << "Scheduling Calendar Event" << endl;
+		//Scheduling Calendar Event" 
 	_eventSet.AddEventCalendar(Month, Day, timeOfDay, year, priority, ea, eaName);
 }
 
 
 void SimExec::ScheduleEventAtRecurring(int priority, EventAction* ea, double distributionValue, string eaName, int recurring)
 {
-	//	cout << "Scheduling Recurring Event" << endl;
+	//	Scheduling Recurring Event" 
 	_eventSet.AddEventRecurring(priority, ea, distributionValue, recurring, eaName);
 }
 
 void SimExec::ScheduleConditionalEvent(int priority, CondEventAction* cea, string eaName, string type, string resourceNeeded, int aID, string repairJobName)
 {
-	//	cout << "Scheduling Conditional Event";
+	//	Scheduling Conditional Event";
 	_conditionalSet.AddConditionalEvent(priority, cea, eaName, type, resourceNeeded, aID, repairJobName);
 }
 
@@ -1112,8 +1033,8 @@ void SimExec::PrintEventSet()
 
 //void SimExec::RunSimulation() {
 int SimExec::RunSimulation() {
-	//cout << "Running Simulation" << endl;
-//	cout << "Executing Event" << endl;
+	//Running Simulation" 
+	//Executing Event" 
 	//while (_eventSet.HasEvent() && _simulationFlag == true) {
 	//Commented out the while loop for tyler going to try moving the loop into unity.
 	if (_simulationFlag == true && _eventSet.HasEvent()) {
@@ -1126,25 +1047,25 @@ int SimExec::RunSimulation() {
 			FlipSimulationFlag();
 			return 3;
 		}
-		//cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << endl;
 		ea->Execute();
 		delete ea;
-		/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
-			|| _eventSet.GetYear() != _simulationTime._year || _eventSet.GetMonth() != _simulationTime._month) : true)
-			while (_conditionalSet.CheckConditionalEvents());*/
 		if (!_eventSet.HasEvent())
 			FlipSimulationFlag();
 		return 0;
 	}
 	else if (_simulationFlag == false) {
-		//	cout << "Simulation Terminating" << endl;
+		//	Simulation Terminating" 
 		if (_simulationTime._timeOfDay >= 10) {
-			//		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-			//			<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+
+			//for testing
+			//	Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+			//	<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year 
 		}
 		else if (_simulationTime._timeOfDay) {
-			//		cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-			//			<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+
+			//for testing
+			//Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+			//	<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year 
 		}
 		return 3;
 	}
@@ -1152,41 +1073,35 @@ int SimExec::RunSimulation() {
 
 //void SimExec::RunSimulation(Time month, Time day, Time timeOfDay, int year) {
 int SimExec::RunSimulation(Time month, Time day, int year) {
-	//cout << "Running Simulation" << endl;
-//	cout << "Executing Event" << endl;
-	//while (_eventSet.HasEvent() && _simulationFlag == true) {
+	//Running Simulation" 
+	//Executing Event" << endl;
+	//While (_eventSet.HasEvent() && _simulationFlag == true) {
 	if (_eventSet.HasEvent() && _simulationFlag == true) {
 		if (_simulationTime._month >= (int)month && _simulationTime._day >= (int)day && _simulationTime._timeOfDay >= 0
 			&& _simulationTime._year >= year) {
 			FlipSimulationFlag();
 			if (_simulationTime._timeOfDay >= 10) {
-			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-				<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+			
+				//for testing
+				//cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+				//<< " at " << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
 			}
 		else {
-			cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
-				<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
+				//for testing
+				//cout << "Simulation Terminated at time " << _eventSet.ConvertMonth(_simulationTime._month) << " " << _simulationTime._day + 1
+				//<< " at 0" << _simulationTime._timeOfDay << "00 in " << _simulationTime._year << endl;
 		}
-			//system("PAUSE");
 			return 3;
-			//break;
 		}
 		else {
-			//_simulationTime._timeOfDay = _eventSet.GetTimeOfDay();
-			//_simulationTime._month = _eventSet.GetMonth();
-			//_simulationTime._day = _eventSet.GetDay();
-			//_simulationTime._year = _eventSet.GetYear();
+
 			EventAction* ea = _eventSet.GetEventAction();
 			if (ea == 0) {
 				FlipSimulationFlag();
 				return 3;
 			}
-			//cout << _eventSet.ConvertMonth(GetSimulationTime()._month) << " " << GetSimulationTime()._day + 1 << " " << GetSimulationTime()._timeOfDay << " " << GetSimulationTime()._year << endl;
 			ea->Execute();
 			delete ea;
-			/*if (_eventSet.HasEvent() ? (_eventSet.GetTimeOfDay() != _simulationTime._timeOfDay || _eventSet.GetDay() != _simulationTime._day
-				|| _eventSet.GetYear() != _simulationTime._year || _eventSet.GetMonth() != _simulationTime._month) : true)
-				while (_conditioinalSet.CheckConditionalEvents());*/
 			return 0;
 		}
 	}

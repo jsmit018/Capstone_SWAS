@@ -51,11 +51,9 @@ public:
 	double GetShiftThreeCount();
 
 private:
-	//int _resourceCount;
 	int _shiftOneCount;
 	int _shiftTwoCount;
 	int _shiftThreeCount;
-	//int _resourceID; // NOT SET YET
 	double _resourceCount;
 	int _numNeeded;
 	int _CELflag;
