@@ -47,6 +47,7 @@ public:
 	void PrintParts();
 	void PrintResources();
 	static void ReadResources();
+	static void ResetPools();
 	static void PrintPools();
 	//void PrintEvent();
 	void InitialArrivalBayCheck();

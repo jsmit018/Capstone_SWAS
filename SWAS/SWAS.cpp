@@ -223,6 +223,7 @@ int main()
 
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetTotalSimulationTime());
+		Step::ResetPools();
 
 	}
 
