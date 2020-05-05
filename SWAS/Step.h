@@ -83,6 +83,9 @@ public:
 	map<string, StepResource*>::iterator GetResourceMapBegin();
 	map<string, StepResource*>::iterator GetResourceMapEnd();
 	map<string, StepResource*>::iterator FindResourceinReqResMap(string resource);
+	//static map<string, StepResource*> GetResourcePool();
+	static map<string, StepResource*>::iterator GetResourcePoolBegin();
+	static map<string, StepResource*>::iterator GetResourcePoolEnd();
 	//void ScheduleResourceFailure();
 
 

@@ -777,6 +777,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 	//	//this->SetStepID(aircraft->GetMyRepairJobObj(_myRJ)->GetMyReturnStep());
 	//	////cout << aircraft->GetAircraftID() << " is in return step " << this->GetID() << " " << this->GetName() << endl;
 	//}
+	//cout << "Aircraft ID: " << aircraft->GetAircraftID() << " , Step ID: " << _stepID << ", RJ: " << _myRJ << endl;
 	isNextStepReturnStep = false;
 
 	if (aircraft->IsAfterCEL() == true)
@@ -1539,6 +1540,8 @@ string Step::AcquireBay(StepResource* bay, int numNeeded)
 		acquired = true;
 		Scribe::UpdateResourceUtilization(bay->GetResourceName(), numNeeded, SimExec::GetSimulationTime()._timeOfDay);
 		newCount = iter->second->GetResourceCount() - numNeeded;
+		//cout << "Current Counter, " << iter->second->GetResourceCount() << ", New Count" << newCount << ", Bay Size: " << iter->first << endl;
+	//	system("PAUSE");
 		//resource->SetResourceCount(newCount);
 		//SetResPoolCount(resource->GetResourceName(),newCount);
 		SetResPoolCount(iter->second->GetResourceName(), newCount);
@@ -1619,6 +1622,8 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
 
+	/*if (aircraft->GetAircraftID() == 8 && _stepID == 5 && _indoorReq == 'N' && _myRJ == "Battery Charger/Converter Unit - Replace")
+		cout << "Bleh" << endl;*/
 	//if this is not the last step in the job)
 	if (_stepID < aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{
@@ -1731,7 +1736,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 					while (it != _acquiredResources.end())
 					{
 						if (it->first == iter->first) {
-							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, iter->second->GetNumberOfResourcesNeeded());
+							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
 							//cout << " in done service after release in 'no more jobs after this step - bay' " << endl;
 						}
 						it++;
@@ -1808,7 +1813,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 						while (it != _acquiredResources.end())
 						{
 							if (it->first == iter->first) {
-								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, iter->second->GetNumberOfResourcesNeeded());
+								ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
 								////cout << "in done service after release in 'next job doesn't need bay - bay' " << endl;
 								////cout << "these should match: " << iter->first << " " << it->first << endl;
 								////cout << "num to release " << iter->second->GetNumberOfResourcesNeeded() << endl;
@@ -1982,6 +1987,9 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 	double newCount;
 	bool acquired = false;
 
+	/*if (resource->GetResourceName() == "M Bay" || resource->GetResourceName() == "L Bay")
+		cout << "bleh" << endl;*/
+
 	map<string, StepResource*>::iterator iter = _resourcePool.find(resource->GetResourceName());
 	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
 	if (numNeeded <= iter->second->GetResourceCount())
@@ -2011,6 +2019,8 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 {
 	int newCount;
 
+	//if (resource->GetResourceName() == "M Bay" || resource->GetResourceName() == "L Bay")
+	//	//cout << "bleh" << endl;
 	map<string, StepResource*>::iterator iter = _resourcePool.find(resource->GetResourceName());
 	//map<string, Resource*>::const_iterator numIt = _reqResourceMap.find(resource->GetResourceName());
 
@@ -2025,7 +2035,7 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 	//system("PAUSE");
 
 
-	resource->SetResourceCount(newCount);
+	//resource->SetResourceCount(newCount);
 	SetResPoolCount(iter->first, newCount);
 	
 	//cout << " pool count after release is: ";
@@ -2236,6 +2246,21 @@ map<string, StepResource*>::iterator Step::GetResourceMapEnd()
 map<string, StepResource*>::iterator Step::FindResourceinReqResMap(string resource)
 {
 	return _reqResourceMap.find(resource);
+}
+
+//map<string, StepResource*> Step::GetResourcePool()
+//{
+//	return _resourcePool;
+//}
+
+map<string, StepResource*>::iterator Step::GetResourcePoolBegin()
+{
+	return _resourcePool.begin();
+}
+
+map<string, StepResource*>::iterator Step::GetResourcePoolEnd()
+{
+	return _resourcePool.end();
 }
 
 void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
@@ -2641,7 +2666,8 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 
 	if (myOriginalBaySize == baySizeIHave) {
 		newCount = iter->second->GetResourceCount() + numRelease;
-
+		//cout << "Current Counter, " << iter->second->GetResourceCount() << ", New Count" << newCount << ", Bay Size: " << iter->first << endl;
+		//system("PAUSE");
 		//resource->SetResourceCount(newCount);
 		SetResPoolCount(iter->first, newCount);
 		//iter->second->SetResourceCount(newCount);

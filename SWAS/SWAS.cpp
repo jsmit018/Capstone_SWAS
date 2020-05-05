@@ -243,6 +243,12 @@ int main()
 
 		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetTotalSimulationTime());
+		//cout << Step::GetResourcePool().find("L Bay")->second->GetResourceCount() << endl;
+		map<string, StepResource*>::const_iterator it = Step::GetResourcePoolBegin();
+		while (it != Step::GetResourcePoolEnd()) {
+			cout << "Name: " << it->first << ", count: " << it->second->GetResourceCount() << endl;
+			it++;
+		}
 		SimExec::ReinitalizeSimulation();
 
 	}
