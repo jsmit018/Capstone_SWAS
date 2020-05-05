@@ -12,6 +12,9 @@ bool isNextStepReturnStep = false;
 bool isFail = false;
 int Step::_firstShiftUpdateFlag = 1;
 
+/**
+* Constructor for the Step class
+*/
 Step::Step(Distribution* serviceTime, string name) : Task(name)
 {
 	_servTime = serviceTime;
@@ -19,6 +22,9 @@ Step::Step(Distribution* serviceTime, string name) : Task(name)
 	_priorityQueue = new PriorityQueue<Aircraft>("Priority Queue");
 }
 
+/**
+* Function that initializes class attributes to "mapStep" values
+*/
 void Step::CopyMapStep(const Step& mapStep)
 {
 	_myRJ = mapStep._myRJ;
@@ -88,8 +94,14 @@ void Step::CopyMapStep(const Step& mapStep)
 /////////EVENT ACTIONS AND METHODS//////////
 ////////////////////////////////////////////
 
+/**
+ * Event Action class that waits until all resources for the repair step are aquired before starting service
+ */
 class Step::ResWaitForResEA : public CondEventAction {
 public:
+	/**
+	 * Event Action that pulls in information
+	 */
 	ResWaitForResEA(Step* step, StepResource* resBeingRepaired, StepResource* resNeeded, int amountNeeded, map<string, int> acqResources) {
 		_step = step;
 		_resBeingRepaired = resBeingRepaired;
@@ -98,6 +110,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Condition to determine if all resources have been acquired
+	 */
 	bool Condition(StepResource* resource, Parts* parts) {
 		if (resource == _resNeeded) {
 			if (_resNeeded->GetResourceCount() >= _amountNeeded)
@@ -109,6 +124,9 @@ public:
 			return false;
 	}
 
+	/**
+	 * Function that calls the start repair service event method
+	 */
 	void Execute() {
 		//cout << "EXECUTING RESOURCE REPAIR WAIT FOR RESOURCE" << endl;
 		_resBeingRepaired->SetCELflag(1);
@@ -124,6 +142,9 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+* Event action class that waits for resources
+*/
 class Step::WaitForResourceEA : public CondEventAction {
 public:
 	//WaitForResourceEA(Step* step, Resource* resource, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
@@ -139,6 +160,9 @@ public:
 			//cout << "Oogly Boogly" << endl;*/
 	}
 
+	/**
+	 * Condition to determine which resources have been aquired
+	 */
 	bool Condition(StepResource* resource, Parts* parts) {
 		if (resource == 0)
 			return false;
@@ -153,6 +177,9 @@ public:
 			return false;
 	}
 
+	/**
+	 * Function that calls the start service event method
+	 */
 	void Execute() {
 
 		//cout << "EXECUTING WAIT FOR RESOURCE" << endl;
@@ -179,8 +206,14 @@ private:
 
 };
 
+/**
+ * Event action class that determines what parts are needed
+ */
 class Step::ResNeedPartsEA : public CondEventAction {
 public:
+	/**
+	* Pulls in information to variables
+	*/
 	ResNeedPartsEA(Step* step, Parts* parts, StepResource* resBeingRepaired, int amountNeeded, map<string, int> acqResources) {
 		_step = step;
 		_parts = parts;
@@ -189,6 +222,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Condition to determine which parts have been aquired
+	 */
 	bool Condition(StepResource* resource, Parts* parts) {
 		if (parts == _parts) {
 			if (_parts->GetPartsCount() >= _amountNeeded)
@@ -200,6 +236,9 @@ public:
 			return false;
 	}
 
+	/**
+	* Function that executes the wait for resources being repaired
+	*/
 	void Execute() {
 
 		//cout << "EXECUTING WAIT FOR PARTS" << endl;
@@ -226,8 +265,14 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+ * Event action class that determines what parts are needed
+ */
 class Step::NeedPartsEA : public CondEventAction {
 public:
+	/**
+	 * Pulls in information to variables
+	 */
 	//NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, vector<string> acqResources) {
 	NeedPartsEA(Step* step, Parts* parts, Aircraft* aircraft, int amountNeeded, map<string, int> acqResources) {
 		_step = step;
@@ -237,6 +282,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	 * Condition to determine which parts have been aquired
+	 */
 	bool Condition(StepResource* resource, Parts* parts) {
 		if (parts == _parts) {
 			if (_parts->GetPartsCount() >= _amountNeeded)
@@ -248,6 +296,9 @@ public:
 			return false;
 	}
 
+	/**
+	 * Function that calls the start service event method.
+	 */
 	void Execute() {
 
 		//cout << "EXECUTING WAIT FOR PARTS" << endl;
@@ -275,6 +326,9 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+* Event action class for acquiring bays
+*/
 class Step::NeedBaysEA : public CondEventAction {
 public:
 	//NeedBaysEA(Step* step, Aircraft* aircraft, vector<string> acqResources, Resource* bay, int numNeeded) {
@@ -287,6 +341,9 @@ public:
 		_numNeeded = numNeeded;
 	}
 
+	/**
+	* Function that returns true if a bay is available, and false if a bay is unavailable
+	*/
 	bool Condition(StepResource* resource, Parts* parts) {
 		if (resource == _bay) {
 			if (_bay->GetResourceCount() >= _numNeeded)
@@ -302,6 +359,9 @@ public:
 			return false;
 	}
 
+	/**
+	* Function that calls the start service event method
+	*/
 	void Execute() {
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
@@ -315,14 +375,23 @@ private:
 	int _numNeeded;
 };
 
+/**
+* Event action class that places orders for parts
+*/
 class Step::PlaceOrderEA : public EventAction
 {
 public:
+	/**
+	* Initializes the place order variables
+	*/
 	PlaceOrderEA(Step* step, Parts* parts) {
 		_parts = parts;
 		_step = step;
 	}
 
+	/**
+	* Function that calls the place order event method
+	*/
 	void Execute() {
 		_step->PlaceOrderEM(_parts);
 	}
@@ -331,14 +400,24 @@ private:
 	Parts* _parts;
 };
 
+/**
+* Event action class for order arrivals
+*/
 class Step::OrderArrivalEA : public EventAction
 {
 public:
+	/**
+	* Initializes the order arrivals variables
+	*/
 	OrderArrivalEA(Step* step, Parts* parts)
 	{
 		_parts = parts;
 		_step = step;
 	}
+
+	/**
+	* Function that executes the order arrivals event method
+	*/
 	void Execute()
 	{
 		_step->OrderArrivalEM(_parts);
@@ -348,8 +427,14 @@ private:
 	Parts* _parts;
 };
 
+/**
+* Event action class for starting a service
+*/
 class Step::StartServiceEA : public EventAction {
 public:
+	/**
+	* Initializes the start service variables
+	*/
 	//StartServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources) {
 	StartServiceEA(Step* step, Aircraft* aircraft, map<string, int> acqResources) {
 		_step = step;
@@ -357,6 +442,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	* Function that calls the start service event method
+	*/
 	void Execute() {
 		_step->StartServiceEM(_aircraft, _acqResources);
 	}
@@ -367,11 +455,20 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+* Event action class for shift changes
+*/
 class Step::ShiftChangeEA : public EventAction {
 public:
+	/**
+	* Constructor for shift changes
+	*/
 	ShiftChangeEA() {
 	}
 
+	/**
+	* Function that calls the UpdateShift() function
+	*/
 	void Execute() 
 	{
 		//cout << "in shiftchange ea before updating shift" << endl;
@@ -379,8 +476,14 @@ public:
 	}
 };
 
+/**
+* Event action class for starting a repair service
+*/
 class Step::StartRepairServiceEA : public EventAction {
 public:
+	/**
+	* Initializes the repair service variables
+	*/
 	//StartRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources) {
 	StartRepairServiceEA(Step* step, StepResource* resource, map<string, int> acqResources) {
 		_step = step;
@@ -388,6 +491,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	* Function that calls the start repair service event method
+	*/
 	void Execute() {
 		_step->StartRepairServiceEM(_resource, _acqResources);
 	}
@@ -398,8 +504,14 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+* Event action class for done services
+*/
 class Step::DoneServiceEA : public EventAction {
 public:
+	/**
+	* Initializes done service variables
+	*/
 	//DoneServiceEA(Step* step, Aircraft* aircraft, vector<string> acqResources)
 	DoneServiceEA(Step* step, Aircraft* aircraft, map<string, int> acqResources)
 	{
@@ -408,6 +520,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	* Function that calls the done service event method
+	*/
 	void Execute()
 	{
 		_step->DoneServiceEM(_aircraft, _acqResources);
@@ -419,8 +534,14 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+* Event action class for done resource services
+*/
 class Step::DoneResourceServiceEA : public EventAction {
 public:
+	/**
+	* Initializes done resource service variables
+	*/
 	//DoneRepairServiceEA(Step* step, Resource* resource, vector<string> acqResources)
 	DoneResourceServiceEA(Step* step, StepResource* resource, map<string, int> acqResources)
 	{
@@ -429,6 +550,9 @@ public:
 		_acqResources = acqResources;
 	}
 
+	/**
+	* Function that calls the done resource service event method
+	*/
 	void Execute()
 	{
 		_step->DoneResourceServiceEM(_resource, _acqResources);
@@ -440,13 +564,22 @@ private:
 	map<string, int> _acqResources;
 };
 
+/**
+* Event action class to add a queue
+*/
 class Step::AddQueueEA : public EventAction {
 public:
+	/**
+	* Initializes add queue variables
+	*/
 	AddQueueEA(Step* step, Aircraft* aircraft) {
 		_step = step;
 		_aircraft = aircraft;
 	}
 
+	/**
+	* Function that calls the add queue event method
+	*/
 	void Execute() {
 		_step->AddQueueEM(_aircraft);
 	}
@@ -456,8 +589,14 @@ private:
 	Aircraft* _aircraft;
 };
 
+/**
+* Event action class to acquire resources
+*/
 class Step::AcquireResourceEA : public EventAction {
 public:
+	/**
+	* Initializes acquire resource variables
+	*/
 	AcquireResourceEA(Step* step, StepResource* resource)
 	{
 		_step = step;
@@ -465,6 +604,9 @@ public:
 		_numNeeded = 0;
 	}
 
+	/**
+	* Function that calls the acquire resource event method
+	*/
 	void Execute()
 	{
 		_step->AcquireResourceEM(_resource, _numNeeded);
@@ -475,14 +617,23 @@ private:
 	int _numNeeded;
 };
 
+/**
+* Event action class to release resources
+*/
 class Step::ReleaseResourceEA : public EventAction {
 public:
+	/**
+	* Initializes release resource variables
+	*/
 	ReleaseResourceEA(Step* step, StepResource* resource) {
 		_step = step;
 		_resource = resource;
 		_numRelease = 0;
 	}
 
+	/**
+	* Function that calls the release resource event method
+	*/
 	void Execute() {
 		_step->ReleaseResourceEM(_resource, _numRelease);
 	}
@@ -492,13 +643,22 @@ private:
 	int _numRelease;
 };
 
+/**
+* Event action class for resource failures
+*/
 class Step::FailResourceEA : public EventAction {
 public:
+	/**
+	* Initializes resource failure variables
+	*/
 	FailResourceEA(Step* step, StepResource* resource) {
 		_step = step;
 		_resource = resource;
 	}
 
+	/**
+	* Function that calls the resource failure event method
+	*/
 	void Execute() {
 		_step->FailResourceEM(_resource);
 	}
@@ -507,13 +667,22 @@ private:
 	StepResource* _resource;
 };
 
+/**
+* Event action class for restoring resources
+*/
 class Step::RestoreResourceEA : public EventAction {
 public:
+	/**
+	* Initializes variables for restoring resources
+	*/
 	RestoreResourceEA(Step* step, StepResource* resource) {
 		_step = step;
 		_resource = resource;
 	}
 
+	/**
+	* Function that calls the restore resource event method
+	*/
 	void Execute() {
 		_step->RestoreResourceEM(_resource);
 	}
@@ -528,6 +697,9 @@ private:
 	// "place order" execution will schedule a "order arrived/ parts replenish event"	 placeOrderEM schedules partsArrivalEA
 	// "order arrived/ parts replenish event" execution will simply do _partsCount + Number ordered -> partsArrivalEA does partsArrivalEM
 
+/**
+* Function that updates shift changes
+*/
 void Step::UpdateShift()
 { 
 	//cout << "flag " << _firstShiftUpdateFlag << endl;
@@ -730,6 +902,9 @@ void Step::UpdateShift()
 	//cout << "ugh" << endl;
 }
 
+/**
+* Event method for placing orders
+*/
 void Step::PlaceOrderEM(Parts* parts)
 {
 	//if (parts->GetLeadTime() == nullptr)
@@ -742,6 +917,9 @@ void Step::PlaceOrderEM(Parts* parts)
 	SimExec::ScheduleEventAt(0, new OrderArrivalEA(this, parts), restockTime, "OrderArrivalEA");
 }
 
+/**
+* Event method for order arrivals
+*/
 void Step::OrderArrivalEM(Parts* parts)
 {
 	//Logic: new count = initial count -- same as new count = current count + (initial count - current count)
@@ -761,11 +939,17 @@ void Step::OrderArrivalEM(Parts* parts)
 		SimExec::ScheduleEventAt(0, new PlaceOrderEA(this, iter->second), 0.0, "PlaceOrderEA");
 }
 
+/**
+* Function that prints the return step
+*/
 int Step::GetReturnStep()
 {
 	return _returnStep;
 }
 
+/**
+* Event method for starting services
+*/
 //void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 //void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
 void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
@@ -1201,6 +1385,9 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 	}
 }
 
+/**
+* Event method for starting repair services
+*/
 void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquiredResources)
 { 
 	if (isNextStepReturnStep == true)
@@ -1517,16 +1704,25 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 	}
 }
 
+/**
+* Function that sets the repair job name
+*/
 void Step::SetMyRJName(string myRJ)
 {
 	_myRJ = myRJ;
 }
 
+/**
+* Function that prints the repair job name
+*/
 string Step::GetMyRJName()
 {
 	return _myRJ;
 }
 
+/**
+* Function that acquires aircraft bays
+*/
 string Step::AcquireBay(StepResource* bay, int numNeeded)
 {
 	double newCount;
@@ -1612,7 +1808,9 @@ string Step::AcquireBay(StepResource* bay, int numNeeded)
 
 bool isNextJob = false;
 
-
+/**
+* Event method for done services
+*/
 //void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
 //void Step::DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
 void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
@@ -1852,6 +2050,9 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 	}
 }
 
+/**
+* Event method for completed resource services
+*/
 void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
@@ -1968,8 +2169,9 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 	SimExec::ScheduleEventAt(-1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
 }
 
-
-
+/**
+* Event method for adding queues
+*/
 void Step::AddQueueEM(Aircraft* aircraft)
 {
 	//_priorityQueue->AddEntity(aircraft, aircraft->GetAircraftPriority());
@@ -1977,6 +2179,9 @@ void Step::AddQueueEM(Aircraft* aircraft)
 	//InitialArrivalBayCheck();
 }
 
+/**
+* Event method for acquiring resources
+*/
 void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 {
 	double newCount;
@@ -2007,6 +2212,9 @@ void Step::AcquireResourceEM(StepResource* resource, int numNeeded)
 	Scribe::UpdateResourceRequests(resource->GetResourceName(), acquired);
 }
 
+/**
+* Event method for releasing resources
+*/
 void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 {
 	int newCount;
@@ -2042,7 +2250,9 @@ void Step::ReleaseResourceEM(StepResource* resource, int numRelease)
 	SimExec::CheckConditionalEvents(iter->second, 0);
 }
 
-
+/**
+* Event method for failed resources
+*/
 void Step::FailResourceEM(StepResource* resource)
 {
 	//cout << "resource " << resource->GetResourceName() << " just failed" << endl;
@@ -2068,6 +2278,9 @@ void Step::FailResourceEM(StepResource* resource)
 	Scribe::RecordFailure(resource->GetResourceName(), resource->GetFailureName(), SimExec::GetSimulationTime()._timeOfDay);
 }
 
+/**
+* Event method for restored resources
+*/
 void Step::RestoreResourceEM(StepResource* resource)
 {
 	//cout << "Resource has been restored, updating amount and checking conditional events" << endl;
@@ -2081,6 +2294,9 @@ void Step::RestoreResourceEM(StepResource* resource)
 //////////////   BOOLEANS   ////////////////
 ////////////////////////////////////////////
 
+/**
+* Function that checks whether the iterator has reached the end of the resource map
+*/
 // Checking if iterator points to the end of the map // 
 // Utilized to check if an element exists in the map // 
 bool Step::IsResourceMapEnd(map<string, StepResource*>::iterator it)
@@ -2091,6 +2307,9 @@ bool Step::IsResourceMapEnd(map<string, StepResource*>::iterator it)
 	return false;
 }
 
+/**
+* Function that checks whether the iterator has reached the end of the parts map
+*/
 // Checking if iterator points to the end of the map // 
 // Utilized to check if an element exists in the map // 
 bool Step::IsPartsMapEnd(map<string, Parts*>::iterator it)
@@ -2101,6 +2320,9 @@ bool Step::IsPartsMapEnd(map<string, Parts*>::iterator it)
 	return false;
 }
 
+/**
+* Function that checks inspection failures
+*/
 bool Step::IsInpectionFail(Distribution* inspecFailProb)
 {
 	Uniform prob(0, 1);
@@ -2114,6 +2336,9 @@ bool Step::IsInpectionFail(Distribution* inspecFailProb)
 	//return true;
 }
 
+/**
+* Function that checks whether a resource is released
+*/
 bool Step::IsResourceReleased(map<string, StepResource*>::const_iterator iter, int newCount)
 {
 	if (iter->second->GetResourceCount() == newCount)
@@ -2122,6 +2347,9 @@ bool Step::IsResourceReleased(map<string, StepResource*>::const_iterator iter, i
 	return false;
 }
 
+/**
+* Function that checks whether a specific bay size is available
+*/
 bool Step::IsMyBaySizeAvailable(string baySize)
 {
 	map<string, StepResource*>::const_iterator it = _resourcePool.find(baySize);
@@ -2131,6 +2359,9 @@ bool Step::IsMyBaySizeAvailable(string baySize)
 		return false;
 }
 
+/**
+* Function that checks whether there are any bays available
+*/
 bool Step::AreThereBaysAvailable(string baySize)
 {
 	/*map<string, Resource*>::const_iterator sIt = _resourcePool.find("S Bay");
@@ -2161,6 +2392,9 @@ bool Step::AreThereBaysAvailable(string baySize)
 	
 }
 
+/**
+* Function that checks whether a bay was acquired
+*/
 bool Step::WasBayAcquired(string bayName)
 {
 	if (bayName != "")
@@ -2169,6 +2403,9 @@ bool Step::WasBayAcquired(string bayName)
 		return false;
 }
 
+/**
+* Function that checks whether a shift change is the first flag
+*/
 bool Step::isFirstShiftChange()
 {
 	//cout << "is in first shift change" << endl;
@@ -2190,23 +2427,35 @@ bool Step::isFirstShiftChange()
 //////////////    GETTERS    ///////////////
 ////////////////////////////////////////////
 
+/**
+* Function that returns the step ID
+*/
 int Step::GetStepID() {
 
 	return _stepID;
 
 }
 
+/**
+* Function that returns the step name
+*/
 string Step::GetName()
 {
 	return _name;
 }
 
+/**
+* Function that returns the step's number in the queue
+*/
 int Step::GetNumberInQueue()
 {
 	//return _numberInQueue;
 	return 0;
 }
 
+/**
+* Function that returns a resource object
+*/
 StepResource* Step::GetResourceObj(string name)
 {
 	map<string, StepResource*>::iterator it = _reqResourceMap.find(name);
@@ -2214,6 +2463,10 @@ StepResource* Step::GetResourceObj(string name)
 		return nullptr;
 	return it->second;
 }
+
+/**
+* Function that returns a part object
+*/
 Parts* Step::GetPartsObj(string name)
 {
 	map<string, Parts*>::iterator it = _reqPartsMap.find(name);
@@ -2222,22 +2475,33 @@ Parts* Step::GetPartsObj(string name)
 	return it->second;
 }
 
-
+/**
+* Function that returns the beginning of the resource map
+*/
 map<string, StepResource*>::iterator Step::GetResourceMapBegin()
 {
 	return _reqResourceMap.begin();
 }
 
+/**
+* Function that returns the end of the resource map
+*/
 map<string, StepResource*>::iterator Step::GetResourceMapEnd()
 {
 	return _reqResourceMap.end();
 }
 
+/**
+* Function that finds and returns a specific resource from the resource map
+*/
 map<string, StepResource*>::iterator Step::FindResourceinReqResMap(string resource)
 {
 	return _reqResourceMap.find(resource);
 }
 
+/**
+* Function that schedules the first recurring step
+*/
 void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 {
 	// Testing //
@@ -2248,6 +2512,9 @@ void Step::ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft)
 	////cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
+/**
+* Function that schedules a calendar step
+*/
 void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i)
 {
 	//vector<string> test;
@@ -2263,26 +2530,41 @@ void Step::ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* cal
 	////cout << "(ID: " << aircraft->GetAircraftID() << ") " << aircraft->GetAircraftType() << "'s " << _stepID << "st Step of " << _myRJ << " has been scheduled " << endl;
 }
 
+/**
+* Function that returns the beginning of the parts map
+*/
 map<string, Parts*>::iterator Step::GetPartsMapBegin()
 {
 	return _reqPartsMap.begin();
 }
 
+/**
+* Function that returns the end of the parts map
+*/
 map<string, Parts*>::iterator Step::GetPartsMapEnd()
 {
 	return _reqPartsMap.end();
 }
 
+/**
+* Function that returns the repair job priority
+*/
 int Step::GetRJPriority()
 {
 	return _RJpriority;
 }
 
+/**
+* Function that returns the repair job indoor requirement
+*/
 char Step::GetRJIndoorReq()
 {
 	return _indoorReq;
 }
 
+/**
+* Function that schedules the first peacetime shifts
+*/
 void Step::ScheduleFirstPeacetimeShifts()
 {
 	//cout << "scheduling first peacetime shifts " << endl;
@@ -2300,11 +2582,17 @@ void Step::ScheduleFirstPeacetimeShifts()
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift3Change");
 }
 
+/**
+* Function that sets the update flag for the first shift
+*/
 void Step::SetFirstShiftUpdateFlag(int flag)
 {
 	_firstShiftUpdateFlag = flag;
 }
 
+/**
+* Function that schedules the first wartime shifts
+*/
 void Step::ScheduleFirstWartimeShifts()
 {
 	//cout << "in sched first wartime - scheduling first wartime shifts " << endl;
@@ -2317,6 +2605,9 @@ void Step::ScheduleFirstWartimeShifts()
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift2Change");
 }
 
+/**
+* Function that returns the service time
+*/
 Distribution* Step::GetServiceTime()
 {
 	return _servTime;
@@ -2326,6 +2617,9 @@ Distribution* Step::GetServiceTime()
 //////////////    SETTERS    ///////////////
 ////////////////////////////////////////////
 
+/**
+* Function that sets the step ID
+*/
 void Step::SetStepID(int stepID)
 {
 	_stepID = stepID;
@@ -2334,16 +2628,25 @@ void Step::SetStepID(int stepID)
 	//		////cout << "step id " << stepID << " " << _stepID << endl;
 }
 
+/**
+* Function that sets the name
+*/
 void Step::SetName(string name)
 {
 	_name = name;
 }
 
+/**
+* Function that sets the type
+*/
 void Step::SetType(string type)
 {
 	_type = type;
 }
 
+/**
+* Function that sets the repair job priority
+*/
 void Step::SetRJPriority(int RJpriority)
 {
 	_RJpriority = RJpriority;
@@ -2351,16 +2654,25 @@ void Step::SetRJPriority(int RJpriority)
 
 }
 
+/**
+* Function that sets the indoor requirement
+*/
 void Step::SetStepIndoorReq(char indoorReq)
 {
 	_indoorReq = indoorReq;
 }
 
+/**
+* Function that sets the bay requirement
+*/
 void Step::SetStepBayReq(char baySizeReq)
 {
 	_baySizeReq = baySizeReq;
 }
 
+/**
+* Function that sets the inspection failure probability
+*/
 void Step::SetInspecFailProb(string failureProb)
 {
 
@@ -2440,6 +2752,9 @@ void Step::SetInspecFailProb(string failureProb)
 //	_inspecFailProb->PrintDistribution();
 }
 
+/**
+* Function that sets the service time
+*/
 void Step::SetServiceTime(string serviceTime)
 {
 	//the string being passed in is now split into two strings
@@ -2519,6 +2834,9 @@ void Step::SetServiceTime(string serviceTime)
 //	_servTime->PrintDistribution();
 }
 
+/**
+* Function that sets the required resources
+*/
 void Step::SetReqResource(string reqResource/*, Resource* newResource*/)
 {
 	//change this to check for while finding &
@@ -2556,6 +2874,9 @@ void Step::SetReqResource(string reqResource/*, Resource* newResource*/)
 	}
 }
 
+/**
+* Function that sets the required parts
+*/
 void Step::SetReqParts(string reqParts, int numNeeded)
 {
 	//Parts* newParts = new Parts();
@@ -2586,6 +2907,9 @@ void Step::SetReqParts(string reqParts, int numNeeded)
 
 }
 
+/**
+* Function that sets the number of parts needed
+*/
 //void Step::SetNumPartsNeeded(string numPartsNeeded)
 //{
 //
@@ -2602,12 +2926,18 @@ void Step::SetReqParts(string reqParts, int numNeeded)
 //
 //}
 
+/**
+* Function that sets the return step
+*/
 void Step::SetReturnStep(/*int stepId*/ int returnStep)
 {
 
 	_returnStep = returnStep;
 }
 
+/**
+* Function that checks the initial bay arrivals
+*/
 //we're also checking bays in the startstepservice so i just want to differentiate them clearly
 void Step::InitialArrivalBayCheck()
 {
@@ -2623,6 +2953,9 @@ void Step::InitialArrivalBayCheck()
 /////////////     OTHER      ///////////////
 ////////////////////////////////////////////
 
+/**
+* Function that schedules the first step
+*/
 //now exclusive to unplanned
 void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 {
@@ -2634,6 +2967,9 @@ void Step::ScheduleFirstStep(Step* step, Aircraft* aircraft)
 	////	SimExec::ScheduleEventAt(_RJpriority, new StartServiceEA(step, aircraft, _acquiredResources), 0.0, "AddToQueueEA");
 }
 
+/**
+* Function that releases a bay
+*/
 void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySizeIHave, int numRelease)
 {
 	int newCount;
@@ -2725,32 +3061,49 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 	}
 }
 
-
+/**
+* Function that returns the parts pool
+*/
 map<string, Parts*> Step::GetPartsPool()
 {
 	return _partsPool;
 }
 
+/**
+* Function that returns the resource pool
+*/
 map<string, StepResource*> Step::GetResPool()
 {
 	return _resourcePool;
 }
 
+/**
+* Function that returns the parts pool size
+*/
 int Step::GetPartsPoolSize()
 {
 	return _partsPool.size();
 }
 
+/**
+* Function that returns the resource pool size
+*/
 int Step::GetResPoolSize()
 {
 	return _resourcePool.size();
 }
 
+/**
+* Function that adds resources to the resource pool
+*/
 void Step::AddToResPool(StepResource* resource, string resourceName)
 {
 	_resourcePool[resourceName] = resource;
 }
 
+/**
+* Function that adds parts to the parts pool
+*/
 void Step::AddToPartsPool(Parts* parts, string partsName)
 {
 	//////cout << "adding " << partsName << endl; 
@@ -2759,33 +3112,51 @@ void Step::AddToPartsPool(Parts* parts, string partsName)
 	_partsPool[partsName] = parts;
 }
 
+/**
+* Function that sets the resource pool count
+*/
 //void Step::SetResPoolCount(string resource, int newCount)
 void Step::SetResPoolCount(string resource, double newCount)
 {
 	_resourcePool.find(resource)->second->SetResourceCount(newCount);
 }
 
+/**
+* Function that sets the parts pool count
+*/
 void Step::SetPartPoolCount(string part, int newCount)
 {
 	_partsPool.find(part)->second->SetPartsCount(newCount);
 	//////cout << part << "'s new count is " << newCount << endl;
 }
 
+/**
+* Function that finds and returns resources from the resource map
+*/
 map<string, StepResource*>::iterator Step::FindResource(string resource)
 {
 	return _reqResourceMap.find(resource);
 }
 
+/**
+* Function that finds and returns parts from the parts map
+*/
 map<string, Parts*>::iterator Step::FindParts(string resource)
 {
 	return _reqPartsMap.find(resource);
 }
 
+/**
+* Function that schedules an aircraft arrival event, gets the priority, and adds a queue
+*/
 void Step::Execute(Aircraft* aircraft) {
 	////****Discontinued Logic
 	//SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new AddQueueEA(this, aircraft), 0.0, "AddQueueEA");
 }
 
+/**
+* Function that adds a resource and the amount of the resource needed
+*/
 void Step::AddResource(StepResource* resource, string resourceName, int numNeeded)
 {
 	//_reqResourceMap.insert(pair<string, Resource*>(resourceName, resource));
@@ -2796,7 +3167,9 @@ void Step::AddResource(StepResource* resource, string resourceName, int numNeede
 
 }
 
-
+/**
+* Function that schedules a resource failure
+*/
 //void SchedResourceFailure()
 //{
 //	//schedule resource failure logic
@@ -2811,16 +3184,25 @@ void Step::AddResource(StepResource* resource, string resourceName, int numNeede
 //
 //}
 
+/**
+* Function that returns the resource map size
+*/
 int Step::GetResMapSize()
 {
 	return _reqResourceMap.size();
 }
 
+/**
+* Function that returns the parts map size
+*/
 int Step::GetPartsMapSize()
 {
 	return _reqPartsMap.size();
 }
 
+/**
+* Function that adds parts and the number of parts needed to the parts map
+*/
 void Step::AddParts(Parts* parts, string partsName, int numNeeded)
 {
 	//////cout << " IN ADD PARTS " << partsName << endl;
@@ -2831,6 +3213,9 @@ void Step::AddParts(Parts* parts, string partsName, int numNeeded)
 
 }
 
+/**
+* Function that acquires parts based on the number of parts needed
+*/
 void Step::AcquireParts(Parts* parts, int numNeeded)
 {
 	int newCount;
@@ -2869,6 +3254,9 @@ void Step::AcquireParts(Parts* parts, int numNeeded)
 //////////////   PRINTERS   ////////////////
 ////////////////////////////////////////////
 
+/**
+* Function that prints the step information
+*/
 void Step::Print()
 {
 	////cout << "		Step Name: " << _name << endl;
@@ -2913,6 +3301,9 @@ void Step::Print()
 	////cout << endl;
 }
 
+/**
+* Function that prints the parts
+*/
 void Step::PrintParts()
 {
 	map<string, Parts*>::iterator it = _reqPartsMap.begin();
@@ -2926,6 +3317,9 @@ void Step::PrintParts()
 	}
 }
 
+/**
+* Function that prints the resources
+*/
 void Step::PrintResources()
 {
 	map<string, StepResource*>::iterator it = _reqResourceMap.begin();
@@ -2937,6 +3331,9 @@ void Step::PrintResources()
 	}
 }
 
+/**
+* Function that prints the resources and parts pools
+*/
 void Step::PrintPools()
 {
 	////cout << "RESOURCE POOL" << endl;
