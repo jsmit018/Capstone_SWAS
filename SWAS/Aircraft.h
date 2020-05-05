@@ -99,7 +99,7 @@ public:
 private:
 	string	_aircraftType; 								//	Aircraft name: i.e. F35
 	int _CELflag; 
-	static int	_aircraftID; 								//	Aircraft id: unique to individual aircraft
+	int	_aircraftID; 								//	Aircraft id: unique to individual aircraft
 	static int _nextID; 
 	int _sourceID; 
 	int		_priority; 									//	Aircraft priority: helps determine first to be served in queues

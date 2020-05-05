@@ -14,17 +14,20 @@ public:
 	void ReadInputData();
 	void PrintEverything();
 	void PrintMasterResMap();
+	void ClearGuiAircraft();
 	//void AddSelectedAircraft(string aircraftName);
 	void AddSelectedAircraft(int aircraftNumber);
 	void SetNumRuns(int numRuns);
 	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();
+	CalendarObj* GetTerminationObj();
 	map<string, Aircraft*>::iterator GetMasterMapBegin();
 	map<string, Aircraft*>::iterator GetMasterMapEnd();
 	static map<string, StepResource*>::iterator GetMasterResMapBegin();
 	static map<string, StepResource*>::iterator GetMasterResMapEnd();
 	static void SetMasterResNum(string name, int num);
 	static void SetMasterPartsNum(string name, int num);
+	static void ResetIDCount();
 	//	static void GetMyStep(string repairName, int stepId); //for getting step object 
 	static Aircraft* GetAircraft(string aircraftName);
 	static map<string, Aircraft*> GetMasterMap();
@@ -58,6 +61,7 @@ private:
 	static map<string, Parts*> _masterPartsMap;
 	map<int, string> _addedAircraft;
 	CalConverter* calConvert;
+	CalendarObj* _terminationDates;
 	struct GUISelectedAircraft;
 	GUISelectedAircraft* _GUIListHead;
 	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type

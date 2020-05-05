@@ -247,7 +247,7 @@ int main()
 
 		///Included for simulation testing purposes -> will be moved during GUI integration
 		while (SimExec::GetSimulationFlag())
-			SimExec::RunSimulation(0, 0, 2023);
+			SimExec::RunSimulation(inputReader.GetTerminationObj()->_months[i], inputReader.GetTerminationObj()->_days[i], inputReader.GetTerminationObj()->_year[i]);
 
 		cout << endl << endl << endl;
 
@@ -270,7 +270,9 @@ int main()
 				Step::ResetPools();
 				cout << "Prepping and Starting Next Run" << endl << endl << endl;
 				inputReader.ResetAirCount();
+				inputReader.ClearGuiAircraft();
 				Aircraft::ResetAircraftIDs();
+				InputReader::ResetIDCount();
 			}
 		}
 

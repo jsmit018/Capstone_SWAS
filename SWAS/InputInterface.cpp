@@ -41,6 +41,7 @@ struct InputReader::GUISelectedAircraft {
 InputReader::InputReader()
 {
 	calConvert = new CalConverter();
+	_terminationDates = new CalendarObj();
 }
 
 /**
@@ -119,6 +120,35 @@ void InputReader::ReadInputData() //initialization for getting data
 						//set shift1startTime
 						//set shift2startTime
 						//set shift3startTime
+			if (line.find("Termination Dates") != string::npos) {
+				printf("got Termination Dates\n");
+				double termMonth, termDay, termYear;
+				string first;
+				string sec;
+				string third;
+				string calDate;
+				//int i = 0;
+				for (int i = 0; i < GetNumRuns(); i++) {
+					//line = line.erase(line.length() - 10);
+					getline(dataFile, calDate);
+					istringstream date(calDate);
+					getline(date, first, '/');
+					getline(date, sec, '/');
+					getline(date, third, '/');
+
+					istringstream month(first);
+					month >> termMonth;
+
+					istringstream day(sec);
+					day >> termDay;
+
+					istringstream year(third);
+					year >> termYear;
+					_terminationDates->_days.push_back(termDay - 1);
+					_terminationDates->_months.push_back(termMonth - 1);
+					_terminationDates->_year.push_back(termYear);
+				}
+			}
 
 			if (line.find("Mission Type Table (Wartime or Peacetime)") != string::npos)
 			{
@@ -1354,12 +1384,22 @@ void InputReader::PrintMasterResMap()
 	}
 }
 
+void InputReader::ClearGuiAircraft()
+{
+	_GUIListHead = 0;
+}
+
 /**
  * Returns CalendarConverter object
  */
 CalConverter* InputReader::GetCalConverter()
 {
 	return calConvert;
+}
+
+CalendarObj* InputReader::GetTerminationObj()
+{
+	return _terminationDates;
 }
 
 /**
@@ -1453,6 +1493,11 @@ void InputReader::SetMasterPartsNum(string name, int num)
 		_masterPartsMap.find(name)->second->SetNumPartsNeeded(num);
 		iter++;
 	}
+}
+
+void InputReader::ResetIDCount()
+{
+	_IDcount = 0;
 }
 
 /**

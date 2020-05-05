@@ -1450,7 +1450,7 @@ void Scribe::Archive()
 	fileOut.open(fileName);
 	//Simulation data
 		//Include Seed value for later analysis
-	for (int i = 0; i < _numRuns; i++) {
+	//for (int i = 0; i < _numRuns; i++) {
 		seedVal = Distribution::GetSystemSeed();
 		fileOut << (to_string(seedVal) + "\n");
 		fileOut << "\n";
@@ -1483,7 +1483,8 @@ void Scribe::Archive()
 		fileOut << "Aircraft\n";
 
 		//Create run Headings
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,");
 		}
@@ -1492,7 +1493,8 @@ void Scribe::Archive()
 
 		//Create field Headings
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Type,Number,");
 		}
@@ -1501,7 +1503,8 @@ void Scribe::Archive()
 
 		//Initialize aircraft search pointers
 		runCurrent = runStart;
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			runCurrent->aircraftRunner = runCurrent->aircraftHead;
 			runCurrent = runCurrent->next;
@@ -1513,7 +1516,8 @@ void Scribe::Archive()
 			endCount = 0;
 			runCurrent = runStart;
 			tempStr = "";
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				//Check that pointer has data
 				if (runCurrent->aircraftRunner == nullptr)
@@ -1539,7 +1543,8 @@ void Scribe::Archive()
 			fileOut << tempStr;
 
 			//check that all lists have ended
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 		//Above should result in a blank line separating above from missions below
 
 		//Export to SQL database
@@ -1575,7 +1580,8 @@ void Scribe::Archive()
 		fileOut << "Missions\n";
 		tempStr = "";
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",");
 		}
@@ -1585,7 +1591,8 @@ void Scribe::Archive()
 
 		//Initialize Mission Search pointers
 		runCurrent = runStart;
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			runCurrent->missionRunner = runCurrent->missionHead;
 			runCurrent = runCurrent->next;
@@ -1596,7 +1603,8 @@ void Scribe::Archive()
 			endCount = 0;
 			tempStr = "";
 			runCurrent = runStart;
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->missionRunner == nullptr)
 				{
@@ -1614,7 +1622,8 @@ void Scribe::Archive()
 			}
 			tempStr += "\n";
 			fileOut << tempStr;
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -1648,7 +1657,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
 			runCurrent->resourceRunner = runCurrent->resourceHead;
@@ -1658,7 +1668,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Resource, Initial Count, Utilization Hours, Utilization Percent, Number of Requests, Unsuccessful Requests,");
 		}
@@ -1671,7 +1682,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->resourceRunner == nullptr)
 				{
@@ -1691,7 +1703,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -1725,7 +1738,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,");
 			runCurrent->failureRunner = runCurrent->failureHead;
@@ -1735,7 +1749,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Resource,Failure,Date,Downtime,");
 		}
@@ -1748,7 +1763,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->failureRunner == nullptr)
 				{
@@ -1767,7 +1783,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -1801,7 +1818,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
 			runCurrent->resourceWaitRunner = runCurrent->resourceWaitHead;
@@ -1811,7 +1829,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Aircraft Type,ID,Resource,Date Start,Start,Date End,End,Time,");
 		}
@@ -1824,7 +1843,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->resourceWaitRunner == nullptr)
 				{
@@ -1846,7 +1866,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -1880,7 +1901,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
 			runCurrent->serviceWaitRunner = runCurrent->serviceWaitHead;
@@ -1890,7 +1912,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("ID,Type,Location,Date Begin,Time Begin,Date End,Time End,Wait Time,");
 		}
@@ -1903,7 +1926,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->serviceWaitRunner == nullptr)
 				{
@@ -1925,7 +1949,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -1960,7 +1985,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,,,,,");
 			runCurrent->repairJobRunner = runCurrent->repairJobHead;
@@ -1970,7 +1996,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("ID,Type,Job,Step Number,Step Name,Date Start,Start,Date Finish,Finish,Duration,");
 		}
@@ -1983,7 +2010,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->repairJobRunner == nullptr)
 				{
@@ -2005,7 +2033,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -2039,7 +2068,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,,,");
 			runCurrent->inspectionRunner = runCurrent->inspectionHead;
@@ -2050,7 +2080,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("ID,Type,Job,Step,Date,Time,");
 		}
@@ -2063,7 +2094,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->inspectionRunner == nullptr)
 				{
@@ -2082,7 +2114,8 @@ void Scribe::Archive()
 			}
 			tempStr += "\n";
 			fileOut << tempStr;
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -2116,7 +2149,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,");
 			runCurrent->reworkRunner = runCurrent->reworkHead;
@@ -2126,7 +2160,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Aircraft or Resource Type,Rework Event,Date,Duration,");
 		}
@@ -2139,7 +2174,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->reworkRunner == nullptr)
 				{
@@ -2158,7 +2194,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -2192,7 +2229,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,,");
 			runCurrent->requestsRunner = runCurrent->requestsHead;
@@ -2202,7 +2240,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Part,Number Used,Times Requested,Unsuccessful Requests,");
 		}
@@ -2215,7 +2254,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->requestsRunner == nullptr)
 				{
@@ -2235,7 +2275,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -2269,7 +2310,8 @@ void Scribe::Archive()
 		tempStr = "";
 		runCurrent = runStart;
 
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += ("Run " + to_string(i + 1) + ",,,");
 			runCurrent->restockRunner = runCurrent->restockHead;
@@ -2279,7 +2321,8 @@ void Scribe::Archive()
 		fileOut << tempStr;
 
 		tempStr = "";
-		for (int i = 0; i < runNumber; i++)
+		//for (int i = 0; i < runNumber; i++)
+		for (int i = 0; i < _numRuns; i++)
 		{
 			tempStr += "Part,Date Ordered,TUA,";
 		}
@@ -2292,7 +2335,8 @@ void Scribe::Archive()
 			tempStr = "";
 			runCurrent = runStart;
 
-			for (int i = 0; i < runNumber; i++)
+			//for (int i = 0; i < runNumber; i++)
+			for (int i = 0; i < _numRuns; i++)
 			{
 				if (runCurrent->restockRunner == nullptr)
 				{
@@ -2311,7 +2355,8 @@ void Scribe::Archive()
 			tempStr += "\n";
 			fileOut << tempStr;
 
-		} while (endCount < runNumber);
+		//} while (endCount < runNumber);
+		} while (endCount < _numRuns);
 
 		/*runCurrent = runStart;
 		for (int i = 0; i < runNumber; i++)
@@ -2360,7 +2405,7 @@ void Scribe::Archive()
 	*/
 	//////////////////////////////////////////////////////////
 		runNumber++;
-	}
+	//}
 	cout << "Archived to: " + fileName;
 	system("pause");
 }
