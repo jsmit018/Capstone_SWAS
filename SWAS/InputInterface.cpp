@@ -1342,6 +1342,21 @@ double InputReader::GetShiftThreeStartTime()
 	return _shiftThreeStartTime;
 }
 
+map<string, RepairJob*>::iterator InputReader::FindMasterRJ(string name)
+{
+	map<string, Aircraft*>::iterator it = _masterMap.begin();
+	while (it != _masterMap.end())
+	{
+		map<string, RepairJob*>::iterator iter = it->second->FindMyAllRepairJob(name);
+		if (iter != it->second->GetRJMapEnd()) {
+			return iter;
+		}
+		it++;
+	}
+	map<string, RepairJob*>::iterator iterTrash = _masterMap.begin()->second->GetRJMapEnd();
+	return iterTrash;
+}
+
 /**
  * Boolean function to determine whether or not the simulation is in
  * wartime or peace time

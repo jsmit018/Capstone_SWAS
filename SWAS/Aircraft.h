@@ -54,6 +54,8 @@ public:
 
 	RepairJob* GetRepairJobObj(string name);//used for searching 
 	RepairJob* GetMyRepairJobObj(string name);//used for searching 
+	map<string, RepairJob*>::iterator FindMyUnRepairJob(string name);//used for searching 
+	map<string, RepairJob*>::iterator FindMyAllRepairJob(string name);//used for searching 
 	int GetAirCount(); 
 	int GetSource(); 
 	int GetAircraftID(); 
