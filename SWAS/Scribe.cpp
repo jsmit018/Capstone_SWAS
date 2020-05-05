@@ -790,10 +790,9 @@ void Scribe::UpdateResourceRequests(string resource, bool successful)
 				runCurrent->resourceRunner->unsuccessfulRequests++;
 			}
 		}
-		/*else
-		{*/
+
 		runCurrent->resourceRunner = runCurrent->resourceRunner->next;
-		//}
+
 	} while (runCurrent->resourceRunner != nullptr);
 }
 

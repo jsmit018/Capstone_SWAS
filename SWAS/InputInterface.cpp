@@ -760,21 +760,17 @@ void InputReader::ReadInputData() //initialization for getting data
 						//shift 2 count
 						istringstream ssResource2(row[2]);
 						ssResource2 >> resCountShift2;
-						//cout << "shift 2 count " << resCountShift2 << endl;
 
 						//shift 3 count is 0
 						resCountShift3 = 0.0;
-						//cout << "shift 3 count " << resCountShift3 << endl;
 
 						//footprint x
 						istringstream ssResource3(row[3]);
 						ssResource3 >> resourceFootprintX;
-						//cout << "footprint  x" << resourceFootprintX << endl;
 
 						//footprint y
 						istringstream ssResource4(row[4]);
 						ssResource4 >> resourceFootprintY;
-						//cout << "footprint  y" << resourceFootprintY << endl;
 
 					}
 					else
@@ -782,7 +778,6 @@ void InputReader::ReadInputData() //initialization for getting data
 						//shift 2 count
 						istringstream ssResource2(row[2]);
 						ssResource2 >> resCountShift2;
-						//cout << "shift 2 count " << resCountShift2 << endl;
 
 						//shift 3 count
 						istringstream ssResource3(row[3]);
@@ -791,48 +786,11 @@ void InputReader::ReadInputData() //initialization for getting data
 						//footprint x
 						istringstream ssResource4(row[4]);
 						ssResource4 >> resourceFootprintX;
-						//cout << "footprint  x" << resourceFootprintX << endl;
 
 						//footprint y
 						istringstream ssResource5(row[5]);
 						ssResource5 >> resourceFootprintY;
-						//cout << "footprint  y" << resourceFootprintY << endl;
 					}
-					//resource count
-					//istringstream ssResource1(row[1]);
-					//ssResource1 >> resCountShift1;
-
-					//istringstream ssResource2(row[2]);
-					//ssResource2 >> resCountShift2;
-
-					//cout << row[2] << " " << resCountShift2 << endl;
-
-				/*	if (row.size() == 6)
-					{
-						istringstream ssResource3(row[3]);
-						ssResource3 >> resCountShift3;
-
-						istringstream ssResource4(row[4]);
-						ssResource4 >> resourceFootprintX;
-
-						istringstream ssResource5(row[5]);
-						ssResource5 >> resourceFootprintY;
-					}
-					else
-					{*/
-					/*	istringstream ssResource3(row[3]);
-						ssResource3 >> resourceFootprintX;
-
-						istringstream ssResource4(row[4]);
-						ssResource4 >> resourceFootprintY;*/	
-
-					//}
-
-				/*	istringstream ssResource2(row[2]);
-					ssResource2 >> resourceFootprintX;
-
-					istringstream ssResource3(row[3]);
-					ssResource3 >> resourceFootprintY;*/
 
 					StepResource* res = new StepResource();
 					res->SetResourceName(resName);
@@ -858,7 +816,6 @@ void InputReader::ReadInputData() //initialization for getting data
 					//TODO UPDATE SCRIBE FOR SHIFT COUNTS
 					Scribe::RecordResource(resName, resCountShift1);
 
-					//Step::AddToResPool(res, res->GetResourceName());
 
 					map<string, Aircraft*>::const_iterator masterIter = _masterMap.begin();
 					//ITERATE THROUGH MASTER MAP
