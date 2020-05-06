@@ -1,5 +1,9 @@
-//InputInterface.h: Andrea Robey
-//This file is responsible for inputting data from the database into necessary formats and data structures
+/*InputInterface.h: Andrea Robey
+This file acts as an interface between the csv input file.
+It parses the data from the tables in the file into necessary formats and data structures
+which will be used to populate the many objects' attributes and provide static 
+*/
+
 #pragma once
 #include <map>
 #include "Aircraft.h"

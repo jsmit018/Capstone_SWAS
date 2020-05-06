@@ -1,5 +1,6 @@
+//Task.h: Provided by Dr. James Leathrum
+
 #pragma once
-//#include "SimObj.h"
 #include "SimExec.h"
 
 class Aircraft; 

@@ -1,9 +1,9 @@
+//SimExec.h: Provided by Dr. James Leathrum, modified by Jordan Smith
+
 #pragma once
 #include "SimObj.h"
 #include "Distribution.h"
 #include "CalendarConverter.h"
-//#include "SinkTask.h"
-//#include "InputInterface.h"
 #include <iostream>
 
 class InputReader;

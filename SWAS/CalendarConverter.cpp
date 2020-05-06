@@ -1,3 +1,5 @@
+//CalendarConverter.cpp: Jordan Smith
+
 #include "CalendarConverter.h"
 #include <iostream>
 #include <stdlib.h>

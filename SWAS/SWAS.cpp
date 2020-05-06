@@ -1,3 +1,5 @@
+//SWAS.cpp: Andrea Robey and Jordan Smith
+
 #include "SimExec.h"
 #include "InputInterface.h"
 #include "SourceTask.h"
@@ -57,12 +59,10 @@ InputReader inputReader;
  */
 void SchedResourceFailure()
 {
-	//cout << " in sched resource fail " << endl;
 	//schedule resource failure logic
 	map<string, StepResource*>::const_iterator iter = InputReader::GetMasterResMapBegin();
 	while (iter != InputReader::GetMasterResMapEnd())
 	{
-		//cout << "" << endl;
 		if (iter->second->GetFailureName() != "")
 		//schedule iter's first failure in iter->second->GetFailureDistr()
 		iter->second->ScheduleFirstFailures(iter->second);
@@ -80,7 +80,6 @@ void InitializeAircraft()
 {
 	cout << "reading is finished" << endl;
 
-	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
 
@@ -100,7 +99,6 @@ void InitializeAircraft()
 	while (iter != inputReader.GetMasterMapEnd())
 	{
 		/*If the current aircraft matches one in the linked list, create instance etc.*/
-		//if (search(head, iter->first) == true)
 		if (inputReader.FindSelectedAircraft(iter->first) == true)
 		{
 			/* Create the first instance of that particular aircraft type by copying from master map */
@@ -109,18 +107,14 @@ void InitializeAircraft()
 			int cal = 1;
 			//____________
 			Aircraft* firstAircraft = new Aircraft(*iter->second);
-			//cout << "Creating first instance of " << firstAircraft->GetAircraftType() << " for copying purposes" << endl;
-
 			firstAircraft->CopyMyJobList(iter->first);
 
 			map<string, RepairJob*>::const_iterator myIter = firstAircraft->GetMyRJMapBegin();
-
 			while (myIter != firstAircraft->GetMyRJMapEnd())
 			{
 				if (myIter->second->GetSchedType() == "Calendar" && cal == 1)
 				{
-					////// calendarsourceblock schedules calendar arrival at date 
-					//cout << "Scheduling calendar arrival for " << firstAircraft->GetAircraftType() << endl;
+					//calendarsourceblock schedules calendar arrival at date 
 					cout << firstAircraft->GetAircraftType() << " ";
 					firstAircraft->GetCalendarObj()->_months;
 					firstAircraft->GetCalendarObj()->_days;
@@ -137,10 +131,7 @@ void InitializeAircraft()
 
 				else if (myIter->second->GetSchedType() == "Recurring")
 				{
-					////// recurringsourceblock schedules first arrival at recur iat 
-					cout << endl;
-					//cout << "Scheduling recurring arrival for " << firstAircraft->GetAircraftType() << endl;
-					cout << endl;
+					// recurringsourceblock schedules first arrival at recur iat 
 					SourceBlock* recurArrival = new SourceBlock(
 						firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
 						firstAircraft->GetAircraftType(),
@@ -151,7 +142,7 @@ void InitializeAircraft()
 
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
 				{
-					////// unplannedsourceblock schedules first arrival at unpl iat  
+					//unplannedsourceblock schedules first arrival at unpl iat  
 
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),
@@ -206,19 +197,13 @@ void ScheduleFirstShiftChange()
  */
 int main()
 {
-	//////////////////////////////////////
-	///// CONNECTING TO THE DATABASE /////
-	//////////////////////////////////////
-
-	/////////////////////////////////////
-
 	inputReader.ReadInputData();
 
 	Scribe::SetSaveFile("Output.csv");
 	Scribe::SetRuns(inputReader.GetNumRuns());
 	Scribe::SetNumRuns(inputReader.GetNumRuns());
 	//Step::PrintPools();
-	inputReader.PrintEverything();
+	//inputReader.PrintEverything();
 
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
 	//*Note: Let tyler know this function name so he can add it to his unity logic
@@ -282,14 +267,6 @@ int main()
 
 	inputReader.GetAirCount();
 	Scribe::Archive();
-
-	///////////////////////////////////////
-	/// DISCONNECTING FROM THE DATABASE ///
-	///////////////////////////////////////	
-	
-
-
-	////////////////////////////////////////
 
 	return 0;
 }

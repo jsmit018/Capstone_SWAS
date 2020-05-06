@@ -1,6 +1,6 @@
+//Parts.h: Andrea Robey
+
 #pragma once
-//#include "SimObj.h"
-//#include "Task.h"
 #include "Distribution.h"
 #include <string>
 #include <sstream>

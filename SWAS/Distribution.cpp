@@ -1,4 +1,7 @@
+//Distribution.cpp: Provided by Dr. James Leathrum, modified by Andrea Robey
+
 #include "Distribution.h"
+
 /**
  * Distribution Constructor
  */

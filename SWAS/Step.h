@@ -1,3 +1,5 @@
+//Step.h: Andrea Robey
+
 #pragma once
 #include "SimExec.h"
 #include "Task.h"
@@ -96,11 +98,8 @@ public:
 	map<string, StepResource*>::iterator FindResourceinReqResMap(string resource);
 
 
-	//For Testing
-	//----------------------
 	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
 	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i);
-	//----------------------
 
 	void Print();
 private:

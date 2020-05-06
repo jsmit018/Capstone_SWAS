@@ -8,19 +8,14 @@ int _CELflag = 0;
 
 Aircraft::Aircraft()
 {
-
 }
 
-//void Aircraft::CopyAircraftInfo(const Aircraft& mapAircraft)
 Aircraft::Aircraft(const Aircraft& mapAircraft)
 {
 
 	int _IDCount = InputReader::GetIDcount();
 	_aircraftID = ++_nextID;
 	_aircraftID = _aircraftID - _IDCount;
-
-	//cout << " IN AIRCRAFT COPY CONSTRUCTOR " << endl; 
-	//cout << "AIRCRAT ID IS " << _aircraftID << endl; 
 
 	_aircraftType = mapAircraft._aircraftType; 						//	Aircraft name: i.e. F35
 	_priority = mapAircraft._priority; 								//	Aircraft priority: helps determine first to be served in queues
@@ -30,10 +25,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	_repairJobName = mapAircraft._repairJobName;
 	_baySizeReq = mapAircraft._baySizeReq;
 	_CELflag = mapAircraft._CELflag;
-	//cout << "MY UNPLANNED IAT " << _aircraftType << endl;
-	//mapAircraft._iatUnplanned->PrintDistribution(); 
 	_iatUnplanned = mapAircraft._iatUnplanned->CopyThis();
-	//_myUnplannedJobsMap = mapAircraft._myUnplannedJobsMap; 
 
 	//Initialize CalendarObj
 	_myCalObj = new CalendarObj();
@@ -50,8 +42,6 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	}
 
 	CopyMyJobList(_aircraftType);
-	//AddBayReqToRes();
-
 }
 
 //Copy all repair jobs
@@ -104,12 +94,9 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 			SetCalendarObj(currJob->GetCalendarDate());
 
-			//AddBayReqToRes();
 		}
-			
-		
+				
 		iter++;
-
 	}
 
 }
@@ -118,8 +105,6 @@ void Aircraft::CopyMyJobList(string aircraftType)
 void Aircraft::AddRecurIAT(string repairJobName, Distribution* iatRecurring)
 {
 	_myRecurIATmap[repairJobName] = iatRecurring;
-	//_myRecurIATmap.insert(pair<string, Distribution*>(iter->second->GetName(), iter->second->GetRecurringAmt())); 
-
 }
 
 void Aircraft::SetCalendarObj(string date)
@@ -128,9 +113,7 @@ void Aircraft::SetCalendarObj(string date)
 	Time day;
 	int year;
 
-	//	cout << "STRING " << date << endl; 
 	istringstream calDate(date);
-	//calDate >> month >> delim >> day >> delim >> 
 
 	string first;
 	string sec;
@@ -196,8 +179,6 @@ bool Aircraft::AreMoreSteps()
 void Aircraft::SetBaySizeReq(string baySizeReq)
 {
 	_baySizeReq = baySizeReq;
-	cout << "SET " << this->GetAircraftType() << " " << _baySizeReq << endl;
-
 }
 
 string Aircraft::GetBaySizeReq()
@@ -328,13 +309,11 @@ double Aircraft::GetAircraftFootprint()
 void Aircraft::SetAircraftType(string aircraftType)
 {
 	_aircraftType = aircraftType;
-	//	cout << "Aircraft Type: " << aircraftType << endl; 
 }
 
 
 string Aircraft::GetAircraftType()
 {
-	//cout << " in get aircraft type " << _aircraftType << endl; 
 	return _aircraftType;
 }
 

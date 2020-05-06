@@ -1,5 +1,6 @@
-#pragma once
+//SimObj.h: Provided by Dr. James Leathrum
 
+#pragma once
 #include <iostream>
 
 using namespace std; 

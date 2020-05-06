@@ -1,26 +1,6 @@
-#include "Warehouse.h"
+//Warehouse.cpp: Jordan Smith
 
-//To Do:
-//warehouse gui has class that when the program opens, start function (GUI initialization) is called
-//start function gets values from here [DONE] -- Gets all of the relevant information from the master maps.
-    //these values are: 
-        //resources
-            //footprint
-            //name
-            //count
-        //parts
-            //name
-            //count
-        //extra items (i.e. office space, parts storage)
-            //footprint
-            //name
-            //count
-//ties play button in GUI to run simulation (SWAS will have sleep til play function, could be trigger) [DONE]
-//***SimExec hanldes this through PlayButton function in simulation executive that runs the simulation.
-//After Sim Stops
-    //notifies GUI run is done [DONE]
-	//***SimExec does this by returning a Flag 0 for sim is still running returns a 3 if the simulation is terminated.
-    //calls output functions to print values [ ]
+#include "Warehouse.h"
 
 InputReader Warehouse::_inputReader; 
 Scribe* Warehouse::_scribe = new Scribe(); 
