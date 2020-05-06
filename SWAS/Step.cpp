@@ -1,3 +1,5 @@
+//Step.cpp: Andrea Robey
+
 #include "Step.h"
 #include "Aircraft.h" //need to remove and replace priority values with 
 #include <iterator>
@@ -45,7 +47,6 @@ void Step::CopyMapStep(const Step& mapStep)
 
 	//iterate through vectors/nonstatic maps to use resource and parts and aircraft object copy constructors
 
-	//cout << "WOW " << mapStep._returnStep << endl;
 	//iterating through old required resource map, inserting its first and second into the new required resource map
 	map<string, StepResource*>::const_iterator reqResIter = mapStep._reqResourceMap.begin();
 	while (reqResIter != mapStep._reqResourceMap.end())
@@ -53,7 +54,6 @@ void Step::CopyMapStep(const Step& mapStep)
 		StepResource* newRes = new StepResource();
 		newRes->CopyMapResource(*reqResIter->second);
 		_reqResourceMap.insert(pair<string, StepResource*>(reqResIter->first, newRes));
-		//cout << " ------------" << mapStep._indoorReq << " "<<reqResIter->first << endl;
 		reqResIter++;
 	}
 
@@ -530,35 +530,21 @@ void Step::UpdateShift()
 					////new count is 
 					////current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftOneCount();
-					//cout << "shift one " << iter->first << " had init count of " << lastShiftsInitCount << endl;
-
 					thisShiftsInitCount = iter->second->GetShiftTwoCount();
-					//cout << "shift two will have init count of " << thisShiftsInitCount << endl;
-
-					//cout << "difference is " << thisShiftsInitCount - lastShiftsInitCount << endl;
-					//cout << "adding to " << iter->second->GetResourceCount() << endl;
-
-					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
-		
+					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);		
 					iter->second->SetResourceCount(newCount);
-					//cout << "after setting " << endl;
 				}
 				iter++;
 			}
-			//cout << "after loop" << endl;
 
 		}
 		else
 			cout << "ERROR: trying to schedule in a shift that doesnt exist" << endl;
 	}
 
-	////else its a peacetime simulation
-	else //if (InputReader::IsWartime() == false)
+	//else its a peacetime simulation
+	else 
 	{
-		//cout << " peacetime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
-		////if i'm in shift one
-		//if (InputReader::GetShiftOneStartTime() <= SimExec::GetSimulationTime()._timeOfDay < InputReader::GetShiftTwoStartTime())
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
 			//cout << "in peace shift one " << endl;
