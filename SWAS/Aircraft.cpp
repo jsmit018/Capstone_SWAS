@@ -14,7 +14,6 @@ Aircraft::Aircraft()
 //void Aircraft::CopyAircraftInfo(const Aircraft& mapAircraft)
 Aircraft::Aircraft(const Aircraft& mapAircraft)
 {
-	AddBayReqToRes();
 
 	int _IDCount = InputReader::GetIDcount();
 	_aircraftID = ++_nextID;
@@ -51,6 +50,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	}
 
 	CopyMyJobList(_aircraftType);
+	AddBayReqToRes();
 
 }
 
@@ -456,35 +456,35 @@ void Aircraft::AddBayReqToRes()
 {
 	cout << this->GetAircraftID() << " " << this->GetAircraftType() << " size: " << _myRepairJobs.size() << endl;
 
-	//in all my repair jobs
-	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
-	while (iter != _myRepairJobs.end())
-	{
-		//go through my steps
-		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
-		{ 
-			//go through master resource map to get the object
-			map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
-			while (resIter != InputReader::GetMasterResMapEnd())
-			{
-				cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
-				if (resIter->first == _baySizeReq)
-				{
-					cout << "..........................LE MATCH" << endl;
+	////in all my repair jobs
+	//map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
+	//while (iter != _myRepairJobs.end())
+	//{
+	//	//go through my steps
+	//	for (int i = 0; i < iter->second->GetStepVecSize(); i++)
+	//	{ 
+	//		//go through master resource map to get the object
+	//		map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
+	//		while (resIter != InputReader::GetMasterResMapEnd())
+	//		{
+	//			cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
+	//			if (resIter->first == _baySizeReq)
+	//			{
+	//				cout << "..........................LE MATCH" << endl;
 
-					if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y') {
-						//resIter->second->SetNumResNeeded(1);
-						iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
+	//				if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y') {
+	//					//resIter->second->SetNumResNeeded(1);
+	//					iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
 
-						cout << "adding" << resIter->first << "for" << iter->second->GetIndoorReq() << " " << this->GetAircraftType() << " " << iter->first << endl;
-					}
+	//					cout << "adding" << resIter->first << "for" << iter->second->GetIndoorReq() << " " << this->GetAircraftType() << " " << iter->first << endl;
+	//				}
 
-				}
-				resIter++;
-			}
-		}
-		iter++;
-	}
+	//			}
+	//			resIter++;
+	//		}
+	//	}
+	//	iter++;
+	//}
 
 }
 
