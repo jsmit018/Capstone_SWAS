@@ -53,7 +53,7 @@ void Step::CopyMapStep(const Step& mapStep)
 		StepResource* newRes = new StepResource();
 		newRes->CopyMapResource(*reqResIter->second);
 		_reqResourceMap.insert(pair<string, StepResource*>(reqResIter->first, newRes));
-		//cout << " ------------" << _indoorReq << " "<<reqResIter->first << endl;
+		//cout << " ------------" << mapStep._indoorReq << " "<<reqResIter->first << endl;
 		reqResIter++;
 	}
 
@@ -1505,10 +1505,48 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 		//if i have no more jobs after this one
 		if (aircraft->GetMyRJMapSize() == 1)
 		{
-
-			//empty appropriate acquired vector index
+			////empty appropriate acquired vector index
 			//map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
 			//while (iter != _reqResourceMap.end())
+			//{
+			//	if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
+			//	{
+
+			//		map<string, int>::iterator it = _acquiredResources.begin();
+			//		while (it != _acquiredResources.end())
+			//		{
+			//			cout << "###################### " << it->first << " " << iter->first << endl;
+			//			if (it->first == iter->first) 
+			//			{
+			//				cout << "#############################Matched" << iter->first << endl;
+
+			//				ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
+			//			}
+			//			it++;
+			//		}
+			//	}
+			//	else 
+			//	{
+			//		map<string, int>::iterator it = _acquiredResources.begin();
+			//		while (it != _acquiredResources.end())
+			//		{
+			//			if (it->first == iter->first) {
+			//				ReleaseResourceEM(iter->second, it->second);
+			//			}
+			//			it++;
+			//		}
+			//	}
+			//	iter++;
+			//}
+
+
+
+
+
+
+
+			//empty appropriate acquired vector index
+	
 			map<string, int>::iterator iter = _acquiredResources.begin();
 			while (iter != _acquiredResources.end())
 			{
@@ -1516,19 +1554,21 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 
 				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
 				{
-					cout << " found bay " << endl;
+					//cout << " found bay " << endl;
 					map<string, StepResource*>::iterator it = _reqResourceMap.begin();
-					cout << _indoorReq << " " << aircraft->GetAircraftType() << "**ACQ ARE : " << _acquiredResources.size() << endl;
 
+					//iterate through required resource map to get the object
+					//while (it != _reqResourceMap.end())
 					while (it != _reqResourceMap.end())
 					{
-						cout << " REQ are " << it->first << endl;
-						cout << "in loop" << endl;
+						//cout << _indoorReq << " " << aircraft->GetAircraftType() << "**REQ ARE : " << it->first << endl;
+
+						//cout << "########################### " << it->first << " " << iter->first << endl;
 						//if this acquired resource matches the Bay name
 						if (iter->first == it->first) {
 							cout << "Matched" << iter->first << endl;
-							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
-							ReleaseBay(it->second, aircraft->GetBaySizeReq(), it->first, 1);
+							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), iter->first, it->second);
+							ReleaseBay(it->second, aircraft->GetBaySizeReq(), iter->first, iter->second);
 						}
 						it++;
 					}
@@ -2279,6 +2319,8 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 	int newCount;
 	map<string, StepResource*>::iterator iter = _resourcePool.find(bay->GetResourceName());
 
+	cout << "+++++++++++++++++ RELEASING BAY " << bay->GetResourceName() << endl;
+
 	if (myOriginalBaySize == baySizeIHave) {
 		newCount = iter->second->GetResourceCount() + numRelease;
 		SetResPoolCount(iter->first, newCount);
@@ -2384,6 +2426,11 @@ void Step::AddResource(StepResource* resource, string resourceName, int numNeede
 {
 	resource->SetNumResNeeded(numNeeded);
 	_reqResourceMap[resourceName] = resource;
+	
+	//this->_reqResourceMap.insert(pair<string, StepResource*>(resourceName, resource));
+
+
+	//cout << " PLEASE DON BE BLANK " << _reqResourceMap.find(resourceName)->first << "******************************" << endl;;
 }
 
 int Step::GetResMapSize()

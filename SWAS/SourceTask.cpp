@@ -256,8 +256,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		Aircraft* newAircraft = _aircraft->New();
 		//clear _myrepairmap
 		newAircraft->ClearMyMap();
-		cout << "cleraed" << endl;
-
+		//cout << "cleraed" << endl;
 		int jobCounter = 0;
 		string job;
 		/*For all unplanned repair jobs*/
@@ -265,12 +264,12 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		 
 		while (iter != newAircraft->GetMyUnplannedMapEnd())
 		{
-			bool willsched = true;//iter->second->WillSchedule();//iter->second->WillSchedule();
+			bool willsched = iter->second->WillSchedule();//iter->second->WillSchedule();
 
 			//roll the dice - if we aren't going to schedule it, go to the next job
 			if ((willsched == false))
 			{
-				cout << newAircraft->GetAircraftType() << "will NOT sched" << iter->first << endl;
+				//cout << newAircraft->GetAircraftType() << "will NOT sched" << iter->first << endl;
 
 				iter++;
 
@@ -280,7 +279,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			//Roll the dice do see which repair jobs will be required
 			else if (willsched == true)
 			{  
-				cout << newAircraft->GetAircraftType() << "will sched" << iter->first << endl;
+				//cout << newAircraft->GetAircraftType() << "will sched" << iter->first << endl;
 				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
 
@@ -307,6 +306,9 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*InputReader::FindMasterRJ(newAircraft->GetAircraftType(),job)->second);
 			newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+
+			newAircraft->AddBayReqToRes(newAircraft);
+
 			//cout << newAircraft->GetAircraftType() << " added " << currJob->GetName() << endl;
  			InputReader::FindMasterRJ(newAircraft->GetAircraftType(),job)->second->GetStep(1)->
 				ScheduleFirstStep(InputReader::FindMasterRJ(newAircraft->GetAircraftType(),job)->second->GetStep(1), newAircraft);

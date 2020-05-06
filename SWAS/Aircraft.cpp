@@ -50,7 +50,7 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	}
 
 	CopyMyJobList(_aircraftType);
-	AddBayReqToRes();
+	//AddBayReqToRes();
 
 }
 
@@ -306,7 +306,6 @@ void Aircraft::ResetAircraftIDs()
 	_nextID = 0;
 }
 
-
 Aircraft* Aircraft::New()
 {
 	//_aircraftID = ++_nextID; 
@@ -347,7 +346,6 @@ void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 
 void Aircraft::AddMyRepairJob(string jobName, RepairJob* myJob)
 {
-	cout << "weird adding " << jobName << " for " << this->GetAircraftType() << endl;
 	_myRepairJobs.insert(pair<string, RepairJob*>(jobName, myJob));
 }
 
@@ -452,39 +450,39 @@ string Aircraft::GetRandomElement()
 	return random_element;
 }
 
-void Aircraft::AddBayReqToRes()
+void Aircraft::AddBayReqToRes(Aircraft* aircraft)
 {
-	cout << this->GetAircraftID() << " " << this->GetAircraftType() << " size: " << _myRepairJobs.size() << endl;
+	//cout << this->GetAircraftID() << " " << this->GetAircraftType() << " size: " << _myRepairJobs.size() << endl;
 
-	////in all my repair jobs
-	//map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
-	//while (iter != _myRepairJobs.end())
-	//{
-	//	//go through my steps
-	//	for (int i = 0; i < iter->second->GetStepVecSize(); i++)
-	//	{ 
-	//		//go through master resource map to get the object
-	//		map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
-	//		while (resIter != InputReader::GetMasterResMapEnd())
-	//		{
-	//			cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
-	//			if (resIter->first == _baySizeReq)
-	//			{
-	//				cout << "..........................LE MATCH" << endl;
+	//in all my repair jobs
+	map<string, RepairJob*>::const_iterator iter = aircraft->_myRepairJobs.begin();
+	while (iter != aircraft->_myRepairJobs.end())
+	{
+		//go through my steps
+		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
+		{ 
+			//go through master resource map to get the object
+			map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
+			while (resIter != InputReader::GetMasterResMapEnd())
+			{
+				//cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
+				if (resIter->first == aircraft->_baySizeReq)
+				{
+					//cout << "..........................LE MATCH" << endl;
 
-	//				if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y') {
-	//					//resIter->second->SetNumResNeeded(1);
-	//					iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
+					if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y') {
+						//resIter->second->SetNumResNeeded(1);
+						iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
 
-	//					cout << "adding" << resIter->first << "for" << iter->second->GetIndoorReq() << " " << this->GetAircraftType() << " " << iter->first << endl;
-	//				}
+						//cout << "adding" << resIter->first << "for" << iter->second->GetIndoorReq() << " " << this->GetAircraftType() << " " << iter->first << endl;
+					}
 
-	//			}
-	//			resIter++;
-	//		}
-	//	}
-	//	iter++;
-	//}
+				}
+				resIter++;
+			}
+		}
+		iter++;
+	}
 
 }
 
@@ -650,7 +648,7 @@ void Aircraft::PrintMyProperties()
 	}
 
 
-	cout << "MY JOB LIST SIZE IS " << _myRepairJobs.size() << endl;
+	//cout << "MY JOB LIST SIZE IS " << _myRepairJobs.size() << endl;
 	map<string, RepairJob*>::iterator it = _myRepairJobs.begin();
 	//cout << "After creating the iterator to the map " << std::endl;
 	while (it != _myRepairJobs.end())

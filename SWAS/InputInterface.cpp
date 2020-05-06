@@ -716,7 +716,7 @@ void InputReader::ReadInputData() //initialization for getting data
 									newStep->SetReqParts(row[9], numParts);
 								}
 
-								cout << " ***********JOB " << it->first << " STEP " << stepID;
+								//cout << " ***********JOB " << it->first << " STEP " << stepID;
 								newStep->SetStepIndoorReq(it->second->GetIndoorReq());
 
 								//add this step to the repair job's list
@@ -983,7 +983,7 @@ void InputReader::ReadInputData() //initialization for getting data
 										continue;*/
 								{
 									int id = i + 1;
-									cout << " ***********JOB "<< iter->first  << " STEP " << id;
+									//cout << " ***********JOB "<< iter->first  << " STEP " << id;
 									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
 
 									iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
