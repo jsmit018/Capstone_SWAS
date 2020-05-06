@@ -12,7 +12,6 @@ class Step;
 
 class RepairJob {
 public:
-	//RepairJob(string name);
 	RepairJob();
 	void CopyRepairJob(const RepairJob& mapRj);
 	void SetName(string name);
@@ -21,7 +20,7 @@ public:
 	void SetIndoorReq(char indoorReq);
 	void SetCalendarDate(string calendarDate);
 	void SetRecurringAmt(double recurringAmt);
-	void SetUnplannedProb(string unplannedProb); //switch to distribution pointer
+	void SetUnplannedProb(string unplannedProb);
 	void PrintJobProperties();
 
 	static RepairJob* GetMyResRepairJobObj(string name);
@@ -33,7 +32,6 @@ public:
 	string GetCalendarDate();
 	Distribution* GetRecurringAmt();
 	Distribution* GetUnplannedProb();
-	//void GetNextStep(string rjType);
 	int GetStepVecSize();
 	int GetMyReturnStep();
 	Step* GetStep(int stepID);
@@ -45,19 +43,13 @@ public:
 	void PrintResourceRepairs();
 
 private:
-	string	_name;									// Repair job name
-	int		_priority;								// Repair job priority
-	string	_schedType;								// Interarrival schedule type
-	char	_indoorReq;								// Y or N for indoor requirement of repair job
-	string	_calendarDate;							// Calendar-schedule type repair jobs (date: mmddyyyy)
-	//split into day, month, year
-	Distribution* _recurringAmt;							// Number of months between Recurring-schedule type repair jobs
-	Distribution* _unplannedProb;							// Distribution for probability of certain repair job after random iat
-	vector<Step*> _vecSteps;							// RepairJob has a vector of step objects
-	static map<string, RepairJob*> _resourceRepairMap;		//FOR EACH RESOURCE TYPE, MAKE REPAIR JOB
-	//int _activeStep;
-	////Task** _stepList;
-	//Step** _stepList;
-	//RepairJob* _nextJob;
-	//int _size;
+	string	_name; 									// Repair job name
+	int		_priority; 								// Repair job priority
+	string	_schedType; 								// Interarrival schedule type
+	char	_indoorReq; 								// Y or N for indoor requirement of repair job
+	string	_calendarDate; 							// Calendar-schedule type repair jobs (date: mmddyyyy)
+	Distribution* _recurringAmt; 							// Number of months between Recurring-schedule type repair jobs
+	Distribution* _unplannedProb; 							// Distribution for probability of certain repair job after random iat
+	vector<Step*> _vecSteps; 							// RepairJob has a vector of step objects
+	static map<string, RepairJob*> _resourceRepairMap; 		//FOR EACH RESOURCE TYPE, MAKE REPAIR JOB
 };

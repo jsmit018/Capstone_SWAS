@@ -5,21 +5,21 @@
 class Warehouse
 {
 public:
-	Warehouse(double length, double width);
-	static void SetMasterMaps(InputReader inputReader);
-	static void SetScribe(Scribe* scribe);
-	double GetLength();
-	void UpdateListOfObjects(string objectName);
-	void SetLength(double hangarLength);
-	void SetWidth(double hangarWidth);
-	double GetWidth();
+	Warehouse(double length, double width); 
+	static void SetMasterMaps(InputReader inputReader); 
+	static void SetScribe(Scribe* scribe); 
+	double GetLength(); 
+	void UpdateListOfObjects(string objectName); 
+	void SetLength(double hangarLength); 
+	void SetWidth(double hangarWidth); 
+	double GetWidth(); 
 
-	Resource* GetResourceInformation(string resourceName);
+	StepResource* GetResourceInformation(string resourceName); 
 private:
-	double _hangarLength;
-	double _hangarWidth;
-	int _index;
-	static InputReader _inputReader;
-	static Scribe* _scribe;
-	string _listOfObjects[];
-};
+	double _hangarLength; 
+	double _hangarWidth; 
+	int _index; 
+	static InputReader _inputReader; 
+	static Scribe* _scribe; 
+	string _listOfObjects[]; 
+}; 
