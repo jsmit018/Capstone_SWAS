@@ -1,6 +1,7 @@
+//SinkTask.h: Provided by Dr. James Leathrum, modified by Jordan Smith
+
 #pragma once
 #include "Task.h"
-//#include "SimObj.h"
 #include "SimExec.h"
 #include "Scribe.h"
 
@@ -14,5 +15,4 @@ public:
 private:
 	string _name; 
 	int _terminatedAircraft; 
-	//Scribe* outputRecorder = new Scribe(); 
 }; 

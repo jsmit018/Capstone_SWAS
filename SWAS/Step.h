@@ -1,3 +1,5 @@
+//Step.h: Andrea Robey
+
 #pragma once
 #include "SimExec.h"
 #include "Task.h"
@@ -56,6 +58,8 @@ public:
 
 	map<string, StepResource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
+	static map<string, StepResource*>::iterator GetReqResMapBegin();
+	static map<string, StepResource*>::iterator GetReqResMapEnd();
 
 	bool IsResourceMapEnd(map<string, StepResource*>::iterator it);
 	bool IsInpectionFail(Distribution* inspecFailProb);
@@ -94,11 +98,8 @@ public:
 	map<string, StepResource*>::iterator FindResourceinReqResMap(string resource);
 
 
-	//For Testing
-	//----------------------
 	void ScheduleFirstRecurringStep(Step* step, Aircraft* aircraft);
 	void ScheduleCalendarStep(Step* step, Aircraft* aircraft, CalendarObj* calobj, int i);
-	//----------------------
 
 	void Print();
 private:

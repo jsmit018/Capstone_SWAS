@@ -1,3 +1,5 @@
+//SinkTask.cpp: Provided by Dr. James Leathrum, modified by Jordan Smith
+
 #include <iostream>
 #include "SinkTask.h"
 #include "Aircraft.h"
@@ -21,12 +23,9 @@ int SinkBlock::GetTerminatedAircraft() {
 }
 
 void SinkBlock::Execute(Aircraft* aircraft) {
-    //cout << "Aircraft, " << aircraft->GetAircraftType() << " number " << aircraft->GetAircraftID() << "has finished tour of maintenance, departing" << endl;
     _terminatedAircraft++;
-	//cout << "Number of Aircraft that have left so far: " << _terminatedAircraft << endl;
     Scribe::TallyAircraft(aircraft->GetAircraftType());
     delete aircraft;
-    //aircraft->DeleteAircraft(aircraft);
     aircraft = NULL;
 }
 

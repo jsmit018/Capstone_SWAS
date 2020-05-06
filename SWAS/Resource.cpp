@@ -1,13 +1,11 @@
+//Resource.cpp: Andrea Robey
+
 #include "Resource.h"
 #include "SimExec.h"
 #include "Scribe.h"
 
-
 StepResource::StepResource()
 {
-	//_failureName = "none specified yet";
-	//_failureType = "none specified yet";
-	//_repairProc = "none specified yet";
 }
 
 class StepResource::WaitForResourceEA : public CondEventAction {
@@ -188,7 +186,6 @@ string StepResource::GetResourceName()
 
 void StepResource::SetNumResNeeded(int numNeeded)
 {
-	//get from step table values 
 	_numNeeded = numNeeded;
 }
 

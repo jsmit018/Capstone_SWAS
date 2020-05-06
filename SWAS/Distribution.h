@@ -1,3 +1,5 @@
+//Distribution.h: Provided by Dr. James Leathrum, modified by Andrea Robey
+
 #ifndef DISTRIBUTION_H
 #define DISTRIBUTION_H
 

@@ -1,3 +1,5 @@
+//Step.cpp: Andrea Robey
+
 #include "Step.h"
 #include "Aircraft.h" //need to remove and replace priority values with 
 #include <iterator>
@@ -52,7 +54,6 @@ void Step::CopyMapStep(const Step& mapStep)
 		StepResource* newRes = new StepResource();
 		newRes->CopyMapResource(*reqResIter->second);
 		_reqResourceMap.insert(pair<string, StepResource*>(reqResIter->first, newRes));
-
 		reqResIter++;
 	}
 
@@ -529,35 +530,21 @@ void Step::UpdateShift()
 					////new count is 
 					////current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftOneCount();
-					//cout << "shift one " << iter->first << " had init count of " << lastShiftsInitCount << endl;
-
 					thisShiftsInitCount = iter->second->GetShiftTwoCount();
-					//cout << "shift two will have init count of " << thisShiftsInitCount << endl;
-
-					//cout << "difference is " << thisShiftsInitCount - lastShiftsInitCount << endl;
-					//cout << "adding to " << iter->second->GetResourceCount() << endl;
-
-					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
-		
+					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);		
 					iter->second->SetResourceCount(newCount);
-					//cout << "after setting " << endl;
 				}
 				iter++;
 			}
-			//cout << "after loop" << endl;
 
 		}
 		else
 			cout << "ERROR: trying to schedule in a shift that doesnt exist" << endl;
 	}
 
-	////else its a peacetime simulation
-	else //if (InputReader::IsWartime() == false)
+	//else its a peacetime simulation
+	else 
 	{
-		//cout << " peacetime, time is " << SimExec::GetSimulationTime()._timeOfDay << endl;
-		////if i'm in shift one
-		//if (InputReader::GetShiftOneStartTime() <= SimExec::GetSimulationTime()._timeOfDay < InputReader::GetShiftTwoStartTime())
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
 			//cout << "in peace shift one " << endl;
@@ -729,6 +716,8 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		{
 			//TODO need to check for specific bay size
 			string bayReq = aircraft->GetBaySizeReq();
+
+
 			map<string, StepResource*>::iterator it = _resourcePool.find(bayReq);
 			if (it != _resourcePool.end())
 			{
@@ -1030,6 +1019,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			}
 			iter++;
 		}
+		cout << " **" << this->GetStepID() << " " << _myRJ << endl;
 		isFail = IsInpectionFail(_inspecFailProb);
 
 		if (isFail == true)
@@ -1501,27 +1491,83 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 		//if i have no more jobs after this one
 		if (aircraft->GetMyRJMapSize() == 1)
 		{
-			//empty appropriate acquired vector index
-			map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
-			while (iter != _reqResourceMap.end())
-			{
-				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
+			////empty appropriate acquired vector index
+			//map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
+			//while (iter != _reqResourceMap.end())
+			//{
+			//	if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
+			//	{
 
-					map<string, int>::iterator it = _acquiredResources.begin();
-					while (it != _acquiredResources.end())
+			//		map<string, int>::iterator it = _acquiredResources.begin();
+			//		while (it != _acquiredResources.end())
+			//		{
+			//			cout << "###################### " << it->first << " " << iter->first << endl;
+			//			if (it->first == iter->first) 
+			//			{
+			//				cout << "#############################Matched" << iter->first << endl;
+
+			//				ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
+			//			}
+			//			it++;
+			//		}
+			//	}
+			//	else 
+			//	{
+			//		map<string, int>::iterator it = _acquiredResources.begin();
+			//		while (it != _acquiredResources.end())
+			//		{
+			//			if (it->first == iter->first) {
+			//				ReleaseResourceEM(iter->second, it->second);
+			//			}
+			//			it++;
+			//		}
+			//	}
+			//	iter++;
+			//}
+
+
+
+
+
+
+
+			//empty appropriate acquired vector index
+	
+			map<string, int>::iterator iter = _acquiredResources.begin();
+			while (iter != _acquiredResources.end())
+			{
+				cout << _indoorReq << " " << aircraft->GetAircraftType() << "ACQ ARE : " << iter->first << endl;
+
+				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
+				{
+					//cout << " found bay " << endl;
+					map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+
+					//iterate through required resource map to get the object
+					//while (it != _reqResourceMap.end())
+					while (it != _reqResourceMap.end())
 					{
-						if (it->first == iter->first) {
-							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
+						//cout << _indoorReq << " " << aircraft->GetAircraftType() << "**REQ ARE : " << it->first << endl;
+
+						//cout << "########################### " << it->first << " " << iter->first << endl;
+						//if this acquired resource matches the Bay name
+						if (iter->first == it->first) {
+							cout << "Matched" << iter->first << endl;
+							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), iter->first, it->second);
+							ReleaseBay(it->second, aircraft->GetBaySizeReq(), iter->first, iter->second);
 						}
 						it++;
 					}
+					//cout << _indoorReq << " " << aircraft->GetAircraftType() << "**AFTER REL ACQ ARE : " << it->first << endl;
+
 				}
+
 				else {
-					map<string, int>::iterator it = _acquiredResources.begin();
-					while (it != _acquiredResources.end())
+					map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+					while (it != _reqResourceMap.end())
 					{
 						if (it->first == iter->first) {
-							ReleaseResourceEM(iter->second, it->second);
+							ReleaseResourceEM(it->second, iter->second);
 						}
 						it++;
 					}
@@ -2024,6 +2070,7 @@ void Step::SetRJPriority(int RJpriority)
 
 void Step::SetStepIndoorReq(char indoorReq)
 {
+	cout << " REQ " << indoorReq << endl;
 	_indoorReq = indoorReq;
 }
 
@@ -2258,6 +2305,8 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 	int newCount;
 	map<string, StepResource*>::iterator iter = _resourcePool.find(bay->GetResourceName());
 
+	cout << "+++++++++++++++++ RELEASING BAY " << bay->GetResourceName() << endl;
+
 	if (myOriginalBaySize == baySizeIHave) {
 		newCount = iter->second->GetResourceCount() + numRelease;
 		SetResPoolCount(iter->first, newCount);
@@ -2363,6 +2412,11 @@ void Step::AddResource(StepResource* resource, string resourceName, int numNeede
 {
 	resource->SetNumResNeeded(numNeeded);
 	_reqResourceMap[resourceName] = resource;
+	
+	//this->_reqResourceMap.insert(pair<string, StepResource*>(resourceName, resource));
+
+
+	//cout << " PLEASE DON BE BLANK " << _reqResourceMap.find(resourceName)->first << "******************************" << endl;;
 }
 
 int Step::GetResMapSize()
@@ -2406,21 +2460,22 @@ void Step::AcquireParts(Parts* parts, int numNeeded)
 
 void Step::Print()
 {
-	if (_inspecFailProb == nullptr) {}
-	else
-	{
-		_inspecFailProb->PrintDistribution();
-	}
+	cout << _stepID << " req " << _indoorReq << endl;
+	//if (_inspecFailProb == nullptr) {}
+	//else
+	//{
+	//	_inspecFailProb->PrintDistribution();
+	//}
 
-	if (_servTime == nullptr)
-		PrintParts();
+	//if (_servTime == nullptr)
+	//	PrintParts();
 
-	map<string, StepResource*>::iterator it = _reqResourceMap.begin();
-	for (int i = 0; i < _reqResourceMap.size(); i++)
-	{
-		it++;
-	}
-	PrintResources();
+	//map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+	//for (int i = 0; i < _reqResourceMap.size(); i++)
+	//{
+	//	it++;
+	//}
+	//PrintResources();
 }
 
 void Step::PrintParts()

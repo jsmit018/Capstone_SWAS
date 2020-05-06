@@ -1,10 +1,8 @@
+//Parts.cpp: Andrea Robey
 #include "Parts.h"
 
 Parts::Parts()
 {
-	//_partsName = "none needed"; 
-	//_partsCount = 0; 
-	//_orderThreshold = 0; 
 }
 
 void Parts::CopyMapParts(const Parts& mapParts)

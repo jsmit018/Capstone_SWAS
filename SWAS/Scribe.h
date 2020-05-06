@@ -14,7 +14,6 @@
 #include<iostream>
 #include<fstream>
 #include "SimExec.h"
-//#include "InputInterface.h"
 
 using namespace std;
 

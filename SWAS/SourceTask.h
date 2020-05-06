@@ -1,5 +1,6 @@
+//SourceTask.h: Jordan Smith and Andrea Robey
+
 #pragma once
-//#include "SimObj.h"
 #include "SimExec.h"
 #include "Task.h"
 #include "Distribution.h"
@@ -18,20 +19,11 @@ public:
 		int numberOfAircraftToGenerate = -1); 
 
 	/*Constructor for Recurring Arrivals*/
-	/*SourceBlock(
-		vector<Distribution*> recurringIATs,
-		string aircraftType,
-		Aircraft* aircraft,
-		string name,
-		int numberOfAircraftToGenerate = NULL); */
 	SourceBlock(
-		//vector<Distribution*> recurringIATs,
 		map<string, Distribution*> recurringIATS,
-		//map<string, RepairJob*> list, //this is using unecessary memory - just look it up from aircraft's prexisting map - see sourcetask.cpp
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
-		//string myRJ,
 		int numberOfAircraftToGenerate = -1); 
 
 	/*Constructor for Calendar Arrivals*/
@@ -39,20 +31,8 @@ public:
 		string aircraftType,
 		Aircraft* aircraft,
 		string name,
-		//int numCalEventsToSched,
 		CalendarObj* calobj,
 		RepairJob* repairJob); 
-	//Removing the below line, as this is set through numCalEvents
-	//int numberOfAircraftToGenerate = NULL); 
-
-/*Old Constructor*/
-/*SourceBlock(Distribution* iat,
-	string aircraftType,
-	Aircraft* aircraft,
-	string name,
-	int numOfCalendarEventsToSchedule,
-	CalendarObj* calobj,
-	int numberOfAircraftToGenerate = NULL); */
 
 	string GetAircraftType(); 
 	void SetAircraftType(string aircraftType); 
@@ -61,7 +41,6 @@ public:
 	void Execute(Aircraft* aircraft); 
 	void AddToPriorityMap(int priority, string job); 
 private:
-	//vector<Distribution*> _interarrivalTimeRecurring; 
 	map<string, Distribution*> _recurringIATs; 
 	map<int, string> _jobPriority; 
 	Distribution* _interarrivalTimeRND; 
@@ -75,7 +54,5 @@ private:
 	class ScheduleNextRecurringAircraftEA; 
 	void ScheduleNextUnplannedAircraftEM(RepairJob* repairJob); 
 	void ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarObj* calobj); 
-	//void ScheduleNextRecurringAircraftEM(); 
 	void ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, RepairJob* repairJob); 
-	//Scribe* outputRecorder = new Scribe(); 
 }; 
