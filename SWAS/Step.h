@@ -56,6 +56,8 @@ public:
 
 	map<string, StepResource*>::iterator FindResource(string resource);
 	map<string, Parts*>::iterator FindParts(string parts);
+	static map<string, StepResource*>::iterator GetReqResMapBegin();
+	static map<string, StepResource*>::iterator GetReqResMapEnd();
 
 	bool IsResourceMapEnd(map<string, StepResource*>::iterator it);
 	bool IsInpectionFail(Distribution* inspecFailProb);

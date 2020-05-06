@@ -84,6 +84,7 @@ bool RepairJob::WillSchedule()
     {
         return false;
     }
+   // return true;
 }
 
 Distribution* RepairJob::GetUnplannedProb()
@@ -260,11 +261,11 @@ void RepairJob::PrintJobProperties()
 {
 
     cout << "   Repair Job Name: " << _name << endl;
-    cout << "   Schedule Type: " << _schedType << endl;
-    cout << "   Repair Job Priority: " << _priority << endl;
-    cout << "   Unplanned Probability: ";
-    _unplannedProb->PrintDistribution();
-    cout << endl;
+    //cout << "   Schedule Type: " << _schedType << endl;
+    //cout << "   Repair Job Priority: " << _priority << endl;
+    //cout << "   Unplanned Probability: ";
+    //_unplannedProb->PrintDistribution();
+    //cout << endl;
     cout << "   Indoor Requirement? " << _indoorReq << endl;
     cout << endl;
 
@@ -272,7 +273,7 @@ void RepairJob::PrintJobProperties()
     {
         _vecSteps[i]->Print();
         cout << endl;
-        _vecSteps[1]->PrintPools(); 
+        //_vecSteps[1]->PrintPools(); 
     }
     cout << endl;
 }

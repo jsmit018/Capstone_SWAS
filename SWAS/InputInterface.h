@@ -21,9 +21,9 @@ public:
 	bool FindSelectedAircraft(string aircraftName);
 	CalConverter* GetCalConverter();
 	CalendarObj* GetTerminationObj();
-	map<string, Aircraft*>::iterator GetMasterMapBegin();
-	map<string, Aircraft*>::iterator GetMasterMapEnd();
-	static map<string, RepairJob*>::iterator FindMasterRJ(string name);
+	static map<string, Aircraft*>::iterator GetMasterMapBegin();
+	static map<string, Aircraft*>::iterator GetMasterMapEnd();
+	static map<string, RepairJob*>::iterator FindMasterRJ(string aircraft, string job);
 	static map<string, StepResource*>::iterator GetMasterResMapBegin();
 	static map<string, StepResource*>::iterator GetMasterResMapEnd();
 	static void SetMasterResNum(string name, int num);

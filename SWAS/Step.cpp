@@ -45,6 +45,7 @@ void Step::CopyMapStep(const Step& mapStep)
 
 	//iterate through vectors/nonstatic maps to use resource and parts and aircraft object copy constructors
 
+	//cout << "WOW " << mapStep._returnStep << endl;
 	//iterating through old required resource map, inserting its first and second into the new required resource map
 	map<string, StepResource*>::const_iterator reqResIter = mapStep._reqResourceMap.begin();
 	while (reqResIter != mapStep._reqResourceMap.end())
@@ -52,7 +53,7 @@ void Step::CopyMapStep(const Step& mapStep)
 		StepResource* newRes = new StepResource();
 		newRes->CopyMapResource(*reqResIter->second);
 		_reqResourceMap.insert(pair<string, StepResource*>(reqResIter->first, newRes));
-
+		//cout << " ------------" << _indoorReq << " "<<reqResIter->first << endl;
 		reqResIter++;
 	}
 
@@ -729,6 +730,8 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		{
 			//TODO need to check for specific bay size
 			string bayReq = aircraft->GetBaySizeReq();
+
+
 			map<string, StepResource*>::iterator it = _resourcePool.find(bayReq);
 			if (it != _resourcePool.end())
 			{
@@ -1030,6 +1033,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			}
 			iter++;
 		}
+		cout << " **" << this->GetStepID() << " " << _myRJ << endl;
 		isFail = IsInpectionFail(_inspecFailProb);
 
 		if (isFail == true)
@@ -1501,27 +1505,43 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 		//if i have no more jobs after this one
 		if (aircraft->GetMyRJMapSize() == 1)
 		{
-			//empty appropriate acquired vector index
-			map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
-			while (iter != _reqResourceMap.end())
-			{
-				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
 
-					map<string, int>::iterator it = _acquiredResources.begin();
-					while (it != _acquiredResources.end())
+			//empty appropriate acquired vector index
+			//map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
+			//while (iter != _reqResourceMap.end())
+			map<string, int>::iterator iter = _acquiredResources.begin();
+			while (iter != _acquiredResources.end())
+			{
+				cout << _indoorReq << " " << aircraft->GetAircraftType() << "ACQ ARE : " << iter->first << endl;
+
+				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
+				{
+					cout << " found bay " << endl;
+					map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+					cout << _indoorReq << " " << aircraft->GetAircraftType() << "**ACQ ARE : " << _acquiredResources.size() << endl;
+
+					while (it != _reqResourceMap.end())
 					{
-						if (it->first == iter->first) {
-							ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
+						cout << " REQ are " << it->first << endl;
+						cout << "in loop" << endl;
+						//if this acquired resource matches the Bay name
+						if (iter->first == it->first) {
+							cout << "Matched" << iter->first << endl;
+							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
+							ReleaseBay(it->second, aircraft->GetBaySizeReq(), it->first, 1);
 						}
 						it++;
 					}
+					//cout << _indoorReq << " " << aircraft->GetAircraftType() << "**AFTER REL ACQ ARE : " << it->first << endl;
+
 				}
+
 				else {
-					map<string, int>::iterator it = _acquiredResources.begin();
-					while (it != _acquiredResources.end())
+					map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+					while (it != _reqResourceMap.end())
 					{
 						if (it->first == iter->first) {
-							ReleaseResourceEM(iter->second, it->second);
+							ReleaseResourceEM(it->second, iter->second);
 						}
 						it++;
 					}
@@ -2024,6 +2044,7 @@ void Step::SetRJPriority(int RJpriority)
 
 void Step::SetStepIndoorReq(char indoorReq)
 {
+	cout << " REQ " << indoorReq << endl;
 	_indoorReq = indoorReq;
 }
 
@@ -2406,21 +2427,22 @@ void Step::AcquireParts(Parts* parts, int numNeeded)
 
 void Step::Print()
 {
-	if (_inspecFailProb == nullptr) {}
-	else
-	{
-		_inspecFailProb->PrintDistribution();
-	}
+	cout << _stepID << " req " << _indoorReq << endl;
+	//if (_inspecFailProb == nullptr) {}
+	//else
+	//{
+	//	_inspecFailProb->PrintDistribution();
+	//}
 
-	if (_servTime == nullptr)
-		PrintParts();
+	//if (_servTime == nullptr)
+	//	PrintParts();
 
-	map<string, StepResource*>::iterator it = _reqResourceMap.begin();
-	for (int i = 0; i < _reqResourceMap.size(); i++)
-	{
-		it++;
-	}
-	PrintResources();
+	//map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+	//for (int i = 0; i < _reqResourceMap.size(); i++)
+	//{
+	//	it++;
+	//}
+	//PrintResources();
 }
 
 void Step::PrintParts()

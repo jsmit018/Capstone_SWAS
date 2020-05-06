@@ -83,7 +83,7 @@ void InitializeAircraft()
 	//SimExec::SetInputReader(inputReader);
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
-	Distribution::SetSystemSeed(8);
+
 	//inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft(1);
 	//inputReader.AddSelectedAircraft("F-18");
@@ -218,6 +218,8 @@ int main()
 	Scribe::SetRuns(inputReader.GetNumRuns());
 	Scribe::SetNumRuns(inputReader.GetNumRuns());
 	//Step::PrintPools();
+	inputReader.PrintEverything();
+
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
 	//*Note: Let tyler know this function name so he can add it to his unity logic
 	for (int i = 0; i < inputReader.GetNumRuns(); i++)

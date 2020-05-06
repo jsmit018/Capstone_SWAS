@@ -705,7 +705,6 @@ void InputReader::ReadInputData() //initialization for getting data
 
 						while (it != iter->second->GetRJMapEnd())
 						{
-							//cout << "WOW JOB IS" << currentJob << endl;
 							if (it->second->GetName() == currentJob)
 							{
 								newStep->SetReqResource(row[8]);
@@ -716,6 +715,9 @@ void InputReader::ReadInputData() //initialization for getting data
 									ssSteps5 >> numParts;
 									newStep->SetReqParts(row[9], numParts);
 								}
+
+								cout << " ***********JOB " << it->first << " STEP " << stepID;
+								newStep->SetStepIndoorReq(it->second->GetIndoorReq());
 
 								//add this step to the repair job's list
 								it->second->AddStep(newStep);
@@ -980,8 +982,10 @@ void InputReader::ReadInputData() //initialization for getting data
 									/*if (iter->second->GetStep(i + 1)->IsResourceMapEnd(it))
 										continue;*/
 								{
-
+									int id = i + 1;
+									cout << " ***********JOB "<< iter->first  << " STEP " << id;
 									iter->second->GetStep(i + 1)->SetStepIndoorReq(iter->second->GetIndoorReq());
+
 									iter->second->GetStep(i + 1)->SetRJPriority(iter->second->GetPriority());
 
 									if (it->first == row[0])
@@ -1342,12 +1346,12 @@ double InputReader::GetShiftThreeStartTime()
 	return _shiftThreeStartTime;
 }
 
-map<string, RepairJob*>::iterator InputReader::FindMasterRJ(string name)
+map<string, RepairJob*>::iterator InputReader::FindMasterRJ(string aircraft, string job)
 {
-	map<string, Aircraft*>::iterator it = _masterMap.begin();
+	map<string, Aircraft*>::iterator it = _masterMap.find(aircraft);
 	while (it != _masterMap.end())
 	{
-		map<string, RepairJob*>::iterator iter = it->second->FindMyAllRepairJob(name);
+		map<string, RepairJob*>::iterator iter = it->second->FindMyAllRepairJob(job);
 		if (iter != it->second->GetRJMapEnd()) {
 			return iter;
 		}

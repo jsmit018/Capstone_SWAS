@@ -175,29 +175,6 @@ SourceBlock::SourceBlock(string aircraftType, Aircraft* aircraft, string name,
 	//}
 }
 
-/*Old Constructor*/
-//SourceBlock::SourceBlock(Distribution* interarrivalTimeRecurring, string aircraftType, Aircraft* aircraft, string name,
-//	int numOfCalendarEventsToSchedule, CalendarObj* calobj, int numberOfAircraftToGenerate) : Task(name) {
-//	cout << "Initialzing Source Object for " << aircraft->GetAircraftType() << endl;
-//	_name = name;
-//	cout << "Initializing Aircraft Distributions" << endl;
-//	_interarrivalTimeRecurring = interarrivalTimeRecurring;
-//	_interarrivalTimeRND = aircraft->GetAircraftIAT();
-//	cout << "Printing Aircraft Distributions" << endl;
-//	_interarrivalTimeRecurring->PrintDistribution();
-//	_interarrivalTimeRND->PrintDistribution();
-//	_aircraftType = aircraftType;
-//	_aircraft = aircraft;
-//	_numberOfAircraftToGenerate = numberOfAircraftToGenerate;
-//	_numberGenerated = 0;
-//	cout << "Scheduling Calendar Events" << endl;
-//	for (int i = 0; i < numOfCalendarEventsToSchedule; ++i) {
-//		SimExec::ScheduleEventAtCalendar(calobj->_months[i], calobj->_days[i], calobj->_timeOfDays[i], calobj->_year[i], _aircraft->GetAircraftPriority(), new ScheduleNextCalendarAircraftEA(this), "ScheduleNextCalendarAircraftEA");
-//		cout << "Calendar Event Scheduled" << endl;
-//	}
-//	SimExec::ScheduleEventAtRecurring(aircraft->GetAircraftPriority(), new ScheduleNextRecurringAircraftEA(this), _interarrivalTimeRecurring->GetRV(), "ScheduleNextRecurringAircraftEA");
-//}
-
 string SourceBlock::GetAircraftType() {
 	return _aircraftType;
 }
@@ -268,7 +245,6 @@ void SourceBlock::ScheduleNextCalendarAircraftEM(RepairJob* repairJob, CalendarO
 	}
 	
 
-	//}
 }
 
 
@@ -278,8 +254,9 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 	{
 		SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextUnplannedAircraftEA(this, repairJob), _interarrivalTimeRND->GetRV(), "ScheduleNextUnplannedAircraftEA");
 		Aircraft* newAircraft = _aircraft->New();
+		//clear _myrepairmap
 		newAircraft->ClearMyMap();
-
+		cout << "cleraed" << endl;
 
 		int jobCounter = 0;
 		string job;
@@ -288,23 +265,30 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		 
 		while (iter != newAircraft->GetMyUnplannedMapEnd())
 		{
+			bool willsched = true;//iter->second->WillSchedule();//iter->second->WillSchedule();
 
-			if ((iter->second->WillSchedule() == false))
+			//roll the dice - if we aren't going to schedule it, go to the next job
+			if ((willsched == false))
 			{
+				cout << newAircraft->GetAircraftType() << "will NOT sched" << iter->first << endl;
+
 				iter++;
 
 				continue;
 			}
 
 			//Roll the dice do see which repair jobs will be required
-			else if (iter->second->WillSchedule() == true)
+			else if (willsched == true)
 			{  
+				cout << newAircraft->GetAircraftType() << "will sched" << iter->first << endl;
 				//if its a job we're going to schedule, put it in a map based on priority
 				AddToPriorityMap(iter->second->GetPriority(), iter->first);
 
-				RepairJob* currJob = new RepairJob();
-				currJob->CopyRepairJob(*iter->second);
-				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+				//put the job into _myrepairmap
+				//RepairJob* currJob = new RepairJob();
+				//currJob->CopyRepairJob(*iter->second);
+				//newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
+				//cout << newAircraft->GetAircraftID() << "" << newAircraft->GetAircraftType() << " ADDED " << newAircraft->GetMyRJMapSize() << endl;
 				Scribe::TallyUnplanned(1); 
 			}
 
@@ -312,19 +296,21 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 		}
 
 		//if any jobs are going to be scheduled
+		//cout << newAircraft->GetAircraftType()<< " # jobs in priority" << _jobPriority.size() << endl;
 		if (_jobPriority.size() > 0)
 		{
+			//cout << newAircraft->GetAircraftType() << "here" << endl;
 			//job is the job with highest priority
 			job = _jobPriority.begin()->second;
 
-			//schedule that high priority job			
+			//schedule that high priority job from master map because mymap is empty	
 			RepairJob* currJob = new RepairJob();
-			currJob->CopyRepairJob(*InputReader::FindMasterRJ(job)->second);
+			currJob->CopyRepairJob(*InputReader::FindMasterRJ(newAircraft->GetAircraftType(),job)->second);
 			newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
-
-			InputReader::FindMasterRJ(job)->second->GetStep(1)->
-				ScheduleFirstStep(InputReader::FindMasterRJ(job)->second->GetStep(1), newAircraft);
-
+			//cout << newAircraft->GetAircraftType() << " added " << currJob->GetName() << endl;
+ 			InputReader::FindMasterRJ(newAircraft->GetAircraftType(),job)->second->GetStep(1)->
+				ScheduleFirstStep(InputReader::FindMasterRJ(newAircraft->GetAircraftType(),job)->second->GetStep(1), newAircraft);
+			cout << newAircraft->GetAircraftID() << " " << newAircraft->GetAircraftType()<< " do schedule " << job << endl;
 			jobCounter++;
 		}
 
@@ -333,19 +319,19 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 			map<string, RepairJob*>::iterator insertIter = newAircraft->GetMyUnplannedMapBegin();
 			while (insertIter != newAircraft->GetMyUnplannedMapEnd())
 			{
-				cout << " ! " << insertIter->first << endl;
-				/*Add name of every repair job in the list to vector for random selection*/
+				//cout << "------------ No jobs chosen " << insertIter->first << endl;
+				//Add name of every repair job in the list to vector for random selection
 				newAircraft->InsertJobName(insertIter->first);
 
 				insertIter++;
 			}
 
 
-			/*Pick a random element from the vector*/
+			//Pick a random element from the vector
 			string selection = newAircraft->GetRandomElement();
 			cout << "INDEX CHOSEN IS " << selection << endl;
 
-			/*Schedule this job*/
+			//Schedule this job
 			map<string, RepairJob*>::iterator addRJIt = newAircraft->FindMyUnRepairJob(selection);
 			cout << "hi \n";
 			if (addRJIt == newAircraft->GetMyUnplannedMapEnd())
@@ -372,6 +358,7 @@ void SourceBlock::ScheduleNextUnplannedAircraftEM(RepairJob* repairJob)
 
 void SourceBlock::AddToPriorityMap(int priority, string job)
 {
+	//cout << "priority add " << job << endl;
 	_jobPriority[priority] = job;
 }
 
@@ -385,13 +372,11 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 		map<string, RepairJob*>::iterator it = newAircraft->GetMyRJMapBegin();
 		while (it != newAircraft->GetMyRJMapEnd())
 		{
-
 			if (it->second->GetSchedType() == "Recurring") {
 				RepairJob* currJob = new RepairJob();
 				currJob->CopyRepairJob(*it->second);
 				newAircraft->AddMyRepairJob(currJob->GetName(), currJob);
 
-				//cout << "..................ADDED Recur " << it->second->GetName() << endl;
 				it++;
 			}
 			else if (it->second->GetSchedType() != "Recurring")
@@ -406,7 +391,7 @@ void SourceBlock::ScheduleNextRecurringAircraftEM(Distribution* recurringIAT, Re
 		//cout << newAircraft->GetAircraftType() << " ----------------RECUR MAP SIZE " << newAircraft->GetMyRJMapSize() << endl;
 
 		//newAircraft->GetMyRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep()->ScheduleFirstStep(newAircraft->GetRepairJobObj(newAircraft->GetAircraftType())->GetFirstStep(), newAircraft);
-		repairJob->GetFirstStep()->ScheduleFirstRecurringStep(repairJob->GetFirstStep(), newAircraft);
+		repairJob->GetFirstStep()->ScheduleFirstRecurringStep(repairJob->GetStep(1), newAircraft);
 		//No longer doing this!
 		//cout << "Scheduling next Random Aircraft arrival" << endl;
 		//SimExec::ScheduleEventAt(_aircraft->GetAircraftPriority(), new ScheduleNextRandomAircraftEA(this), _interarrivalTimeRND->GetRV(), "ScheduleNextRandomAircraftEA");

@@ -14,6 +14,8 @@ Aircraft::Aircraft()
 //void Aircraft::CopyAircraftInfo(const Aircraft& mapAircraft)
 Aircraft::Aircraft(const Aircraft& mapAircraft)
 {
+	AddBayReqToRes();
+
 	int _IDCount = InputReader::GetIDcount();
 	_aircraftID = ++_nextID;
 	_aircraftID = _aircraftID - _IDCount;
@@ -49,45 +51,8 @@ Aircraft::Aircraft(const Aircraft& mapAircraft)
 	}
 
 	CopyMyJobList(_aircraftType);
-	//cout << endl; 
-	//cout << endl; 
-	//cout << _aircraftType << " BAYSIZE REQ " << _baySizeReq << endl; 
-	//// << "AIRCRAFT IS: " << _aircraftType << " HAS REcur IAT SIZE OF " << _myRecurIATmap.size() << endl; 
-	//cout << endl; 
-	//cout << endl; 
 
-
-
-	//recurIat vector, calobj and others populated after this copy
 }
-
-//
-//bool Aircraft::HasRecurJob()
-//{
-//	if (_recurFlag == 'Y')
-//	{
-//		cout << "recurring flag is y" << endl; 
-//		return true; 
-//	}
-//
-//	else if (_recurFlag == 'N')
-//	{
-//		cout << "recurring flag is n" << endl; 
-//
-//		return false; 
-//	}
-//}
-//
-//void Aircraft::SetRecurFlag(char flag)
-//{
-//	_recurFlag = flag; 
-//	cout << "setting flag " << _recurFlag << endl; 
-//}
-//
-//char Aircraft::GetRecurFlag()
-//{
-//	return _recurFlag; 
-//}
 
 //Copy all repair jobs
 void Aircraft::CopyMyJobList(string aircraftType)
@@ -102,8 +67,10 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 	while (InputReader::GetAircraft(_aircraftType)->IsMapEnd(iter))
 	{
+
 		//for all repair jobs in _allrepairjobs in mastermap with schedule type "Unplanned"
-		if (iter->second->GetSchedType() == "Unplanned") {
+		if (iter->second->GetSchedType() == "Unplanned") 
+		{
 
 			//make a copy of this repair job
 			RepairJob* currJob = new RepairJob();
@@ -117,8 +84,8 @@ void Aircraft::CopyMyJobList(string aircraftType)
 		}
 
 		//for all repair jobs with schedule type "recurring"
-		else if (iter->second->GetSchedType() == "Recurring") {
-
+		else if (iter->second->GetSchedType() == "Recurring") 
+		{
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
 
@@ -130,7 +97,6 @@ void Aircraft::CopyMyJobList(string aircraftType)
 		//for all repair jobs with schedule type "calendar"
 		else if (iter->second->GetSchedType() == "Calendar") {
 
-
 			RepairJob* currJob = new RepairJob();
 			currJob->CopyRepairJob(*iter->second);
 
@@ -140,8 +106,10 @@ void Aircraft::CopyMyJobList(string aircraftType)
 
 			//AddBayReqToRes();
 		}
+			
+		
 		iter++;
-		AddBayReqToRes();
+
 	}
 
 }
@@ -228,6 +196,8 @@ bool Aircraft::AreMoreSteps()
 void Aircraft::SetBaySizeReq(string baySizeReq)
 {
 	_baySizeReq = baySizeReq;
+	cout << "SET " << this->GetAircraftType() << " " << _baySizeReq << endl;
+
 }
 
 string Aircraft::GetBaySizeReq()
@@ -377,6 +347,7 @@ void Aircraft::AddRepairJob(RepairJob* repairJob, string repairJobName)
 
 void Aircraft::AddMyRepairJob(string jobName, RepairJob* myJob)
 {
+	cout << "weird adding " << jobName << " for " << this->GetAircraftType() << endl;
 	_myRepairJobs.insert(pair<string, RepairJob*>(jobName, myJob));
 }
 
@@ -387,7 +358,6 @@ void Aircraft::AddMyUnplannedJob(string jobName, RepairJob* myJob)
 
 RepairJob* Aircraft::GetRepairJobObj(string name)
 {
-
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.find(name);
 	if (it == _allRepairJobsMap.end())
 		return nullptr;
@@ -473,11 +443,8 @@ map<string, Distribution*>::iterator  Aircraft::GetRecurMapEnd()
 string Aircraft::GetRandomElement()
 {
 	int key;
-	cout << "size " << GetUnplanVecSize() - 1 << endl; 
-	//random_device random_device;
-	//mt19937 engine{ random_device() };
-	//uniform_int_distribution<int> dist(0, GetUnplanVecSize() - 1);
-	string random_element;// = _unplannedRjVec[dist(engine)];
+
+	string random_element;
 	Uniform prob(0, GetUnplanVecSize());
 	key = prob.GetRV();
 	random_element = _unplannedRjVec[key];
@@ -487,23 +454,31 @@ string Aircraft::GetRandomElement()
 
 void Aircraft::AddBayReqToRes()
 {
+	cout << this->GetAircraftID() << " " << this->GetAircraftType() << " size: " << _myRepairJobs.size() << endl;
+
+	//in all my repair jobs
 	map<string, RepairJob*>::const_iterator iter = _myRepairJobs.begin();
 	while (iter != _myRepairJobs.end())
 	{
+		//go through my steps
 		for (int i = 0; i < iter->second->GetStepVecSize(); i++)
-		{
+		{ 
+			//go through master resource map to get the object
 			map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
 			while (resIter != InputReader::GetMasterResMapEnd())
 			{
-				//cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
+				cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
 				if (resIter->first == _baySizeReq)
 				{
+					cout << "..........................LE MATCH" << endl;
+
 					if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y') {
-						resIter->second->SetNumResNeeded(1);
+						//resIter->second->SetNumResNeeded(1);
 						iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
+
+						cout << "adding" << resIter->first << "for" << iter->second->GetIndoorReq() << " " << this->GetAircraftType() << " " << iter->first << endl;
 					}
 
-					//cout << "adding" << resIter->first << endl; 
 				}
 				resIter++;
 			}
