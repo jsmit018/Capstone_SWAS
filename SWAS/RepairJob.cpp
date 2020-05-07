@@ -13,14 +13,12 @@ RepairJob::RepairJob()
 
 void RepairJob::CopyRepairJob(const RepairJob& mapRj)
 {
-    //   cout << "       Copying " << mapRj._name << " repair job."<< endl; 
-     //   cout << endl; 
     _name = mapRj._name; 					            // Repair job name
     _priority = mapRj._priority; 		        		// Repair job priority
     _schedType = mapRj._schedType; 				        // Interarrival schedule type
     _indoorReq = mapRj._indoorReq; 				        // Y or N for indoor requirement of repair job
     _calendarDate = mapRj._calendarDate; 		    	// Calendar-schedule type repair jobs (date: mmddyyyy)
-    _recurringAmt = mapRj._recurringAmt->CopyThis(); // Number of months between Recurring-schedule type repair jobs
+    _recurringAmt = mapRj._recurringAmt->CopyThis();    // Number of months between Recurring-schedule type repair jobs
     _unplannedProb = mapRj._unplannedProb->CopyThis(); 	// Distribution for probability of certain repair job after random iat
 
 
@@ -55,15 +53,10 @@ Step* RepairJob::GetStep(int stepID)
     if (_vecSteps.size() == 0)
     {
         cout << this->GetName() << endl;
-        cout << "NO STEPS!" << endl;
+        cout << "ERROR: Check input sheet. Linked to this job!" << endl;
     }
 
-    //setting stepID 
-   // cout << "-----JOB TYPE " << this->GetName() << endl; 
-   // cout << "ID IS      " << stepID << endl; 
-
     return _vecSteps[stepID - 1];
-
 }
 
 Step* RepairJob::GetFirstStep()
@@ -257,23 +250,21 @@ RepairJob* RepairJob::GetResourceRepair(string resourceName)
     return it->second;
 }
 
+//Prints all repair job and its attributes.
 void RepairJob::PrintJobProperties()
 {
-
     cout << "   Repair Job Name: " << _name << endl;
-    //cout << "   Schedule Type: " << _schedType << endl;
-    //cout << "   Repair Job Priority: " << _priority << endl;
-    //cout << "   Unplanned Probability: ";
-    //_unplannedProb->PrintDistribution();
-    //cout << endl;
+    cout << "   Schedule Type: " << _schedType << endl;
+    cout << "   Repair Job Priority: " << _priority << endl;
+    cout << "   Unplanned Probability: ";
+    _unplannedProb->PrintDistribution();
+    cout << endl;
     cout << "   Indoor Requirement? " << _indoorReq << endl;
     cout << endl;
 
     for (int i = 0; i < _vecSteps.size(); i++)
     {
         _vecSteps[i]->Print();
-        cout << endl;
-        //_vecSteps[1]->PrintPools(); 
     }
     cout << endl;
 }

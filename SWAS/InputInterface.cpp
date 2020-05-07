@@ -83,7 +83,7 @@ void InputReader::ReadInputData() //initialization for getting data
 			//Get number of runs
 
 			if (line.find("Run Info Table") != string::npos) {
-				printf("got Run Info table \n");
+				printf("Got Run Info Table \n");
 
 				int numRuns;
 				string seedType;
@@ -122,7 +122,7 @@ void InputReader::ReadInputData() //initialization for getting data
 						//set shift2startTime
 						//set shift3startTime
 			if (line.find("Termination Dates") != string::npos) {
-				printf("got Termination Dates\n");
+				printf("Got Termination Dates Table\n");
 				double termMonth, termDay, termYear;
 				string first;
 				string sec;
@@ -153,7 +153,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 			if (line.find("Mission Type Table (Wartime or Peacetime)") != string::npos)
 			{
-				printf("got Mission Type table \n");
+				printf("Got Mission Type Table \n");
 
 				getline(dataFile, line);
 
@@ -178,7 +178,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					{
 						if (line.find("Wartime Shifts Table") != string::npos)
 						{
-							printf("got Wartime Shifts table \n");
+							printf("Got Wartime Shifts Table \n");
 
 							getline(dataFile, line);
 
@@ -203,7 +203,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					{
 						if (line.find("Peacetime Shifts Table") != string::npos)
 						{
-							printf("got Peacetime Shifts table \n");
+							printf("Got Peacetime Shifts Table \n");
 
 							getline(dataFile, line);
 
@@ -236,7 +236,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 			//Getting values from the calendar tables and setting them to months/days
 			if (line.find("Calendar Table") != string::npos) {
-				printf("got Calendar table \n");
+				printf("Got Calendar Table \n");
 
 				int month = INT_MAX;
 				int numDays = INT_MAX;
@@ -275,7 +275,7 @@ void InputReader::ReadInputData() //initialization for getting data
 			//Store new aircraft object into map with type string as key
 
 			if (line.find("Aircraft Info Table") != string::npos) {
-				printf("got Aircraft Info table \n");
+				printf("Got Aircraft Info Table \n");
 
 				getline(dataFile, line);
 				vector <string> row;
@@ -343,7 +343,7 @@ void InputReader::ReadInputData() //initialization for getting data
 
 
 			if (line.find("Unplanned Arrivals Table") != string::npos) {
-				printf("got Unplanned Arrivals Table \n");
+				printf("Got Unplanned Arrivals Table \n");
 
 				string unplannedType;
 				string unplannedIAT;
@@ -408,7 +408,7 @@ void InputReader::ReadInputData() //initialization for getting data
 				//Store object in allrepairjobmap with appropriate aircraft type	
 
 			if (line.find("Planned Maintenance Table") != string::npos) {
-				printf("got Planned Maintenance Table \n");
+				printf("Got Planned Maintenance Table \n");
 
 				string plannedType;
 				string repairName;
@@ -495,14 +495,14 @@ void InputReader::ReadInputData() //initialization for getting data
 				// For loop: Compare aircraft name string with string in table to find:
 					//Repair Job Type
 						//once found, get:
-							//Repair Job Name [done]
-							//Unplanned Probability [done]
-							//Indoor Requirement [done]
-			//Create object of repair job [done]
-				//Store object in allrepairjobmap with appropriate aircraft type [done]
+							//Repair Job Name 
+							//Unplanned Probability 
+							//Indoor Requirement 
+			//Create object of repair job 
+				//Store object in allrepairjobmap with appropriate aircraft type 
 
 			if (line.find("Unplanned Maintenance Table") != string::npos) {
-				printf("got Unplanned Maintenance Table \n");
+				printf("Got Unplanned Maintenance Table \n");
 
 				string unplanType;
 				string unRepairName;
@@ -583,18 +583,18 @@ void InputReader::ReadInputData() //initialization for getting data
 					//For loop: for each step
 						//Create Step object
 						//Find:
-							//Step ID [done]
-							//Step Name [done]
-							//Step Duration [done]
-							//Inspection Failure Distribution [done]
-							//Return Step [done]
+							//Step ID 
+							//Step Name 
+							//Step Duration 
+							//Inspection Failure Distribution 
+							//Return Step 
 							//Vector of Required Resources
 							//Required Parts
 							//Amount of Parts Needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 						//Store Step Object in Repair Job's map
 
 			if (line.find("Steps Table") != string::npos) {
-				printf("got Steps Table \n \n");
+				printf("Got Steps Table \n \n");
 
 				string currentJob;
 				int jobPriority;
@@ -726,7 +726,6 @@ void InputReader::ReadInputData() //initialization for getting data
 						iter++;
 					}
 
-
 				}
 
 			}
@@ -741,20 +740,20 @@ void InputReader::ReadInputData() //initialization for getting data
 			// For each of the resources in Step object's vector
 				//Match resource name string to string in table
 					//Find:
-					//Resource Name [done]
-					//Initial Count [done]
-					//Resource footprint [done]
+					//Resource Name
+					//Initial Count 
+					//Resource footprint 
 
 			//Resource Failure Table
 			// For each of the resources in Step object's vector
 				//Match resource name string to string in table
 					//Find:
-					//Failure Name [done]
-					//Failure Type [done]
-					//Failure Distribution [done]
+					//Failure Name 
+					//Failure Type 
+					//Failure Distribution 
 
 			if (line.find("Resource Table") != string::npos) {
-				printf("got Resource Table \n");
+				printf("Got Resource Table \n");
 
 				string resName;
 				double resCountShift1;
@@ -907,7 +906,7 @@ void InputReader::ReadInputData() //initialization for getting data
 			}
 
 			if (line.find("Resource Failure Table") != string::npos) {
-				printf("got Resource Failure Table \n");
+				printf("Got Resource Failure Table \n");
 
 				string resName;
 
@@ -1018,7 +1017,7 @@ void InputReader::ReadInputData() //initialization for getting data
 					//Lead Time
 
 			if (line.find("Parts Table") != string::npos) {
-				printf("got Parts Table \n");
+				printf("Got Parts Table \n");
 
 				string partName;
 				int count;
@@ -1116,8 +1115,7 @@ void InputReader::ReadInputData() //initialization for getting data
 		}
 
 		dataFile.close();
-		cout << "closed file" << endl;
-		cout << "_________________________________________________________________________________" << endl;
+		cout << "Closed file" << endl;
 	}
 	else
 	{

@@ -28,7 +28,6 @@ public:
 
 class CalendarObj {
 public:
-	//CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years); 
 	CalendarObj(); 
 	void UpdateNumEvents(); 
 	int GetNumEvents(); 

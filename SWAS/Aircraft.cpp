@@ -49,9 +49,6 @@ void Aircraft::CopyMyJobList(string aircraftType)
 {
 	_aircraftType = aircraftType;
 
-
-	//cout << "Master map's aircraft version all repair map size" << InputReader::GetAircraft(aircraftType)->GetAllRJMapSize() << endl; 
-
 	//iterate through all repair jobs in _allrepairJobs map in mastermap
 	map<string, RepairJob*>::iterator iter = InputReader::GetAircraft(_aircraftType)->GetRJMapBegin();
 
@@ -236,7 +233,7 @@ RepairJob* Aircraft::GetNextRepairJob(string rjName)
 	}
 
 
-	return nextJob;//set this??
+	return nextJob;
 
 
 }
@@ -292,7 +289,7 @@ Aircraft* Aircraft::New()
 	//_aircraftID = ++_nextID; 
 	Aircraft* newAircraft = new Aircraft(*this);
 	InputReader::AddAirCount();
-	return newAircraft;// add appropriate parameters
+	return newAircraft;
 }
 
 void Aircraft::SetAircraftFootprint(double length, double wingspan)
@@ -431,8 +428,6 @@ string Aircraft::GetRandomElement()
 
 void Aircraft::AddBayReqToRes(Aircraft* aircraft)
 {
-	//cout << this->GetAircraftID() << " " << this->GetAircraftType() << " size: " << _myRepairJobs.size() << endl;
-
 	//in all my repair jobs
 	map<string, RepairJob*>::const_iterator iter = aircraft->_myRepairJobs.begin();
 	while (iter != aircraft->_myRepairJobs.end())
@@ -444,18 +439,12 @@ void Aircraft::AddBayReqToRes(Aircraft* aircraft)
 			map<string, StepResource*>::const_iterator resIter = InputReader::GetMasterResMapBegin();
 			while (resIter != InputReader::GetMasterResMapEnd())
 			{
-				//cout << "ADDING BAY REQ TO RESOURCE REQ " << resIter->first << endl; 
 				if (resIter->first == aircraft->_baySizeReq)
 				{
-					//cout << "..........................LE MATCH" << endl;
-
 					if (iter->second->GetIndoorReq() == 'Y' || iter->second->GetIndoorReq() == 'y') {
 						//resIter->second->SetNumResNeeded(1);
 						iter->second->GetStep(i + 1)->AddResource(resIter->second, resIter->first, 1);
-
-						//cout << "adding" << resIter->first << "for" << iter->second->GetIndoorReq() << " " << this->GetAircraftType() << " " << iter->first << endl;
 					}
-
 				}
 				resIter++;
 			}
@@ -564,7 +553,7 @@ void Aircraft::SetAircraftIAT(string iatUnplanned)
 
 Distribution* Aircraft::GetAircraftIAT()
 {
-	return _iatUnplanned;//check if this works?
+	return _iatUnplanned;
 	//_iatUnplanned->PrintDistribution(); 
 }
 map<string, Distribution*> Aircraft::GetRecurIatMap()
@@ -577,6 +566,7 @@ map<string, RepairJob*> Aircraft::GetMyJobsMap()
 	return _myRepairJobs;
 }
 
+//print all of the list of recurring arrival distributions i have and print all my possible repair jobs and all of their attributes
 void Aircraft::PrintProperties()
 {
 	cout << "AIRCRAFT:" << endl;
@@ -595,16 +585,14 @@ void Aircraft::PrintProperties()
 	}
 
 	map<string, RepairJob*>::iterator it = _allRepairJobsMap.begin();
-	//cout << "After creating the iterator to the map " << std::endl;
 	while (it != _allRepairJobsMap.end())
 	{
-		cout << "in the loop \n";
-
 		it->second->PrintJobProperties();
 		it++;
 	}
 }
 
+//print all the repair jobs in this aircraft instance that are to be scheduled
 void Aircraft::PrintMyProperties()
 {
 	cout << "AIRCRAFT:" << endl;
@@ -622,17 +610,14 @@ void Aircraft::PrintMyProperties()
 	{
 		cout << "		";
 		iter->second->GetRecurringAmt()->PrintDistribution();
-		//cout << endl; 
 		iter++;
 	}
 
 
-	//cout << "MY JOB LIST SIZE IS " << _myRepairJobs.size() << endl;
 	map<string, RepairJob*>::iterator it = _myRepairJobs.begin();
-	//cout << "After creating the iterator to the map " << std::endl;
 	while (it != _myRepairJobs.end())
 	{
-		//		it->second->PrintJobProperties(); 
+		it->second->PrintJobProperties(); 
 		it++;
 	}
 }

@@ -1,7 +1,7 @@
 //Step.cpp: Andrea Robey
 
 #include "Step.h"
-#include "Aircraft.h" //need to remove and replace priority values with 
+#include "Aircraft.h"
 #include <iterator>
 #include "InputInterface.h"
 #include "SinkTask.h"
@@ -37,15 +37,13 @@ void Step::CopyMapStep(const Step& mapStep)
 	{
 		_inspecFailProb = mapStep._inspecFailProb->CopyThis();
 	}
-	_servTime = mapStep._servTime; // does this need to have copythis()
+	_servTime = mapStep._servTime; 
 	_reqRes = mapStep._reqRes;
 	_reqParts = mapStep._reqParts;
 	if (mapStep._returnStep == NULL)
 		_returnStep = NULL;
 	else
 		_returnStep = mapStep._returnStep;
-
-	//iterate through vectors/nonstatic maps to use resource and parts and aircraft object copy constructors
 
 	//iterating through old required resource map, inserting its first and second into the new required resource map
 	map<string, StepResource*>::const_iterator reqResIter = mapStep._reqResourceMap.begin();
@@ -372,22 +370,6 @@ private:
 	map<string, int> _acqResources;
 };
 
-class Step::AddQueueEA : public EventAction {
-public:
-	AddQueueEA(Step* step, Aircraft* aircraft) {
-		_step = step;
-		_aircraft = aircraft;
-	}
-
-	void Execute() {
-		_step->AddQueueEM(_aircraft);
-	}
-
-private:
-	Step* _step;
-	Aircraft* _aircraft;
-};
-
 class Step::AcquireResourceEA : public EventAction {
 public:
 	AcquireResourceEA(Step* step, StepResource* resource)
@@ -455,15 +437,8 @@ private:
 	StepResource* _resource;
 };
 
-// PLACE ORDER/ REPLENISH order process
-	// schedule an event that will act as "place order"   -> placeorderEA does placeOrderEM
-	// "place order" execution will schedule a "order arrived/ parts replenish event"	 placeOrderEM schedules partsArrivalEA
-	// "order arrived/ parts replenish event" execution will simply do _partsCount + Number ordered -> partsArrivalEA does partsArrivalEM
-
 void Step::UpdateShift()
 { 
-	//cout << "flag " << _firstShiftUpdateFlag << endl;
-
 	double newCount;
 	double lastShiftsInitCount;
 	double thisShiftsInitCount;
@@ -471,64 +446,47 @@ void Step::UpdateShift()
 	//we don't want to change the counts for the first 6am shift
 	if (isFirstShiftChange() == true)
 	{
-		//cout << " Shifts Starting, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
-			//<< " day is " << SimExec::GetSimulationTime()._day + 1
-			//<< " time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
 		SetFirstShiftUpdateFlag(0);
-		////schedule this same shift change tomorrow at the same time
+		//schedule this same shift change tomorrow at the same time
 		SimExec::ScheduleEventAt(-10, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
 		return;
 	}
-	////if its a wartime simulation
+	//if its a wartime simulation
 	if (InputReader::IsWartime() == true)
 	{
-		//cout << " wartime, month is " << SimExec::ConvertDate(SimExec::GetSimulationTime()._month)
-			//<< " day is " << SimExec::GetSimulationTime()._day + 1
-			//<<" time is " << SimExec::GetSimulationTime()._timeOfDay << "00" << endl;
-
-		////if i'm in shift one
+		//if i'm in shift one
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			//cout << "in war shift one " << endl;
-			////for all resources in the resource pool, update the count
+			//for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
 			{
-				////if there's a difference in the counts
+				//if there's a difference in the counts
 				if (iter->second->GetShiftTwoCount() != iter->second->GetShiftOneCount())
 				{
-					////new count is =
-					////current count + the difference between last shift's intitial count and this shift's initial count
+					//new count is =
+					//current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftTwoCount();
-					//cout << "shift two " << iter->first << " had init count of " << lastShiftsInitCount << endl;
-
 					thisShiftsInitCount = iter->second->GetShiftOneCount();
-					//cout << "shift one will have init count of " << thisShiftsInitCount << endl;
-
-					//cout << "difference is " << thisShiftsInitCount - lastShiftsInitCount << endl;
-					//cout << "adding to " << iter->second->GetResourceCount() << endl;
-
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
 					iter->second->SetResourceCount(newCount);
 				}
 
 				iter++;
 			}			
 		}
-		////else i'm in shift two
+		//else i'm in shift two
 		else if(InputReader::GetShiftTwoStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			//cout << "in war shift two " << endl;
-			////for all resources in the resource pool, update the count
+			//for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
 			{
-				////if there's a difference in the counts
+				//if there's a difference in the counts
 				if (iter->second->GetShiftTwoCount() != iter->second->GetShiftOneCount())
 				{
-					////new count is 
-					////current count + the difference between last shift's intitial count and this shift's initial count
+					//new count is 
+					//current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftOneCount();
 					thisShiftsInitCount = iter->second->GetShiftTwoCount();
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);		
@@ -547,28 +505,18 @@ void Step::UpdateShift()
 	{
 		if (InputReader::GetShiftOneStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			//cout << "in peace shift one " << endl;
-			////for all resources in the resource pool, update the count
+			//for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
 			{
-				////if there's a difference in the counts
+				//If there's a difference in the counts
 				if (iter->second->GetShiftThreeCount() != iter->second->GetShiftOneCount())
 				{
-					////new count is =
-					////current count + the difference between last shift's intitial count and this shift's initial count
+					//new count is =
+					//current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftThreeCount();
-					//cout << "shift three  " << iter->first << " had init count of " << lastShiftsInitCount << endl;
-
 					thisShiftsInitCount = iter->second->GetShiftOneCount();
-					//cout << "shift one will have init count of " << thisShiftsInitCount << endl;
-
-					//cout << "difference is " << thisShiftsInitCount - lastShiftsInitCount << endl;
-					//cout << "adding to " << iter->second->GetResourceCount() << endl;
-
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
-
 					iter->second->SetResourceCount(newCount);
 				}
 
@@ -576,32 +524,21 @@ void Step::UpdateShift()
 			}
 		}
 
-		////else if i'm in shift two
+		//else if i'm in shift two
 		else if (InputReader::GetShiftTwoStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-
-			//cout << "in peace shift two " << endl;
-			////for all resources in the resource pool, update the count
+			//for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
 			{
-				////if there's a difference in the counts
+				//if there's a difference in the counts
 				if (iter->second->GetShiftThreeCount() != iter->second->GetShiftOneCount())
 				{
-					////new count is 
-					////current count + the difference between last shift's intitial count and this shift's initial count
+					//new count is 
+					//current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftOneCount();
-					//cout << "shift one  " << iter->first << " had init count of " << lastShiftsInitCount << endl;
-
 					thisShiftsInitCount = iter->second->GetShiftTwoCount();
-					//cout << "shift two will have init count of " << thisShiftsInitCount << endl;
-
-					//cout << "difference is " << thisShiftsInitCount - lastShiftsInitCount << endl;
-					//cout << "adding to " << iter->second->GetResourceCount() << endl;
-
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-					//cout << "new  " << iter->first << " count is " << newCount << endl << endl;
-
 					iter->second->SetResourceCount(newCount);
 				}
 				iter++;
@@ -609,31 +546,21 @@ void Step::UpdateShift()
 
 		}
 
-		////else i'm in shift three
+		//else i'm in shift three
 		else if (InputReader::GetShiftThreeStartTime() == SimExec::GetSimulationTime()._timeOfDay)
 		{
-			//cout << "in shift three " << endl;
-			////for all resources in the resource pool, update the count
+			//for all resources in the resource pool, update the count
 			map<string, StepResource*>::iterator iter = _resourcePool.begin();
 			while (iter != _resourcePool.end())
 			{
-				////if there's a difference in the counts
+				//if there's a difference in the counts
 				if (iter->second->GetShiftThreeCount() != iter->second->GetShiftOneCount())
 				{
-					////new count is 
-					////current count + the difference between last shift's intitial count and this shift's initial count
+					//new count is 
+					//current count + the difference between last shift's intitial count and this shift's initial count
 					lastShiftsInitCount = iter->second->GetShiftTwoCount();
-					//cout << "shift two  " << iter->first << " had init count of " << lastShiftsInitCount << endl;
-
 					thisShiftsInitCount = iter->second->GetShiftThreeCount();
-					//cout << "shift three will have init count of " << thisShiftsInitCount << endl;
-
-					//cout << "difference is " << thisShiftsInitCount - lastShiftsInitCount << endl;
-					//cout << "adding to " << iter->second->GetResourceCount() << endl;
-
 					newCount = iter->second->GetResourceCount() + (thisShiftsInitCount - lastShiftsInitCount);
-				//	cout << "new  " << iter->first << " count is " << newCount << endl << endl;
-
 					iter->second->SetResourceCount(newCount);
 				}
 				iter++;
@@ -643,7 +570,7 @@ void Step::UpdateShift()
 			cout << "ERROR: trying to schedule in a shift that doesnt exist" << endl;
 	}
 
-	////schedule this same shift change tomorrow at the same time
+	//schedule this same shift change tomorrow at the same time
 	SimExec::ScheduleEventAt(-10, new ShiftChangeEA(), 1.0, "ShiftChangeEA", 1);
 }
 
@@ -673,9 +600,7 @@ int Step::GetReturnStep()
 {
 	return _returnStep;
 }
-
-//void Step::StartServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
-//void Step::StartServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
+//beginning step for aircraft repair job
 void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 {
 	isNextStepReturnStep = false;
@@ -709,14 +634,12 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		it++;
 	}
 
-	// if i don't have a bay 
+	//if i don't have a bay 
 	if (hasResource == false)
 	{
 		if (_indoorReq == 'Y' || _indoorReq == 'y')
 		{
-			//TODO need to check for specific bay size
 			string bayReq = aircraft->GetBaySizeReq();
-
 
 			map<string, StepResource*>::iterator it = _resourcePool.find(bayReq);
 			if (it != _resourcePool.end())
@@ -752,6 +675,9 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			}
 		}
 
+
+		//NOTE: IF LIMITING THE NUMBER OF OUTDOOR SPOTS IS DESIRED IN FUTURE DEVELOPMENT=>
+
 		/*IF TARMAC HAS LIMITED SPOTS */
 	/*
 		else
@@ -772,7 +698,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		}
 	*/
 	}
-
+	//if this step is a process
 	if (_type == "process" || _type == "Process")
 	{
 		map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
@@ -782,7 +708,6 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			map<string, int>::iterator it = _acquiredResources.begin();
 			while (it != _acquiredResources.end())
 			{
-				//cout << it->first << " " << it->second << endl;
 				it++;
 			}
 		}
@@ -823,6 +748,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			map<string, int>::iterator it = _acquiredResources.begin();
 			while (it != _acquiredResources.end())
 			{
+				//if I have a bay, break
 				if (iter->first == it->first) {
 					foundIt = true;
 					if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") {
@@ -903,11 +829,9 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 				//if (it->second == NULL) {
 				if (it->second->AreEnoughParts() == true)
 				{
-					////cout << "decrementing parts" << endl;
 					AcquireParts(iterParts->second, iterParts->second->GetNumPartsNeeded());
 					Scribe::RecordPartRequest(iterParts->first, iterParts->second->GetNumPartsNeeded(), true);
 				}
-
 				else {
 					Scribe::RecordPartRequest(iterParts->first, iterParts->second->GetNumPartsNeeded(), false);
 					SimExec::ScheduleConditionalEvent(aircraft->GetAircraftPriority(), new NeedPartsEA(this, it->second, aircraft, it->second->GetNumPartsNeeded(), _acquiredResources), "NeedPartsEA", aircraft->GetAircraftType(), it->first, aircraft->GetAircraftID(), _myRJ);
@@ -918,11 +842,10 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 		}
 		DoneServiceEA* doneEA = new DoneServiceEA(this, aircraft, _acquiredResources);
 		SimExec::ScheduleEventAt(1, doneEA, this->_servTime->GetRV(), "DoneServiceEA");
-		//what is this? does it mean waiting for a bay is ended? or service is ended? if either, needs to have an if statement for those cases
 		Scribe::RecordServiceWaitEnd(aircraft->GetAircraftID(), "Bay", SimExec::GetSimulationTime()._timeOfDay);
 
 	}
-
+	//if this step is an inspeciton
 	else if (_type == "inspection" || _type == "Inspection")
 	{
 		map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
@@ -1019,22 +942,17 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 			}
 			iter++;
 		}
-		cout << " **" << this->GetStepID() << " " << _myRJ << endl;
 		isFail = IsInpectionFail(_inspecFailProb);
 
 		if (isFail == true)
 		{
 			isNextStepReturnStep = true;
-			////////////////////
 			SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
-
-			///////////
 			Scribe::RecordInspectionFailure(aircraft->GetAircraftID(), aircraft->GetAircraftType(), _myRJ, _stepID);
 			Scribe::RecordRework(aircraft->GetAircraftType(), _myRJ, SimExec::GetSimulationTime()._timeOfDay);
 
 			return;
 		}
-		//else if (IsInpectionFail(_inspecFailProb) == false)
 		else if (isFail == false)
 		{
 			SimExec::ScheduleEventAt(1, new DoneServiceEA(this, aircraft, _acquiredResources), _servTime->GetRV(), "DoneServiceEA");
@@ -1042,6 +960,7 @@ void Step::StartServiceEM(Aircraft* aircraft, map<string, int> acquiredResources
 	}
 }
 
+//beginning step for failed resource repair job
 void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquiredResources)
 { 
 	if (isNextStepReturnStep == true)
@@ -1068,6 +987,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 	_acquiredResources = acquiredResources;
 	bool hasResource = false;
 
+	//if this step is a process, not an inspection
 	if (_type == "process" || _type == "Process")
 	{
 		map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
@@ -1076,7 +996,6 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 			map<string, int>::iterator it = _acquiredResources.begin();
 			while (it != _acquiredResources.end())
 			{
-				//cout << it->first << " " << it->second << endl;
 				it++;
 			}
 		}
@@ -1119,7 +1038,6 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 			{
 				if (iter->first == it->first) {
 					foundIt = true;
-					
 					alreadyAcquired = true;
 
 					//i've already acquired this resource - if i need more of it
@@ -1196,7 +1114,7 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 		SimExec::ScheduleEventAt(RepairJob::GetMyResRepairJobObj(_myRJ)->GetPriority(), doneEA, this->_servTime->GetRV(), "DoneServiceEA");
 
 	}
-
+	//if this step is an inspection
 	else if (_type == "inspection" || _type == "Inspection")
 	{
 		map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
@@ -1297,11 +1215,10 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 		if (IsInpectionFail(_inspecFailProb) == true)
 		{
 			isNextStepReturnStep = true;
+			//reschedule step of id = to return step id and all following steps
 			Scribe::RecordInspectionFailure(0,resource->GetResourceName(), RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_stepID)->GetName(), _stepID);
-			//NEED TO SCHEDULE DONE SERVICE AND USE FLAG TO KNOW IF ITS FAILED INSPECTION
 			SimExec::ScheduleEventAt(_RJpriority, new StartRepairServiceEA(RepairJob::GetMyResRepairJobObj(resource->GetResourceName())->GetStep(_returnStep), 
 				resource, _acquiredResources), 0, "StartServiceEA");
-			//reschedule step of id = to return step id and all following steps
 			return;
 		}
 		else if (IsInpectionFail(_inspecFailProb) == false)
@@ -1311,22 +1228,13 @@ void Step::StartRepairServiceEM(StepResource* resource, map<string, int> acquire
 	}
 }
 
-void Step::SetMyRJName(string myRJ)
-{
-	_myRJ = myRJ;
-}
-
-string Step::GetMyRJName()
-{
-	return _myRJ;
-}
-
 string Step::AcquireBay(StepResource* bay, int numNeeded)
 {
 	double newCount;
 	bool acquired = false;
 	map<string, StepResource*>::const_iterator iter = _resourcePool.find(bay->GetResourceName());
 
+	//if there are available bays, take one that matches my need (decrement the count of available bays of my type)
 	if (numNeeded <= iter->second->GetResourceCount())
 	{
 		acquired = true;
@@ -1402,9 +1310,7 @@ string Step::AcquireBay(StepResource* bay, int numNeeded)
 
 bool isNextJob = false;
 
-
-//void Step::DoneServiceEM(Aircraft* aircraft, vector<string> acquiredResources)
-//void Step::DoneServiceEM(Aircraft* aircraft, vector<pair<string, int>> acquiredResources)
+//completion of aircraft repair step
 void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
@@ -1412,8 +1318,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 	if (_stepID < aircraft->GetMyRepairJobObj(_myRJ)->GetStepVecSize())
 	{
 		int nextID;
-
-		//if (isNextStepReturnStep == true)
+		//if i failed inspection, my next step is a return step
 		if (_type == "Inspection" && isFail == true)
 		{
 			nextID = this->GetReturnStep();
@@ -1491,75 +1396,24 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 		//if i have no more jobs after this one
 		if (aircraft->GetMyRJMapSize() == 1)
 		{
-			////empty appropriate acquired vector index
-			//map<string, StepResource*>::iterator iter = _reqResourceMap.begin();
-			//while (iter != _reqResourceMap.end())
-			//{
-			//	if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
-			//	{
-
-			//		map<string, int>::iterator it = _acquiredResources.begin();
-			//		while (it != _acquiredResources.end())
-			//		{
-			//			cout << "###################### " << it->first << " " << iter->first << endl;
-			//			if (it->first == iter->first) 
-			//			{
-			//				cout << "#############################Matched" << iter->first << endl;
-
-			//				ReleaseBay(iter->second, aircraft->GetBaySizeReq(), it->first, it->second);
-			//			}
-			//			it++;
-			//		}
-			//	}
-			//	else 
-			//	{
-			//		map<string, int>::iterator it = _acquiredResources.begin();
-			//		while (it != _acquiredResources.end())
-			//		{
-			//			if (it->first == iter->first) {
-			//				ReleaseResourceEM(iter->second, it->second);
-			//			}
-			//			it++;
-			//		}
-			//	}
-			//	iter++;
-			//}
-
-
-
-
-
-
-
 			//empty appropriate acquired vector index
-	
 			map<string, int>::iterator iter = _acquiredResources.begin();
 			while (iter != _acquiredResources.end())
 			{
-				cout << _indoorReq << " " << aircraft->GetAircraftType() << "ACQ ARE : " << iter->first << endl;
-
+				//if i have a bay in my acquired resources list, release it
 				if (iter->first == "S Bay" || iter->first == "M Bay" || iter->first == "L Bay") 
 				{
-					//cout << " found bay " << endl;
 					map<string, StepResource*>::iterator it = _reqResourceMap.begin();
 
 					//iterate through required resource map to get the object
-					//while (it != _reqResourceMap.end())
 					while (it != _reqResourceMap.end())
 					{
-						//cout << _indoorReq << " " << aircraft->GetAircraftType() << "**REQ ARE : " << it->first << endl;
-
-						//cout << "########################### " << it->first << " " << iter->first << endl;
 						//if this acquired resource matches the Bay name
 						if (iter->first == it->first) {
-							cout << "Matched" << iter->first << endl;
-							//ReleaseBay(iter->second, aircraft->GetBaySizeReq(), iter->first, it->second);
 							ReleaseBay(it->second, aircraft->GetBaySizeReq(), iter->first, iter->second);
 						}
 						it++;
 					}
-					//cout << _indoorReq << " " << aircraft->GetAircraftType() << "**AFTER REL ACQ ARE : " << it->first << endl;
-
 				}
 
 				else {
@@ -1634,7 +1488,6 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 							if (it->first == iter->first) {
 
 								ReleaseResourceEM(iter->second, it->second);
-
 							}
 							it++;
 						}
@@ -1657,6 +1510,7 @@ void Step::DoneServiceEM(Aircraft* aircraft, map<string, int> acquiredResources)
 	}
 }
 
+//completion of failed resource repair step
 void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquiredResources)
 {
 	_acquiredResources = acquiredResources;
@@ -1671,9 +1525,7 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 		}
 		else
 		{
-			////cout << " NOT IN DONE OF RETURN" << endl;
 			nextID = _stepID + 1;
-
 		}
 
 		map<string, int>::iterator it = _acquiredResources.begin();
@@ -1751,7 +1603,7 @@ void Step::DoneResourceServiceEM(StepResource* resource, map<string, int> acquir
 
 	}
 
-	//if last step, schedule restoreresourceEM
+	//if last step, schedule a restore of this resource
 	SimExec::ScheduleEventAt(-1, new RestoreResourceEA(this, resource), this->_servTime->GetRV(), "RestoreResourceEA");
 }
 
@@ -1884,7 +1736,6 @@ bool Step::AreThereBaysAvailable(string baySize)
 		else
 			return false;
 	}
-	
 }
 
 bool Step::WasBayAcquired(string bayName)
@@ -1897,15 +1748,13 @@ bool Step::WasBayAcquired(string bayName)
 
 bool Step::isFirstShiftChange()
 {
-	//cout << "is in first shift change" << endl;
+	//is this the first shift (600 on the first day)
 	if (_firstShiftUpdateFlag == 1)
 	{
-		//cout << "is first flag" << endl;
 		return true;
 	}
 	else
 	{
-		//cout << "is not first flag" << endl;
 		return false;
 	}
 }
@@ -2007,8 +1856,6 @@ char Step::GetRJIndoorReq()
 
 void Step::ScheduleFirstPeacetimeShifts()
 {
-	//cout << "scheduling first peacetime shifts " << endl;
-
 	//schedule 1st shift change
 	SimExec::ScheduleEventAtCalendar(0.0, 0.0, InputReader::GetShiftOneStartTime(), 
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift1Change");
@@ -2022,14 +1869,9 @@ void Step::ScheduleFirstPeacetimeShifts()
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift3Change");
 }
 
-void Step::SetFirstShiftUpdateFlag(int flag)
-{
-	_firstShiftUpdateFlag = flag;
-}
 
 void Step::ScheduleFirstWartimeShifts()
 {
-	//cout << "in sched first wartime - scheduling first wartime shifts " << endl;
 	//schedule 1st shift change
 	SimExec::ScheduleEventAtCalendar(0.0, 0.0, InputReader::GetShiftOneStartTime(),
 		SimExec::GetSimulationTime()._year, -10, new ShiftChangeEA(), "Shift1Change");
@@ -2044,9 +1886,49 @@ Distribution* Step::GetServiceTime()
 	return _servTime;
 }
 
+map<string, Parts*> Step::GetPartsPool()
+{
+	return _partsPool;
+}
+
+map<string, StepResource*> Step::GetResPool()
+{
+	return _resourcePool;
+}
+
+int Step::GetPartsPoolSize()
+{
+	return _partsPool.size();
+}
+
+int Step::GetResMapSize()
+{
+	return _reqResourceMap.size();
+}
+
+int Step::GetPartsMapSize()
+{
+	return _reqPartsMap.size();
+}
+
+string Step::GetMyRJName()
+{
+	return _myRJ;
+}
+
+int Step::GetResPoolSize()
+{
+	return _resourcePool.size();
+}
+
 ////////////////////////////////////////////
 //////////////    SETTERS    ///////////////
 ////////////////////////////////////////////
+
+void Step::SetFirstShiftUpdateFlag(int flag)
+{
+	_firstShiftUpdateFlag = flag;
+}
 
 void Step::SetStepID(int stepID)
 {
@@ -2070,7 +1952,6 @@ void Step::SetRJPriority(int RJpriority)
 
 void Step::SetStepIndoorReq(char indoorReq)
 {
-	cout << " REQ " << indoorReq << endl;
 	_indoorReq = indoorReq;
 }
 
@@ -2282,10 +2163,24 @@ void Step::SetReqParts(string reqParts, int numNeeded)
 
 }
 
-void Step::SetReturnStep(/*int stepId*/ int returnStep)
+void Step::SetReturnStep(int returnStep)
 {
-
 	_returnStep = returnStep;
+}
+
+void Step::SetResPoolCount(string resource, double newCount)
+{
+	_resourcePool.find(resource)->second->SetResourceCount(newCount);
+}
+
+void Step::SetPartPoolCount(string part, int newCount)
+{
+	_partsPool.find(part)->second->SetPartsCount(newCount);
+}
+
+void Step::SetMyRJName(string myRJ)
+{
+	_myRJ = myRJ;
 }
 
 ////////////////////////////////////////////
@@ -2305,8 +2200,7 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 	int newCount;
 	map<string, StepResource*>::iterator iter = _resourcePool.find(bay->GetResourceName());
 
-	cout << "+++++++++++++++++ RELEASING BAY " << bay->GetResourceName() << endl;
-
+	//if my bay size requirement is what i have, release it
 	if (myOriginalBaySize == baySizeIHave) {
 		newCount = iter->second->GetResourceCount() + numRelease;
 		SetResPoolCount(iter->first, newCount);
@@ -2316,6 +2210,8 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 		Scribe::UpdateResourceUtilization(bay->GetResourceName(), negativeCount, SimExec::GetSimulationTime()._timeOfDay);
 		SimExec::CheckConditionalEvents(iter->second, 0);
 	}
+	//else if i took a half of the space in a larger bay, release whatever space i've occupied by incrementing the count by that amount
+	//LOGIC: S Bay is 1/2 the size of a M Bay is 1/2 the size of a L Bay
 	else {
 		if (myOriginalBaySize == "S Bay") {
 			if (baySizeIHave == "M Bay") {
@@ -2352,27 +2248,6 @@ void Step::ReleaseBay(StepResource* bay, string myOriginalBaySize, string baySiz
 	}
 }
 
-
-map<string, Parts*> Step::GetPartsPool()
-{
-	return _partsPool;
-}
-
-map<string, StepResource*> Step::GetResPool()
-{
-	return _resourcePool;
-}
-
-int Step::GetPartsPoolSize()
-{
-	return _partsPool.size();
-}
-
-int Step::GetResPoolSize()
-{
-	return _resourcePool.size();
-}
-
 void Step::AddToResPool(StepResource* resource, string resourceName)
 {
 	_resourcePool[resourceName] = resource;
@@ -2381,17 +2256,6 @@ void Step::AddToResPool(StepResource* resource, string resourceName)
 void Step::AddToPartsPool(Parts* parts, string partsName)
 {
 	_partsPool[partsName] = parts;
-}
-
-//void Step::SetResPoolCount(string resource, int newCount)
-void Step::SetResPoolCount(string resource, double newCount)
-{
-	_resourcePool.find(resource)->second->SetResourceCount(newCount);
-}
-
-void Step::SetPartPoolCount(string part, int newCount)
-{
-	_partsPool.find(part)->second->SetPartsCount(newCount);
 }
 
 map<string, StepResource*>::iterator Step::FindResource(string resource)
@@ -2404,7 +2268,8 @@ map<string, Parts*>::iterator Step::FindParts(string resource)
 	return _reqPartsMap.find(resource);
 }
 
-void Step::Execute(Aircraft* aircraft) {
+void Step::Execute(Aircraft* aircraft)
+{
 
 }
 
@@ -2412,34 +2277,17 @@ void Step::AddResource(StepResource* resource, string resourceName, int numNeede
 {
 	resource->SetNumResNeeded(numNeeded);
 	_reqResourceMap[resourceName] = resource;
-	
-	//this->_reqResourceMap.insert(pair<string, StepResource*>(resourceName, resource));
-
-
-	//cout << " PLEASE DON BE BLANK " << _reqResourceMap.find(resourceName)->first << "******************************" << endl;;
-}
-
-int Step::GetResMapSize()
-{
-	return _reqResourceMap.size();
-}
-
-int Step::GetPartsMapSize()
-{
-	return _reqPartsMap.size();
 }
 
 void Step::AddParts(Parts* parts, string partsName, int numNeeded)
 {
 	_reqPartsMap[partsName] = parts;
 	_reqPartsMap[partsName]->SetNumPartsNeeded(numNeeded);
-
 }
 
 void Step::AcquireParts(Parts* parts, int numNeeded)
 {
 	int newCount;
-
 
 	map<string, Parts*>::iterator iter = _partsPool.find(parts->GetPartsName());
 	if (numNeeded <= iter->second->GetPartsCount())
@@ -2460,22 +2308,21 @@ void Step::AcquireParts(Parts* parts, int numNeeded)
 
 void Step::Print()
 {
-	cout << _stepID << " req " << _indoorReq << endl;
-	//if (_inspecFailProb == nullptr) {}
-	//else
-	//{
-	//	_inspecFailProb->PrintDistribution();
-	//}
+	if (_inspecFailProb == nullptr) {}
+	else
+	{
+		_inspecFailProb->PrintDistribution();
+	}
 
-	//if (_servTime == nullptr)
-	//	PrintParts();
+	if (_servTime == nullptr)
+		PrintParts();
 
-	//map<string, StepResource*>::iterator it = _reqResourceMap.begin();
-	//for (int i = 0; i < _reqResourceMap.size(); i++)
-	//{
-	//	it++;
-	//}
-	//PrintResources();
+	map<string, StepResource*>::iterator it = _reqResourceMap.begin();
+	for (int i = 0; i < _reqResourceMap.size(); i++)
+	{
+		it++;
+	}
+	PrintResources();
 }
 
 void Step::PrintParts()

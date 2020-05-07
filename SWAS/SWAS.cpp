@@ -78,11 +78,12 @@ void SchedResourceFailure()
  */
 void InitializeAircraft()
 {
-	cout << "reading is finished" << endl;
+	cout << "Reading is finished" << endl;
 
 	SimExec::InitializeSimulation(inputReader.GetCalConverter()->GetMonthMap().size(), inputReader.GetCalConverter()->GetCalArray());
 	//Setting the Initial System Seed I just picked 8 b/c of the team size
 
+	//alternatives for hardcoded aircraft selection -> names versus number identifiers
 	//inputReader.AddSelectedAircraft("F-35");
 	inputReader.AddSelectedAircraft(1);
 	//inputReader.AddSelectedAircraft("F-18");
@@ -115,11 +116,8 @@ void InitializeAircraft()
 				if (myIter->second->GetSchedType() == "Calendar" && cal == 1)
 				{
 					//calendarsourceblock schedules calendar arrival at date 
-					cout << firstAircraft->GetAircraftType() << " ";
 					firstAircraft->GetCalendarObj()->_months;
 					firstAircraft->GetCalendarObj()->_days;
-					cout << endl;
-					cout << endl;
 					SourceBlock* calArrival = new SourceBlock(
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
@@ -133,7 +131,7 @@ void InitializeAircraft()
 				{
 					// recurringsourceblock schedules first arrival at recur iat 
 					SourceBlock* recurArrival = new SourceBlock(
-						firstAircraft->GetRecurIatMap(), //get a map -- The map is set up as <string, RepairJob*> we can pass the repair job along this way << this is not true
+						firstAircraft->GetRecurIatMap(),
 						firstAircraft->GetAircraftType(),
 						firstAircraft,
 						"Recurring Arrival"/*,
@@ -142,8 +140,6 @@ void InitializeAircraft()
 
 				else if (myIter->second->GetSchedType() == "Unplanned" && count == 1)
 				{
-					//unplannedsourceblock schedules first arrival at unpl iat  
-
 					SourceBlock* unplanArrival = new SourceBlock(
 						firstAircraft->GetAircraftIAT(),
 						firstAircraft->GetAircraftType(),
@@ -174,11 +170,9 @@ void InitializeAircraft()
 void ScheduleFirstShiftChange()
 {
 
-	//cout << "in schedule first shift change()" << endl;
 	//if wartime, schedule at 0600 and 1800
 	if (InputReader::IsWartime() == true)
 	{
-		//cout << "scheduling first wartime shift" << endl;
 		Step::ScheduleFirstWartimeShifts();
 		return;
 	}
@@ -202,11 +196,9 @@ int main()
 	Scribe::SetSaveFile("Output.csv");
 	Scribe::SetRuns(inputReader.GetNumRuns());
 	Scribe::SetNumRuns(inputReader.GetNumRuns());
-	//Step::PrintPools();
-	//inputReader.PrintEverything();
+
 
 	/*For handling multiple runs -- currently set as 1 in file for testing purposes*/
-	//*Note: Let tyler know this function name so he can add it to his unity logic
 	for (int i = 0; i < inputReader.GetNumRuns(); i++)
 	{
 
@@ -218,8 +210,6 @@ int main()
 		InitializeAircraft();
 		SchedResourceFailure();
 		ScheduleFirstShiftChange();
-
-		//InitalizeAircraft(GetScribe());
 		
 		//If System Seed is the same vs. Different --If Random Generate a new system seed. --If the same don't worry about it
 		if (Distribution::GetSystemSeedType() == "random" || Distribution::GetSystemSeedType() == "Random") {
@@ -227,23 +217,23 @@ int main()
 			int result = (rand() % INT_MAX);
 			Distribution::SetSystemSeed(result);
 		}
-		else if (Distribution::GetSystemSeedType() == "same" || Distribution::GetSystemSeedType() == "Same") { // I know this may seem redundant b/c system seed is what it is, but for verification purposes for FTI it'll work
+		else if (Distribution::GetSystemSeedType() == "same" || Distribution::GetSystemSeedType() == "Same") {
 			Distribution::SetSystemSeed(Distribution::GetSystemSeed());
 		}
 
 
-		///Included for simulation testing purposes -> will be moved during GUI integration
+		///Included for simulation testing purposes
 		while (SimExec::GetSimulationFlag())
 			SimExec::RunSimulation(inputReader.GetTerminationObj()->_months[i], inputReader.GetTerminationObj()->_days[i], inputReader.GetTerminationObj()->_year[i]);
 
-		cout << endl << endl << endl;
+		cout << endl;
 
-		cout << SimExec::PrintNumInCondES() << endl;
+		cout << "Number of conditional events in queue at termination: " << SimExec::PrintNumInCondES() << endl;
 
-		//For Kevin, this causes an infinite loop
 		ScribeSetTerminationTime(SimExec::GetTotalSimulationTime());
-		//cout << Step::GetResourcePool().find("L Bay")->second->GetResourceCount() << endl;
 		map<string, StepResource*>::const_iterator it = Step::GetResourcePoolBegin();
+		cout << "Current counts of resources at termination: " << endl;
+
 		while (it != Step::GetResourcePoolEnd()) {
 			cout << "Name: " << it->first << ", count: " << it->second->GetResourceCount() << endl;
 			it++;

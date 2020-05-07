@@ -39,9 +39,7 @@ public:
 	static void PrintEventSet();
 	static void InitializeSimulation(int numBins, int* days);
 	static void ReinitalizeSimulation();
-	//static void RunSimulation();
 	static int RunSimulation();
-	//static void RunSimulation(Time month, Time day, Time timeOfDay, int year);
 	static int RunSimulation(Time month, Time day, int year);
 	static void FlipSimulationFlag();
 	static bool GetSimulationFlag();

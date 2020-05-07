@@ -1,7 +1,8 @@
 /*InputInterface.h: Andrea Robey
-This file acts as an interface between the csv input file.
-It parses the data from the tables in the file into necessary formats and data structures
-which will be used to populate the many objects' attributes and provide static 
+
+This file acts as an interface between the csv input file and the simulation.
+It reads the file and parses the data from the tables in the file into necessary formats 
+and data structures which will be used to populate the many objects' attributes. 
 */
 
 #pragma once
@@ -19,12 +20,14 @@ public:
 	void PrintEverything();
 	void PrintMasterResMap();
 	void ClearGuiAircraft();
-	//void AddSelectedAircraft(string aircraftName);
 	void AddSelectedAircraft(int aircraftNumber);
 	void SetNumRuns(int numRuns);
+	void ResetAirCount();
 	bool FindSelectedAircraft(string aircraftName);
+
 	CalConverter* GetCalConverter();
 	CalendarObj* GetTerminationObj();
+
 	static map<string, Aircraft*>::iterator GetMasterMapBegin();
 	static map<string, Aircraft*>::iterator GetMasterMapEnd();
 	static map<string, RepairJob*>::iterator FindMasterRJ(string aircraft, string job);
@@ -33,7 +36,6 @@ public:
 	static void SetMasterResNum(string name, int num);
 	static void SetMasterPartsNum(string name, int num);
 	static void ResetIDCount();
-	//	static void GetMyStep(string repairName, int stepId); //for getting step object 
 	static Aircraft* GetAircraft(string aircraftName);
 	static map<string, Aircraft*> GetMasterMap();
 	static map<string, StepResource*> GetMasterResourceMap();
@@ -41,7 +43,6 @@ public:
 	static int GetMapSize();
 	static int GetNumRuns();
 	static int GetAirCount();
-    void ResetAirCount();
 	static int GetIDcount();
 	static void AddAirCount();
 	static void CalAirFix();
@@ -53,6 +54,7 @@ public:
 	static double GetShiftThreeStartTime();
 	static bool IsWartime();
 	static void SetWartimeFlag(int flag);
+
 private:
 	static int _wartimeFlag;
 	static int _numRuns;
@@ -69,10 +71,5 @@ private:
 	CalendarObj* _terminationDates;
 	struct GUISelectedAircraft;
 	GUISelectedAircraft* _GUIListHead;
-	//map<Aircraft *, unordered_map<string, RepairJob>> masterMap;		//Master list of all repair job options for each unique aircraft type
 	string _seedType; //seed type read in - if statement elsewhere
-	//Scribe* outputRecorder = new Scribe();
-
-	//Trial CalObjs
-
 };

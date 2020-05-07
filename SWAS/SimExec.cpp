@@ -121,7 +121,6 @@ public:
 			if (curr->_cea->Condition(resource, parts)) 
 			{
 				//If met Execute the associated Event Method
-				cout << "Executed from CES, ID: " << curr->_aID <<endl;
 				curr->_cea->Execute();
 
 				//Event has Executed, see if the current node is the head node
@@ -626,30 +625,26 @@ public:
 					e = e->_nextEvent;
 					count++;
 				}
-				cout << count << " ";
 				if (i == 1 && j == 27 && _year % 4 == 0) {
 					Event* eLeap = _eventSet[i][j + 1];
 					while (eLeap != 0) {
 						eLeap = eLeap->_nextEvent;
 						count++;
 					}
-					cout << count << " ";
 				}
 			}
-			cout << endl;
 		}
 	}
-	//
+
 private:
 	int _numBins, _baseX, _overflow, _baseY;
 	int _year;
 	int _numEvents;
 	int* _endOfMonth;
 	Event*** _eventSet;
-	//
-	//	//Will add an if statement on December 31 to increment the year by 1.
+	//Will add an if statement on December 31 to increment the year by 1.
 	void AdvanceMonth() {
-		//	Advancing Month, and updating overflow bin" 
+		//Advancing Month, and updating overflow bin" 
 		if (_baseX == December && _baseY == 30) {
 			_eventSet[_baseX][_baseY] = 0;
 			_year++;

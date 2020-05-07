@@ -14,12 +14,6 @@ CalConverter::CalConverter()
 void CalConverter::InsertDays(int month, int numDays)
 {
 	_monthMap.insert(pair<int, int>(month, numDays)); 
-
-	//print map
-	for (map<int, int>::const_iterator it = _monthMap.begin();it != _monthMap.end();++it)
-	{
-		//		cout << it->first << " " << it->second << "\n"; 
-	}
 }
 
 int* CalConverter::GetCalArray() {
@@ -27,7 +21,6 @@ int* CalConverter::GetCalArray() {
 	_calArray = new int[_monthMap.size()]; 
 	while (iter != _monthMap.end()) {
 		_calArray[iter->first - 1] = iter->second; 
-		//	cout << "Month: " << iter->first << " Days: " << iter->second << endl; 
 		iter++; 
 
 	}
@@ -91,8 +84,7 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 					}
 					Month = baseX; 
 					Day = remainder; 
-					////div_t tRemainder; 
-					//tRemainder = div(divresult.rem, 24); 
+
 					if (sTime + divresult.rem > 24) {
 						int dividend; 
 						do {
@@ -102,7 +94,6 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 								Day++; 
 							dividend = ((int)sTime + divresult.rem) % 24; 
 						} while (dividend >= 24); 
-						//Day += 1; 
 						timeOfDay = 0 + dividend; 
 					}
 					else
@@ -126,14 +117,12 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 									Day++; 
 								dividend = ((int)sTime + divresult.rem) % 24; 
 							} while (dividend >= 24); 
-							//Day += 1; 
 							timeOfDay = 0 + dividend; 
 						}
 						else
 						{
 							timeOfDay = sTime + (int)divresult.rem; 
 						}
-						//timeOfDay = divresult.rem; 
 					}
 					else { // Otherwise we just advance the month
 						baseX++; 
@@ -148,14 +137,12 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 									Day++; 
 								dividend = ((int)sTime + divresult.rem) % 24; 
 							} while (dividend >= 24); 
-							//Day += 1; 
 							timeOfDay = 0 + dividend; 
 						}
 						else
 						{
 							timeOfDay = sTime + (int)divresult.rem; 
 						}
-						//timeOfDay = (int)divresult.rem; 
 					}
 				}
 			}
@@ -171,14 +158,12 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 							Day++; 
 						dividend = ((int)sTime + divresult.rem) % 24; 
 					} while (dividend >= 24); 
-					//Day += 1; 
 					timeOfDay = 0 + dividend; 
 				}
 				else
 				{
 					timeOfDay = sTime + (int)divresult.rem; 
 				}
-				//timeOfDay = divresult.rem; 
 			}
 		}
 		else if (dayOrHour == 1) 
@@ -209,16 +194,6 @@ void TimeConverter::ConvertDistributionToMonthDay(Time& Month, Time& Day, Time& 
 		}
 	}
 }
-
-/*CalendarObj::CalendarObj(int numEvents, Time* months, Time* days, Time* timeOfDays, int* years)
-{
-	for (int i = 0;i < numEvents;++i) {
-		_months[i] = months[i]; 
-		_days[i] = days[i]; 
-		_timeOfDays[i] = timeOfDays[i]; 
-		_years[i] = years[i]; 
-	}
-}*/
 
 CalendarObj::CalendarObj()
 {

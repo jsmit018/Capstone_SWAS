@@ -32,7 +32,6 @@ public:
 			_head = _tail = node; 
 		}
 		else if (_head->_priority < priority) {
-			//_tail = _tail->next = node; 
 			node->next = _head; 
 			_head = node; 
 		}
@@ -49,9 +48,7 @@ public:
 			}
 
 		}
-		//cout << SimObj::GetSimulationTime() << ", queue " << _name << ", AddEntity, Entity , queue size, " << _size << endl; 
 		_size++; 
-		//cout << SimObj::GetSimulationTime() << ", queue " << _name << ", AddEntity, Entity , queue size, " << _size << endl; 
 	}
 
 	T* GetEntity()
@@ -61,10 +58,7 @@ public:
 			Node* n = _head; 
 			T* t = _head->t; 
 			_head = _head->next; 
-			//			delete n; 
-//			cout << SimObj::GetSimulationTime() << ", queue " << _name << ", GetEntity, Entity , queue size, " << _size << endl; 
 			_size--; 
-			//			cout << SimObj::GetSimulationTime() << ", queue " << _name << ", GetEntity, Entity , queue size, " << _size << endl; 
 			return t; 
 		}
 	}

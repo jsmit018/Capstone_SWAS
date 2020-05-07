@@ -1,4 +1,4 @@
-//SinkTask.cpp: Provided by Dr. James Leathrum, modified by Jordan Smith
+//SinkTask.cpp: Provided by Dr. James Leathrum
 
 #include <iostream>
 #include "SinkTask.h"
@@ -18,7 +18,6 @@ void SinkBlock::SetName(string name) {
 }
 
 int SinkBlock::GetTerminatedAircraft() {
-    cout << "Returning terminated aircraft" << endl;
     return _terminatedAircraft;
 }
 

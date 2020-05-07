@@ -175,9 +175,6 @@
     <ClInclude Include="Warehouse.h" />
     <ClInclude Include="PriorityQueue.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="V1_complete.csv" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

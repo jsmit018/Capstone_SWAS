@@ -11,15 +11,11 @@ public:
 	StepResource();
 	void CopyMapResource(const StepResource& mapResource);
 	void Acquire(int amountNeeded);
-	//virtual void Acquire() = 0;
 	void Release(int amountToRelease);
-	//virtual void Release = 0;
 	bool IsAvailable(int amountNeeded);
 	void FailResource();
 	void RestoreResource();
 	void PrintResProperties();
-	//void SetResourceID(int resourceID);
-	//int GetResourceID();
 
 	void SetResourceCount(double resourceCount);
 	void SetResourceName(string resourceName);

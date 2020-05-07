@@ -1,4 +1,4 @@
-//RepairJob.h: Andrea rotate
+//RepairJob.h: Andrea Robey
 
 #pragma once
 #include "SimObj.h"
@@ -17,7 +17,6 @@ public:
 	RepairJob();
 	void CopyRepairJob(const RepairJob& mapRj);
 	void SetName(string name);
-	void SetPriority(int priority);
 	void SetSchedType(string schedType);
 	void SetIndoorReq(char indoorReq);
 	void SetCalendarDate(string calendarDate);

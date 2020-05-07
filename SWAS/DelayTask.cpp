@@ -49,16 +49,13 @@ void DelayBlock::SetName(string name) {
 }
 
 void DelayBlock::Execute(Aircraft* aircraft) {
-    cout << "Scheduling Delay Event" << endl; 
     SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new StartDelayEA(this, aircraft), 0.0, "StartDelayEA"); 
 }
 
 void DelayBlock::StartDelayEM(Aircraft* aircraft) {
-    cout << "Scheduling a finish Delay Event" << endl; 
     SimExec::ScheduleEventAt(aircraft->GetAircraftPriority(), new EndDelayEA(this, aircraft), _delayTime->GetRV(), "EndDelayEA"); 
 }
 
 void DelayBlock::EndDelayEM(Aircraft* aircraft) {
-    cout << "Delay is finished" << endl; 
     Depart(aircraft); 
 }
